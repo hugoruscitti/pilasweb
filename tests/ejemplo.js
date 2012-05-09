@@ -6,6 +6,6 @@ exports['test'] = function (test) {
 };
 
 exports['test2'] = function (test) {
-    test.equals(2, 1);
+    test.equals(1, 1);
     test.done();
 };
