@@ -1,2 +1,2 @@
 test:
-	nodeunit test
+	nodeunit tests
