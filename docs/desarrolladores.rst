@@ -25,3 +25,16 @@ servicios:
 
 https://api.heroku.com/myapps
 http://travis-ci.org/#!/hugoruscitti/pilasweb
+
+
+
+Makefile
+--------
+
+El archivo ``Makefile`` tiene una serie de comandos para ejecutar, si
+quieres ejecutar alguno de estos comandos tienes que escribir: ``make comando``.
+
+Por ejemplo, alguno de los comandos disponibles son:
+
+test:
+    Se ejecuta automáticamente dentro de los servidores de travis para probar la aplicación.
