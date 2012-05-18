@@ -27,6 +27,22 @@ https://api.heroku.com/myapps
 http://travis-ci.org/#!/hugoruscitti/pilasweb
 
 
+Acceso desde otros servidores
+-----------------------------
+
+El ultimo build de la biblioteca se puede acceder
+desde la siguiente URL:
+
+    https://raw.github.com/hugoruscitti/pilasweb/master/js/pilas.js
+
+Es decir, cualquier web podría incorporar pilas en sus
+juegos agregando estas lineas de código HTML a sus páginas:
+
+.. code-block:: html
+
+    <script language="javascript" type="text/javascript" src="https://raw.github.com/hugoruscitti/pilasweb/master/js/easeljs-0.4.2.min.js"></script>
+    <script language="javascript" type="text/javascript" src="https://raw.github.com/hugoruscitti/pilasweb/master/js/pilas.js"></script>
+
 
 Makefile
 --------
