@@ -9,9 +9,41 @@
 
     <script language="javascript" type="text/javascript" src="../js/coffee-script.js"></script>
 
+
 <script type="text/coffeescript">
-alert 'hola mundo!'
+pilas.iniciar "canvas"
+
+#console.log pilas.canvas.width
+#console.log pilas.canvas.height
+
+actores = []
+
+#txt = new Text "hola", "22px arial"
+
+#txt.textBaseline = "top"
+#txt.x = 100
+#txt.y = 80
+#actores.push txt
+#txt.text = "hola"
+imagen = new Bitmap("../data/pilas-logo.png")
+
+#actor.draw pilas.canvas for actor in actores
+canvas = document.getElementById "canvas"
+contexto = canvas.getContext('2d')
+
+
+tick = ->
+    contexto.save()
+    contexto.translate 10, 10
+    imagen.draw contexto
+    contexto.restore()
+
+Ticker.setFPS 60
+
+#pilas.stage.addChild txt
+Ticker.addListener tick
 </script>
+
 
 <!--
 
@@ -37,13 +69,6 @@ tick = ->
     stage.update()
     
 
-init()
-*/
-
-.progress
-    .bar
-
-
 </script>
 -->
 
@@ -52,10 +77,11 @@ init()
 
 <body>
 
-<h1>Prueba</h1>
 
-<canvas style='border: 1px solid gray' id='canvas' width=400 height=300></canvas>
 
+<h1></h1>
+
+<canvas style='border: 1px solid gray' id='canvas' width=400 height=200></canvas>
 
 </body>
 </html>
