@@ -27,16 +27,32 @@ actores = []
 #txt.text = "hola"
 imagen = new Bitmap("../data/pilas-logo.png")
 
+class Actor
+    constructor: (ruta_imagen, @x, @y) ->
+        @imagen = new Bitmap(ruta_imagen)
+        actores.push this
+        
+    dibujar: (contexto) ->
+        contexto.translate @x, @y
+        @imagen.draw contexto
+
+    actualizar: ->
+        @x = @x + 0.1
+
 #actor.draw pilas.canvas for actor in actores
 canvas = document.getElementById "canvas"
 contexto = canvas.getContext('2d')
 
+un_actor = new Actor('../data/aceituna.png', 0, 0)
 
 tick = ->
-    contexto.save()
-    contexto.translate 10, 10
-    imagen.draw contexto
-    contexto.restore()
+    contexto.clearRect(0, 0, pilas.canvas.width, pilas.canvas.height)
+
+    for actor in actores
+        contexto.save()
+        actor.actualizar()
+        actor.dibujar contexto 
+        contexto.restore()
 
 Ticker.setFPS 60
 
