@@ -17,7 +17,7 @@
 
     Pilas.prototype.actualizar_y_dibujar_actores = function(contexto) {
       var actor, _i, _len, _ref, _results;
-      contexto.clearRect(0, 0, pilas.canvas.width, pilas.canvas.height);
+      this.limpiar_pantalla(contexto);
       _ref = this.actores;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -28,6 +28,10 @@
         _results.push(contexto.restore());
       }
       return _results;
+    };
+
+    Pilas.prototype.limpiar_pantalla = function(contexto) {
+      return contexto.clearRect(0, 0, pilas.canvas.width, pilas.canvas.height);
     };
 
     return Pilas;

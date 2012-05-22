@@ -9,13 +9,15 @@ class Pilas
         @actores.push actor
 
     actualizar_y_dibujar_actores: (contexto) ->
-        contexto.clearRect(0, 0, pilas.canvas.width, pilas.canvas.height)
+        this.limpiar_pantalla contexto
         for actor in @actores
             contexto.save()
             actor.actualizar()
             actor.dibujar contexto 
             contexto.restore()
         
+    limpiar_pantalla: (contexto) ->
+        contexto.clearRect(0, 0, pilas.canvas.width, pilas.canvas.height)
 class Actor
     constructor: (ruta_imagen, @x, @y) ->
         @imagen = new Bitmap(ruta_imagen)
