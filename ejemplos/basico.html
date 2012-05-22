@@ -1,42 +1,29 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8">
     <title>Prueba</title>
 
-    <script language="javascript" type="text/javascript" src="../js/easeljs-0.4.2.min.js"></script>
-    <script language="javascript" type="text/javascript" src="../js/pilas.js"></script>
-
-    <script language="javascript" type="text/javascript" src="../js/coffee-script.js"></script>
-
+    <script src="../js/easeljs-0.4.2.min.js"></script>
+    <script src="../js/pilas.js"></script>
+    <script src="../js/coffee-script.js"></script>
 
 <script type="text/coffeescript">
 pilas.iniciar "canvas"
 
-#console.log pilas.canvas.width
-#console.log pilas.canvas.height
-
-#txt = new Text "hola", "22px arial"
-
-#txt.textBaseline = "top"
-#txt.x = 100
-#txt.y = 80
-#actores.push txt
-#txt.text = "hola"
 imagen = new Bitmap("../data/pilas-logo.png")
 
-#actor.draw pilas.canvas for actor in actores
 canvas = document.getElementById "canvas"
 contexto = canvas.getContext('2d')
 
 un_actor = new Actor('../data/aceituna.png', 0, 0)
+texto = new Texto("Hola", 10, 10)
 
 tick = ->
     pilas.actualizar_y_dibujar_actores contexto
 
 Ticker.setFPS 60
 
-#pilas.stage.addChild txt
 Ticker.addListener tick
 </script>
 
