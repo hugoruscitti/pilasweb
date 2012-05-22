@@ -15,9 +15,8 @@
       return this.actores.push(actor);
     };
 
-    Pilas.prototype.actualizar_y_dibujar_actores = function(contexto) {
+    Pilas.prototype.actualizar_y_dibujar_actores = function(conexto) {
       var actor, _i, _len, _ref, _results;
-      contexto.clearRect(0, 0, pilas.canvas.width, pilas.canvas.height);
       _ref = this.actores;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {

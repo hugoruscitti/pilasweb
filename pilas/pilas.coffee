@@ -3,11 +3,31 @@ class Pilas
         @canvas = document.getElementById elemento
         # TODO: lanzar excepcion si no existe elemento.
         @stage = new Stage(@canvas)
-        @iniciar_actores()
-
-    iniciar_actores: ->
         @actores = []
+
+    agregar_actor: (actor) ->
+        @actores.push actor
+
+    actualizar_y_dibujar_actores: (contexto) ->
+        contexto.clearRect(0, 0, pilas.canvas.width, pilas.canvas.height)
+        for actor in @actores
+            contexto.save()
+            actor.actualizar()
+            actor.dibujar contexto 
+            contexto.restore()
         
+class Actor
+    constructor: (ruta_imagen, @x, @y) ->
+        @imagen = new Bitmap(ruta_imagen)
+        window.pilas.agregar_actor this
+        
+    dibujar: (contexto) ->
+        contexto.translate @x, @y
+        @imagen.draw contexto
+
+    actualizar: ->
+        @x = @x + 0.1
 
 pilas = new Pilas
 window.pilas = pilas
+window.Actor = Actor
