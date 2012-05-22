@@ -1,5 +1,5 @@
 (function() {
-  var Actor, Pilas, pilas;
+  var Actor, Pilas, Texto, pilas;
 
   Pilas = (function() {
 
@@ -60,10 +60,36 @@
 
   })();
 
+  Texto = (function() {
+
+    function Texto(texto, x, y) {
+      this.texto = texto;
+      this.x = x;
+      this.y = y;
+      this.text = new Text(this.texto, "22px arial");
+      this.text.textBaseline = "top";
+      window.pilas.agregar_actor(this);
+    }
+
+    Texto.prototype.actualizar = function() {
+      return "";
+    };
+
+    Texto.prototype.dibujar = function(contexto) {
+      contexto.translate(this.x, this.y);
+      return this.text.draw(contexto);
+    };
+
+    return Texto;
+
+  })();
+
   pilas = new Pilas;
 
   window.pilas = pilas;
 
   window.Actor = Actor;
+
+  window.Texto = Texto;
 
 }).call(this);

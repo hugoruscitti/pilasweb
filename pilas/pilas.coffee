@@ -18,6 +18,7 @@ class Pilas
         
     limpiar_pantalla: (contexto) ->
         contexto.clearRect(0, 0, pilas.canvas.width, pilas.canvas.height)
+
 class Actor
     constructor: (ruta_imagen, @x, @y) ->
         @imagen = new Bitmap(ruta_imagen)
@@ -30,6 +31,20 @@ class Actor
     actualizar: ->
         @x = @x + 0.1
 
+class Texto
+    constructor: (@texto, @x, @y) ->
+        @text = new Text @texto, "22px arial"
+        @text.textBaseline = "top"
+        window.pilas.agregar_actor this
+
+    actualizar: ->
+        ""
+
+    dibujar: (contexto) ->
+        contexto.translate @x, @y
+        @text.draw contexto
+
 pilas = new Pilas
 window.pilas = pilas
 window.Actor = Actor
+window.Texto = Texto
