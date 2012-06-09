@@ -3,5 +3,6 @@ pilasweb
 
 [![Build Status](https://secure.travis-ci.org/hugoruscitti/pilasweb.png?branch=master)](http://travis-ci.org/hugoruscitti/pilasweb)
 
+Pilas es una biblioteca para realizar videojuegos.
 
-Versión de pilas-engine para navegadores usando HTML5 y Coffescript
+Internamente, pilasweb utiliza HTML5, javascript, easel y mootools.
