@@ -25,7 +25,6 @@
 <script type='text/javascript'>
 
 var Actor = new Class({
-
     initialize: function(imagen) {
         this.imagen = new Bitmap(imagen)
         this.x = 10
@@ -41,7 +40,6 @@ var Actor = new Class({
         contexto.translate(this.x, this.y)
         this.imagen.draw(contexto)
     },
-
 });
 
 var Texto = new Class({
@@ -119,8 +117,10 @@ var Pilas = new Class({
 
 window.pilas = new Pilas()
 pilas.iniciar("canvas")
-new pilas.actores.Actor("../data/aceituna.png")
-new pilas.actores.Texto("Hola mundo!")
+
+var aceituna = new pilas.actores.Actor("../data/aceituna.png")
+var mensaje = new pilas.actores.Texto("Hola mundo!")
+
 </script>
 
 
