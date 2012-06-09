@@ -44,6 +44,25 @@ var Actor = new Class({
 
 });
 
+var Texto = new Class({
+    extends: Actor,
+    initialize: function(texto) {
+        this.texto = texto
+        this.object = new Text(this.texto, "22px arial")
+        this.object.textBaseline = "top";
+        this.x = 0
+        this.y = 0
+        pilas.agregar_actor(this)
+    },
+    actualizar: function() {
+    },
+
+    dibujar: function(contexto) {
+        contexto.translate(this.x, this.y)
+        this.object.draw(contexto)
+    },
+});
+
 var Pilas = new Class({
     initialize: function() {
     },
@@ -92,13 +111,16 @@ var Pilas = new Class({
     /* Submodulo de actores */
     actores: {
         Actor: Actor,
+        Texto: Texto,
         },
 });
+
 
 
 window.pilas = new Pilas()
 pilas.iniciar("canvas")
 new pilas.actores.Actor("../data/aceituna.png")
+new pilas.actores.Texto("Hola mundo!")
 </script>
 
 
