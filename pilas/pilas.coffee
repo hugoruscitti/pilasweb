@@ -4,6 +4,9 @@ class Pilas
         # TODO: lanzar excepcion si no existe elemento.
         @stage = new Stage(@canvas)
         @actores = []
+        @contexto = @canvas.getContext '2d'
+        Ticker.setFPS 60
+        #Ticker.addListener this.tick
 
     agregar_actor: (actor) ->
         @actores.push actor
@@ -15,6 +18,9 @@ class Pilas
             actor.actualizar()
             actor.dibujar contexto 
             contexto.restore()
+
+    tick: ->
+        this.actualizar_y_dibujar_actores @contexto
         
     limpiar_pantalla: (contexto) ->
         contexto.clearRect(0, 0, pilas.canvas.width, pilas.canvas.height)
@@ -29,7 +35,7 @@ class Actor
         @imagen.draw contexto
 
     actualizar: ->
-        @x = @x + 0.1
+        @x = @x
 
 class Texto
     constructor: (@texto, @x, @y) ->
@@ -45,6 +51,7 @@ class Texto
         @text.draw contexto
 
 pilas = new Pilas
-window.pilas = pilas
 window.Actor = Actor
-window.Texto = Texto
+#window.Texto = Texto
+
+window.pilas = pilas

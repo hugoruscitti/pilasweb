@@ -8,7 +8,9 @@
     Pilas.prototype.iniciar = function(elemento) {
       this.canvas = document.getElementById(elemento);
       this.stage = new Stage(this.canvas);
-      return this.actores = [];
+      this.actores = [];
+      this.contexto = this.canvas.getContext('2d');
+      return Ticker.setFPS(60);
     };
 
     Pilas.prototype.agregar_actor = function(actor) {
@@ -28,6 +30,10 @@
         _results.push(contexto.restore());
       }
       return _results;
+    };
+
+    Pilas.prototype.tick = function() {
+      return this.actualizar_y_dibujar_actores(this.contexto);
     };
 
     Pilas.prototype.limpiar_pantalla = function(contexto) {
@@ -53,7 +59,7 @@
     };
 
     Actor.prototype.actualizar = function() {
-      return this.x = this.x + 0.1;
+      return this.x = this.x;
     };
 
     return Actor;
@@ -86,10 +92,8 @@
 
   pilas = new Pilas;
 
-  window.pilas = pilas;
-
   window.Actor = Actor;
 
-  window.Texto = Texto;
+  window.pilas = pilas;
 
 }).call(this);

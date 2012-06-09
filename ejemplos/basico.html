@@ -4,36 +4,108 @@
     <meta charset="utf-8">
     <title>Prueba</title>
 
+    <style>
+        canvas {
+            border: 1px solid gray
+        }
+    </style>
+
     <script src="../js/easeljs-0.4.2.min.js"></script>
-    <script src="../js/pilas.js"></script>
-    <script src="../js/coffee-script.js"></script>
+    <script src="../js/mootools-core-1.4.5-full-compat-yc.js"></script>
 
-<script type="text/coffeescript">
-pilas.iniciar "canvas"
-
-imagen = new Bitmap("../data/pilas-logo.png")
-
-canvas = document.getElementById "canvas"
-contexto = canvas.getContext('2d')
-
-un_actor = new Actor('../data/aceituna.png', 0, 0)
-texto = new Texto("Hola", 10, 10)
-
-tick = ->
-    pilas.actualizar_y_dibujar_actores contexto
-
-Ticker.setFPS 60
-
-Ticker.addListener tick
-</script>
+    <!-- <script src="../js/pilas.js"></script> -->
+    <!-- <script src="../js/coffee-script.js"></script> -->
+    <!-- <script src="pilas.js"></script> -->
 
 </head>
+
 
 <body>
 
 <h1>Prueba sencilla</h1>
 
-<canvas style='border: 1px solid gray' id='canvas' width=400 height=200></canvas>
+<canvas id='canvas' width=400 height=200></canvas>
+
+<script type='text/javascript'>
+
+var Actor = new Class({
+
+    initialize: function(imagen) {
+        this.imagen = new Bitmap(imagen)
+        this.x = 10
+        this.y = 10
+
+        pilas.agregar_actor(this)
+    },
+
+    actualizar: function() {
+    },
+
+    dibujar: function(contexto) {
+        contexto.translate(this.x, this.y)
+        this.imagen.draw(contexto)
+    },
+
+});
+
+var Pilas = new Class({
+    initialize: function() {
+    },
+
+    iniciar: function(id_canvas) {
+        this.canvas = document.id(id_canvas)
+        this.stage = new Stage(this.canvas)
+        this.contexto = this.canvas.getContext("2d")
+        this.lista_actores = []
+        Ticker.setFPS(60)
+        Ticker.addListener(this)
+    },
+
+    /*
+     * Agrega un actor a la lista de actores a dibujar y actualizar.
+     */
+    agregar_actor: function(actor) {
+        this.lista_actores.push(actor)
+    },
+
+    actualizar_y_dibujar_actores: function(c) {
+        this.limpiar(c)
+
+        for (var i=0; i<this.lista_actores.length; i++) {
+            var actor = this.lista_actores[i]
+
+            c.save();
+            actor.actualizar();
+            actor.dibujar(c)
+            c.restore();
+        }
+    },
+
+    /* Borra toda la pantalla */
+    limpiar: function(c) {
+        c.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    },
+
+    /* 
+     * Función de respuesta que se llama 60 veces por segundo.
+     */
+    tick: function() {
+        pilas.actualizar_y_dibujar_actores(this.contexto)
+    },
+
+    /* Submodulo de actores */
+    actores: {
+        Actor: Actor,
+        },
+});
+
+
+window.pilas = new Pilas()
+pilas.iniciar("canvas")
+new pilas.actores.Actor("../data/aceituna.png")
+</script>
+
+
 
 </body>
 </html>
