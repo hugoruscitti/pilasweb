@@ -62,6 +62,7 @@ var Pilas = new Class({
             var actor = this.lista_actores[i]
 
             c.save();
+            c.translate(100, 100)
             actor.actualizar();
             actor.dibujar(c)
             c.restore();

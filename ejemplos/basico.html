@@ -7,6 +7,7 @@
 
     <script src="../pilas/libs/easeljs-0.4.2.min.js"></script>
     <script src="../pilas/libs/mootools-core-1.4.5-full-compat-yc.js"></script>
+    <script src="../pilas/libs/Box2dWeb-2.1.a.3.min.js"></script>
     <script src="../pilas/pilas.js"></script>
 </head>
 
@@ -17,6 +18,19 @@
 <canvas id='canvas' width=400 height=200></canvas>
 
 <script type='text/javascript'>
+var Vector = Box2D.Common.Math.b2Vec2;
+var World = Box2D.Dynamics.b2World;
+
+var Fisica = new Class({
+
+    initialize: function() {
+         this.world = new World(new Vector(0, 10), true);
+    },
+});
+
+
+var fisica = new Fisica();
+
 window.pilas = new Pilas()
 pilas.iniciar("canvas")
 
