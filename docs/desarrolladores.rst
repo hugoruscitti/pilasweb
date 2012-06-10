@@ -33,15 +33,23 @@ Acceso desde otros servidores
 El ultimo build de la biblioteca se puede acceder
 desde la siguiente URL:
 
-    https://raw.github.com/hugoruscitti/pilasweb/master/js/pilas.js
+    https://raw.github.com/hugoruscitti/pilasweb/master/pilas/pilas.js
 
-Es decir, cualquier web podría incorporar pilas en sus
-juegos agregando estas lineas de código HTML a sus páginas:
+Cada vez que quieras hacer un juego con pilas-engine deberías
+incluir este archivo junto a los siguientes:
+
+    https://ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js
+    http://code.createjs.com/easeljs-0.4.2.min.js
+
+Por ejemplo, el código HTML de tu página debería contener
+lo siguiente dentro del elemento ``head``:
 
 .. code-block:: html
 
-    <script language="javascript" type="text/javascript" src="https://raw.github.com/hugoruscitti/pilasweb/master/js/easeljs-0.4.2.min.js"></script>
-    <script language="javascript" type="text/javascript" src="https://raw.github.com/hugoruscitti/pilasweb/master/js/pilas.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
+    <script src="http://code.createjs.com/easeljs-0.4.2.min.js"></script>
+
+    <script src="https://raw.github.com/hugoruscitti/pilasweb/master/pilas/pilas.js"></script>
 
 
 Makefile
@@ -52,5 +60,5 @@ quieres ejecutar alguno de estos comandos tienes que escribir: ``make comando``.
 
 Por ejemplo, alguno de los comandos disponibles son:
 
-test:
+unit:
     Se ejecuta automáticamente dentro de los servidores de travis para probar la aplicación.
