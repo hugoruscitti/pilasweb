@@ -38,7 +38,7 @@ desde la siguiente URL:
 Cada vez que quieras hacer un juego con pilas-engine deberías
 incluir este archivo junto a los siguientes:
 
-    https://ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js
+    http://mootools.net/download/get/mootools-core-1.4.5-full-nocompat-yc.js
     http://code.createjs.com/easeljs-0.4.2.min.js
 
 Por ejemplo, el código HTML de tu página debería contener
@@ -46,7 +46,7 @@ lo siguiente dentro del elemento ``head``:
 
 .. code-block:: html
 
-    <script src="https://ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
+    <script src="http://mootools.net/download/get/mootools-core-1.4.5-full-nocompat-yc.js"></script>
     <script src="http://code.createjs.com/easeljs-0.4.2.min.js"></script>
 
     <script src="https://raw.github.com/hugoruscitti/pilasweb/master/pilas/pilas.js"></script>
