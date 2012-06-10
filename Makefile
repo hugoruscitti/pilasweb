@@ -1,5 +1,7 @@
+NODEPATH=/Users/hugoruscitti/node_modules/.bin
+
 unit:
-	nodeunit tests
+	$(NODEPATH)/nodeunit tests
 
 # Reservado para el servicio 'travis' (no invocar desde consola).
 test:
