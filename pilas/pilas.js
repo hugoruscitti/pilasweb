@@ -1,10 +1,10 @@
 var Actor = new Class({
-    initialize: function(imagen) {
+    initialize: function(imagen, x, y, centro_x, centro_y) {
         this.imagen = new Bitmap(imagen)
-        this.x = 0
-        this.y = 0
-        this.centro_x = 0
-        this.centro_y = 0
+        this.x = x || 0
+        this.y = y || 0
+        this.centro_x = centro_x || 0
+        this.centro_y = centro_y || 0
 
         pilas.agregar_actor(this)
     },
@@ -15,6 +15,7 @@ var Actor = new Class({
     dibujar: function(contexto) {
         contexto.translate(- this.centro_x, - this.centro_y)
         contexto.rotate(0)
+        contexto.translate(this.x, -this.y)
         pilas.camara.fijar_posicion(contexto)
         this.imagen.draw(contexto)
     },
