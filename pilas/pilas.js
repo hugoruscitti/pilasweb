@@ -2,6 +2,11 @@ var Actor = new Class({
 
     initialize: function(imagen, x, y, centro_x, centro_y, escala_x, escala_y, rotacion) {
         this.imagen = new Bitmap(imagen)
+        this.inicializar(x, y, centro_x, centro_y, escala_x, escala_y, rotacion)
+        pilas.agregar_actor(this)
+    },
+
+    inicializar: function(x, y, centro_x, centro_y, escala_x, escala_y, rotacion) {
         this.x = x || 0
         this.y = y || 0
         this.centro_x = centro_x || 0
@@ -10,8 +15,6 @@ var Actor = new Class({
         this.escala_x = escala_x || 1
         this.escala_y = escala_y || 1
         this.rotacion = rotacion || 0
-
-        pilas.agregar_actor(this)
     },
 
     actualizar: function() {
@@ -37,21 +40,12 @@ var Actor = new Class({
 
 var Texto = new Class({
     Extends: Actor,
-    initialize: function(texto) {
+    initialize: function(texto, x, y, centro_x, centro_y, escala_x, escala_y, rotacion) {
         this.texto = texto
-        this.object = new Text(this.texto, "22px arial")
-        this.object.textBaseline = "top"
-        this.x = 0
-        this.y = 0
+        this.imagen = new Text(this.texto, "22px arial")
+        this.imagen.textBaseline = "top"
+        this.inicializar(x, y, centro_x, centro_y, escala_x, escala_y, rotacion);
         pilas.agregar_actor(this)
-    },
-
-    actualizar: function() {
-    },
-
-    dibujar: function(contexto) {
-        contexto.translate(this.x, this.y)
-        this.object.draw(contexto)
     },
 });
 
