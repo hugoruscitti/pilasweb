@@ -1,15 +1,15 @@
 var Actor = new Class({
 
-    initialize: function(imagen, x, y, centro_x, centro_y) {
+    initialize: function(imagen, x, y, centro_x, centro_y, escala_x, escala_y, rotacion) {
         this.imagen = new Bitmap(imagen)
         this.x = x || 0
         this.y = y || 0
         this.centro_x = centro_x || 0
         this.centro_y = centro_y || 0
 
-        this.escala_x = 1
-        this.escala_y = 1
-        this.rotacion = 0
+        this.escala_x = escala_x || 1
+        this.escala_y = escala_y || 1
+        this.rotacion = rotacion || 0
 
         pilas.agregar_actor(this)
     },
@@ -101,11 +101,8 @@ var Pilas = new Class({
 
         for (var i=0; i<this.lista_actores.length; i++) {
             var actor = this.lista_actores[i]
-
-            c.save();
             actor.actualizar();
             actor.dibujar(c)
-            c.restore();
         }
     },
 
