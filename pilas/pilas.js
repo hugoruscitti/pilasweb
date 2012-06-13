@@ -1,8 +1,10 @@
 var Actor = new Class({
     initialize: function(imagen) {
         this.imagen = new Bitmap(imagen)
-        this.x = 10
-        this.y = 10
+        this.x = 0
+        this.y = 0
+        this.centro_x = 0
+        this.centro_y = 0
 
         pilas.agregar_actor(this)
     },
@@ -11,8 +13,14 @@ var Actor = new Class({
     },
 
     dibujar: function(contexto) {
-        contexto.translate(this.x, this.y)
+        contexto.translate(- this.centro_x, - this.centro_y)
+        contexto.rotate(0)
+        pilas.camara.fijar_posicion(contexto)
         this.imagen.draw(contexto)
+    },
+
+    eliminar: function() {
+        pilas.eliminar_actor(this)
     },
 });
 
@@ -21,11 +29,12 @@ var Texto = new Class({
     initialize: function(texto) {
         this.texto = texto
         this.object = new Text(this.texto, "22px arial")
-        this.object.textBaseline = "top";
+        this.object.textBaseline = "top"
         this.x = 0
         this.y = 0
         pilas.agregar_actor(this)
     },
+
     actualizar: function() {
     },
 
@@ -34,6 +43,20 @@ var Texto = new Class({
         this.object.draw(contexto)
     },
 });
+
+var Camara = new Class({
+    initialize: function(canvas) {
+        this.canvas = canvas
+        this.x = 0
+        this.y = 0
+        this.centro_x = canvas.width / 2
+        this.centro_y = canvas.height / 2
+    },
+
+    fijar_posicion: function(contexto) {
+        contexto.translate(this.centro_x - this.x, this.centro_y + this.y);
+    },
+})
 
 var Pilas = new Class({
     initialize: function() {
@@ -44,6 +67,8 @@ var Pilas = new Class({
         this.stage = new Stage(this.canvas)
         this.contexto = this.canvas.getContext("2d")
         this.lista_actores = []
+        this.camara = new Camara(this.canvas)
+
         Ticker.setFPS(60)
         Ticker.addListener(this)
     },
@@ -55,14 +80,18 @@ var Pilas = new Class({
         this.lista_actores.push(actor)
     },
 
-    actualizar_y_dibujar_actores: function(c) {
-        this.limpiar(c)
+    eliminar_actor: function(actor) {
+        this.lista_actores.erase(actor)
+    },
+
+    _actualizar_y_dibujar_actores: function(c) {
+
+        this._limpiar(c)
 
         for (var i=0; i<this.lista_actores.length; i++) {
             var actor = this.lista_actores[i]
 
             c.save();
-            c.translate(100, 100)
             actor.actualizar();
             actor.dibujar(c)
             c.restore();
@@ -70,7 +99,7 @@ var Pilas = new Class({
     },
 
     /* Borra toda la pantalla */
-    limpiar: function(c) {
+    _limpiar: function(c) {
         c.clearRect(0, 0, this.canvas.width, this.canvas.height)
     },
 
@@ -78,7 +107,7 @@ var Pilas = new Class({
      * Función de respuesta que se llama 60 veces por segundo.
      */
     tick: function() {
-        pilas.actualizar_y_dibujar_actores(this.contexto)
+        pilas._actualizar_y_dibujar_actores(this.contexto)
     },
 
     /* Submodulo de actores */
@@ -87,3 +116,10 @@ var Pilas = new Class({
         Texto: Texto,
         },
 });
+
+
+/*
+pilas.iniciar = pilas.init
+pilas.actores = pilas.actors
+pilas.actores.Texto = pilas.actores.Text
+*/
