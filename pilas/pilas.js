@@ -26,7 +26,7 @@ var Actor = new Class({
 });
 
 var Texto = new Class({
-    extends: Actor,
+    Extends: Actor,
     initialize: function(texto) {
         this.texto = texto
         this.object = new Text(this.texto, "22px arial")
