@@ -25,7 +25,7 @@ var Fisica = new Class({
 
     initialize: function() {
          this.world = new World(new Vector(0, 10), true);
-    },
+   },
 });
 
 
@@ -34,8 +34,11 @@ var fisica = new Fisica();
 window.pilas = new Pilas()
 pilas.iniciar("canvas")
 
-var aceituna = new pilas.actores.Actor("../data/aceituna.png", 0, 0, 12, 12)
-var mensaje = new pilas.actores.Texto("Hola mundo!")
+var aceituna = new pilas.actores.Actor("../data/aceituna.png", 0, 0, 18, 18)
+aceituna.rotacion = 0.8
+aceituna.escala_x = 0.4
+aceituna.escala_y = 4
+var mensaje = new pilas.actores.Texto("Hola mundo!", 50, 50)
 </script>
 
 </body>

@@ -1,10 +1,15 @@
 var Actor = new Class({
+
     initialize: function(imagen, x, y, centro_x, centro_y) {
         this.imagen = new Bitmap(imagen)
         this.x = x || 0
         this.y = y || 0
         this.centro_x = centro_x || 0
         this.centro_y = centro_y || 0
+
+        this.escala_x = 1
+        this.escala_y = 1
+        this.rotacion = 0
 
         pilas.agregar_actor(this)
     },
@@ -13,11 +18,16 @@ var Actor = new Class({
     },
 
     dibujar: function(contexto) {
-        contexto.translate(- this.centro_x, - this.centro_y)
-        contexto.rotate(0)
+        contexto.save()
+
         contexto.translate(this.x, -this.y)
         pilas.camara.fijar_posicion(contexto)
+        contexto.rotate(this.rotacion)
+        contexto.scale(this.escala_x, this.escala_y)
+        contexto.translate(-this.centro_x, -this.centro_y)
         this.imagen.draw(contexto)
+
+        contexto.restore()
     },
 
     eliminar: function() {
@@ -117,7 +127,6 @@ var Pilas = new Class({
         Texto: Texto,
         },
 });
-
 
 /*
 pilas.iniciar = pilas.init
