@@ -25,7 +25,7 @@ var Actor = new Class({
 
         contexto.translate(this.x, -this.y)
         pilas.camara.fijar_posicion(contexto)
-        contexto.rotate(this.rotacion)
+        contexto.rotate(pilas.utils.convertir_a_radianes(this.rotacion))
         contexto.scale(this.escala_x, this.escala_y)
         contexto.translate(-this.centro_x, -this.centro_y)
         this.imagen.draw(contexto)
@@ -73,6 +73,7 @@ var Pilas = new Class({
         this.contexto = this.canvas.getContext("2d")
         this.lista_actores = []
         this.camara = new Camara(this.canvas)
+        this.utils = new Utils();
 
         Ticker.setFPS(60)
         Ticker.addListener(this)
@@ -117,6 +118,18 @@ var Pilas = new Class({
         Actor: Actor,
         Texto: Texto,
         },
+});
+
+var Utils = new Class({
+
+    convertir_a_radianes: function (grados) {
+        return grados * (Math.PI / 180);
+    },
+
+    convertir_a_grados: function (radianes) {
+        return radianes * (180 / Math.PI);
+    },
+
 });
 
 /*
