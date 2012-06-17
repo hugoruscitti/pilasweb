@@ -14,7 +14,7 @@ var Actor = new Class({
 
         this.escala_x = escala_x || 1
         this.escala_y = escala_y || 1
-        this.rotacion = rotacion || 0
+        this._rotacion = rotacion || 0
     },
 
     actualizar: function() {
@@ -25,7 +25,7 @@ var Actor = new Class({
 
         contexto.translate(this.x, -this.y)
         pilas.camara.fijar_posicion(contexto)
-        contexto.rotate(pilas.utils.convertir_a_radianes(this.rotacion))
+        contexto.rotate(pilas.utils.convertir_a_radianes(this._rotacion))
         contexto.scale(this.escala_x, this.escala_y)
         contexto.translate(-this.centro_x, -this.centro_y)
         this.imagen.draw(contexto)
@@ -36,6 +36,18 @@ var Actor = new Class({
     eliminar: function() {
         pilas.eliminar_actor(this)
     },
+
+
+    definir_centro: function(dx, dy) {
+        if (dx === "centro")
+            dx = this.imagen.image.width / 2
+
+        if (dy === "centro")
+            dy = this.imagen.image.height / 2
+
+        this.centro_x = Math.round(dx)
+        this.centro_y = Math.round(dy)
+    }
 });
 
 var Texto = new Class({
@@ -50,10 +62,52 @@ var Texto = new Class({
 
 });
 
-Texto.prototype.__defineSetter__("escala", function(valor) {
-    alert(valor)
-    this.escala_x = valor;
+var Aceituna = new Class({
+    Extends: Actor,
+    initialize: function(x, y, centro_x, centro_y, escala_x, escala_y, rotacion) {
+        this.parent("sin_imagen.png", x, y, centro_x, centro_y, escala_x, escala_y, rotacion)
+        pilas.imagenes.cargar("aceituna.png", this, this.listo);
+    },
+    listo: function(actor, imagen) {
+        console.log(this)
+        console.log(actor.imagen)
+        actor.imagen = new Bitmap(imagen.src)
+        actor.definir_centro("centro", "centro")
+    },
 });
+
+
+function alias(obj, longcut, shortcut) {
+    obj.__defineGetter__(shortcut, function(){return this[longcut]});
+    obj.__defineSetter__(shortcut, function(v){this[longcut] = v;});
+}
+
+
+alias(Texto.prototype, 'escala_x', 'es');
+
+function get_rotacion() {
+    return this._rotacion
+}
+
+function set_rotacion(value) {
+    this._rotacion = value;
+}
+
+function accesors(obj, name, getter, setter) {
+    obj.__defineGetter__(name, getter)
+    obj.__defineSetter__(name, setter)
+}
+
+accesors(Actor.prototype, 'rotacion', get_rotacion, set_rotacion)
+
+/* for(var v in Actor.prototype) {console.log(v)} */
+
+/*
+Texto.prototype.__defineSetter__("escala", function(valor) {
+    this.escala_x = valor;
+    this.escala_y = valor;
+});
+*/
 
 var Camara = new Class({
     initialize: function(canvas) {
@@ -69,6 +123,36 @@ var Camara = new Class({
     },
 })
 
+var Imagenes = new Class({
+    cargar: function(archivo, obj, callback_ready) {
+        var image = new Image()
+        var rutas = [archivo, "data/" + archivo, "/data/" + archivo, "http://github.com/hugoruscitti/pilasweb/raw/master/data/" + archivo]
+
+        /* Ejecuta el método callback_ready cuando la imagen se carga satisfactoriamente */
+        image.onload = function() {
+            callback_ready(obj, image)
+        }
+
+        /* Intenta cargar la imagen buscando en distintas rutas.
+         * La imagen se busca primero en el directorio del código HTML, pero
+         * si no está busca en distintas rutas (incluso en el repositorio de pilas-engine).
+         */
+        image.onerror = function(e) {
+            image.onerror = function(e) {
+                image.onerror = function(e) {
+                    image.onerror = function(e) {
+                        throw "Error, no se pudo obtener la imagen '" + archivo + "'"
+                    }
+                    image.src = rutas[3]
+                }
+                image.src = rutas[2]
+            }
+            image.src = rutas[1];
+        }
+        image.src = rutas[0];
+    },
+});
+
 var Pilas = new Class({
     initialize: function() {
     },
@@ -79,6 +163,7 @@ var Pilas = new Class({
         this.contexto = this.canvas.getContext("2d")
         this.lista_actores = []
         this.camara = new Camara(this.canvas)
+        this.imagenes = new Imagenes()
         this.utils = new Utils();
 
         Ticker.setFPS(60)
@@ -123,7 +208,9 @@ var Pilas = new Class({
     actores: {
         Actor: Actor,
         Texto: Texto,
+        Aceituna: Aceituna,
         },
+
 });
 
 var Utils = new Class({
