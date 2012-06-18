@@ -1,4 +1,40 @@
+var Estudiante = new Class({
+    habilidades: [],
+    aprender: function(habilidad) {
+        habilidad.iniciar(this)
+        this.habilidades.push(habilidad)
+    },
+
+    actualizar_habilidades: function() {
+        for (var i=0; i<this.habilidades.length; i++) {
+            this.habilidades[i].actualizar()
+        }
+    }
+})
+
+var Habilidad = new Class({
+    iniciar: function(actor) {
+        this.actor = actor;
+    },
+    actualizar: function() {
+    },
+})
+
+var Girar = new Class({
+    Extends: Habilidad,
+    actualizar: function() {
+        this.actor.rotacion += 1
+    },
+})
+
+var RebotarComoPelota = new Class({
+    Extends: Habilidad,
+    actualizar: function() {
+    },
+})
+
 var Actor = new Class({
+    Implements: [Estudiante],
 
     initialize: function(imagen, x, y, centro_x, centro_y, escala_x, escala_y, rotacion) {
         this.imagen = new Bitmap(imagen)
@@ -18,6 +54,7 @@ var Actor = new Class({
     },
 
     actualizar: function() {
+        this.actualizar_habilidades()
     },
 
     dibujar: function(contexto) {
@@ -211,6 +248,10 @@ var Pilas = new Class({
         Aceituna: Aceituna,
         },
 
+    habilidades: {
+        Girar: Girar,
+        RebotarComoPelota: RebotarComoPelota,
+    },
 });
 
 var Utils = new Class({
