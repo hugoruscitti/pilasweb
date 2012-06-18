@@ -1,3 +1,19 @@
+
+var Fisica = new Class({
+
+    initialize: function() {
+        var Vector = Box2D.Common.Math.b2Vec2;
+        var World = Box2D.Dynamics.b2World;
+
+        this.world = new World(new Vector(0, 10), true);
+    },
+    crear_circulo: function() {
+        return "pepe"
+    },
+});
+
+
+
 var Estudiante = new Class({
     habilidades: [],
     aprender: function(habilidad) {
@@ -29,7 +45,12 @@ var Girar = new Class({
 
 var RebotarComoPelota = new Class({
     Extends: Habilidad,
+    initialize: function() {
+        this.figura = pilas.fisica.crear_circulo();
+    },
     actualizar: function() {
+        //this.actor.x = this.figura.GetWorldCenter().x;
+        //this.actor.y = this.figura.GetWorldCenter().y;
     },
 })
 
@@ -201,7 +222,8 @@ var Pilas = new Class({
         this.lista_actores = []
         this.camara = new Camara(this.canvas)
         this.imagenes = new Imagenes()
-        this.utils = new Utils();
+        this.utils = new Utils()
+        this.fisica = new Fisica()
 
         Ticker.setFPS(60)
         Ticker.addListener(this)

@@ -18,20 +18,6 @@
 <canvas id='canvas' width=400 height=200></canvas>
 
 <script type='text/javascript'>
-var Vector = Box2D.Common.Math.b2Vec2;
-var World = Box2D.Dynamics.b2World;
-
-var Fisica = new Class({
-
-    initialize: function() {
-         this.world = new World(new Vector(0, 10), true);
-   },
-
-});
-
-
-var fisica = new Fisica();
-
 window.pilas = new Pilas();
 pilas.iniciar("canvas")
 
