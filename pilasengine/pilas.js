@@ -1,0 +1,4 @@
+require.config({
+    package: ['pilas']
+});
+
