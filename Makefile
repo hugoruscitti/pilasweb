@@ -1,11 +1,2 @@
-NODEPATH=/Users/hugoruscitti/node_modules/.bin
-
-
-unit:
-	$(NODEPATH)/nodeunit tests
-
-# Reservado para el servicio 'travis' (no invocar desde consola).
-test:
-	npm install nodeunit
-	nodeunit tests
-
+compilar:
+	cd pilasengine; node ../r.js -o name=main out=../dist/pilasengine.min.js baseUrl=.
