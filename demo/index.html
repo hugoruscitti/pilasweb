@@ -7,8 +7,21 @@
     });
 
     require(['main'], function(pilasengine){
-        window.pilasengine = pilasengine;
+        var pilas = new pilasengine.Pilas("canvas");
     });
     </script>
+    <style>
+    canvas {
+        border: 1px solid gray;
+    }
+    </style>
 </head>
+
+<body>
+    <canvas id='canvas' width=320 height=240></canvas>
+</body>
+
+
+
+
 </html>
