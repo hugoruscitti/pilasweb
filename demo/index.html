@@ -8,8 +8,21 @@
     });
 
     require(['main'], function(pilasengine){
-        var pilas = new pilasengine.Pilas("canvas");
-        window.actor = new pilas.actores.Actor();
+        var pilas = new pilasengine.Pilas("canvas")
+        window.pilas = pilas
+        window.actor = new pilas.actores.Actor()
+
+
+        var aceituna = new pilas.actores.Aceituna()
+        aceituna.x = 100
+        aceituna.y = 25
+
+        pilas.eventos.click_de_mouse.conectar(function(e){
+            console.log(e)
+        })
+
+
+
     });
     </script>
     <style>

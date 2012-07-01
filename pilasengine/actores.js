@@ -22,8 +22,6 @@ define(['require', 'singleton', 'actores/actor', 'mootools', 'singleton'], funct
         },
 
         actualizar: function(){
-            this.x += 0.1
-            this._rotacion += 10
         }
     });
 

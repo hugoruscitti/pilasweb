@@ -1,4 +1,4 @@
-define(['singleton', 'mootools', 'actores', 'camara', 'imagenes', 'singleton', 'depurador', 'utils'], function(singleton, mootools, actores, camara, imagenes, singleton, depurador, utils){
+define(['singleton', 'eventos', 'mootools', 'actores', 'camara', 'imagenes', 'singleton', 'depurador', 'utils'], function(singleton, eventos, mootools, actores, camara, imagenes, singleton, depurador, utils){
 
     var Pilas = new Class({
 
@@ -8,6 +8,7 @@ define(['singleton', 'mootools', 'actores', 'camara', 'imagenes', 'singleton', '
             this.contexto = this.canvas.getContext("2d")
             this.lista_actores = []
             this.camara = new camara.Camara(this.canvas)
+            this.eventos = new eventos.Eventos(this.canvas)
 
             // carga de imagenes
             this.imagenes = new imagenes.Imagenes()
