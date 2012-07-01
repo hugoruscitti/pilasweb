@@ -59,17 +59,6 @@ define(['singleton', 'pilas', 'mootools', 'libs/easeljs-0.4.2.min'], function(si
 
 
     /*
-        var Utils = new Class({
-
-            convertir_a_radianes: function (grados) {
-                return grados * (Math.PI / 180);
-            },
-
-            convertir_a_grados: function (radianes) {
-                return radianes * (180 / Math.PI);
-            },
-
-        });
     */
 
     //console.log(pilas)

@@ -11,6 +11,11 @@ define(['mootools'], function(mootools) {
         fijar_posicion: function(contexto) {
             contexto.translate(this.centro_x - this.x, this.centro_y + this.y);
         },
+
+        obtener_posicion: function() {
+            return {x: this.centro_x - this.x, 
+                    y: this.centro_y + this.y}
+        },
     })
 
     return {

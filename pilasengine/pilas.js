@@ -1,6 +1,4 @@
-define(['singleton', 'mootools', 'actores', 'camara', 'imagenes', 'singleton'], function(singleton, mootools, actores, camara, imagenes, singleton){
-    //var _instancia = null;  // almacena la unica instancia de pilas (singleton).
-    //exports.instancia = _instancia;
+define(['singleton', 'mootools', 'actores', 'camara', 'imagenes', 'singleton', 'depurador', 'utils'], function(singleton, mootools, actores, camara, imagenes, singleton, depurador, utils){
 
     var Pilas = new Class({
 
@@ -10,13 +8,16 @@ define(['singleton', 'mootools', 'actores', 'camara', 'imagenes', 'singleton'], 
             this.contexto = this.canvas.getContext("2d")
             this.lista_actores = []
             this.camara = new camara.Camara(this.canvas)
+
+            // carga de imagenes
             this.imagenes = new imagenes.Imagenes()
-            //this.utils = new Utils()
+            this.depurador = new depurador.Depurador(this)
+
+            this.utils = new utils.Utils()
             //this.fisica = new Fisica()
             singleton.set(this)
             Ticker.setFPS(60)
             Ticker.addListener(this)
-            //_instancia = this;
         },
 
         /*
@@ -33,17 +34,22 @@ define(['singleton', 'mootools', 'actores', 'camara', 'imagenes', 'singleton'], 
         _actualizar_y_dibujar_actores: function(c) {
 
             this._limpiar(c)
+            this.depurador.comienza_dibujado()
 
             for (var i=0; i<this.lista_actores.length; i++) {
                 var actor = this.lista_actores[i]
                 actor.actualizar();
                 actor.dibujar(c)
+                this.depurador.dibuja_al_actor(actor)
             }
+
+            this.depurador.termina_dibujado()
+
         },
 
         /* Borra toda la pantalla */
         _limpiar: function(c) {
-            c.clearRect(0, 0, this.canvas.width, this.canvas.height)
+            this.stage.clear()
         },
 
         /* 
@@ -53,13 +59,7 @@ define(['singleton', 'mootools', 'actores', 'camara', 'imagenes', 'singleton'], 
             this._actualizar_y_dibujar_actores(this.contexto)
         },
 
-        /* Submodulo de actores */
         actores: actores,
-
-        //habilidades: {
-        //    Girar: Girar,
-        //    RebotarComoPelota: RebotarComoPelota,
-        //},
     });
 
 

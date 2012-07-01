@@ -1,25 +1,57 @@
 define(['mootools'], function(mootools) {
     var Imagenes = new Class({
-        cargar: function(archivo, obj, callback_ready) {
-            var image = new Image()
-            var rutas = [archivo, "data/" + archivo, "/data/" + archivo, "http://github.com/hugoruscitti/pilasweb/raw/master/data/" + archivo]
 
-            var itmap
-
+        initialize: function() {
         },
 
+        cargar: function(ruta) {
+            var imagen = new Bitmap(ruta)
+            return imagen
+        },
+    })
 
+
+    /*
+    var Imagenes = new Class({
+
+        initialize: function() {
+            this.loader = new PxLoader()
+            this.loader.addCompletionListener(function(){
+                console.log("Listo, se cargaron todas las imagenes")
+            })
+        },
+
+        comenzar: function() {
+            this.loader.start()
+        },
+
+        cargar: function(archivo, inmediatamente, callback) {
+            inmediatamente = inmediatamente || true
+
+            //var rutas = [archivo, "data/" + archivo, "/data/" + archivo, 
+            //            "http://github.com/hugoruscitti/pilasweb/raw/master/data/" + archivo]
+            
+            var imagen = this.loader.addImage(archivo)
+
+            if (inmediatamente)
+                this.comenzar()
+
+            return imagen;
+        },
+    })
+    */
+
+        /*
         _deprecated: function() {
 
-            /* Ejecuta el método callback_ready cuando la imagen se carga satisfactoriamente */
+            // Ejecuta el método callback_ready cuando la imagen se carga satisfactoriamente
             image.onload = function() {
                 callback_ready(obj, image)
             }
 
-            /* Intenta cargar la imagen buscando en distintas rutas.
-             * La imagen se busca primero en el directorio del código HTML, pero
-             * si no está busca en distintas rutas (incluso en el repositorio de pilas-engine).
-             */
+            // Intenta cargar la imagen buscando en distintas rutas.
+            // La imagen se busca primero en el directorio del código HTML, pero
+            // si no está busca en distintas rutas (incluso en el repositorio de pilas-engine).
             image.onerror = function(e) {
                 image.onerror = function(e) {
                     image.onerror = function(e) {
@@ -35,6 +67,7 @@ define(['mootools'], function(mootools) {
             image.src = rutas[0];
         },
     })
+    */
 
     return {
         Imagenes: Imagenes,
