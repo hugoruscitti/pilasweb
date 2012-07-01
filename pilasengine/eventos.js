@@ -1,4 +1,5 @@
 define(['mootools'], function(){
+
     var Evento = new Class({
         initialize: function(){
             this.suscriptores = []
@@ -12,7 +13,6 @@ define(['mootools'], function(){
             for (var i=0; i<this.suscriptores.length; i++)
                 this.suscriptores[i](datos)
         }
-
     });
 
 
@@ -30,10 +30,7 @@ define(['mootools'], function(){
             this.canvas.onclick = function(e) {
                 eventos.click_de_mouse.emitir({x: e.clientX, y:e.clientY}) 
             }
-
         },
-
-
     })
 
     return {
