@@ -2,8 +2,11 @@ define(['singleton', 'eventos', 'mootools', 'actores', 'camara', 'imagenes', 'si
 
     var Pilas = new Class({
 
-        initialize: function(id_canvas) {
+        initialize: function(id_canvas, prefijo_imagenes) {
             this.canvas = document.id(id_canvas)
+            if (this.canvas === null)
+                throw new Error("El elemento " + id_canvas + " no existe en la pagina");
+
             this.stage = new Stage(this.canvas)
             this.contexto = this.canvas.getContext("2d")
             this.lista_actores = []
@@ -11,7 +14,7 @@ define(['singleton', 'eventos', 'mootools', 'actores', 'camara', 'imagenes', 'si
             this.eventos = new eventos.Eventos(this.canvas)
 
             // carga de imagenes
-            this.imagenes = new imagenes.Imagenes()
+            this.imagenes = new imagenes.Imagenes(prefijo_imagenes)
             this.depurador = new depurador.Depurador(this)
 
             this.utils = new utils.Utils()
@@ -58,6 +61,10 @@ define(['singleton', 'eventos', 'mootools', 'actores', 'camara', 'imagenes', 'si
          */
         tick: function() {
             this._actualizar_y_dibujar_actores(this.contexto)
+        },
+
+        obtener_instancia: function() {
+            return singleton.get()
         },
 
         actores: actores,

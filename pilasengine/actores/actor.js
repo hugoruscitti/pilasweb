@@ -3,7 +3,7 @@ define(['mootools', 'singleton', 'habilidades'], function(mootools, singleton, h
         Implements: [habilidades.Estudiante],
 
         initialize: function(imagen, x, y, centro_x, centro_y, escala_x, escala_y, rotacion) {
-            imagen = imagen || "../data/sin_imagen.png"
+            imagen = imagen || "sin_imagen.png"
 
             this.imagen = this.cargar_imagen(imagen)
             this.inicializar(x, y, centro_x, centro_y, escala_x, escala_y, rotacion)

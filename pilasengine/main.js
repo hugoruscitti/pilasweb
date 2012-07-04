@@ -62,9 +62,6 @@ define(['singleton', 'pilas', 'mootools', 'libs/easeljs-0.4.2.min'], function(si
     */
 
     //console.log(pilas)
-    console.log(singleton.get())
-    singleton.set("PEPE")
-    console.log(singleton.get())
 
     return {
         Pilas: pilas.Pilas

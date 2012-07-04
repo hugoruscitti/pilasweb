@@ -30,7 +30,14 @@ define(['mootools', 'singleton'], function(){
         initialize: function(pilas){
             this.pilas = pilas
             this.g = new Graphics()
-            this.modos = [new ModoPuntoDeControl(this)]
+            this.modos = []
+        },
+
+        definir_modos: function(opciones) {
+            this.modos = []
+
+            if (opciones.depuracion)
+                this.modos.push(new ModoPuntoDeControl(this))
         },
 
         comienza_dibujado: function(){

@@ -1,29 +1,47 @@
-require(['require', './mocha.js'], function(require){
+require(['require', './chai.js', './mocha.js'], function(require, _chai,_mocha){
     mocha.setup('bdd');
+    expect = _chai.expect
+    should = _chai.should()
+
+
 
     require(['main'], function(pilasengine){
         console.log("module: ", pilasengine);
 
-        it("inicializa correctamente", function() {
-            var pilas = new pilasengine.Pilas('canvas');
-            console.log(pilas.utils.sumar(1, 2))
+        describe("Inicializar", function(){
+
+            it("Inicializa correctamente", function() {
+                var pilas = new pilasengine.Pilas('canvas')
+                pilas.should.to.be.ok
+            });
+
+            it("Falla si no encuenta en canvas", function() {
+                (function() {
+                    var pilas = new pilasengine.Pilas('id_de_un_canvas_que_no_existe');
+                }).should.throw(Error);
+
+            })
+
+            it("Puede tratar como un singleton", function() {
+                var pilas = new pilasengine.Pilas('canvas')
+
+                var misma_instancia = pilas.obtener_instancia();
+                var otra_misma_instancia = pilas.obtener_instancia();
+
+                misma_instancia.should.be.equal(otra_misma_instancia)
+            })
+
         });
 
-        it("falla si no encuenta en canvas", function() {
-            var pilas = new pilasengine.Pilas('id_de_un_canvas_que_no_existe');
+
+        describe("Actores", function(){
+            it("Crear un actor", function() {
+                var pilas = new pilasengine.Pilas('canvas', '../data/')
+                var actor = new pilas.actores.Actor()
+
+                actor.should.to.be.ok
+            })
         })
-
-        it("puede tratar como un singleton", function() {
-            var pilas = new pilasengine.Pilas('id_de_un_canvas_que_no_existe');
-
-            var misma_instancia = pilas.obtener_instancia();
-            var otra_misma_instancia = pilas.obtener_instancia();
-
-            console.log(misma_instancia)
-            console.log(otra_misma_instancia)
-        })
-
-
 
         mocha.run();
     });
