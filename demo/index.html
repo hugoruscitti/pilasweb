@@ -4,27 +4,23 @@
 
     <script type="text/javascript">
     require.config({
-        baseUrl: "../pilasengine",
+      baseUrl: "../pilasengine",
     });
 
     require(['main'], function(pilasengine){
-        var pilas = new pilasengine.Pilas("canvas", '../data/')
-        window.pilas = pilas
-        window.actor = new pilas.actores.Actor()
+      var pilas = new pilasengine.Pilas("canvas", '../data/');
+      window.pilas = pilas;
+      window.actor = new pilas.actores.Actor();
 
-        pilas.depurador.definir_modos({depuracion: true})
+      pilas.depurador.definir_modos({depuracion: true});
 
+      var aceituna = new pilas.actores.Aceituna();
+      aceituna.x = 100;
+      aceituna.y = 25;
 
-        var aceituna = new pilas.actores.Aceituna()
-        aceituna.x = 100
-        aceituna.y = 25
-
-        pilas.eventos.click_de_mouse.conectar(function(e){
-            //console.log(e)
-        })
-
-
-
+      pilas.eventos.click_de_mouse.conectar(function(e){
+        //console.log(e)
+      });
     });
     </script>
     <style>
