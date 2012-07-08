@@ -1,3 +1,3 @@
 require.config({
-    package: ['pilas']
+    'package': ['pilas']
 });
