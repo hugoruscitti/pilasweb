@@ -7,6 +7,7 @@ define(
     var Pilas = new Class({
 
       initialize: function(id_canvas, prefijo_imagenes) {
+        var that = this;
         this.canvas = document.id(id_canvas);
         if (this.canvas === null)
           throw new Error("El elemento " + id_canvas + " no existe en la pagina");
@@ -26,6 +27,15 @@ define(
         singleton.set(this);
         Ticker.setFPS(60);
         Ticker.addListener(this);
+
+        this.eventos.click_de_mouse.conectar(function(e){
+          var x = e.x, y = e.y;
+          var actor;
+          actor = that.actor_clickeado(x, y);
+          if (actor) {
+            actor.click();
+          }
+        });
       },
 
       /*

@@ -70,10 +70,7 @@ define(
         return singleton.get().imagenes.cargar(ruta);
       },
 
-      avisar: function(evento) {
-        if (evento === "click") {
-          this.eliminar();
-        }
+      click: function(evento) {
       }
     });
 
