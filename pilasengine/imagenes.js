@@ -2,14 +2,14 @@ define(['mootools'], function(mootools) {
     var Imagenes = new Class({
 
         initialize: function(prefijo) {
-            this.prefijo = prefijo || "data/"
+            this.prefijo = prefijo || "data/";
         },
 
         cargar: function(ruta) {
-            var imagen = new Bitmap(this.prefijo + ruta)
-            return imagen
-        },
-    })
+            var imagen = new Bitmap(this.prefijo + ruta);
+            return imagen;
+        }
+    });
 
 
     /*
@@ -71,6 +71,6 @@ define(['mootools'], function(mootools) {
     */
 
     return {
-        Imagenes: Imagenes,
-    }
+        Imagenes: Imagenes
+    };
 });
