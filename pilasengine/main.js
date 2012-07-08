@@ -65,5 +65,5 @@ define(['singleton', 'pilas', 'mootools', 'libs/easeljs-0.4.2.min'], function(si
 
     return {
         Pilas: pilas.Pilas
-    }
-})
+    };
+});
