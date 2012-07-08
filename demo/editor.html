@@ -8,8 +8,7 @@
       });
 
       require(['main'], function(pilasengine){
-        var pilas = new pilasengine.Pilas("canvas", '../data/');
-        window.pilas = pilas;
+        window.pilasengine = pilasengine;
       });
 
       function ejecutar_codigo() {
@@ -27,10 +26,11 @@
 </head>
 
 <body>
-    <canvas id='canvas' width=320 height=240></canvas>
+    <canvas id="canvas" width=320 height=240></canvas>
 
     <form>
         <textarea cols=90 rows=20 id='codigo'>
+var pilas = new pilasengine.Pilas("canvas", '../data/');
 var actor = new pilas.actores.Actor();
 
 pilas.depurador.definir_modos({depuracion: true});
@@ -46,13 +46,7 @@ pilas.eventos.click_de_mouse.conectar(function(evento){
 
         </textarea>
         <br/>
-        <button onclick='ejecutar_codigo();return false'>Ejecutar</button>
+        <button onclick="ejecutar_codigo();return false">Ejecutar</button>
     </form>
-
-
-    <p>
-    El codigo "<code>var pilas = new pilasengine.Pilas("canvas", '../data/'); window.pilas = pilas</code>" se
-    ejecuto inicialmente en esta pagina.
-
-</body>
+  </body>
 </html>
