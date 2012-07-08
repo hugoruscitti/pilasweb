@@ -55,6 +55,31 @@ define(
 
       },
 
+      actor_clickeado: function (x, y) {
+        var txy;
+        txy = this.traducir_coordenadas(x, y);
+        for (var i=0; i<this.lista_actores.length; i++) {
+          var actor = this.lista_actores[i];
+          if (actor.punto_interno(txy.x, txy.y)) {
+            return actor;
+          }
+        }
+      },
+
+      /* Traduce coordenadas de canvas a pilas
+       * Canvas tiene el 0,0 arriba a la izquierda
+       * Pilas tiene el 0,0 en el centro del canvas
+       */
+      traducir_coordenadas: function (x, y) {
+        var canvas = this.canvas;
+        var w, h, nx, ny;
+        w = canvas.width;
+        h = canvas.height;
+        nx = x - w/2.0;
+        ny = (-(h/2.0)) + (h - y);
+        return {x: nx, y: ny};
+      },
+      
       /* Borra toda la pantalla */
       _limpiar: function(c) {
         this.stage.clear();
