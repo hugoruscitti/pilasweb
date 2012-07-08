@@ -1,5 +1,5 @@
 define([], function(){
-    var _pilas = "GOLA";
+    var _pilas = null;
 
     function set(n) {
         _pilas = n;
