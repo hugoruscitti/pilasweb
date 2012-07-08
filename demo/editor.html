@@ -3,19 +3,19 @@
     <script src="../pilasengine/libs/require.js"></script>
 
     <script type="text/javascript">
-        require.config({
-            baseUrl: "../pilasengine",
-        });
+      require.config({
+        baseUrl: "../pilasengine",
+      });
 
-        require(['main'], function(pilasengine){
-            var pilas = new pilasengine.Pilas("canvas", '../data/')
-            window.pilas = pilas
-        })
+      require(['main'], function(pilasengine){
+        var pilas = new pilasengine.Pilas("canvas", '../data/');
+        window.pilas = pilas;
+      });
 
-        function ejecutar_codigo() {
-            var elemento = document.getElementById('codigo')
-            eval(elemento.value)
-        }
+      function ejecutar_codigo() {
+        var elemento = document.getElementById('codigo');
+        eval(elemento.value);
+      }
 
 
     </script>
