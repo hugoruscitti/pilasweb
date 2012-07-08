@@ -3,19 +3,19 @@
     <script src="../pilasengine/libs/require.js"></script>
 
     <script type="text/javascript">
-        require.config({
-            baseUrl: "../pilasengine",
-        });
+      require.config({
+        baseUrl: "../pilasengine",
+      });
 
-        require(['main'], function(pilasengine){
-            var pilas = new pilasengine.Pilas("canvas", '../data/')
-            window.pilas = pilas
-        })
+      require(['main'], function(pilasengine){
+        var pilas = new pilasengine.Pilas("canvas", '../data/');
+        window.pilas = pilas;
+      });
 
-        function ejecutar_codigo() {
-            var elemento = document.getElementById('codigo')
-            eval(elemento.value)
-        }
+      function ejecutar_codigo() {
+        var elemento = document.getElementById('codigo');
+        eval(elemento.value);
+      }
 
 
     </script>
@@ -31,18 +31,18 @@
 
     <form>
         <textarea cols=90 rows=20 id='codigo'>
-var actor = new pilas.actores.Actor()
+var actor = new pilas.actores.Actor();
 
-pilas.depurador.definir_modos({depuracion: true})
+pilas.depurador.definir_modos({depuracion: true});
 
 
-var aceituna = new pilas.actores.Aceituna()
-aceituna.x = 100
-aceituna.y = 25
+var aceituna = new pilas.actores.Aceituna();
+aceituna.x = 100;
+aceituna.y = 25;
 
 pilas.eventos.click_de_mouse.conectar(function(evento){
-    alert(evento.x)
-})
+  alert(evento.x);
+});
 
         </textarea>
         <br/>
