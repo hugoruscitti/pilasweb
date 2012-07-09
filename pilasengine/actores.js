@@ -21,6 +21,10 @@ define(
         this.centro_y = 18;
       },
       actualizar: function(){
+      },
+
+      click: function(){
+        this.eliminar();
       }
     });
 
