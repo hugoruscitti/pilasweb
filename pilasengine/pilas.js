@@ -1,8 +1,8 @@
 define(
   ['singleton', 'eventos', 'mootools', 'actores',
-   'camara', 'imagenes', 'depurador', 'utils'],
+   'camara', 'imagenes', 'depurador', 'utils', 'fisica'],
   function(singleton, eventos, mootools, actores,
-    camara, imagenes, depurador, utils){
+    camara, imagenes, depurador, utils, fisica){
     
     var Pilas = new Class({
 
@@ -22,7 +22,7 @@ define(
         this.depurador = new depurador.Depurador(this);
 
         this.utils = new utils.Utils();
-        //this.fisica = new Fisica()
+        this.fisica = new fisica.Fisica()
         singleton.set(this);
         Ticker.setFPS(60);
         Ticker.addListener(this);
