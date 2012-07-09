@@ -16,7 +16,13 @@ define(['mootools', 'singleton'],
 
   var Fisica = new Class({
     initialize: function() {
+        this.world = "asd";
     },
+
+    actualizar: function(){
+        this.world.step(1/60, 3, 3);
+    },
+
     Circulo: Circulo,
   })
 
