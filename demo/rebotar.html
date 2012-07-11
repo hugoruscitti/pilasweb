@@ -1,64 +1,73 @@
+<!DOCTYPE html>
 <html>
 <head>
     <script src="../pilasengine/libs/require.js"></script>
     <script src="../pilasengine/libs/Box2dWeb-2.1.a.3.js"></script>
+
+    <title>Rebotar</title>
 
     <script type="text/javascript">
     require.config({
       baseUrl: "../pilasengine",
     });
 
-    // All variables are global in terms of developing pourposes
-    require(['main'], function(pilasengine){
-      pilas = new pilasengine.Pilas("canvas", '../data/');
-      world = new Box2D.Dynamics.b2World(
-        new Box2D.Common.Math.b2Vec2(0, 10), //gravity
-        true                                 //allow sleep
+    var oliveGame = {};
+    oliveGame.start = function(pilasengine){
+      //this.pilas = new pilasengine.Pilas('canvas', '../data/');
+      this.world = new Box2D.Dynamics.b2World(
+        new Box2D.Common.Math.b2Vec2(0, 10),
+        true
       );
-      fixDef = new Box2D.Dynamics.b2FixtureDef();
-      bodyDef = new Box2D.Dynamics.b2BodyDef();
 
+      var fixDef = new Box2D.Dynamics.b2FixtureDef;
       fixDef.density = 1.0;
       fixDef.friction = 0.5;
       fixDef.restitution = 0.2;
 
+      var bodyDef = new Box2D.Dynamics.b2BodyDef;
+
       //create ground
       bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
-      bodyDef.position.x = 10;
-      bodyDef.position.y = 100;
       fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
-      fixDef.shape.SetAsBox(10, 0.5);
-      world.CreateBody(bodyDef).CreateFixture(fixDef);
-
-      //create olive
+      fixDef.shape.SetAsBox(20, 2);
+      bodyDef.position.Set(10, 400 / 30 + 1.8);
+      this.world.CreateBody(bodyDef).CreateFixture(fixDef);
+        
+      //create an objects
       bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
-      bodyDef.position = -100;
-      fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
-      fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(
-          Math.random() + 0.1 //radius
-      );
+      fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(0.5);
+      bodyDef.position.x = 10;
+      bodyDef.position.y = 0;
 
-      olive = world.CreateBody(bodyDef);
-      olive.CreateFixture(fixDef);
+      temp = this.world.CreateBody(bodyDef);
+      temp.CreateFixture(fixDef);
 
-      // world.Step(1 / 60, 10, 10);
+      var debugDraw = new Box2D.Dynamics.b2DebugDraw();
+      var	b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
+			debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
+			debugDraw.SetDrawScale(30.0);
+			debugDraw.SetFillAlpha(0.5);
+			debugDraw.SetLineThickness(1.0);
+      debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+			this.world.SetDebugDraw(debugDraw);
 
-      // Pilas objects
-      actor = new pilas.actores.Actor();
-      pilas.depurador.definir_modos({depuracion: true});
-      aceituna = new pilas.actores.Aceituna();
-      aceituna.x = 10;
-      aceituna.y = 100;
-
-      pilas.eventos.click_de_mouse.conectar(function(e){
-        window.setInterval(update, 1000 / 60);
-      });
-
-      function update(){
-        world.Step(1 / 20, 10, 10);
-        aceituna.y = -1 * olive.GetPosition().y;
-        console.log(aceituna.y);
-      }
+      //this.actor = new this.pilas.actores.Actor();
+      //this.pilas.depurador.definir_modos({depuracion: true});
+      //this.aceituna = new this.pilas.actores.Aceituna();
+      //this.aceituna.x = 300;
+      //this.aceituna.y = 200;
+      
+      window.setInterval(oliveGame.update, 1000 / 60);
+    }
+    oliveGame.update = function(){
+      oliveGame.world.Step(1 / 60, 10, 10);
+      oliveGame.world.DrawDebugData();
+      oliveGame.world.ClearForces();
+      console.log(temp.GetPosition().y);
+    }
+    // All variables are global in terms of developing pourposes
+    require(['main'], function(pilasengine){
+      oliveGame.start(pilasengine);
     });
     </script>
     <style>
@@ -68,6 +77,6 @@
     </style>
 </head>
 <body>
-    <canvas id='canvas' width=320 height=240></canvas>
+    <canvas id='canvas' width=600 height=400></canvas>
 </body>
 </html>
