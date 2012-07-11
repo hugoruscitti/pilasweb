@@ -18,12 +18,10 @@ define(['mootools', 'singleton'],
     initialize: function() {
         this.world = "asd";
     },
-
     actualizar: function(){
-        this.world.step(1/60, 3, 3);
-    },
-
-    Circulo: Circulo,
+        // this.world.step(1/60, 3, 3);
+    }
+    //Circulo: Circulo,
   })
 
   return {

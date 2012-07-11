@@ -22,7 +22,7 @@ define(
         this.depurador = new depurador.Depurador(this);
 
         this.utils = new utils.Utils();
-        this.fisica = new fisica.Fisica()
+        //this.fisica = new fisica.Fisica()
         singleton.set(this);
         Ticker.setFPS(60);
         Ticker.addListener(this);
@@ -43,7 +43,7 @@ define(
 
         this._limpiar(c);
         this.depurador.comienza_dibujado();
-        this.fisica.actualizar();
+        //this.fisica.actualizar();
 
         for (var i=0; i<this.lista_actores.length; i++) {
           var actor = this.lista_actores[i];
