@@ -13,7 +13,7 @@
 
     var oliveGame = {};
     oliveGame.start = function(pilasengine){
-      //this.pilas = new pilasengine.Pilas('canvas', '../data/');
+      this.pilas = new pilasengine.Pilas('canvas', '../data/');
       this.world = new Box2D.Dynamics.b2World(
         new Box2D.Common.Math.b2Vec2(0, 10),
         true
@@ -42,6 +42,7 @@
       temp = this.world.CreateBody(bodyDef);
       temp.CreateFixture(fixDef);
 
+      /*
       var debugDraw = new Box2D.Dynamics.b2DebugDraw();
       var	b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 			debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
@@ -50,20 +51,31 @@
 			debugDraw.SetLineThickness(1.0);
       debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
 			this.world.SetDebugDraw(debugDraw);
+      */
 
-      //this.actor = new this.pilas.actores.Actor();
-      //this.pilas.depurador.definir_modos({depuracion: true});
-      //this.aceituna = new this.pilas.actores.Aceituna();
-      //this.aceituna.x = 300;
-      //this.aceituna.y = 200;
+      this.actor = new this.pilas.actores.Actor();
+      this.pilas.depurador.definir_modos({depuracion: true});
+      this.aceituna = new this.pilas.actores.Aceituna();
+      this.aceituna.x = 0;
+      this.aceituna.y = 200;
       
       window.setInterval(oliveGame.update, 1000 / 60);
     }
     oliveGame.update = function(){
       oliveGame.world.Step(1 / 60, 10, 10);
-      oliveGame.world.DrawDebugData();
-      oliveGame.world.ClearForces();
-      console.log(temp.GetPosition().y);
+      //oliveGame.world.DrawDebugData();
+      //oliveGame.world.ClearForces();
+      //console.log(temp.GetPosition().y);
+      oliveGame.aceituna.y = coordConverter.y2Pilas(temp.GetPosition().y);
+    }
+    coordConverter = {
+      y2Pilas: function(y){
+        var multi = 1;
+        if(y > 6.65) {
+          multi = -1;
+        }
+        return multi * Math.abs((y-6.65) * 200 / 6.65);
+      }
     }
     // All variables are global in terms of developing pourposes
     require(['main'], function(pilasengine){
