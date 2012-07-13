@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">define(
+  ['mootools'], function(){
+
+    var Evento = new Class({
+      initialize: function(){
+        this.suscriptores = [];
+      },
+
+      conectar: function(suscriptor){
+        this.suscriptores.push(suscriptor);
+      },
+
+      emitir: function(datos){
+        for (var i=0; i&lt;this.suscriptores.length; i++)
+          this.suscriptores[i](datos);
+      }
+    });
+
+
+    var Eventos = new Class({
+      initialize: function(canvas){
+        this.canvas = canvas;
+        this.click_de_mouse = new Evento();
+        this.mueve_mouse = new Evento();
+
+        this.conectar_eventos();
+      },
+
+      conectar_eventos: function(){
+        var eventos = this;
+
+        this.canvas.onclick = function(e) {
+          eventos.click_de_mouse.emitir({x: e.clientX, y:e.clientY});
+        };
+
+        this.canvas.onmousemove = function(e) {
+          eventos.mueve_mouse.emitir({x: e.clientX, y:e.clientY});
+        };
+      }
+    });
+
+    return {
+      Eventos: Eventos
+    };
+  }
+);
+</pre>
+</body>
+</html>
