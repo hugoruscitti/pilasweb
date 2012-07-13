@@ -4,6 +4,15 @@ define(
   function(singleton, eventos, mootools, actores,
     camara, imagenes, depurador, utils, fisica){
     
+    /**
+     * pilas
+     * -----
+     *
+     * Representa la clase principal que controla el videojuego.
+     *
+     *      @example
+     *      var pilas = new pilasengine.Pilas("canvas", "../data");
+     */
     var Pilas = new Class({
 
       initialize: function(id_canvas, prefijo_imagenes) {
@@ -38,17 +47,26 @@ define(
         });
       },
 
-      /*
+      /**
        * Agrega un actor a la lista de actores a dibujar y actualizar.
        */
       agregar_actor: function(actor) {
         this.lista_actores.push(actor);
       },
 
+      /**
+       * Quita un actor de la escena.
+       */
       eliminar_actor: function(actor) {
         this.lista_actores.erase(actor);
       },
 
+      /**
+       * @private
+       *
+       * Actualiza la pantalla y a todos los actores.
+       *
+       */
       _actualizar_y_dibujar_actores: function(c) {
 
         this._limpiar(c);
@@ -77,7 +95,8 @@ define(
         }
       },
 
-      /* Traduce coordenadas de canvas a pilas
+      /**
+       * Traduce coordenadas de canvas a pilas
        * Canvas tiene el 0,0 arriba a la izquierda
        * Pilas tiene el 0,0 en el centro del canvas
        */
@@ -91,18 +110,23 @@ define(
         return {x: nx, y: ny};
       },
       
-      /* Borra toda la pantalla */
+      /**
+       * Borra toda la pantalla
+       */
       _limpiar: function(c) {
         this.stage.clear();
       },
 
-      /* 
+      /**
        * Función de respuesta que se llama 60 veces por segundo.
        */
       tick: function() {
         this._actualizar_y_dibujar_actores(this.contexto);
       },
 
+      /**
+       * Retorna una instancia unica de pilas.
+       */
       obtener_instancia: function() {
         return singleton.get();
       },
