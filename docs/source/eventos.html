@@ -38,6 +38,11 @@
       initialize: function(canvas){
         this.canvas = canvas;
         this.click_de_mouse = new Evento();
+
+<span id='global-event-mueve_mouse'>        /**
+</span>         * @event mueve_mouse
+         * Representa el movimiento del mouse en una posicion (x, y) del escenario.
+         */
         this.mueve_mouse = new Evento();
 
         this.conectar_eventos();

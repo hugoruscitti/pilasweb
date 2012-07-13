@@ -21,6 +21,11 @@ define(
       initialize: function(canvas){
         this.canvas = canvas;
         this.click_de_mouse = new Evento();
+
+        /**
+         * @event mueve_mouse
+         * Representa el movimiento del mouse en una posicion (x, y) del escenario.
+         */
         this.mueve_mouse = new Evento();
 
         this.conectar_eventos();
