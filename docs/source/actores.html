@@ -18,6 +18,15 @@
   <pre class="prettyprint lang-js">define(
   ['require', 'singleton', 'actores/actor', 'mootools'],
   function(require, singleton, actor, mootools){
+<span id='Texto'>    /**
+</span>     * @extends Actor
+     * Representa una cadena de texto.
+     *
+     *      @example
+     *      var saludo = pilas.actores.Texto(&quot;Hola mundo&quot;, 30, 30);
+     *      saludo.rotacion = 30;
+     *
+     */
     var Texto = new Class({
       Extends: actor.Actor,
       initialize: function(texto, x, y, centro_x, centro_y, escala_x, escala_y, rotacion) {
@@ -29,6 +38,9 @@
       }
     });
 
+<span id='Aceituna'>    /**
+</span>     * @extends Actor
+     */
     var Aceituna = new Class({
       Extends: actor.Actor,
       initialize: function(x, y, centro_x, centro_y, escala_x, escala_y, rotacion) {
@@ -39,7 +51,6 @@
       },
       actualizar: function(){
       },
-
       click: function(){
         this.eliminar();
       }

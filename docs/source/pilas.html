@@ -22,10 +22,8 @@
     camara, imagenes, depurador, utils, fisica){
     
 <span id='Pilas'>    /**
-</span>     * pilas
-     * -----
-     *
-     * Representa la clase principal que controla el videojuego.
+</span>     * Representa la clase principal que controla el videojuego.
+     * @singleton
      *
      *      @example
      *      var pilas = new pilasengine.Pilas(&quot;canvas&quot;, &quot;../data&quot;);
@@ -101,6 +99,9 @@
 
       },
 
+<span id='Pilas-method-actor_clickeado'>      /**
+</span>       * Retorna el actor que se encuentre debajo de la posición del mouse.
+       */
       actor_clickeado: function (x, y) {
         var txy;
         txy = this.traducir_coordenadas(x, y);
@@ -148,6 +149,10 @@
         return singleton.get();
       },
 
+<span id='Pilas-property-actores'>      /**
+</span>       * @property
+       * Contine a todos los actores disponibles.
+       */
       actores: actores
     });
 

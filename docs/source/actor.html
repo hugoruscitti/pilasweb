@@ -18,6 +18,11 @@
   <pre class="prettyprint lang-js">define(
   ['mootools', 'singleton', 'habilidades'],
   function(mootools, singleton, habilidades){
+<span id='Actor'>    /**
+</span>     * @class Actor
+     * Representa un actor/personaje visible en pantalla.
+     *
+     */
     var Actor = new Class({
       Implements: [habilidades.Estudiante],
 
@@ -33,7 +38,9 @@
       },
 
       inicializar: function(x, y, centro_x, centro_y, escala_x, escala_y, rotacion) {
-        this.x = x || 0;
+<span id='Actor-property-x'>        /** @property {Int} x posicion horizontal. */
+</span><span id='Actor-property-y'>        /** @property {Int} y posicion vertical. */
+</span>        this.x = x || 0;
         this.y = y || 0;
         this.centro_x = centro_x || 0;
         this.centro_y = centro_y || 0;
@@ -43,10 +50,21 @@
         this._rotacion = rotacion || 0;
       },
 
+<span id='Actor-method-actualizar'>      /**
+</span>       * Realiza la actualización lógica del actor.
+       *
+       * Este método se suele sobre-escribir para tener control sobre el actor.
+       */
       actualizar: function() {
         this.actualizar_habilidades();
       },
 
+<span id='Actor-method-dibujar'>      /**
+</span>       * Pinta el actor sobre el contexto de canvas.
+       *
+       * Este método se invoca automáticamente desde el mainloop
+       * de pilasengine.
+       */
       dibujar: function(contexto) {
         contexto.save();
 
@@ -61,10 +79,19 @@
         contexto.restore();
       },
 
+      /**
+<span id='Actor-method-eliminar'>       * Quita al actor del escenario de juego.
+</span>       */
       eliminar: function() {
         singleton.get().eliminar_actor(this);
       },
 
+      /**
+<span id='Actor-method-definir_centro'>       * Permite alterar el centro o punto de control.
+</span>       *
+       * Este punto (dx, dy) será tomado como el centro de rotación y
+       * posición, entre otras transformaciones.
+       */
       definir_centro: function(dx, dy) {
         if (dx === &quot;centro&quot;)
           dx = this.imagen.image.width / 2;
@@ -76,6 +103,9 @@
         this.centro_y = Math.round(dy);
       },
 
+      /**
+<span id='Actor-method-punto_interno'>       * Retorna true si el punto (x, y) está dentro del area visible del actor.
+</span>       */
       punto_interno: function(x, y) {
         if (Math.abs(x-this.x) &lt; 20 &amp;&amp; Math.abs(y-this.y) &lt; 20){
           return true;
@@ -83,6 +113,9 @@
         return false;
       },
       
+      /**
+<span id='Actor-method-cargar_imagen'>       * Atajo para cargar imágenes.
+</span>       */
       cargar_imagen: function(ruta){
         return singleton.get().imagenes.cargar(ruta);
       },
