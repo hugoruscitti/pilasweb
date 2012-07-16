@@ -1,6 +1,17 @@
 define(['mootools', 'singleton'], function(){
 
     /**
+     * Representa uno de los posibles modos del depurador.
+     */
+    var ModoDepurador = new Class({
+      /**
+       * Se invoca en cada dibujado de actor.
+       */
+        dibuja_al_actor: function(actor){
+        },
+    });
+
+    /**
      * @extends ModoDepurador
      *
      * Muestra el punto de control o centro de cada uno de los actores.
@@ -32,17 +43,6 @@ define(['mootools', 'singleton'], function(){
             g.moveTo(x+3, y-3);
             g.lineTo(x-3, y+3);
         }
-    });
-
-    /**
-     * Representa uno de los posibles modos del depurador.
-     */
-    var ModoDepurador = new Class({
-      /**
-       * Se invoca en cada dibujado de actor.
-       */
-        dibuja_al_actor: function(actor){
-        },
     });
 
     /**
