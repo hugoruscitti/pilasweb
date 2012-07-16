@@ -1,6 +1,12 @@
 define(['mootools', 'singleton'], function(){
 
+    /**
+     * @extends ModoDepurador
+     *
+     * Muestra el punto de control o centro de cada uno de los actores.
+     */
     var ModoPuntoDeControl = new Class({
+        Extends: ModoDepurador,
 
         initialize: function(depurador){
             this.depurador = depurador;
@@ -13,6 +19,9 @@ define(['mootools', 'singleton'], function(){
             this.dibujar_cruz(this.g, posicion.x + actor.x, posicion.y - actor.y);
         },
 
+        /**
+         * @private
+         */
         dibujar_cruz: function(g, x, y) {
             this.g.setStrokeStyle(1);
             this.g.beginStroke(Graphics.getRGB(255,0,0));
@@ -25,6 +34,20 @@ define(['mootools', 'singleton'], function(){
         }
     });
 
+    /**
+     * Representa uno de los posibles modos del depurador.
+     */
+    var ModoDepurador = new Class({
+      /**
+       * Se invoca en cada dibujado de actor.
+       */
+        dibuja_al_actor: function(actor){
+        },
+    });
+
+    /**
+     * Permite generar graficos auxiliales sobre el canvas para depurar.
+     */
     var Depurador = new Class({
 
         initialize: function(pilas){

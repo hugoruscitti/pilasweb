@@ -16,16 +16,18 @@ define(
       }
     });
 
-
+    /**
+     * @event click_de_mouse
+     * Se dispara cuando el usuario hace click con el mouse sobre el canvas.
+     *
+     * @event mueve_mouse
+     * Representa el movimiento del mouse en una posicion (x, y) del escenario.
+     */
     var Eventos = new Class({
       initialize: function(canvas){
         this.canvas = canvas;
-        this.click_de_mouse = new Evento();
 
-        /**
-         * @event mueve_mouse
-         * Representa el movimiento del mouse en una posicion (x, y) del escenario.
-         */
+        this.click_de_mouse = new Evento();
         this.mueve_mouse = new Evento();
 
         this.conectar_eventos();

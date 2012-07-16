@@ -5,10 +5,8 @@ define(
     camara, imagenes, depurador, utils, fisica){
     
     /**
-     * pilas
-     * -----
-     *
      * Representa la clase principal que controla el videojuego.
+     * @singleton
      *
      *      @example
      *      var pilas = new pilasengine.Pilas("canvas", "../data");
@@ -84,6 +82,9 @@ define(
 
       },
 
+      /**
+       * Retorna el actor que se encuentre debajo de la posición del mouse.
+       */
       actor_clickeado: function (x, y) {
         var txy;
         txy = this.traducir_coordenadas(x, y);
@@ -131,6 +132,10 @@ define(
         return singleton.get();
       },
 
+      /**
+       * @property
+       * Contine a todos los actores disponibles.
+       */
       actores: actores
     });
 
