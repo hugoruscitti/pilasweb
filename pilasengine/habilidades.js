@@ -1,4 +1,12 @@
 define(['mootools'], function(mootools) {
+  var Habilidad = new Class({
+    iniciar: function(actor) {
+      this.actor = actor;
+    },
+    actualizar: function() {
+    }
+  });
+
   var Estudiante = new Class({
     habilidades: [],
     aprender: function(habilidad) {
@@ -10,14 +18,6 @@ define(['mootools'], function(mootools) {
       for (var i=0; i<this.habilidades.length; i++) {
         this.habilidades[i].actualizar();
       }
-    }
-  });
-
-  var Habilidad = new Class({
-    iniciar: function(actor) {
-      this.actor = actor;
-    },
-    actualizar: function() {
     }
   });
 
