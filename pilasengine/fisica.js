@@ -1,3 +1,8 @@
+function Fisica(options) {
+}
+Fisica.prototype.speak = function(line) {
+};
+
 define(['mootools', 'singleton'], 
   function(mootools, singleton) {
 

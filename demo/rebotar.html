@@ -69,12 +69,25 @@
       oliveGame.aceituna.y = coordConverter.y2Pilas(temp.GetPosition().y);
     }
     coordConverter = {
+      convertPair: function(coord){
+        return [
+          coordConverter.x2Pilas(coord[0]),
+          coordConverter.y2Pilas(coord[1])
+        ];
+      },
       y2Pilas: function(y){
         var multi = 1;
         if(y > 6.65) {
           multi = -1;
         }
         return multi * Math.abs((y-6.65) * 200 / 6.65);
+      },
+      x2Pilas: function(x){
+        var multi = 1;
+        if(y > 10) {
+          multi = -1;
+        }
+        return multi * Math.abs((y-10) * 30);
       }
     }
     // All variables are global in terms of developing pourposes
