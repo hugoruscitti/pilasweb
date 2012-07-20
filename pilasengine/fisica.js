@@ -12,14 +12,14 @@ define(['mootools', 'singleton'],
     initialize: function() {
       console.log(this._fisica);
     }
-  })
+  })WW
 
   var Fisica = new Class({
     initialize: function() {
-        this.world = "asd";
+      this.world = "asd";
     },
     actualizar: function(){
-        // this.world.step(1/60, 3, 3);
+      // this.world.step(1/60, 3, 3);
     }
     //Circulo: Circulo,
   })
