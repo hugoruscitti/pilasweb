@@ -1,16 +1,16 @@
 define([], function(){
-    var _pilas = null;
+  var _pilas = null;
 
-    function set(n) {
-        _pilas = n;
-    }
+  function set(n) {
+    _pilas = n;
+  }
 
-    function get() {
-        return _pilas;
-    }
+  function get() {
+    return _pilas;
+  }
 
-    return {
-        set: set,
-        get: get
-    };
+  return {
+    set: set,
+    get: get
+  };
 });
