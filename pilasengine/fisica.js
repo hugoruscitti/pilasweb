@@ -12,7 +12,7 @@ define(['mootools', 'singleton'],
     initialize: function() {
       console.log(this._fisica);
     }
-  })WW
+  })
 
   var Fisica = new Class({
     initialize: function() {

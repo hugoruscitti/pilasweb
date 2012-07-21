@@ -15,7 +15,7 @@ define(['mootools'], function(mootools) {
      * Aplica el cambio de posicion o vista de camara sobre un canvas.
      */
     fijar_posicion: function(contexto) {
-      cotexto.translate(this.centro_x - this.x, this.centro_y + this.y);
+      contexto.translate(this.centro_x - this.x, this.centro_y + this.y);
     },
 
     /**
