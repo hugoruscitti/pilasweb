@@ -5,8 +5,9 @@ docs: FORCE
 	jsduck pilasengine/* -o docs --title=pilasweb
 
 deploy: FORCE
-	make compilar > /dev/null
 	@echo "Generando pilasengine.min.js ..."
+	@make compilar > /dev/null
+	rm -r -f dist_master
 	mv dist dist_master
 	git checkout gh-pages
 	rm -r -f dist
