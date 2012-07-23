@@ -1,85 +1,82 @@
 define(['mootools', 'singleton'], function(){
 
+  /**
+   * Representa uno de los posibles modos del depurador.
+   */
+  var ModoDepurador = new Class({
     /**
-     * Representa uno de los posibles modos del depurador.
+     * Se invoca en cada dibujado de actor.
      */
-    var ModoDepurador = new Class({
-      /**
-       * Se invoca en cada dibujado de actor.
-       */
-        dibuja_al_actor: function(actor){
-        },
-    });
+      dibuja_al_actor: function(actor){
+      }
+  });
 
-    /**
-     * @extends ModoDepurador
-     *
-     * Muestra el punto de control o centro de cada uno de los actores.
-     */
-    var ModoPuntoDeControl = new Class({
-        Extends: ModoDepurador,
+  /**
+   * @extends ModoDepurador
+   *
+   * Muestra el punto de control o centro de cada uno de los actores.
+   */
+  var ModoPuntoDeControl = new Class({
+    Extends: ModoDepurador,
 
-        initialize: function(depurador){
-            this.depurador = depurador;
-            this.g = depurador.g;
-            this.pilas = depurador.pilas;
-        },
+    initialize: function(depurador){
+      this.depurador = depurador;
+      this.g = depurador.g;
+      this.pilas = depurador.pilas;
+    },
 
-        dibuja_al_actor: function(actor){
-            var posicion = this.pilas.camara.obtener_posicion();
-            this.dibujar_cruz(this.g, posicion.x + actor.x, posicion.y - actor.y);
-        },
-
-        /**
-         * @private
-         */
-        dibujar_cruz: function(g, x, y) {
-            this.g.setStrokeStyle(1);
-            this.g.beginStroke(Graphics.getRGB(255,0,0));
-
-            g.moveTo(x-3, y-3);
-            g.lineTo(x+3, y+3);
-
-            g.moveTo(x+3, y-3);
-            g.lineTo(x-3, y+3);
-        }
-    });
+    dibuja_al_actor: function(actor){
+      var posicion = this.pilas.camara.obtener_posicion();
+      this.dibujar_cruz(this.g, posicion.x + actor.x, posicion.y - actor.y);
+    },
 
     /**
-     * Permite generar graficos auxiliales sobre el canvas para depurar.
+     * @private
      */
-    var Depurador = new Class({
+    dibujar_cruz: function(g, x, y) {
+      this.g.setStrokeStyle(1);
+      this.g.beginStroke(Graphics.getRGB(255,0,0));
 
-        initialize: function(pilas){
-            this.pilas = pilas;
-            this.g = new Graphics();
-            this.modos = [];
-        },
+      g.moveTo(x-3, y-3);
+      g.lineTo(x+3, y+3);
 
-        definir_modos: function(opciones) {
-            this.modos = [];
+      g.moveTo(x+3, y-3);
+      g.lineTo(x-3, y+3);
+    }
+  });
 
-            if (opciones.depuracion)
-                this.modos.push(new ModoPuntoDeControl(this));
-        },
+  /**
+   * Permite generar graficos auxiliales sobre el canvas para depurar.
+   */
+  var Depurador = new Class({
+    initialize: function(pilas){
+      this.pilas = pilas;
+      this.g = new Graphics();
+      this.modos = [];
+    },
 
-        comienza_dibujado: function(){
-            this.g.clear();
-        },
+    definir_modos: function(opciones) {
+      this.modos = [];
 
-        dibuja_al_actor: function(actor){
-            for (i=0; i<this.modos.length; i++)
-                this.modos[i].dibuja_al_actor(actor);
-        },
+      if (opciones.depuracion)
+          this.modos.push(new ModoPuntoDeControl(this));
+    },
 
-        termina_dibujado: function(){
-            this.g.draw(this.pilas.contexto);
-        }
+    comienza_dibujado: function(){
+      this.g.clear();
+    },
 
+    dibuja_al_actor: function(actor){
+      for (i=0; i<this.modos.length; i++)
+          this.modos[i].dibuja_al_actor(actor);
+    },
 
-    });
+    termina_dibujado: function(){
+      this.g.draw(this.pilas.contexto);
+    }
+  });
 
-    return {
-        Depurador: Depurador
-    };
+  return {
+    Depurador: Depurador
+  };
 });
