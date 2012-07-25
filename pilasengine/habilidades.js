@@ -24,7 +24,8 @@ define(['mootools'], function(mootools) {
   var Girar = new Class({
     Extends: Habilidad,
     initialize: function() {
-      console.log("Girar el actor "+this.actor);
+      //debugger;
+      console.log("Girar el actor");
       //this.figura = pilas.fisica.crear_circulo();
     },
     actualizar: function() {

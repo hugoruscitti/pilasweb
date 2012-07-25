@@ -14,6 +14,7 @@ define(
       Extends: actor.Actor,
       initialize: function(texto, x, y, centro_x, centro_y, escala_x, escala_y, rotacion) {
         this.texto = texto;
+        this.nombre = "Texto";
         this.imagen = new Text(this.texto, "22px arial");
         this.imagen.textBaseline = "top";
         this.inicializar(x, y, centro_x, centro_y, escala_x, escala_y, rotacion);
@@ -28,6 +29,7 @@ define(
       Extends: actor.Actor,
       initialize: function(x, y, centro_x, centro_y, escala_x, escala_y, rotacion) {
         this.parent("sin_imagen.png", x, y, centro_x, centro_y, escala_x, escala_y, rotacion);
+        this.nombre = "Aceituna";
         this.imagen = this.cargar_imagen("aceituna.png");
         this.centro_x = 18;
         this.centro_y = 18;
