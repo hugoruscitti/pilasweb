@@ -24,14 +24,15 @@ define(['mootools'], function(mootools) {
   var Girar = new Class({
     Extends: Habilidad,
     actualizar: function() {
-      this.actor.rotacion += 1;
+      // FIXME modificar el actor para que su atributo sea "rotacion" sin guion bajo.
+      this.actor._rotacion += 1;
     }
   });
 
   var RebotarComoPelota = new Class({
     Extends: Habilidad,
     initialize: function() {
-      this.figura = pilas.fisica.crear_circulo();
+      //this.figura = pilas.fisica.crear_circulo();
     },
     actualizar: function() {
       //this.actor.x = this.figura.GetWorldCenter().x;
@@ -43,6 +44,6 @@ define(['mootools'], function(mootools) {
     Estudiante: Estudiante,
     Habilidad: Habilidad,
     Girar: Girar,
-    RebotarComoPelota: RebotarComoPelota
+    //RebotarComoPelota: RebotarComoPelota
   };
 });

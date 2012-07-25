@@ -39,7 +39,6 @@ define(
        * Este método se suele sobre-escribir para tener control sobre el actor.
        */
       actualizar: function() {
-        this.actualizar_habilidades();
       },
 
       /**

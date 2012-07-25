@@ -1,8 +1,8 @@
 define(
   ['singleton', 'eventos', 'mootools', 'actores',
-   'camara', 'imagenes', 'depurador', 'utils', 'fisica'],
+   'camara', 'imagenes', 'depurador', 'utils', 'fisica', 'habilidades'],
   function(singleton, eventos, mootools, actores,
-    camara, imagenes, depurador, utils, fisica){
+    camara, imagenes, depurador, utils, fisica, habilidades){
     
     /**
      * Representa la clase principal que controla el videojuego.
@@ -73,6 +73,7 @@ define(
 
         for (var i=0; i<this.lista_actores.length; i++) {
           var actor = this.lista_actores[i];
+          actor.actualizar_habilidades();
           actor.actualizar();
           actor.dibujar(c);
           this.depurador.dibuja_al_actor(actor);
@@ -136,7 +137,13 @@ define(
        * @property
        * Contine a todos los actores disponibles.
        */
-      actores: actores
+      actores: actores,
+
+      /**
+       * @property
+       * Contiene a todas las habilidades que los actores pueden aprender.
+       */
+      habilidades: habilidades,
     });
 
     

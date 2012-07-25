@@ -12,9 +12,10 @@
       var pilas = new pilasengine.Pilas("canvas", '../data/');
 
       window.pilas = pilas;
-      pilas.depurador.definir_modos({depuracion: true});
+      pilas.depurador.definir_modos({depuracion: false});
 
       var aceituna = new pilas.actores.Aceituna();
+      aceituna.aprender(new pilas.habilidades.Girar());
     });
     </script>
     <style>
