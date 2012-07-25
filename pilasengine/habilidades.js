@@ -23,9 +23,12 @@ define(['mootools'], function(mootools) {
 
   var Girar = new Class({
     Extends: Habilidad,
+    initialize: function() {
+      console.log("Girar el actor "+this.actor);
+      //this.figura = pilas.fisica.crear_circulo();
+    },
     actualizar: function() {
-      // FIXME modificar el actor para que su atributo sea "rotacion" sin guion bajo.
-      this.actor._rotacion += 1;
+      this.actor.rotacion += 1;
     }
   });
 

@@ -30,7 +30,7 @@ define(
 
         this.escala_x = escala_x || 1;
         this.escala_y = escala_y || 1;
-        this._rotacion = rotacion || 0;
+        this.rotacion = rotacion || 0;
       },
 
       /**
@@ -53,7 +53,7 @@ define(
         contexto.translate(this.x, -this.y);
         singleton.get().camara.fijar_posicion(contexto);
 
-        contexto.rotate(singleton.get().utils.convertir_a_radianes(this._rotacion));
+        contexto.rotate(singleton.get().utils.convertir_a_radianes(this.rotacion));
         contexto.scale(this.escala_x, this.escala_y);
         contexto.translate(-this.centro_x, -this.centro_y);
         this.imagen.draw(contexto);
