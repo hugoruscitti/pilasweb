@@ -1,0 +1,33 @@
+<html>
+<head>
+    <script src="../pilasengine/libs/require.js"></script>
+
+    <script type="text/javascript">
+    require.config({
+      baseUrl: "../pilasengine",
+    });
+
+    require(['main'], function(pilasengine){
+      var pilas = new pilasengine.Pilas("canvas", '../data/');
+
+      window.pilas = pilas;
+      pilas.depurador.definir_modos({depuracion: true});
+
+      var actor = new pilas.actores.Actor();
+      actor.imagen = pilas.imagenes.cargar_grilla("cooperativista/camina.png", {columnas: 4});
+      actor.imagen.cuadro = 1;
+    });
+    </script>
+    <style>
+    canvas {
+        border: 1px solid gray;
+    }
+    </style>
+</head>
+
+<body>
+    <canvas id='canvas' width=320 height=240></canvas>
+
+    <p><a href='../index.html'>Regresar al indice</a>.
+</body>
+</html>

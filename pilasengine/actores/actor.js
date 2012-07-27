@@ -57,7 +57,8 @@ define(
         contexto.rotate(singleton.get().utils.convertir_a_radianes(this._rotacion));
         contexto.scale(this.escala_x, this.escala_y);
         contexto.translate(-this.centro_x, -this.centro_y);
-        this.imagen.draw(contexto);
+
+        this.imagen.dibujar(contexto);
 
         contexto.restore();
       },
