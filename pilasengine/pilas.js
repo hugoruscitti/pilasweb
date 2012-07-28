@@ -30,7 +30,11 @@ define(
         this.depurador = new depurador.Depurador(this);
 
         this.utils = new utils.Utils();
-        //this.fisica = new fisica.Fisica()
+        
+        // Cargar el mundo de Box2d
+        this.fisica = new fisica.Fisica();
+        this.circulo = new fisica.Circulo();
+
         singleton.set(this);
         Ticker.setFPS(60);
         Ticker.addListener(this);

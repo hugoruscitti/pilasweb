@@ -7,6 +7,11 @@ define(['mootools', 'singleton'],
     }
   })
 
+  /*
+  * @Class Circulo
+  * Representa un cuerpo de circulo, al asociarlo con
+  * un actor, este se comportara como una pelota.
+  */
   var Circulo = new Class({
     Extends: Figura,
     initialize: function() {
@@ -16,15 +21,19 @@ define(['mootools', 'singleton'],
 
   var Fisica = new Class({
     initialize: function() {
-      this.world = "asd";
+      this.world = new b2World(
+        new b2Vec2(0, 10), // gravedad
+        true // allow sleep
+      );
     },
     actualizar: function(){
-      // this.world.step(1/60, 3, 3);
+      this.world.step(1/60, 3, 3);
     }
     //Circulo: Circulo,
   })
 
   return {
-    Fisica: Fisica
+    Fisica: Fisica,
+    Circulo: Circulo
   }
 })
