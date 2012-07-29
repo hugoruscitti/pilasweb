@@ -1,9 +1,15 @@
-define(['mootools', 'singleton'], 
-  function(mootools, singleton) {
-
+define(['mootools', 'pilas', 'libs/Box2dWeb-2.1.a.3'], 
+  function(mootools, pilas, _Box2D) {
+    console.log("holaa",pilas);
+    // TODO Box2D no es un modulo de require.js por eso
+    // el argumento que estamos recibiendo es _Box2D, para no pisar el window.Box2D que 
+    // se esta cargando en el archivo js de box2d
+  
   var Figura = new Class({
     initialize: function() {
-      this._fisica = singleton.get().fisica;
+      // console.log("figura", pilas, pilas.obtener_instancia())
+      console.log("figura", pilas);
+      // this._fisica = singleton.get().fisica;
     }
   })
 
@@ -15,21 +21,38 @@ define(['mootools', 'singleton'],
   var Circulo = new Class({
     Extends: Figura,
     initialize: function() {
-      console.log(this._fisica);
+      this.parent();
+      console.log("desde circulo", this._fisica);
     }
   })
 
   var Fisica = new Class({
     initialize: function() {
-      this.world = new b2World(
-        new b2Vec2(0, 10), // gravedad
-        true // allow sleep
+      // crear el mundo
+      this.mundo = new Box2D.Dynamics.b2World(
+        new Box2D.Common.Math.b2Vec2(0, 10), // vector gravedad
+        true
       );
+      // crear el objeto suelo
+      // usa un fixture con la forma de rectangular
+      var fixDef = new Box2D.Dynamics.b2FixtureDef;
+      fixDef.density = 1.0;
+      fixDef.friction = 0.5;
+      fixDef.restitution = 0.2;
+      fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+      fixDef.shape.SetAsBox(20, 2);
+
+      // crear el cuerpo como un objeto estatico
+      var bodyDef = new Box2D.Dynamics.b2BodyDef;
+      bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
+      bodyDef.position.Set(10, 400 / 30 + 1.8);
+
+      // instertar el objeto suelo en el mundo
+      this.mundo.CreateBody(bodyDef).CreateFixture(fixDef);
     },
     actualizar: function(){
-      this.world.step(1/60, 3, 3);
+      this.mundo.step(1/60, 3, 3);
     }
-    //Circulo: Circulo,
   })
 
   return {

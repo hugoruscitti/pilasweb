@@ -1,6 +1,7 @@
 define(
   ['singleton', 'eventos', 'mootools', 'actores',
-   'camara', 'imagenes', 'depurador', 'utils', 'fisica', 'habilidades'],
+   'camara', 'imagenes', 'depurador', 'utils', 
+   'fisica', 'habilidades'],
   function(singleton, eventos, mootools, actores,
     camara, imagenes, depurador, utils, fisica, habilidades){
     
@@ -33,6 +34,7 @@ define(
         
         // Cargar el mundo de Box2d
         this.fisica = new fisica.Fisica();
+        
         this.circulo = new fisica.Circulo();
 
         singleton.set(this);

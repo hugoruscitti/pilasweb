@@ -1,6 +1,9 @@
-define(['mootools'], function(mootools) {
+define(['mootools', 'singleton'], function(mootools, singleton) {
+
   var Habilidad = new Class({
+    initialize: function(actor) {},
     iniciar: function(actor) {
+      // TODO usar el initialize para esto.
       this.actor = actor;
     },
     actualizar: function() {
@@ -24,7 +27,7 @@ define(['mootools'], function(mootools) {
   var Girar = new Class({
     Extends: Habilidad,
     initialize: function() {
-      //debugger;
+      this.parent();
       console.log("Girar el actor");
       //this.figura = pilas.fisica.crear_circulo();
     },
@@ -36,6 +39,8 @@ define(['mootools'], function(mootools) {
   var RebotarComoPelota = new Class({
     Extends: Habilidad,
     initialize: function() {
+      this.parent();
+      console.log("Rebotar");
       //this.figura = pilas.fisica.crear_circulo();
     },
     actualizar: function() {
@@ -48,6 +53,6 @@ define(['mootools'], function(mootools) {
     Estudiante: Estudiante,
     Habilidad: Habilidad,
     Girar: Girar,
-    //RebotarComoPelota: RebotarComoPelota
+    RebotarComoPelota: RebotarComoPelota
   };
 });
