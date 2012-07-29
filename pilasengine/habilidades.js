@@ -40,8 +40,13 @@ define(['mootools', 'singleton'], function(mootools, singleton) {
     Extends: Habilidad,
     initialize: function() {
       this.parent();
-      console.log("Rebotar");
-      //this.figura = pilas.fisica.crear_circulo();
+
+      // Acceso a objeto pilas
+      var pilas = singleton.get();
+      console.log("Accediendo a pilas:", pilas);
+      console.log("Accediendo a fisica:", pilas.fisica);
+
+      this.figura = pilas.fisica.crear_circulo();
     },
     actualizar: function() {
       //this.actor.x = this.figura.GetWorldCenter().x;

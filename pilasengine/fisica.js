@@ -1,6 +1,5 @@
-define(['mootools', 'pilas', 'libs/Box2dWeb-2.1.a.3'], 
-  function(mootools, pilas, _Box2D) {
-    console.log("holaa",pilas);
+define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'], 
+  function(mootools, _Box2D, singleton) {
     // TODO Box2D no es un modulo de require.js por eso
     // el argumento que estamos recibiendo es _Box2D, para no pisar el window.Box2D que 
     // se esta cargando en el archivo js de box2d
@@ -8,8 +7,8 @@ define(['mootools', 'pilas', 'libs/Box2dWeb-2.1.a.3'],
   var Figura = new Class({
     initialize: function() {
       // console.log("figura", pilas, pilas.obtener_instancia())
-      console.log("figura", pilas);
-      // this._fisica = singleton.get().fisica;
+      console.log("desde figura", singleton.get());
+      this._fisica = singleton.get().fisica;
     }
   })
 
@@ -53,6 +52,10 @@ define(['mootools', 'pilas', 'libs/Box2dWeb-2.1.a.3'],
     },
     actualizar: function(){
       this.mundo.step(1/60, 3, 3);
+    },
+    // TODO: faltan parametros, solo es prueba.
+    crear_circulo: function(){
+      return new Circulo();
     }
   })
 
