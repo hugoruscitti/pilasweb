@@ -36,7 +36,7 @@ define(
         
         // NOTA: se envia la referencia a this, porque de otra forma, la clase
         //       Fisica no puede acceder al objeto pilas. El singleton en este
-        //       caso no funcionaria, porque estamos en el contexto del constructo
+        //       caso no funcionaria, porque estamos en el contexto del constructor
         //       del singleton.
         this.fisica = new fisica.Fisica(this);
         

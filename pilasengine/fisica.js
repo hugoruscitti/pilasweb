@@ -19,15 +19,46 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
   */
   var Circulo = new Class({
     Extends: Figura,
-    initialize: function() {
+    _opciones: {
+      x: 0, 
+      y: 0, 
+      radio: 0.1, 
+      dinamica: true, 
+      densidad: 1.0,
+      restitucion: 0.56, 
+      friccion: 10.5, 
+      amortiguacion: 0.1,
+      fisica: null, 
+      sin_rotacion: false
+    },
+    initialize: function(opciones) {
+      
       this.parent();
+
+      this._opciones = Object.merge(this._opciones, opciones);
+
+      // definir los atributos del circulo
+      var fixDef = new Box2D.Dynamics.b2FixtureDef;
+      fixDef.density = 1.0;
+      fixDef.friction = 0.5;
+      fixDef.restitution = 0.2;
+      fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(
+        0.1 // circulo de radio 0.1 metros
+      ); 
+
+      // crear el body dinamico
+      var bodyDef = new Box2D.Dynamics.b2BodyDef;
+      bodyDef.position.x = this._opciones.x;
+      bodyDef.position.y = this._opciones.y;
+      this._fisica.mundo.CreateBody(bodyDef).CreateFixture(fixDef);
       console.log("desde circulo", this._fisica);
     }
   })
 
   var Fisica = new Class({
     initialize: function(pilas) {
-      this.pilas = pilas;
+      //this.pilas = pilas;
+
       // crear el mundo
       this.mundo = new Box2D.Dynamics.b2World(
         new Box2D.Common.Math.b2Vec2(0, 10), // vector gravedad
