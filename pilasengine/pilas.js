@@ -44,14 +44,6 @@ define(
         Ticker.setFPS(60);
         Ticker.addListener(this);
 
-        this.eventos.click_de_mouse.conectar(function(e){
-          var x = e.x, y = e.y;
-          var actor;
-          actor = that.actor_clickeado(x, y);
-          if (actor) {
-            actor.click();
-          }
-        });
       },
 
       /**
