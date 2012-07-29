@@ -27,7 +27,8 @@ define(['mootools', 'pilas', 'libs/Box2dWeb-2.1.a.3'],
   })
 
   var Fisica = new Class({
-    initialize: function() {
+    initialize: function(pilas) {
+      this.pilas = pilas;
       // crear el mundo
       this.mundo = new Box2D.Dynamics.b2World(
         new Box2D.Common.Math.b2Vec2(0, 10), // vector gravedad

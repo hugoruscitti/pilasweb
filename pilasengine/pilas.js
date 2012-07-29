@@ -33,10 +33,13 @@ define(
         this.utils = new utils.Utils();
         
         // Cargar el mundo de Box2d
-        this.fisica = new fisica.Fisica();
         
-        this.circulo = new fisica.Circulo();
-
+        // NOTA: se envia la referencia a this, porque de otra forma, la clase
+        //       Fisica no puede acceder al objeto pilas. El singleton en este
+        //       caso no funcionaria, porque estamos en el contexto del constructo
+        //       del singleton.
+        this.fisica = new fisica.Fisica(this);
+        
         singleton.set(this);
         Ticker.setFPS(60);
         Ticker.addListener(this);
