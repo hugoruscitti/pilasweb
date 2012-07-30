@@ -6,9 +6,6 @@ define(['mootools', 'singleton'],
       console.log("Iniciando habilidad actor:", actor);
       this.actor = actor;
     },
-    iniciar: function(actor) {
-      
-    },
     actualizar: function() {
     }
   });
@@ -46,19 +43,24 @@ define(['mootools', 'singleton'],
 
       // Acceso a objeto pilas
       var pilas = singleton.get();
-      console.log("Accediendo a pilas:", pilas);
       console.log("Accediendo a fisica:", pilas.fisica);
-      console.log("Soy el actor", this.actor);
-      //this.figura = new pilas.fisica.Circulo;
-
-      /*this.figura = pilas.fisica.crear_circulo({
+      console.log("Aprendiendo habilidad para el actor", this.actor);
+      /*this.figura = new pilas.fisica.Circulo({
         x: this.actor.x,
         y: this.actor.y
       });*/
+      //this.figura = new pilas.fisica.Circulo;
+
+      this.figura = pilas.fisica.crear_circulo({
+        x: this.actor.x,
+        y: this.actor.y
+      });
     },
     actualizar: function() {
-      //this.actor.x = this.figura.GetWorldCenter().x;
-      //this.actor.y = this.figura.GetWorldCenter().y;
+      var posicion = this.figura.cuerpo.GetPosition();
+      console.log("posicion", posicion);
+      this.actor.x = posicion.x;
+      this.actor.y = posicion.y;
     }
   });
 

@@ -33,7 +33,7 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
     },
     initialize: function(opciones) {
       
-      this.parent();
+      this.parent(opciones);
 
       this._opciones = Object.merge(this._opciones, opciones);
 
@@ -43,15 +43,16 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
       fixDef.friction = 0.5;
       fixDef.restitution = 0.2;
       fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(
-        0.1 // circulo de radio 0.1 metros
+        0.5 // circulo de radio 0.5 metros
       ); 
 
       // crear el body dinamico
       var bodyDef = new Box2D.Dynamics.b2BodyDef;
-      bodyDef.position.x = this._opciones.x;
-      bodyDef.position.y = this._opciones.y;
-      this._fisica.mundo.CreateBody(bodyDef).CreateFixture(fixDef);
-      console.log("desde circulo", this._fisica);
+      //bodyDef.position.x = this._opciones.x;
+      //bodyDef.position.y = this._opciones.y;
+      this.cuerpo = this._fisica.mundo.CreateBody(bodyDef);
+      this.cuerpo.CreateFixture(fixDef);
+      console.log("Cuerpo del circulo", this.cuerpo);
     }
   })
 
@@ -82,11 +83,23 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
       this.mundo.CreateBody(bodyDef).CreateFixture(fixDef);
     },
     actualizar: function(){
-      this.mundo.step(1/60, 3, 3);
+
+      this.mundo.Step(1/60, 3, 3);
+
+      //setup debug draw
+      var debugDraw = new Box2D.Dynamics.b2DebugDraw();
+      var b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
+      debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
+      debugDraw.SetDrawScale(30.0);
+      debugDraw.SetFillAlpha(0.5);
+      debugDraw.SetLineThickness(1.0);
+      debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+      this.mundo.SetDebugDraw(debugDraw);
+      this.mundo.DrawDebugData();
     },
-    // TODO: faltan parametros, solo es prueba.
-    crear_circulo: function(){
-      return new Circulo();
+
+    crear_circulo: function(opciones){
+      return new Circulo(opciones);
     }
   })
 
