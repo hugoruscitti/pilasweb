@@ -12,7 +12,7 @@
       var pilas = new pilasengine.Pilas("canvas", '../data/');
 
       window.pilas = pilas;
-      pilas.depurador.definir_modos({depuracion: false});
+      pilas.depurador.definir_modos({depuracion: true});
 
       var aceituna = new pilas.actores.Aceituna();
       aceituna.aprender(new pilas.habilidades.Girar());
@@ -20,7 +20,7 @@
     </script>
     <style>
     canvas {
-        border: 1px solid gray;
+      border: 1px solid gray;
     }
     </style>
 </head>
