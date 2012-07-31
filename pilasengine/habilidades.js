@@ -1,6 +1,9 @@
-define(['mootools'], function(mootools) {
+define(['mootools', 'singleton'], 
+  function(mootools, singleton) {
+
   var Habilidad = new Class({
-    iniciar: function(actor) {
+    initialize: function(actor) {
+      console.log("Iniciando habilidad actor:", actor);
       this.actor = actor;
     },
     actualizar: function() {
@@ -10,7 +13,7 @@ define(['mootools'], function(mootools) {
   var Estudiante = new Class({
     habilidades: [],
     aprender: function(habilidad) {
-      habilidad.iniciar(this);
+      var habilidad = new habilidad(this);
       this.habilidades.push(habilidad);
     },
 
@@ -24,7 +27,7 @@ define(['mootools'], function(mootools) {
   var Girar = new Class({
     Extends: Habilidad,
     initialize: function() {
-      //debugger;
+      this.parent();
       console.log("Girar el actor");
       //this.figura = pilas.fisica.crear_circulo();
     },
@@ -35,12 +38,29 @@ define(['mootools'], function(mootools) {
 
   var RebotarComoPelota = new Class({
     Extends: Habilidad,
-    initialize: function() {
-      //this.figura = pilas.fisica.crear_circulo();
+    initialize: function(actor) {
+      this.parent(actor);
+
+      // Acceso a objeto pilas
+      var pilas = singleton.get();
+      console.log("Accediendo a fisica:", pilas.fisica);
+      console.log("Aprendiendo habilidad para el actor", this.actor);
+      /*this.figura = new pilas.fisica.Circulo({
+        x: this.actor.x,
+        y: this.actor.y
+      });*/
+      //this.figura = new pilas.fisica.Circulo;
+
+      this.figura = pilas.fisica.crear_circulo({
+        x: this.actor.x,
+        y: this.actor.y
+      });
     },
     actualizar: function() {
-      //this.actor.x = this.figura.GetWorldCenter().x;
-      //this.actor.y = this.figura.GetWorldCenter().y;
+      var posicion = this.figura.cuerpo.GetPosition();
+      console.log("posicion", posicion);
+      this.actor.x = posicion.x;
+      this.actor.y = posicion.y;
     }
   });
 
@@ -48,6 +68,6 @@ define(['mootools'], function(mootools) {
     Estudiante: Estudiante,
     Habilidad: Habilidad,
     Girar: Girar,
-    //RebotarComoPelota: RebotarComoPelota
+    RebotarComoPelota: RebotarComoPelota
   };
 });
