@@ -52,8 +52,10 @@ define(['mootools', 'singleton'],
     },
     actualizar: function() {
       var posicion = this.figura.obtener_posicion();
+
       this.actor.x = posicion.x;
       this.actor.y = posicion.y;
+      this.actor.rotacion = this.figura.obtener_rotacion();
     }
   });
 

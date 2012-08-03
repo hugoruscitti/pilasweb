@@ -18,7 +18,15 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
       var p = this.cuerpo.GetPosition();
 
       return pilas.camara.convertir_de_posicion_fisica_a_relativa(p.x, p.y)
-    }
+    },
+
+    /**
+     * Retorna la rotacion en grados de la figura.
+     */
+    obtener_rotacion: function() {
+      var rotacion_radianes = this.cuerpo.GetAngle(); 
+      return (rotacion_radianes * 180 / Math.PI);
+    },
   })
 
   /*
@@ -34,7 +42,7 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
       radio: 25,
       dinamica: true, 
       densidad: 1.0,
-      restitucion: 0.56, 
+      restitucion: 0.1, 
       friccion: 10.5, 
       amortiguacion: 0.1,
       fisica: null, 
