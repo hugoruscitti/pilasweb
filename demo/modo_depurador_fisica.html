@@ -16,7 +16,13 @@
     require(['main'], function(pilasengine){
       pilas = new pilasengine.Pilas('canvas', '../data/');
       var aceituna = new pilas.actores.Aceituna();
+      pilas.fisica.crear_circulo({x: 100, y: 100});
       pilas.depurador.definir_modos({fisica: true, depuracion: true});
+
+      pilas.deshabilitar_main_loop();
+      pilas.tick();
+
+
     });
     </script>
     <style>

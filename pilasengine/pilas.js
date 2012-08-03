@@ -43,7 +43,10 @@ define(
         singleton.set(this);
         Ticker.setFPS(60);
         Ticker.addListener(this);
+      },
 
+      deshabilitar_main_loop: function() {
+        Ticker.removeAllListeners();
       },
 
       /**
@@ -81,7 +84,6 @@ define(
         }
 
         this.depurador.termina_dibujado();
-
       },
 
       /**
