@@ -31,7 +31,7 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
     _opciones: {
       x: 0, 
       y: 0, 
-      radio: 0.1, 
+      radio: 25,
       dinamica: true, 
       densidad: 1.0,
       restitucion: 0.56, 
@@ -53,8 +53,7 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
       fixDef.friction = 0.5;
       fixDef.restitution = 0.2;
 
-      // circulo de radio 50 metros = 50 pixels.
-      fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(50); 
+      fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(this._opciones.radio); 
 
       // crear el body dinamico
       var bodyDef = new Box2D.Dynamics.b2BodyDef;
