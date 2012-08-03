@@ -6,8 +6,18 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
   
   var Figura = new Class({
     initialize: function() {
-      console.log("desde figura", singleton.get());
       this._fisica = singleton.get().fisica;
+    },
+
+    /**
+     * Retorna la posicion de la figura en coordenadas relativas
+     * de pantalla, donde el centro de la ventana es (0,0)
+     */
+    obtener_posicion: function() {
+      var pilas = singleton.get();
+      var p = this.cuerpo.GetPosition();
+
+      return pilas.camara.convertir_de_posicion_fisica_a_relativa(p.x, p.y)
     }
   })
 
@@ -31,6 +41,7 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
       sin_rotacion: false
     },
     initialize: function(opciones) {
+      var pilas = singleton.get();
       
       this.parent(opciones);
 
@@ -47,29 +58,27 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
 
       // crear el body dinamico
       var bodyDef = new Box2D.Dynamics.b2BodyDef;
-      bodyDef.position.x = 100;
-      bodyDef.position.y = 150;
-      //bodyDef.position.y = this._opciones.y;
+
+      var posicion = pilas.camara.convertir_de_posicion_relativa_a_fisica(this._opciones.x, this._opciones.y);
+      bodyDef.position.x = posicion.x
+      bodyDef.position.y = posicion.y
+
       bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
       this.cuerpo = this._fisica.mundo.CreateBody(bodyDef);
       this.cuerpo.CreateFixture(fixDef);
-
-      console.log(this.cuerpo.GetPosition());
-
-      console.log("Cuerpo del circulo", this.cuerpo);
     }
   })
 
   var Fisica = new Class({
+
     initialize: function(pilas) {
       //this.pilas = pilas;
+      var gravedad = new Box2D.Common.Math.b2Vec2(0, 90);
+      this.mundo = new Box2D.Dynamics.b2World(gravedad, false);
+      this.crear_bordes_del_escenario();
+    },
 
-      // crear el mundo
-      this.mundo = new Box2D.Dynamics.b2World(
-        new Box2D.Common.Math.b2Vec2(0, 90), // vector gravedad
-        false
-      );
-
+    crear_bordes_del_escenario: function() {
       // crear el objeto suelo
       // usa un fixture con la forma de rectangular
       var fixDef = new Box2D.Dynamics.b2FixtureDef;
@@ -94,7 +103,7 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
 
     crear_circulo: function(opciones){
       return new Circulo(opciones);
-    }
+    },
   })
 
   return {
