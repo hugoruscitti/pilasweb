@@ -43,22 +43,15 @@ define(['mootools', 'singleton'],
 
       // Acceso a objeto pilas
       var pilas = singleton.get();
-      console.log("Accediendo a fisica:", pilas.fisica);
-      console.log("Aprendiendo habilidad para el actor", this.actor);
-      /*this.figura = new pilas.fisica.Circulo({
-        x: this.actor.x,
-        y: this.actor.y
-      });*/
-      //this.figura = new pilas.fisica.Circulo;
 
       this.figura = pilas.fisica.crear_circulo({
         x: this.actor.x,
-        y: this.actor.y
+        y: this.actor.y,
+        radio: 18,
       });
     },
     actualizar: function() {
-      var posicion = this.figura.cuerpo.GetPosition();
-      console.log("posicion", posicion);
+      var posicion = this.figura.obtener_posicion();
       this.actor.x = posicion.x;
       this.actor.y = posicion.y;
     }

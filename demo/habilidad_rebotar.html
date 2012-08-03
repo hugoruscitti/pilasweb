@@ -15,10 +15,11 @@
     // All variables are global in terms of developing pourposes
     require(['main'], function(pilasengine){
       pilas = new pilasengine.Pilas('canvas', '../data/');
-      var aceituna = new pilas.actores.Aceituna();
-      aceituna.x = 0;
-      aceituna.y = 200;      
-      aceituna.aprender(pilas.habilidades.RebotarComoPelota);
+      var aceituna1 = new pilas.actores.Aceituna();
+      aceituna1.aprender(pilas.habilidades.RebotarComoPelota);
+
+      var aceituna2 = new pilas.actores.Aceituna(10, 100);
+      aceituna2.aprender(pilas.habilidades.RebotarComoPelota);
     });
     </script>
     <style>
