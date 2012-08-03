@@ -6,10 +6,27 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
   
   var Figura = new Class({
     initialize: function() {
-      // console.log("figura", pilas, pilas.obtener_instancia())
-      console.log("desde figura", singleton.get());
       this._fisica = singleton.get().fisica;
-    }
+    },
+
+    /**
+     * Retorna la posicion de la figura en coordenadas relativas
+     * de pantalla, donde el centro de la ventana es (0,0)
+     */
+    obtener_posicion: function() {
+      var pilas = singleton.get();
+      var p = this.cuerpo.GetPosition();
+
+      return pilas.camara.convertir_de_posicion_fisica_a_relativa(p.x, p.y)
+    },
+
+    /**
+     * Retorna la rotacion en grados de la figura.
+     */
+    obtener_rotacion: function() {
+      var rotacion_radianes = this.cuerpo.GetAngle(); 
+      return (rotacion_radianes * 180 / Math.PI);
+    },
   })
 
   /*
@@ -22,16 +39,17 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
     _opciones: {
       x: 0, 
       y: 0, 
-      radio: 0.1, 
+      radio: 25,
       dinamica: true, 
       densidad: 1.0,
-      restitucion: 0.56, 
+      restitucion: 0.1, 
       friccion: 10.5, 
       amortiguacion: 0.1,
       fisica: null, 
       sin_rotacion: false
     },
     initialize: function(opciones) {
+      var pilas = singleton.get();
       
       this.parent(opciones);
 
@@ -42,65 +60,57 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
       fixDef.density = 1.0;
       fixDef.friction = 0.5;
       fixDef.restitution = 0.2;
-      fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(
-        0.5 // circulo de radio 0.5 metros
-      ); 
+
+      fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(this._opciones.radio); 
 
       // crear el body dinamico
       var bodyDef = new Box2D.Dynamics.b2BodyDef;
-      //bodyDef.position.x = this._opciones.x;
-      //bodyDef.position.y = this._opciones.y;
+
+      var posicion = pilas.camara.convertir_de_posicion_relativa_a_fisica(this._opciones.x, this._opciones.y);
+      bodyDef.position.x = posicion.x
+      bodyDef.position.y = posicion.y
+
+      bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
       this.cuerpo = this._fisica.mundo.CreateBody(bodyDef);
       this.cuerpo.CreateFixture(fixDef);
-      console.log("Cuerpo del circulo", this.cuerpo);
     }
   })
 
   var Fisica = new Class({
+
     initialize: function(pilas) {
       //this.pilas = pilas;
+      var gravedad = new Box2D.Common.Math.b2Vec2(0, 90);
+      this.mundo = new Box2D.Dynamics.b2World(gravedad, false);
+      this.crear_bordes_del_escenario();
+    },
 
-      // crear el mundo
-      this.mundo = new Box2D.Dynamics.b2World(
-        new Box2D.Common.Math.b2Vec2(0, 10), // vector gravedad
-        true
-      );
+    crear_bordes_del_escenario: function() {
       // crear el objeto suelo
       // usa un fixture con la forma de rectangular
       var fixDef = new Box2D.Dynamics.b2FixtureDef;
       fixDef.density = 1.0;
       fixDef.friction = 0.5;
-      fixDef.restitution = 0.2;
+      fixDef.restitution = 0.7;
       fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
-      fixDef.shape.SetAsBox(20, 2);
+      fixDef.shape.SetAsBox(640, 2);
 
       // crear el cuerpo como un objeto estatico
       var bodyDef = new Box2D.Dynamics.b2BodyDef;
       bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
-      bodyDef.position.Set(10, 400 / 30 + 1.8);
+      bodyDef.position.Set(0, 400);
 
       // instertar el objeto suelo en el mundo
       this.mundo.CreateBody(bodyDef).CreateFixture(fixDef);
     },
+
     actualizar: function(){
-
-      this.mundo.Step(1/60, 3, 3);
-
-      //setup debug draw
-      var debugDraw = new Box2D.Dynamics.b2DebugDraw();
-      var b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
-      debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
-      debugDraw.SetDrawScale(30.0);
-      debugDraw.SetFillAlpha(0.5);
-      debugDraw.SetLineThickness(1.0);
-      debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-      this.mundo.SetDebugDraw(debugDraw);
-      this.mundo.DrawDebugData();
+      this.mundo.Step(1/20.0, 1, 1);
     },
 
     crear_circulo: function(opciones){
       return new Circulo(opciones);
-    }
+    },
   })
 
   return {

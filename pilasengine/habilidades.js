@@ -3,7 +3,6 @@ define(['mootools', 'singleton'],
 
   var Habilidad = new Class({
     initialize: function(actor) {
-      console.log("Iniciando habilidad actor:", actor);
       this.actor = actor;
     },
     actualizar: function() {
@@ -26,10 +25,8 @@ define(['mootools', 'singleton'],
 
   var Girar = new Class({
     Extends: Habilidad,
-    initialize: function() {
-      this.parent();
-      console.log("Girar el actor");
-      //this.figura = pilas.fisica.crear_circulo();
+    initialize: function(actor) {
+      this.parent(actor);
     },
     actualizar: function() {
       this.actor.rotacion += 1;
@@ -43,24 +40,19 @@ define(['mootools', 'singleton'],
 
       // Acceso a objeto pilas
       var pilas = singleton.get();
-      console.log("Accediendo a fisica:", pilas.fisica);
-      console.log("Aprendiendo habilidad para el actor", this.actor);
-      /*this.figura = new pilas.fisica.Circulo({
-        x: this.actor.x,
-        y: this.actor.y
-      });*/
-      //this.figura = new pilas.fisica.Circulo;
 
       this.figura = pilas.fisica.crear_circulo({
         x: this.actor.x,
-        y: this.actor.y
+        y: this.actor.y,
+        radio: 18,
       });
     },
     actualizar: function() {
-      var posicion = this.figura.cuerpo.GetPosition();
-      console.log("posicion", posicion);
+      var posicion = this.figura.obtener_posicion();
+
       this.actor.x = posicion.x;
       this.actor.y = posicion.y;
+      this.actor.rotacion = this.figura.obtener_rotacion();
     }
   });
 
