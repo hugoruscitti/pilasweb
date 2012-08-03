@@ -68,7 +68,16 @@ define(['mootools', 'singleton'], function(){
   var ModoFisica = new Class({
     Extends: ModoDepurador,
 
-    termina_dibujado: function() {
+    comienza_dibujado: function() {
+      var debugDraw = new Box2D.Dynamics.b2DebugDraw();
+      var b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
+      debugDraw.SetSprite(this.pilas.contexto);
+      debugDraw.SetDrawScale(1.0);
+      debugDraw.SetFillAlpha(0.5);
+      debugDraw.SetLineThickness(1.0);
+      debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+      this.pilas.fisica.mundo.SetDebugDraw(debugDraw);
+      this.pilas.fisica.mundo.DrawDebugData();
     }
 
   });

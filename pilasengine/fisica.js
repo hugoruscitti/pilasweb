@@ -90,17 +90,6 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
 
     actualizar: function(){
       this.mundo.Step(1/20.0, 1, 1);
-
-      //setup debug draw
-      var debugDraw = new Box2D.Dynamics.b2DebugDraw();
-      var b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
-      debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
-      debugDraw.SetDrawScale(1.0);
-      debugDraw.SetFillAlpha(0.5);
-      debugDraw.SetLineThickness(1.0);
-      debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-      this.mundo.SetDebugDraw(debugDraw);
-      this.mundo.DrawDebugData();
     },
 
     crear_circulo: function(opciones){
