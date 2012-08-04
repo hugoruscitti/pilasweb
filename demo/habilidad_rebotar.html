@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script data-main="../pilasengine/main.js" src="../pilasengine/libs/require.js"></script>
+
+    <title>Rebotar</title>
+
+    <script type="text/javascript">
+    require.config({
+      baseUrl: "../pilasengine",
+    });
+
+
+    // All variables are global in terms of developing pourposes
+    require(['main'], function(pilasengine){
+      pilas = new pilasengine.Pilas('canvas', '../data/');
+      var aceituna1 = new pilas.actores.Aceituna();
+      aceituna1.aprender(pilas.habilidades.RebotarComoPelota);
+
+      var aceituna2 = new pilas.actores.Aceituna(10, 100);
+      aceituna2.aprender(pilas.habilidades.RebotarComoPelota);
+    });
+    </script>
+    <style>
+    canvas {
+      border: 1px solid gray;
+    }
+    </style>
+</head>
+<body>
+    <canvas id='canvas' width=600 height=400></canvas>
+
+    <p><a href='../index.html'>Regresar al indice</a>.
+</body>
+</html>

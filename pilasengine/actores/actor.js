@@ -11,8 +11,9 @@ define(
 
       initialize: function(imagen, x, y, centro_x, centro_y, escala_x, escala_y, rotacion) {
         imagen = imagen || "sin_imagen.png";
-
         this.imagen = this.cargar_imagen(imagen);
+        
+        this.nombre = "Actor";
         this.inicializar(x, y, centro_x, centro_y, escala_x, escala_y, rotacion);
 
         this.centro_x = 16;
@@ -30,7 +31,7 @@ define(
 
         this.escala_x = escala_x || 1;
         this.escala_y = escala_y || 1;
-        this._rotacion = rotacion || 0;
+        this.rotacion = rotacion || 0;
       },
 
       /**
@@ -39,7 +40,6 @@ define(
        * Este método se suele sobre-escribir para tener control sobre el actor.
        */
       actualizar: function() {
-        this.actualizar_habilidades();
       },
 
       /**
@@ -54,7 +54,7 @@ define(
         contexto.translate(this.x, -this.y);
         singleton.get().camara.fijar_posicion(contexto);
 
-        contexto.rotate(singleton.get().utils.convertir_a_radianes(this._rotacion));
+        contexto.rotate(singleton.get().utils.convertir_a_radianes(this.rotacion));
         contexto.scale(this.escala_x, this.escala_y);
         contexto.translate(-this.centro_x, -this.centro_y);
         this.imagen.draw(contexto);

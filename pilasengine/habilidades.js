@@ -1,6 +1,8 @@
-define(['mootools'], function(mootools) {
+define(['mootools', 'singleton'], 
+  function(mootools, singleton) {
+
   var Habilidad = new Class({
-    iniciar: function(actor) {
+    initialize: function(actor) {
       this.actor = actor;
     },
     actualizar: function() {
@@ -10,7 +12,7 @@ define(['mootools'], function(mootools) {
   var Estudiante = new Class({
     habilidades: [],
     aprender: function(habilidad) {
-      habilidad.iniciar(this);
+      var habilidad = new habilidad(this);
       this.habilidades.push(habilidad);
     },
 
@@ -23,6 +25,9 @@ define(['mootools'], function(mootools) {
 
   var Girar = new Class({
     Extends: Habilidad,
+    initialize: function(actor) {
+      this.parent(actor);
+    },
     actualizar: function() {
       this.actor.rotacion += 1;
     }
@@ -30,12 +35,24 @@ define(['mootools'], function(mootools) {
 
   var RebotarComoPelota = new Class({
     Extends: Habilidad,
-    initialize: function() {
-      this.figura = pilas.fisica.crear_circulo();
+    initialize: function(actor) {
+      this.parent(actor);
+
+      // Acceso a objeto pilas
+      var pilas = singleton.get();
+
+      this.figura = pilas.fisica.crear_circulo({
+        x: this.actor.x,
+        y: this.actor.y,
+        radio: 18,
+      });
     },
     actualizar: function() {
-      //this.actor.x = this.figura.GetWorldCenter().x;
-      //this.actor.y = this.figura.GetWorldCenter().y;
+      var posicion = this.figura.obtener_posicion();
+
+      this.actor.x = posicion.x;
+      this.actor.y = posicion.y;
+      this.actor.rotacion = this.figura.obtener_rotacion();
     }
   });
 

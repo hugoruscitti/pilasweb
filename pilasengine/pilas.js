@@ -1,8 +1,9 @@
 define(
   ['singleton', 'eventos', 'mootools', 'actores',
-   'camara', 'imagenes', 'depurador', 'utils', 'fisica'],
+   'camara', 'imagenes', 'depurador', 'utils', 
+   'fisica', 'habilidades'],
   function(singleton, eventos, mootools, actores,
-    camara, imagenes, depurador, utils, fisica){
+    camara, imagenes, depurador, utils, fisica, habilidades){
     
     /**
      * Representa la clase principal que controla el videojuego.
@@ -30,19 +31,22 @@ define(
         this.depurador = new depurador.Depurador(this);
 
         this.utils = new utils.Utils();
-        //this.fisica = new fisica.Fisica()
+        
+        // Cargar el mundo de Box2d
+        
+        // NOTA: se envia la referencia a this, porque de otra forma, la clase
+        //       Fisica no puede acceder al objeto pilas. El singleton en este
+        //       caso no funcionaria, porque estamos en el contexto del constructor
+        //       del singleton.
+        this.fisica = new fisica.Fisica(this);
+        
         singleton.set(this);
         Ticker.setFPS(60);
         Ticker.addListener(this);
+      },
 
-        this.eventos.click_de_mouse.conectar(function(e){
-          var x = e.x, y = e.y;
-          var actor;
-          actor = that.actor_clickeado(x, y);
-          if (actor) {
-            actor.click();
-          }
-        });
+      deshabilitar_main_loop: function() {
+        Ticker.removeAllListeners();
       },
 
       /**
@@ -69,17 +73,17 @@ define(
 
         this._limpiar(c);
         this.depurador.comienza_dibujado();
-        //this.fisica.actualizar();
+        this.fisica.actualizar();
 
         for (var i=0; i<this.lista_actores.length; i++) {
           var actor = this.lista_actores[i];
+          actor.actualizar_habilidades();
           actor.actualizar();
           actor.dibujar(c);
           this.depurador.dibuja_al_actor(actor);
         }
 
         this.depurador.termina_dibujado();
-
       },
 
       /**
@@ -136,7 +140,13 @@ define(
        * @property
        * Contine a todos los actores disponibles.
        */
-      actores: actores
+      actores: actores,
+
+      /**
+       * @property
+       * Contiene a todas las habilidades que los actores pueden aprender.
+       */
+      habilidades: habilidades,
     });
 
     
