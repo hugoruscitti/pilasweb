@@ -105,7 +105,7 @@ define(['mootools', 'libs/Box2dWeb-2.1.a.3', 'singleton'],
     },
 
     actualizar: function(){
-      this.mundo.Step(1/20.0, 1, 1);
+      this.mundo.Step(1/60.0, 1, 1);
     },
 
     crear_circulo: function(opciones){
