@@ -41,7 +41,7 @@ define(
         this.fisica = new fisica.Fisica(this);
         
         singleton.set(this);
-        Ticker.setFPS(60);
+        Ticker.setFPS(200);
         Ticker.addListener(this);
       },
 
