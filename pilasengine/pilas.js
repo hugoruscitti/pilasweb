@@ -138,7 +138,7 @@ define(
 
       /**
        * @property
-       * Contine a todos los actores disponibles.
+       * Contiene a todos los actores disponibles.
        */
       actores: actores,
 
