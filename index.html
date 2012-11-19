@@ -1,74 +1,59 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <title>pilasweb</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="fragment" content="!">
 
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Pilasweb : Versión de pilas-engine para navegadores usando HTML5" />
+  <link rel="shortcut icon" type="image/ico" href="favicon.ico" />
+  <link rel="stylesheet" href="resources/css/app.css" type="text/css" />
+  <link rel="stylesheet" href="resources/prettify/prettify.css" type="text/css" />
+  <link href="http://fonts.googleapis.com/css?family=Exo" rel="stylesheet" type="text/css" />
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+  <script type="text/javascript" src="extjs/ext-all.js"></script>
+  <script type="text/javascript" src="data.js"></script>
+  <script type="text/javascript" src="app.js"></script>
+  <script type="text/javascript" src="resources/prettify/prettify.js"></script>
 
-    <title>Pilasweb</title>
-  </head>
+  
 
-  <body>
+</head>
+<body id="ext-body">
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/hugoruscitti/pilasweb">View on GitHub</a>
+  <div id="loading"><span class="title"></span><span class="logo"></span></div>
 
-          <h1 id="project_title">Pilasweb</h1>
-          <h2 id="project_tagline">Versión de pilas-engine para navegadores usando HTML5</h2>
+  <div id="header-content">pilasweb</div>
+  
+          <div id='categories-content' style='display:none'>
+            <div class='section'>
+<h1>Others...</h1>
+<div class='left-column'>
+<h3>Others...</h3>
+<div class='links'>
+<a href="#!/api/Aceituna" rel="Aceituna" class="docClass">Aceituna</a>
+<a href="#!/api/Actor" rel="Actor" class="docClass">Actor</a>
+<a href="#!/api/Camara" rel="Camara" class="docClass">Camara</a>
+<a href="#!/api/Depurador" rel="Depurador" class="docClass">Depurador</a>
+<a href="#!/api/ModoDepurador" rel="ModoDepurador" class="docClass">ModoDepurador</a>
+<a href="#!/api/ModoPuntoDeControl" rel="ModoPuntoDeControl" class="docClass">ModoPuntoDeControl</a>
+<a href="#!/api/Pilas" rel="Pilas" class="docClass">Pilas</a>
+<a href="#!/api/Texto" rel="Texto" class="docClass">Texto</a>
+<a href="#!/api/global" rel="global" class="docClass">global</a>
+</div>
+</div>
+<div class='middle-column'>
+</div>
+<div class='right-column'>
+</div>
+<div style='clear:both'></div>
+</div>
+        </div>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/hugoruscitti/pilasweb/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/hugoruscitti/pilasweb/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+  
+  <div id='footer-content' style='display: none'>Generated with <a href='https://github.com/senchalabs/jsduck'>JSDuck</a> 3.11.0.</div>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>Welcome to GitHub Pages.</h3>
+  
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Pilasweb maintained by <a href="https://github.com/hugoruscitti">hugoruscitti</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    
-
-  </body>
+</body>
 </html>
