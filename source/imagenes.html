@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">define(['mootools'], function(mootools) {
+    var Imagenes = new Class({
+
+        initialize: function(prefijo) {
+            this.prefijo = prefijo || &quot;data/&quot;;
+        },
+
+        cargar: function(ruta) {
+            var imagen = new Bitmap(this.prefijo + ruta);
+            return imagen;
+        }
+    });
+
+
+    /*
+    var Imagenes = new Class({
+
+        initialize: function() {
+            this.loader = new PxLoader()
+            this.loader.addCompletionListener(function(){
+                console.log(&quot;Listo, se cargaron todas las imagenes&quot;)
+            })
+        },
+
+        comenzar: function() {
+            this.loader.start()
+        },
+
+        cargar: function(archivo, inmediatamente, callback) {
+            inmediatamente = inmediatamente || true
+
+            //var rutas = [archivo, &quot;data/&quot; + archivo, &quot;/data/&quot; + archivo, 
+            //            &quot;http://github.com/hugoruscitti/pilasweb/raw/master/data/&quot; + archivo]
+            
+            var imagen = this.loader.addImage(archivo)
+
+            if (inmediatamente)
+                this.comenzar()
+
+            return imagen;
+        },
+    })
+    */
+
+        /*
+        _deprecated: function() {
+
+            // Ejecuta el método callback_ready cuando la imagen se carga satisfactoriamente
+            image.onload = function() {
+                callback_ready(obj, image)
+            }
+
+            // Intenta cargar la imagen buscando en distintas rutas.
+            // La imagen se busca primero en el directorio del código HTML, pero
+            // si no está busca en distintas rutas (incluso en el repositorio de pilas-engine).
+            image.onerror = function(e) {
+                image.onerror = function(e) {
+                    image.onerror = function(e) {
+                        image.onerror = function(e) {
+                            throw &quot;Error, no se pudo obtener la imagen '&quot; + archivo + &quot;'&quot;
+                        }
+                        image.src = rutas[3]
+                    }
+                    image.src = rutas[2]
+                }
+                image.src = rutas[1];
+            }
+            image.src = rutas[0];
+        },
+    })
+    */
+
+    return {
+        Imagenes: Imagenes
+    };
+});
+</pre>
+</body>
+</html>

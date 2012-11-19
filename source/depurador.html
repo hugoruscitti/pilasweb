@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">define(['mootools', 'singleton'], function(){
+
+<span id='ModoPuntoDeControl'>    /**
+</span>     * @extends ModoDepurador
+     *
+     * Muestra el punto de control o centro de cada uno de los actores.
+     */
+    var ModoPuntoDeControl = new Class({
+        Extends: ModoDepurador,
+
+        initialize: function(depurador){
+            this.depurador = depurador;
+            this.g = depurador.g;
+            this.pilas = depurador.pilas;
+        },
+
+        dibuja_al_actor: function(actor){
+            var posicion = this.pilas.camara.obtener_posicion();
+            this.dibujar_cruz(this.g, posicion.x + actor.x, posicion.y - actor.y);
+        },
+
+<span id='ModoPuntoDeControl-method-dibujar_cruz'>        /**
+</span>         * @private
+         */
+        dibujar_cruz: function(g, x, y) {
+            this.g.setStrokeStyle(1);
+            this.g.beginStroke(Graphics.getRGB(255,0,0));
+
+            g.moveTo(x-3, y-3);
+            g.lineTo(x+3, y+3);
+
+            g.moveTo(x+3, y-3);
+            g.lineTo(x-3, y+3);
+        }
+    });
+
+<span id='ModoDepurador'>    /**
+</span>     * Representa uno de los posibles modos del depurador.
+     */
+    var ModoDepurador = new Class({
+<span id='ModoDepurador-method-dibuja_al_actor'>      /**
+</span>       * Se invoca en cada dibujado de actor.
+       */
+        dibuja_al_actor: function(actor){
+        },
+    });
+
+<span id='Depurador'>    /**
+</span>     * Permite generar graficos auxiliales sobre el canvas para depurar.
+     */
+    var Depurador = new Class({
+
+        initialize: function(pilas){
+            this.pilas = pilas;
+            this.g = new Graphics();
+            this.modos = [];
+        },
+
+        definir_modos: function(opciones) {
+            this.modos = [];
+
+            if (opciones.depuracion)
+                this.modos.push(new ModoPuntoDeControl(this));
+        },
+
+        comienza_dibujado: function(){
+            this.g.clear();
+        },
+
+        dibuja_al_actor: function(actor){
+            for (i=0; i&lt;this.modos.length; i++)
+                this.modos[i].dibuja_al_actor(actor);
+        },
+
+        termina_dibujado: function(){
+            this.g.draw(this.pilas.contexto);
+        }
+
+
+    });
+
+    return {
+        Depurador: Depurador
+    };
+});
+</pre>
+</body>
+</html>
