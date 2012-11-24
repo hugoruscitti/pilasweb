@@ -14,7 +14,7 @@
 
     var oliveGame = {};
     oliveGame.start = function(pilaswebengine){
-      this.pilas = new pilaswebengine.Pilas('canvas', '../data/');
+      this.pilas = new pilaswebengine.Pilas('canvas', '../pilaswebengine/data/');
       this.world = new Box2D.Dynamics.b2World(
         new Box2D.Common.Math.b2Vec2(0, 10),
         true

@@ -36,7 +36,7 @@ require(['require', './chai.js', './mocha.js'], function(require, _chai,_mocha){
 
         describe("Actores", function(){
             it("Crear un actor", function() {
-                var pilas = new pilaswebengine.Pilas('canvas', '../data/');
+                var pilas = new pilaswebengine.Pilas('canvas', '../pilaswebengine/data/');
                 var actor = new pilas.actores.Actor();
 
                 actor.should.to.be.ok;
