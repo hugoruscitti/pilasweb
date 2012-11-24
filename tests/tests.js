@@ -5,25 +5,25 @@ require(['require', './chai.js', './mocha.js'], function(require, _chai,_mocha){
 
 
 
-    require(['main'], function(pilasengine){
-        console.log("module: ", pilasengine);
+    require(['main'], function(pilaswebengine){
+        console.log("module: ", pilaswebengine);
 
         describe("Inicializar", function(){
 
             it("Inicializa correctamente", function() {
-                var pilas = new pilasengine.Pilas('canvas');
+                var pilas = new pilaswebengine.Pilas('canvas');
                 pilas.should.be.ok;
             });
 
             it("Falla si no encuenta en canvas", function() {
                 (function() {
-                    var pilas = new pilasengine.Pilas('id_de_un_canvas_que_no_existe');
+                    var pilas = new pilaswebengine.Pilas('id_de_un_canvas_que_no_existe');
                 }).should.throw(Error);
 
             });
 
             it("Puede tratar como un singleton", function() {
-                var pilas = new pilasengine.Pilas('canvas');
+                var pilas = new pilaswebengine.Pilas('canvas');
 
                 var misma_instancia = pilas.obtener_instancia();
                 var otra_misma_instancia = pilas.obtener_instancia();
@@ -36,7 +36,7 @@ require(['require', './chai.js', './mocha.js'], function(require, _chai,_mocha){
 
         describe("Actores", function(){
             it("Crear un actor", function() {
-                var pilas = new pilasengine.Pilas('canvas', '../data/');
+                var pilas = new pilaswebengine.Pilas('canvas', '../data/');
                 var actor = new pilas.actores.Actor();
 
                 actor.should.to.be.ok;

@@ -1,15 +1,15 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <script src="../pilasengine/libs/require.js"></script>
+    <script src="../pilaswebengine/libs/require.js"></script>
 
     <script type="text/javascript">
     require.config({
-      baseUrl: "../pilasengine",
+      baseUrl: "../pilaswebengine",
     });
 
-    require(['main'], function(pilasengine){
-      var pilas = new pilasengine.Pilas("canvas", '../data/');
+    require(['main'], function(pilaswebengine){
+      var pilas = new pilaswebengine.Pilas("canvas", '../data/');
 
       window.pilas = pilas;
       pilas.depurador.definir_modos({depuracion: true});
