@@ -1,15 +1,19 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <script src="../pilasengine/libs/require.js"></script>
+
+    <link rel="stylesheet" href="../pilaswebengine/css/normalize.css" />
+
+
+    <script src="../pilaswebengine/js/libs/require.js"></script>
 
     <script type="text/javascript">
       require.config({
-        baseUrl: "../pilasengine",
+        baseUrl: "../pilaswebengine/js",
       });
 
-      require(['main'], function(pilasengine){
-        window.pilasengine = pilasengine;
+      require(['main'], function(pilaswebengine){
+        window.pilaswebengine = pilaswebengine;
       });
 
       function ejecutar_codigo() {
@@ -31,7 +35,7 @@
 
     <form>
         <textarea cols=90 rows=20 id='codigo'>
-var pilas = new pilasengine.Pilas("canvas", '../data/');
+var pilas = new pilaswebengine.Pilas("canvas", '../pilaswebengine/data/');
 var actor = new pilas.actores.Actor();
 
 pilas.depurador.definir_modos({depuracion: true});

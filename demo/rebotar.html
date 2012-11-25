@@ -2,19 +2,23 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <script src="../pilasengine/libs/require.js"></script>
-    <script src="../pilasengine/libs/Box2dWeb-2.1.a.3.js"></script>
+
+    <link rel="stylesheet" href="../pilaswebengine/css/normalize.css" />
+
+
+    <script src="../pilaswebengine/js/libs/require.js"></script>
+    <script src="../pilaswebengine/js/libs/Box2dWeb-2.1.a.3.js"></script>
 
     <title>Rebotar</title>
 
     <script type="text/javascript">
     require.config({
-      baseUrl: "../pilasengine",
+      baseUrl: "../pilaswebengine/js",
     });
 
     var oliveGame = {};
-    oliveGame.start = function(pilasengine){
-      this.pilas = new pilasengine.Pilas('canvas', '../data/');
+    oliveGame.start = function(pilaswebengine){
+      this.pilas = new pilaswebengine.Pilas('canvas', '../pilaswebengine/data/');
       this.world = new Box2D.Dynamics.b2World(
         new Box2D.Common.Math.b2Vec2(0, 10),
         true
@@ -79,8 +83,8 @@
       }
     }
     // All variables are global in terms of developing pourposes
-    require(['main'], function(pilasengine){
-      oliveGame.start(pilasengine);
+    require(['main'], function(pilaswebengine){
+      oliveGame.start(pilaswebengine);
     });
     </script>
     <style>

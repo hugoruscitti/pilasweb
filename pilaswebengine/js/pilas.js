@@ -10,7 +10,7 @@ define(
      * @singleton
      *
      *      @example
-     *      var pilas = new pilasengine.Pilas("canvas", "../data");
+     *      var pilas = new pilaswebengine.Pilas("canvas", "../data");
      */
     var Pilas = new Class({
 

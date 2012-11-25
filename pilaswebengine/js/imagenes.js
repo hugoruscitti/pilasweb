@@ -2,7 +2,7 @@ define(['mootools'], function(mootools) {
   var Imagenes = new Class({
 
     initialize: function(prefijo) {
-        this.prefijo = prefijo || "data/";
+        this.prefijo = prefijo || "pilaswebengine/data/";
     },
 
     cargar: function(ruta) {
