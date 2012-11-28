@@ -46,7 +46,7 @@ define(
        * Pinta el actor sobre el contexto de canvas.
        *
        * Este método se invoca automáticamente desde el mainloop
-       * de pilasengine.
+       * de pilaswebengine.
        */
       dibujar: function(contexto) {
         contexto.save();

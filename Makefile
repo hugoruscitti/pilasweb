@@ -1,11 +1,11 @@
 compilar:
-	cd pilasengine; node ../r.js -o name=main out=../dist/pilasengine.min.js baseUrl=.
+	cd pilaswebengine; node ../r.js -o name=main out=../dist/pilaswebengine.min.js baseUrl=.
 
 docs: FORCE
-	jsduck pilasengine/* -o docs --title=pilasweb
+	jsduck pilaswebengine/* -o docs --title=pilasweb
 
 deploy: FORCE
-	@echo "Generando pilasengine.min.js ..."
+	@echo "Generando pilaswebengine.min.js ..."
 	@make compilar > /dev/null
 	rm -r -f dist_master
 	mv dist dist_master
