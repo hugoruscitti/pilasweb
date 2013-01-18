@@ -9,7 +9,8 @@ precompilar:
 	@echo ""
 
 minificar:
-	@echo "Minificando (Tarea vacía)..."
+	@echo "Minificando librería pilasweb-engine..."
+	rm -rf build/
 	node r-2.1.2.js -o r.build.js
 	cp -r src/data build/data
 	@echo ""

@@ -1,4 +1,4 @@
-define ['pilas', 'utils',],
- (_kineticjs, pilas, utils) ->
+define ['pilas', 'utils'],
+ (pilas, utils) ->
 
     return pilas

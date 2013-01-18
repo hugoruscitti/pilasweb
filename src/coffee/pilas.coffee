@@ -5,16 +5,20 @@ define ['actores', 'imagenes', 'depurador'],
         constructor: ->
             @lista_actores = []
 
-            @depurador = new Depurador()
-            @imagenes = new Imagenes ()=>
-                @onready()
-                @mainloop()
-                `void 0`
-
         iniciar: (options)->
             options = {} if not options?
             options.ancho = 320 if not options.ancho?
             options.alto = 240 if not options.alto?
+            options.data_path = 'data' if not options.data_path?
+
+            @depurador = new Depurador()
+            @imagenes = new Imagenes(
+                ()=>
+                    @onready()
+                    @mainloop()
+                    `void 0`
+                , options.data_path)
+
 
             @canvas_element = document.getElementsByTagName "canvas"
 

@@ -58,7 +58,7 @@ define ['libs/PxLoader', 'libs/PxLoaderImage'],
             return ha_reiniciado
 
     class Imagenes
-        constructor: (@onready)->
+        constructor: (@onready, @data_path='data')->
             @crear_barra_de_progreso()
             @recursos = {}
             @contador_imagenes_solicitadas = 0
@@ -92,7 +92,7 @@ define ['libs/PxLoader', 'libs/PxLoaderImage'],
             `void 0`
 
         cargar_recurso: (loader, name)->
-            path = "data/#{name}"
+            path = "#{@data_path}/#{name}"
             @recursos[name] = loader.addImage path
             @contador_imagenes_solicitadas += 1
             `void 0`
