@@ -1,6 +1,8 @@
 /build/
 /doc/
-/src/js/actores.js
+/src/js/actores/aceituna.js
+/src/js/actores/actor.js
+/src/js/actores/cooperativista.js
 /src/js/depurador.js
 /src/js/imagenes.js
 /src/js/init.js

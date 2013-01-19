@@ -1,9 +1,16 @@
-define ['actores', 'imagenes', 'depurador'],
- (actores, Imagenes, Depurador)->
+###
+ Licencia de pilasweb.
+###
+define ['actores/actor', 'actores/aceituna', 'actores/cooperativista', 'imagenes', 'depurador'],
+ (Actor, Aceituna, Cooperativista, Imagenes, Depurador)->
 
     class Pilas
         constructor: ->
             @lista_actores = []
+            @actores =
+                Actor: Actor
+                Aceituna: Aceituna
+                Cooperativista: Cooperativista
 
         iniciar: (options)->
             options = {} if not options?
@@ -67,8 +74,6 @@ define ['actores', 'imagenes', 'depurador'],
 
             window.painter = painter
             `void 0`
-
-        actores: actores
 
     window.pilas = new Pilas() if not window.pilas?
     return window.pilas
