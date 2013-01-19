@@ -15,7 +15,8 @@ ayuda:
 
 dependencias_apt-get: coffee_apt-get jsduck_apt-get
 	@echo "Dependencias instaladas."
-nodejs:
+nodejs: /usr/local/bin/node
+	@echo "Instalando node.js..."
 	if ! [ -f node-v0.8.17.tar.gz ]; then \
 		wget http://nodejs.org/dist/v0.8.17/node-v0.8.17.tar.gz; \
 	fi
@@ -27,15 +28,26 @@ nodejs:
 	make ; \
 	make install
 	rm -rf node-v0.8.17/ node-v0.8.17.tar.gz
-coffee_apt-get: nodejs
+	@echo ""
+coffee_apt-get: nodejs /usr/local/bin/coffee
+	@echo "Instalando CoffeeScript pre-processor..."
 	apt-get install npm
 	npm install -g coffee-script
-jsduck_apt-get:
+	@echo ""
+ruby_apt-get: /usr/bin/ruby
+	@echo "Instalando Ruby..."
 	apt-get install ruby irb rdoc
+	@echo ""
+rubygems_apt-get: ruby_apt-get /usr/bin/gem
+	@echo "Instalando RubyGems..."
 	apt-get install rubygems
+	@echo ""
+jsduck_apt-get: rubygems_apt-get
+	@echo "Instalando JsDuck..."
 	gem install jsduck
+	@echo ""
 
-generar: preprocesarar minificar documentar-coffee documentar-js
+generar: preprocesar minificar documentar-coffee documentar-js
 	@echo "Librería pilasweb-engine generada."
 preprocesar:
 	@echo "Preprocesando (coffee a js)..."
