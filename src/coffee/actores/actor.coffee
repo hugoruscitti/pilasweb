@@ -1,4 +1,13 @@
+###
+ Licencia de pilasweb.
+###
 define ->
+    ###
+    ##/**
+    ## * @class actor
+    ## * Clase general de la que heredan los actores. Contiene la funcionalidad común de todos los actores.
+    ## * /
+    ###
     class Actor
         constructor: (imagen, options)->
             options = {} if not options?
@@ -23,25 +32,4 @@ define ->
                 @escala_x, @escala_y, @rotacion, @transparencia
             `void 0`
 
-    class Aceituna extends Actor
-        constructor: (options)->
-            super 'aceituna.png', options
-            @centro_x = 18
-            @centro_y = 18
-
-    class Cooperativista extends Actor
-        constructor: (options)->
-            super 'aceituna.png', options
-            @imagen = pilas.imagenes.cargar_grilla(
-                "cooperativista/camina.png", 4, 1)
-            @centro_x = 50
-            @centro_y = 108
-
-        actualizar: ->
-            @imagen.avanzar()
-            `void 0`
-
-    actores =
-        Aceituna: Aceituna
-        Cooperativista: Cooperativista
-    return actores
+    return Actor
