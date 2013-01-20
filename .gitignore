@@ -1,2 +1,14 @@
+<<<<<<< HEAD
 
 .DS_Store
+=======
+/build/
+/doc/
+/src/js/actores/aceituna.js
+/src/js/actores/actor.js
+/src/js/actores/cooperativista.js
+/src/js/depurador.js
+/src/js/imagenes.js
+/src/js/init.js
+/src/js/pilas.js
+>>>>>>> 320481149362ad4afa24ac766e3143f3d1f922b2

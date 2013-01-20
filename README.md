@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 pilasweb
 ========
 
@@ -13,3 +14,9 @@ Si quieres conocer mas acerca del proyecto, puedes ver el proyecto
 original: www.pilas-engine.com.ar o bien ver nuestra documentación
 en: http://hugoruscitti.github.com/pilasweb/
 
+=======
+test_CoffeeScrip-pilasweb
+=========================
+
+Pruebas de implementación de pilasweb en CoffeeScript.
+>>>>>>> 320481149362ad4afa24ac766e3143f3d1f922b2
