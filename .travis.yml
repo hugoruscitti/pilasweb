@@ -5,4 +5,5 @@ node_js:
   - 0.7 # development version of 0.8, may be unstable
 before_install:
   - npm install coffee-script
+  - npm install mocha-phantomjs
 script: make tests
