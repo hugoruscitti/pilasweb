@@ -1,7 +1,7 @@
 pilasweb
 ========
 
-![Build Status](https://travis-ci.org/hugoruscitti/pilasweb.png?branch=master)
+[![Build Status](https://travis-ci.org/hugoruscitti/pilasweb.png?branch=master)](https://travis-ci.org/hugoruscitti/pilasweb)
 
 Pilas es una biblioteca para realizar videojuegos de manera simple
 y divertida.
