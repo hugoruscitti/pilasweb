@@ -67,3 +67,8 @@ documentar-js:
 	@echo "Generando documentacion de js..."
 	#jsduck src/js/*.js -o doc/js --title="pilasweb-engine (js)"
 	@echo ""
+
+tests:
+	# También se pueden ver abriendo el archivo unit-tests/run.html desde el navegador.
+	mocha-phantomjs unit-tests/run.html
+
