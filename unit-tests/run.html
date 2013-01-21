@@ -13,10 +13,15 @@
             mocha.reporter('html');
             var expect = chai.expect;
         </script>
+        <script src="../build/pilasweb-engine-0.0.min.js"></script>
         <script src="test.js"></script>
         <script>
-            if (window.mochaPhantomJS) { mochaPhantomJS.run(); }
-            else { mocha.run(); }
+          if (window.mochaPhantomJS) {
+            mochaPhantomJS.run();
+          }
+          else { 
+            mocha.run();
+          }
         </script>
     </body>
 </html>
