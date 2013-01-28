@@ -4,17 +4,15 @@ ayuda:
 	@echo ""
 	@echo "¡Estás viendo la ayuda de makefile para pilasweb-engine!"
 	@echo ""
-	@echo "Si quieres instalar los programas utilizados para generar la librería pilasweb-engine, escribe en la terminal:"
+	@echo "Estos son algunos de los comandos que podrías ejecutar:"
 	@echo ""
-	@echo "  make dependencias_apt-get"
-	@echo ""
-	@echo "Si quieres generar la librería pilasweb-engine a partir de los fuentes, escribe en la terminal:"
-	@echo ""
-	@echo "  make generar"
-	@echo ""
+	@echo "  dependencias_apt-get \t Instala las dependencias en un linux tipo ubuntu/debian."
+	@echo "  generar \t\t Contruye la biblioteca y genera el codigo minificado."
+	@echo "  test \t\t\t Ejecuta todas las pruebas sobre la biblioteca."
 
 dependencias_apt-get: coffee_apt-get jsduck_apt-get
 	@echo "Dependencias instaladas."
+
 nodejs: /usr/local/bin/node
 	@echo "Instalando node.js..."
 	if ! [ -f node-v0.8.17.tar.gz ]; then \
