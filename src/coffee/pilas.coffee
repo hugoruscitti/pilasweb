@@ -1,8 +1,8 @@
 ###
  Licencia de pilasweb.
 ###
-define ['actores/actor', 'actores/aceituna', 'actores/cooperativista', 'imagenes', 'depurador'],
- (Actor, Aceituna, Cooperativista, Imagenes, Depurador)->
+define ['actores/actor', 'actores/aceituna', 'actores/cooperativista', 'imagenes', 'depurador', 'fisica'],
+ (Actor, Aceituna, Cooperativista, Imagenes, Depurador, Fisica)->
 
     class Pilas
         constructor: ->

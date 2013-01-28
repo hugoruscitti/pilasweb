@@ -7,7 +7,7 @@ ayuda:
 	@echo "Estos son algunos de los comandos que podrías ejecutar:"
 	@echo ""
 	@echo "  dependencias_apt-get \t Instala las dependencias en un linux tipo ubuntu/debian."
-	@echo "  generar \t\t Contruye la biblioteca y genera el codigo minificado."
+	@echo "  generar \t\t Contruye la biblioteca, genera el codigo minificado y la documentación."
 	@echo "  test \t\t\t Ejecuta todas las pruebas sobre la biblioteca."
 
 dependencias_apt-get: coffee_apt-get jsduck_apt-get
