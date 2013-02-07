@@ -14,4 +14,4 @@ sobre navegadores, utilizando HTML, CoffeScript, JavaScript y Box2D.
 Ejemplo
 -------
 
-http://jsfiddle.net/hugoruscitti/BXBC2/embedded/result,js,html
+http://jsfiddle.net/hugoruscitti/BXBC2/
