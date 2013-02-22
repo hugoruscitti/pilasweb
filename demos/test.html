@@ -23,9 +23,10 @@
   </style>
 
   <script data-main="../src/js/init.js" src="../src/js/requirejs-2.1.2.min.js"></script>
-  <script>/*
+  <script>
     require(['init'], function(pilas){
-      window.pilas.iniciar({ancho: 320, alto: 240});
+      window.pilas = pilas;
+      window.pilas.iniciar({ancho: 320, alto: 240, data_path: '../build/data'});
 
       window.pilas.onready = function() {
         var p = new pilas.actores.Aceituna();
@@ -36,7 +37,7 @@
         p.escala_x = 4;
         p.rotacion = 20;
       };
-    });*/
+    });
   </script>
   
   </head>

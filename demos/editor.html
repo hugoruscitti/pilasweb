@@ -42,7 +42,8 @@
 
     <script src="../build/pilasweb-engine-0.0.min.js"></script>
     <script>
-    require(['init'], function(){
+    require(['init'], function(pilas){
+      window.pilas = pilas;
       window.pilas.iniciar({ancho: 320, alto: 240, data_path: '../build/data'});
       window.pilas.onready = function(){;
         // Ejecuta el codigo del editor.

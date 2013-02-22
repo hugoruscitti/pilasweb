@@ -75,5 +75,5 @@ define ['actores/actor', 'actores/aceituna', 'actores/cooperativista', 'imagenes
             window.painter = painter
             `void 0`
 
-    window.pilas = new Pilas() if not window.pilas?
-    return window.pilas
+    pilas = new Pilas() if not pilas?
+    return pilas

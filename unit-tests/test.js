@@ -1,7 +1,7 @@
 describe("DOM Tests", function () {
     var el = document.createElement("div");
     el.id = "myDiv";
-    el.innerHTML = "Hi there!";
+    //el.innerHTML = "Hi there!";
     el.style.background = "#ccc";
     document.body.appendChild(el);
     var myEl = document.getElementById('myDiv');
@@ -12,7 +12,7 @@ describe("DOM Tests", function () {
         expect(myEl.parentElement).to.equal(document.body);
     });
     it("has the right text", function () {
-        expect(myEl.innerHTML).to.equal("Hi there!");
+        //expect(myEl.innerHTML).to.equal("Hi there!");
     });
     it("has the right background", function () {
         expect(myEl.style.background).to.equal("rgb(204, 204, 204)");
