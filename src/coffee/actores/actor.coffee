@@ -32,4 +32,10 @@ define ->
                 @escala_x, @escala_y, @rotacion, @transparencia
             `void 0`
 
+        __getattr__: (x) ->
+            return @x
+
+        __setattr__: (x, v) ->
+            this[x] = v
+
     return Actor
