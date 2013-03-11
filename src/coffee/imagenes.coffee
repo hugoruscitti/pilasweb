@@ -39,7 +39,7 @@ define ['libs/PxLoader', 'libs/PxLoaderImage'],
             painter.scale escala_x, escala_y
             painter.rotate rotacion * (Math.PI / 180)
 
-            painter.drawImageFromRect @imagen,
+            painter.drawImage @imagen,
                 @dx, @dy, @cuadro_ancho,
                 @cuadro_alto, -dx, -dy,
                 @cuadro_ancho, @cuadro_alto
