@@ -2,13 +2,17 @@
  Licencia de pilasweb.
 ###
 define ->
-    ###
-    ##/**
-    ## * @class actor
-    ## * Clase general de la que heredan los actores. Contiene la funcionalidad común de todos los actores.
-    ## * /
-    ###
+##  /**
+##   * @class Actor
+##   * Clase general de la que heredan los actores. Contiene la funcionalidad común de todos los actores.
+##   */
     class Actor
+##      /**
+##       * Constructor de clase actor.
+##       * @constructor
+##       * @param {String} imagen Nombre del fichero de imagen para el actor.
+##       * @param {Object} options Contiene las propiedades que se quieren personalizar.
+##       */
         constructor: (imagen, options)->
             options = {} if not options?
 
@@ -22,10 +26,17 @@ define ->
             @transparencia = options.transparencia or 0;
 
             @imagen = pilas.imagenes.cargar imagen;
-            pilas.agregar this
-
+            pilas.agregar @
+##      /**
+##       * @method actualizar
+##       * Se ejecuta en el bucle principal del juego para actualizar la lógica del actor.
+##       */
         actualizar: ->
-
+##      /**
+##       * @method dibujar
+##       * Se ejecuta en el bucle principal del juego para actualizar la imagen del actor en el canvas.
+##       * @param {HTMLElement} painter El canvas en el que se dibujará el actor.
+##       */
         dibujar: (painter)->
             @imagen.dibujar painter,
                 @x, @y, @centro_x, @centro_y,
