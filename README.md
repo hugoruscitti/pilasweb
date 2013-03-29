@@ -1,17 +1,20 @@
-pilasweb
-========
+## Pilas web engine [![Build Status](https://travis-ci.org/hugoruscitti/pilasweb.png?branch=master)](https://travis-ci.org/hugoruscitti/pilasweb)
 
-[![Build Status](https://travis-ci.org/hugoruscitti/pilasweb.png?branch=master)](https://travis-ci.org/hugoruscitti/pilasweb)
+### ¿Qué es pilas web engine?
 
-Pilas es una biblioteca para realizar videojuegos de manera simple
-y divertida.
-
-http://www.pilas-engine.com.ar
-
-Este repositorio contiene una versión hermana programada para funcionar
+Pilas web es una versión hermana de pilas programada para funcionar
 sobre navegadores, utilizando HTML, CoffeScript, JavaScript y Box2D.
 
-Ejemplo
--------
+Puedes saber mas de pilas web en: http://pilas-editor.com.ar/
 
-http://jsfiddle.net/hugoruscitti/BXBC2/
+### Pilas engine
+
+Pilas es una biblioteca escrita en python para realizar videojuegos de manera simple
+y divertida.
+
+Puedes saber mas acerca de pilas en: http://www.pilas-engine.com.ar
+
+### Ejemplos
+
+- [Ver prototipo de pilas web](http://hugoruscitti.github.com/pilas-editor/editor#/)
+- [Ver ejemplo de uso de pilas web](http://jsfiddle.net/hugoruscitti/BXBC2/)
