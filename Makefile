@@ -62,7 +62,7 @@ generar:
 	sed -i \
 		-e 's_^_//_' \
 		-e 's_^//##[^#]_   _' {} \;
-	jsduck doc/temp_dir/* doc/temp_dir/actores/* -o doc/coffee/ --title="pilasweb-engine (coffee)"
+	jsduck doc/temp_dir/* doc/temp_dir/actores/* -o doc/coffee/ --title="pilasweb-engine (coffee)" --categories="categories.jsduck"
 	rm -rf doc/temp_dir/
 	find doc/coffee/source/ -type f -exec \
 	sed -i \
