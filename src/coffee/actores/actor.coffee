@@ -1,9 +1,15 @@
 ###
- Licencia de pilasweb.
+ -*- encoding: utf-8 -*-
+ pilasweb engine - a video game framework.
+
+ copyright 2013 - Hugo Ruscitti, Sergio Lindo <sergiolindo.empresa at gmail.com>
+ license: lgplv3 (see http://www.gnu.org/licenses/lgpl.html)
+
+ website - http://hugoruscitti.github.com/pilasweb
 ###
 define ->
 ##  /**
-##   * @class Actor
+##   * @class Pilas.actores.Actor
 ##   * Clase general de la que heredan los actores. Contiene la funcionalidad común de todos los actores.
 ##   */
     class Actor
@@ -47,6 +53,6 @@ define ->
             return @x
 
         __setattr__: (x, v) ->
-            this[x] = v
+            @[x] = v
 
     return Actor

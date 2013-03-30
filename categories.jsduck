@@ -1,0 +1,24 @@
+[
+	{
+		"name": "Principal",
+		"groups": [
+			{
+				"name": "Base",
+				"classes": [
+					"Pilas"
+				]
+			}
+		]
+	},
+	{
+		"name": "Actores",
+		"groups": [
+			{
+				"name": "Actor base",
+				"classes": [
+					"Pilas.actores.Actor"
+				]
+			}
+		]
+	}
+]
