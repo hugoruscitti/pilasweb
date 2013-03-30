@@ -20,5 +20,16 @@
 				]
 			}
 		]
+	},
+	{
+		"name": "Otras",
+		"groups": [
+			{
+				"name": "Utilidades",
+				"classes": [
+					"utils"
+				]
+			}
+		]
 	}
 ]
