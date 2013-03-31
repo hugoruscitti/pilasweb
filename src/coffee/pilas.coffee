@@ -7,8 +7,8 @@
 
  website - http://hugoruscitti.github.com/pilasweb
 ###
-define ['libs/createjs-2013.02.12.min.js', 'actores/actor', 'actores/aceituna', 'actores/cooperativista', 'imagenes', 'depurador', 'fisica'],
- (CreateJS, Actor, Aceituna, Cooperativista, Imagenes, Depurador, Fisica)->
+define ['libs/createjs-2013.02.12.min.js', 'fondos/plano', 'actores/actor', 'actores/aceituna', 'actores/cooperativista', 'imagenes', 'depurador', 'fisica'],
+ (CreateJS, Plano, Actor, Aceituna, Cooperativista, Imagenes, Depurador, Fisica)->
 ##  /**
 ##   * @class Pilas
 ##   * @singleton
@@ -30,6 +30,8 @@ define ['libs/createjs-2013.02.12.min.js', 'actores/actor', 'actores/aceituna', 
                 Actor: Actor
                 Aceituna: Aceituna
                 Cooperativista: Cooperativista
+            @fondos =
+                Plano: Plano
 ##      /**
 ##       * @method actualizar
 ##       * Actualiza la lógica y los gráficos del juego.
