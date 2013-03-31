@@ -7,6 +7,7 @@
 
  website - http://hugoruscitti.github.com/pilasweb
 ###
+#
 define ->
 ##  /**
 ##   * @class Pilas.actores.Actor
@@ -19,9 +20,14 @@ define ->
 ##       * @param {String} imagen Nombre del fichero de imagen para el actor.
 ##       * @param {Object} options Contiene las propiedades que se quieren personalizar.
 ##       */
-        constructor: (imagen, options)->
+        constructor: (imagen, options, @sprite="")->
             options = {} if not options?
+            @imagen = pilas.imagenes.cargar imagen;
+            @sprite = new createjs.Bitmap(@imagen.imagen)
+            @apply_options options
+            pilas.agregar @
 
+        apply_options: (options) ->
             @x = options.x or 0;
             @y = options.y or 0;
             @centro_x = options.centro_x or 0;
@@ -31,23 +37,37 @@ define ->
             @rotacion = options.rotacion or 0;
             @transparencia = options.transparencia or 0;
 
-            @imagen = pilas.imagenes.cargar imagen;
-            pilas.agregar @
+        Object.defineProperties @prototype,
+            x:
+                get: -> @sprite.x - 160
+                set: (x) -> @sprite.x = x + 160
+            y:
+                get: -> 120 - @sprite.y
+                set: (y) -> @sprite.y = 120 - y
+            centro_x:
+                get: -> @sprite.regX
+                set: (dx) -> @sprite.regX = dx
+            centro_y:
+                get: -> @sprite.regY
+                set: (dy) -> @sprite.regY = dy
+            rotacion:
+                get: -> @sprite.rotation
+                set: (r) -> @sprite.rotation = r
+            escala_x:
+                get: -> @sprite.scaleX
+                set: (x) -> @sprite.scaleX = x
+            escala_y:
+                get: -> @sprite.scaleY
+                set: (y) -> @sprite.scaleY = y
+            transparencia:
+                get: -> 100 - (@sprite.alpha * 100)
+                set: (a) -> @sprite.alpha = 1 - (a/100)
+
 ##      /**
 ##       * @method actualizar
 ##       * Se ejecuta en el bucle principal del juego para actualizar la lógica del actor.
 ##       */
         actualizar: ->
-##      /**
-##       * @method dibujar
-##       * Se ejecuta en el bucle principal del juego para actualizar la imagen del actor en el canvas.
-##       * @param {HTMLElement} painter El canvas en el que se dibujará el actor.
-##       */
-        dibujar: (painter)->
-            @imagen.dibujar painter,
-                @x, @y, @centro_x, @centro_y,
-                @escala_x, @escala_y, @rotacion, @transparencia
-            `void 0`
 
         __getattr__: (x) ->
             return @x

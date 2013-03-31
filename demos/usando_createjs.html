@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+  <style>
+    canvas {
+    }
+
+    #progress {
+      border: 1px solid gray;
+      margin: 3px;
+    }
+
+    #bar {
+      height: 5px;
+      width: 30px;
+      background-color: #CCA;
+    }
+
+    #debug {
+    }
+
+  </style>
+
+  <script src="../build/pilasweb-engine-0.0.min.js"></script>
+  <script>
+    require(['init'], function(pilas){
+      window.pilas = pilas;
+      window.pilas.iniciar({ancho: 320, alto: 240, data_path: '../build/data'});
+
+      window.pilas.onready = function() {
+        var p = new pilas.actores.Aceituna();
+        p.x = -120
+
+        window.p = p
+      };
+    });
+  </script>
+
+  </head>
+  <body>
+  <canvas></canvas>
+  </body>
+</html>

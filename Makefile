@@ -6,9 +6,10 @@ ayuda:
 	@echo ""
 	@echo "Estos son algunos de los comandos que podrías ejecutar:"
 	@echo ""
-	@echo "  dependencias_apt-get \t Instala las dependencias en un linux tipo ubuntu/debian."
-	@echo "  generar \t\t Contruye la biblioteca, genera el codigo minificado y la documentación."
-	@echo "  test \t\t\t Ejecuta todas las pruebas sobre la biblioteca."
+	@echo "  dependencias_apt-get   Instala las dependencias en un linux tipo ubuntu/debian."
+	@echo "  generar                Contruye la biblioteca, genera el codigo minificado y la documentación."
+	@echo "  documentacion          Genera toda la documentacion del proyecto con jsduck."
+	@echo "  test                   Ejecuta todas las pruebas sobre la biblioteca."
 
 dependencias_apt-get:
 	@echo "Instalando build-essential..."
@@ -54,7 +55,9 @@ generar:
 	node r-2.1.2.js -o r.build.js
 	cp -r src/data build/data
 	@echo ""
+	@echo "Librería pilasweb-engine generada."
 
+documentacion:
 	@echo "Generando documentación de coffee..."
 	mkdir -p doc/
 	cp -r src/coffee/ doc/temp_dir/
@@ -69,8 +72,6 @@ generar:
 		-e 's_^//__' \
 		-e 's_>//_>_' {} \;
 	@echo ""
-
-	@echo "Librería pilasweb-engine generada."
 
 tests: generar
 	# También se pueden ver abriendo el archivo unit-tests/run.html desde el navegador.

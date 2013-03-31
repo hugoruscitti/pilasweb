@@ -7,8 +7,8 @@
 
  website - http://hugoruscitti.github.com/pilasweb
 ###
-define ['actores/actor', 'actores/aceituna', 'actores/cooperativista', 'imagenes', 'depurador', 'fisica'],
- (Actor, Aceituna, Cooperativista, Imagenes, Depurador, Fisica)->
+define ['libs/createjs-2013.02.12.min.js', 'actores/actor', 'actores/aceituna', 'actores/cooperativista', 'imagenes', 'depurador', 'fisica'],
+ (CreateJS, Actor, Aceituna, Cooperativista, Imagenes, Depurador, Fisica)->
 ##  /**
 ##   * @class Pilas
 ##   * @singleton
@@ -36,24 +36,27 @@ define ['actores/actor', 'actores/aceituna', 'actores/cooperativista', 'imagenes
 ##       * Es ejecutado en el bucle_principal.
 ##       */
         actualizar: ->
-            @_limpiar_pantalla @canvas_element.context
-            @depurador.comienza_dibujado @canvas_element.context
+            #@_limpiar_pantalla @canvas_element.context
+            #@depurador.comienza_dibujado @canvas_element.context
 
             for actor in @lista_actores
                 actor.actualizar()
-                actor.dibujar @canvas_element.context
+                #actor.dibujar @canvas_element.context
 
-                @depurador.dibuja_al_actor @canvas_element.context, actor
+                #@depurador.dibuja_al_actor @canvas_element.context, actor
 
-            @depurador.termina_dibujado @canvas_element.context
+            @stage.update()
+            #@depurador.termina_dibujado @canvas_element.context
             `void 0`
 ##      /**
 ##       * @method agregar
 ##       * Agrega un actor a la lista de actores activos.
 ##       * @param {Object} objeto Actor que se quiere agregar.
 ##       */
-        agregar: (objeto)->
-            @lista_actores.push objeto
+        agregar: (actor)->
+            @lista_actores.push actor
+            @stage.addChild(actor.sprite)
+            @stage.update()
             `void 0`
 ##      /**
 ##       * @method bucle_principal
@@ -111,6 +114,10 @@ define ['actores/actor', 'actores/aceituna', 'actores/cooperativista', 'imagenes
             @canvas_element.width = opciones.ancho
             @canvas_element.height = opciones.alto
             @canvas_element.context = @canvas_element.getContext '2d'
+
+            @stage = new createjs.Stage(@canvas_element);
+
+
             `void 0`
 ##      /**
 ##       * @method reiniciar
