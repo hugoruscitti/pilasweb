@@ -18,6 +18,12 @@
 				"classes": [
 					"Pilas.actores.Actor"
 				]
+			},
+			{
+				"name": "Fondos",
+				"classes": [
+					"Pilas.fondos.Plano"
+				]
 			}
 		]
 	},

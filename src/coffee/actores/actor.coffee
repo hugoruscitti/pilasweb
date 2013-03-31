@@ -18,25 +18,26 @@ define ->
 ##       * Constructor de clase actor.
 ##       * @constructor
 ##       * @param {String} imagen Nombre del fichero de imagen para el actor.
-##       * @param {Object} options Contiene las propiedades que se quieren personalizar.
+##       * @param {Object} opciones Contiene las propiedades que se quieren personalizar.
+##       * @param {String} sprite Nombre del fichero de sprite para el actor.
 ##       */
-        constructor: (imagen, options, @sprite="")->
-            options = {} if not options?
-            @imagen = pilas.imagenes.cargar imagen;
-            @sprite = new createjs.Bitmap(@imagen.imagen)
-            @apply_options options
+        constructor: (imagen, opciones, @sprite="")->
+            opciones = {} if not opciones?
+            @imagen = pilas.imagenes.cargar imagen
+            @sprite = new createjs.Bitmap @imagen.imagen
+            @aplicar_opciones opciones
             pilas.agregar @
 
-        apply_options: (options) ->
-            @x = options.x or 0;
-            @y = options.y or 0;
-            @centro_x = options.centro_x or 0;
-            @centro_y = options.centro_y or 0;
-            @escala_x = options.escala_x or 1;
-            @escala_y = options.escala_y or 1;
-            @rotacion = options.rotacion or 0;
-            @transparencia = options.transparencia or 0;
-
+        aplicar_opciones: (opciones) ->
+            @x = opciones.x or 0
+            @y = opciones.y or 0
+            @centro_x = opciones.centro_x or 0
+            @centro_y = opciones.centro_y or 0
+            @escala_x = opciones.escala_x or 1
+            @escala_y = opciones.escala_y or 1
+            @rotacion = opciones.rotacion or 0
+            @transparencia = opciones.transparencia or 0
+        # Sergio: No entiendo esta parte. ¿Cuándo se ejecuta defineProperties?
         Object.defineProperties @prototype,
             x:
                 get: -> @sprite.x - 160

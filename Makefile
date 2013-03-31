@@ -7,7 +7,7 @@ ayuda:
 	@echo "Estos son algunos de los comandos que podrías ejecutar:"
 	@echo ""
 	@echo "  dependencias_apt-get   Instala las dependencias en un linux tipo ubuntu/debian."
-	@echo "  generar                Contruye la biblioteca, genera el codigo minificado y la documentación."
+	@echo "  generar                Contruye la biblioteca y genera el codigo minificado."
 	@echo "  documentacion          Genera toda la documentacion del proyecto con jsduck."
 	@echo "  test                   Ejecuta todas las pruebas sobre la biblioteca."
 
@@ -65,7 +65,7 @@ documentacion:
 	sed -i \
 		-e 's_^_//_' \
 		-e 's_^//##[^#]_   _' {} \;
-	jsduck doc/temp_dir/* doc/temp_dir/actores/* -o doc/coffee/ --title="pilasweb-engine (coffee)" --categories="categories.jsduck"
+	jsduck doc/temp_dir/* doc/temp_dir/actores/* doc/temp_dir/fondos/* -o doc/coffee/ --title="pilasweb-engine (coffee)" --categories="categories.jsduck"
 	rm -rf doc/temp_dir/
 	find doc/coffee/source/ -type f -exec \
 	sed -i \
