@@ -57,7 +57,7 @@ define ['libs/createjs-2013.02.12.min.js', 'fondos/plano', 'actores/actor', 'act
 ##       */
         agregar: (actor)->
             @lista_actores.push actor
-            @stage.addChild(actor.sprite)
+            @stage.addChild actor.sprite
             @stage.update()
             `void 0`
 ##      /**
