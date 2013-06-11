@@ -2,14 +2,37 @@
 <html>
 <head>
 	<meta charset=utf-8>
-	<title>TypeScript demo</title>
+	<title>pilasweb testing</title>
+  <style>
+    canvas {
+      border: 1px solid gray;
+    }
+  </style>
 </head>
 
 <body>
 
+  <canvas id='canvas'></canvas>
+
+  <script src='libs/PxLoader.js'></script>
+  <script src='libs/PxLoaderImage.js'></script>
+  <script src='libs/Box2dWeb-2.1.a.3.js'></script>
+  <script src='libs/createjs-2013.02.12.min.js'></script>
+
+  <script src='pilasweb.js'></script>
+
+<script>
 
 
-<script src='pilasweb.js'></script>
+pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
+
+pilas.onready = function() {
+  var fondo = new pilas.fondos.Plano();
+  //var p = new pilas.actores.Aceituna();
+}
+
+pilas.ejecutar();
+</script>
+
 </body>
-
 </html>
