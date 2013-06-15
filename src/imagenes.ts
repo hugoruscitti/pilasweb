@@ -30,7 +30,6 @@ class Imagenes {
     this.imagenes_solicitadas += 1;
   }
 
-
   cargar(nombre) {
     return new Imagen(this.recursos[nombre]);
   }

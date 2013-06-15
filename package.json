@@ -4,6 +4,7 @@
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-typescript": "*",
-    "grunt-contrib-watch": "*"
+    "grunt-contrib-watch": "*",
+    "shelljs": "*"
   }
 }
