@@ -10,3 +10,4 @@
 !Box2eWeb-2.1.a.3.js
 !createjs-2013.02.12.min.js
 !requirejs-2.1.2.min.js
+node_modules/*
