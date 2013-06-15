@@ -1,20 +1,34 @@
 class Actor {
   sprite;
-  imagen;
+  _imagen;
 
   constructor(x, y, imagen) {
-    this.imagen = imagen || pilas.imagenes.cargar('sin_imagen.png');
-    this.sprite = new createjs.Bitmap(this.imagen.imagen);
+    this.imagen = imagen || 'sin_imagen.png';
+    this.crear_sprite();
+    this.x = x || 0;
+    this.y = y || 0;
+    this.centro_x = this.ancho / 2;
+    this.centro_y = this.alto / 2;
     pilas.escena_actual().agregar_actor(this);
+  }
+
+  private crear_sprite() {
+    this.sprite = new createjs.Bitmap(this._imagen.imagen);
   }
 
   // TODO: convertir con un metodo de la escena, que tome
   //       en cuenta la coordenada de pantalla y la cámara.
   get x() {return this.sprite.x};
-  set x(_x) {this.sprite.x = _x};
+  set x(_x) {
+    var pos = pilas.escena_actual().obtener_posicion_pantalla(_x, 0);
+    this.sprite.x = pos.x;
+  };
 
   get y() {return this.sprite.y};
-  set y(_y) {return this.sprite.y = _y};
+  set y(_y) {
+    var pos = pilas.escena_actual().obtener_posicion_pantalla(0, _y);
+    this.sprite.y = pos.y;
+  };
 
   get centro_x() {return this.sprite.regX};
   set centro_x(_x) {this.sprite.regX = _x};
@@ -33,6 +47,16 @@ class Actor {
 
   get transparencia() {return (-100 * this.sprite.alpha) + 100};
   set transparencia(_t) {this.sprite.alpha = (_t - 100) / -100};
+
+  get ancho() {return this._imagen.ancho};
+  get alto() {return this._imagen.alto};
+
+  set imagen(_i) {
+    if (_i.substring)
+      this._imagen = pilas.imagenes.cargar(_i)
+    else
+      this._imagen = _i;
+  }
 
   actualizar() {
   }

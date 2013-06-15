@@ -13,8 +13,13 @@ declare var createjs;
 /**
  * @class Pilas
  * @singleton
+ * Módulo pilas
+ * ============
  *
- * Representa la clase principal del motor pilas-engine.
+ * Pilas es una biblioteca para facilitar el desarrollo de videojuegos. Es útil para 
+ * programadores principiantes o para el desarrollo de juegos casuales.
+ *
+ * Este módulo contiene las funciones principales para iniciar y ejecutar la biblioteca.
  * {@img pilas-logo.png}
  *
  * @method escena_actual
@@ -32,11 +37,27 @@ class Pilas {
 
   /**
    * @method iniciar 
+   *
+   * Inicia la ventana principal del juego con algunos detalles de funcionamiento.
+   *
+   * Ejemplo de invocación:
+   *
+   *     >>> // JavaScript
+   *     >>> pilas.iniciar({ancho: 320, alto: 240});
+   *
+   *     >>> # Python (Brython)
+   *     >>> pilas.iniciar(ancho=320, alto=240)
+   *
+   * Parámetros:
+   *
+   * - data_path: La ruta hacia la carpeta donde están las imágenes de los actores. (Por defecto 'data/')
+   *
    */
   iniciar(opciones) {
     this.inicializar_opciones(opciones);
     this.actores = new Actores();
     this.obtener_canvas();
+    this.definir_tamano_del_canvas();
 
     this.imagenes = new Imagenes(this.onready, this.opciones.data_path);
     this.fondos = new Fondos();
@@ -59,6 +80,11 @@ class Pilas {
     this.opciones.data_path = opciones.data_path || 'data';
   }
 
+  private definir_tamano_del_canvas() {
+    this.canvas.width = this.opciones.ancho;
+    this.canvas.height = this.opciones.alto;
+  }
+
   private obtener_canvas() {
     // TODO: hacer parametrizable el id del canvas.
     this.canvas = document.getElementById('canvas');
@@ -72,7 +98,7 @@ class Pilas {
    * Callback que se invoca una vez que pilas puede comenzar a funcionar.
    */
   onready() {
-    console.log("pilas cargado - debes escribir este método para ingresar codigo inicial.");
+    throw "pilas-engine ha iniciado, pero el metodo onload está vacío. Tienes que sobre-escribirlo...";
   }
 
   /**

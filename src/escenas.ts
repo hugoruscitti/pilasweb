@@ -1,10 +1,14 @@
+/// <reference path="camara.ts />
+
 class Normal {
   actores;
   stage;      // escenario de cretejs.
+  camara;
 
   constructor() {
     this.actores = [];
     this.stage = new createjs.Stage(pilas.canvas);
+    this.camara = new Camara();
   }
 
   actualizar() {
@@ -19,5 +23,9 @@ class Normal {
 
     this.stage.addChild(actor.sprite);
     this.stage.update();
+  }
+
+  obtener_posicion_pantalla(x, y) {
+    return this.camara.obtener_posicion_pantalla(x, y);
   }
 }

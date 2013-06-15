@@ -10,6 +10,22 @@ class Imagenes {
     this.loader = new PxLoader();
     this.imagenes_solicitadas = 0;
 
+    this.cargar_recursos();
+
+    //loader.addProgressListener(function (e) {
+    //    this.actualizar_progreso(e);
+    //            return true
+    // });
+
+    this.loader.addCompletionListener(function(e) {
+      pilas.onready();
+      pilas.ejecutar();
+    });
+
+    this.loader.start();
+  }
+
+  private cargar_recursos() {
     this.cargar_recurso('aceituna.png');
     this.cargar_recurso('aceituna_grita.png');
     this.cargar_recurso('aceituna_risa.png');
@@ -30,11 +46,9 @@ class Imagenes {
     this.cargar_recurso('cooperativista/parado.png');
     this.cargar_recurso('cooperativista/parado_sujeta.png');
     this.cargar_recurso('cooperativista/trabajando.png');
-
-    this.loader.start();
   }
 
-  cargar_recurso(nombre) {
+  private cargar_recurso(nombre) {
     var path = this.data_path + '/' + nombre;
     this.recursos[nombre] = this.loader.addImage(path);
     this.imagenes_solicitadas += 1;
@@ -59,14 +73,8 @@ class Imagen {
     this.imagen = imagen;
   }
 
-  dibujar(painter, x, y, dx, dy, escala_x, escala_y, rotacion, transparencia) {
-    painter.save();
-    painter.translate(x, y);
-    painter.scale(escala_x, escala_y);
-    painter.rotate(rotacion * (Math.PI / 180));
-    painter.drawImage(this.imagen, -dx, -dy, this.imagen.width, this.imagen.height);
-    painter.restore()
-  }
+  get ancho() {return this.imagen.width};
+  get alto() {return this.imagen.height};
 }
 
 class Grilla extends Imagen {
