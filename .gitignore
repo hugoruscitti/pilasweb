@@ -11,3 +11,4 @@
 !createjs-2013.02.12.min.js
 !requirejs-2.1.2.min.js
 node_modules/*
+docs/html/*

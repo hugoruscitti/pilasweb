@@ -17,6 +17,8 @@ class Aceituna {
     pilas.escena_actual().agregar_actor(this);
   }
 
+  // TODO: convertir con un metodo de la escena, que tome
+  //       en cuenta la coordenada de pantalla y la cámara.
   get x() {return this.sprite.x};
   set x(_x) {this.sprite.x = _x};
 
