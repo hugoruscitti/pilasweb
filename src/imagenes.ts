@@ -11,6 +11,16 @@ class Imagenes {
     this.imagenes_solicitadas = 0;
 
     this.cargar_recurso('aceituna.png');
+    this.cargar_recurso('aceituna_grita.png');
+    this.cargar_recurso('aceituna_risa.png');
+    this.cargar_recurso('aceituna_burla.png');
+
+    this.cargar_recurso('banana.png');
+    this.cargar_recurso('bomba.png');
+    this.cargar_recurso('caja.png');
+
+    this.cargar_recurso('sin_imagen.png');
+
     this.cargar_recurso('plano.png');
 
     this.cargar_recurso('cooperativista/alerta.png');
@@ -31,7 +41,10 @@ class Imagenes {
   }
 
   cargar(nombre) {
-    return new Imagen(this.recursos[nombre]);
+    if (nombre in this.recursos)
+      return new Imagen(this.recursos[nombre]);
+    else
+      throw "No se puede encontrar la imagen: " + nombre;
   }
 
   cargar_grilla(nombre, columnas, filas) {
