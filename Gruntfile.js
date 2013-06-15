@@ -35,6 +35,12 @@ module.exports = function(grunt) {
     shell.exec('ctags src/*');
   });
 
+
+  grunt.registerTask('make_docs', "create documentation files", function() {
+    shell.exec('jsduck public/pilasweb.js --title="pilas-engine web" --images=docs/images/ -o docs/html');
+  });
+
+  grunt.registerTask('docs', ['typescript', 'make_docs']);
   grunt.registerTask('default', ['typescript']);
 };
 

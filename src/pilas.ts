@@ -10,6 +10,17 @@ declare var createjs;
 /// <reference path="escenas.ts />
 
 
+/**
+ * @class Pilas
+ * @singleton
+ *
+ * Representa la clase principal del motor pilas-engine.
+ * {@img pilas-logo.png}
+ *
+ * @method escena_actual
+ * Retorna la escena en curso.
+ * 
+ */
 class Pilas {
   canvas;     // elemento canvas html.
   opciones;   // dict de opciones iniciales.
@@ -19,6 +30,9 @@ class Pilas {
   imagenes;     // acceso a modulo.
   actores;      // acceso a modulo.
 
+  /**
+   * @method iniciar 
+   */
   iniciar(opciones) {
     this.inicializar_opciones(opciones);
     this.actores = new Actores();
@@ -30,6 +44,10 @@ class Pilas {
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
   }
 
+  /**
+   * @method escena_actual
+   * Retorna la escena en curso.
+   */
   escena_actual() {
     return this.mundo.gestor_escenas.escena_actual();
   }
@@ -49,10 +67,18 @@ class Pilas {
       throw new Error("No se encuentra el elemento canvas (id=canvas)");
   }
 
+  /**
+   * @method onready
+   * Callback que se invoca una vez que pilas puede comenzar a funcionar.
+   */
   onready() {
     console.log("pilas cargado - debes escribir este método para ingresar codigo inicial.");
   }
 
+  /**
+   * @method ejecutar
+   * Pone en funcionamiento el bucle principal.
+   */
   ejecutar() {
     this.onready();
     var self = this;
@@ -64,5 +90,4 @@ class Pilas {
   }
 }
 
-//PxLoader();
 pilas = new Pilas();
