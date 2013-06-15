@@ -14,6 +14,7 @@ module.exports = function(grunt) {
 					sourcemap: false,
 					fullSourceMapPath: false,
 					declaration: false,
+          comments: true,
           }
         }
       },
