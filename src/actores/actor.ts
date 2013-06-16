@@ -18,10 +18,24 @@ class Actor {
 
   // TODO: convertir con un metodo de la escena, que tome
   //       en cuenta la coordenada de pantalla y la cámara.
-  get x() {return this.sprite.x};
+  get x() {
+    var pos = pilas.escena_actual().obtener_posicion_escenario(this.sprite.x, 0);
+    return pos.x;
+  }
+
   set x(_x) {
-    var pos = pilas.escena_actual().obtener_posicion_pantalla(_x, 0);
-    this.sprite.x = pos.x;
+
+    if (_x instanceof Array) {
+      var step = 1000 / _x.length;
+      var tween = createjs.Tween.get(this);
+      
+      for (var i=0; i<_x.length; i++)
+        tween = tween.to({'x': _x[i]}, step)
+
+    } else {
+      var pos = pilas.escena_actual().obtener_posicion_pantalla(_x, 0);
+      this.sprite.x = pos.x;
+    }
   };
 
   get y() {return this.sprite.y};

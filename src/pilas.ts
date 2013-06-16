@@ -108,7 +108,8 @@ class Pilas {
   ejecutar() {
     this.onready();
     var self = this;
-    setInterval(function() {self.actualizar()}, 100);
+    createjs.Ticker.setFPS(60);
+    createjs.Ticker.addListener(function() {self.actualizar()});
   }
 
   actualizar() {

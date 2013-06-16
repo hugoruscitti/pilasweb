@@ -18,4 +18,8 @@ class Camara {
     return {x: x + 160, y: 120 - y};
   }
 
+  obtener_posicion_escenario(x, y) {
+    return {x: x - 160, y: y + 120};
+  }
+
 }

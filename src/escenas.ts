@@ -28,4 +28,8 @@ class Normal {
   obtener_posicion_pantalla(x, y) {
     return this.camara.obtener_posicion_pantalla(x, y);
   }
+
+  obtener_posicion_escenario(x, y) {
+    return this.camara.obtener_posicion_escenario(x, y);
+  }
 }
