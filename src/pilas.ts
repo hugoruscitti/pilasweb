@@ -13,6 +13,7 @@ declare var createjs;
 /**
  * @class Pilas
  * @singleton
+ *
  * Módulo pilas
  * ============
  *
@@ -78,6 +79,7 @@ class Pilas {
     this.opciones.ancho = opciones.ancho || 320;
     this.opciones.alto = opciones.alto || 240;
     this.opciones.data_path = opciones.data_path || 'data';
+    this.opciones.canvas_id = opciones.canvas_id || 'canvas';
   }
 
   private definir_tamano_del_canvas() {
@@ -86,8 +88,7 @@ class Pilas {
   }
 
   private obtener_canvas() {
-    // TODO: hacer parametrizable el id del canvas.
-    this.canvas = document.getElementById('canvas');
+    this.canvas = document.getElementById(this.opciones.canvas_id);
 
     if (! this.canvas)
       throw new Error("No se encuentra el elemento canvas (id=canvas)");
@@ -112,6 +113,10 @@ class Pilas {
     createjs.Ticker.addListener(function() {self.actualizar()});
   }
 
+  /**
+   * @method actualizar
+   * Se ejecuta automáticamente 60 veces por segundo, para mantener el juego en funcionamiento.
+   */
   actualizar() {
     this.mundo.actualizar()
   }
