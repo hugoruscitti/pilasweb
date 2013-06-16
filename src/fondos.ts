@@ -14,7 +14,6 @@ class Plano extends Actor {
     var s = new createjs.Shape();
 
     s.graphics.beginBitmapFill(img, 'repeat');
-    s.graphics.beginStroke(createjs.Graphics.getRGB(255,0,0));
     s.graphics.drawRect(-160, -120, 320, 240); // TODO: detectar el area visible de pantalla.
     this.sprite = s;
   }
