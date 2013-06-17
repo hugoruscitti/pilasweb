@@ -37,7 +37,7 @@ class Camara {
    * es el centro de la pantalla.
    */
   obtener_posicion_escenario(x, y) {
-    return {x: x - 160, y: y + 120};
+    return {x: x - 160, y: 120 -y};
   }
 
 }

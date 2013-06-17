@@ -8,6 +8,7 @@ declare var createjs;
 /// <reference path="imagenes.ts />
 /// <reference path="mundo.ts />
 /// <reference path="escenas.ts />
+/// <reference path="interpolaciones.ts />
 
 
 /**
@@ -23,9 +24,9 @@ declare var createjs;
  * Este módulo contiene las funciones principales para iniciar y ejecutar la biblioteca.
  * {@img pilas-logo.png}
  *
- * @method escena_actual
- * Retorna la escena en curso.
- * 
+ *     @example
+ *     pilas.iniciar({ancho: 320, alto: 240});
+ *     aceituna = new pilas.actores.Aceituna(); 
  */
 class Pilas {
   canvas;     // elemento canvas html.
@@ -36,6 +37,8 @@ class Pilas {
   imagenes;     // acceso a modulo.
   actores;      // acceso a modulo.
 
+  interpolaciones;  // acceso al modulo.
+
   /**
    * @method iniciar 
    *
@@ -43,11 +46,8 @@ class Pilas {
    *
    * Ejemplo de invocación:
    *
-   *     >>> // JavaScript
-   *     >>> pilas.iniciar({ancho: 320, alto: 240});
-   *
-   *     >>> # Python (Brython)
-   *     >>> pilas.iniciar(ancho=320, alto=240)
+   *     @example
+   *     pilas.iniciar({ancho: 320, alto: 240, data_path: 'data/'});
    *
    * Parámetros:
    *
@@ -63,6 +63,8 @@ class Pilas {
     this.imagenes = new Imagenes(this.onready, this.opciones.data_path);
     this.fondos = new Fondos();
     this.mundo = new Mundo();
+    this.interpolaciones = new Interpolaciones();
+
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
   }
 
@@ -74,6 +76,12 @@ class Pilas {
     return this.mundo.gestor_escenas.escena_actual();
   }
 
+  /**
+   * @method inicializar_opciones
+   * @private
+   *
+   * Carga las opciones iniciales y define los valores por omisión si es necesario.
+   */
   private inicializar_opciones(opciones) {
     this.opciones = opciones || {};
     this.opciones.ancho = opciones.ancho || 320;
@@ -82,11 +90,24 @@ class Pilas {
     this.opciones.canvas_id = opciones.canvas_id || 'canvas';
   }
 
+  /**
+   * @method definir_tamano_del_canvas
+   * @private
+   *
+   * Cambia el tamaño del canvas HTML en base a las opciones iniciales.
+   */
   private definir_tamano_del_canvas() {
     this.canvas.width = this.opciones.ancho;
     this.canvas.height = this.opciones.alto;
   }
 
+  /**
+   * @method obtener_canvas
+   * @private
+   * 
+   * Obtiene la referencia al elemento HTML canvas usando
+   * el atributo *canvas_id* de las opciones iniciales.
+   */
   private obtener_canvas() {
     this.canvas = document.getElementById(this.opciones.canvas_id);
 
@@ -119,6 +140,10 @@ class Pilas {
    */
   actualizar() {
     this.mundo.actualizar()
+  }
+
+  interpolar(objeto, atributo, valor_o_valores, tiempo) {
+    return this.interpolaciones.interpolar(objeto, atributo, valor_o_valores, tiempo);
   }
 }
 

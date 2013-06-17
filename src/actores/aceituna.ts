@@ -2,9 +2,9 @@
 
 class Aceituna extends Actor {
 
-  constructor() {
+  constructor(x, y) {
     var imagen = "aceituna.png";
-    super(0, 0, imagen);
+    super(imagen, x, y);
     this.centro_x = 18;
     this.centro_y = 18;
   }

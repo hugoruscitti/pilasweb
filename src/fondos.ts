@@ -4,7 +4,7 @@ class Plano extends Actor {
   g;
 
   constructor() {
-    super(0, 0, 'plano.png');
+    super('plano.png', 0, 0);
     this.centro_x = 0;
     this.centro_y = 0;
   }
