@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8>
+	<title>pilasweb testing</title>
+  <style>
+    canvas {
+      border: 1px solid gray;
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id='canvas'></canvas>
+
+  <script src='libs/PxLoader.js'></script>
+  <script src='libs/PxLoaderImage.js'></script>
+  <script src='libs/Box2dWeb-2.1.a.3.js'></script>
+  <script src='libs/easeljs-0.6.1.min.js'></script>
+  <script src='libs/tweenjs-0.4.1.min.js'></script>
+
+  <script src='pilasweb.js'></script>
+
+<script>
+
+
+pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
+
+pilas.onready = function() {
+  var fondo = new pilas.fondos.Plano();
+  window.aceituna = new pilas.actores.Aceituna();
+  //window.actor = new pilas.actores.Actor();
+  //window.aceituna.x = [100, 0, 100, 0];
+
+  pilas.definir_modos({puntos_de_control: true})
+}
+
+//pilas.ejecutar();
+</script>
+
+</body>
+</html>
