@@ -21,12 +21,22 @@ class DepuradorDeshabilitado {
 class ModoPuntosDeControl {
   shape;
   container;
+  text_modo;
+  text_coordenada;
 
   constructor() {
     this.container = new createjs.Container();
 
     this.shape = new createjs.Shape();
     this.container.addChild(this.shape);
+
+    this.text_modo = new createjs.Text("F12 ModoPosicion habilitado", "12px Arial", "white");
+    this.container.addChild(this.text_modo);
+
+    this.text_coordenada = new createjs.Text("Posición del mouse: x=12 y=33", "12px Arial", "white");
+    this.text_coordenada.y = 220;
+    this.text_coordenada.x = 120;
+    this.container.addChild(this.text_coordenada);
 
     pilas.escena_actual().stage.addChild(this.container);
   }
@@ -44,5 +54,8 @@ class ModoPuntosDeControl {
       this.shape.graphics.beginStroke("#ffffff").moveTo(posicion.x - size, posicion.y - size).lineTo(posicion.x + size, posicion.y + size).endStroke();
       this.shape.graphics.beginStroke("#ffffff").moveTo(posicion.x - size, posicion.y + size).lineTo(posicion.x + size, posicion.y - size).endStroke();
     }
+
+    var pos = escena.obtener_posicion_escenario(escena.stage.mouseX, escena.stage.mouseY);
+    this.text_coordenada.text = "Posición del mouse: x=" + pos.x + " y=" + pos.y;
   }
 }

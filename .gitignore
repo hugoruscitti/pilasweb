@@ -5,6 +5,7 @@
 
 /src/coffee/*.js
 /src/coffee/*/*.js
+/src/tags
 
 /src/js/
 !Box2eWeb-2.1.a.3.js
