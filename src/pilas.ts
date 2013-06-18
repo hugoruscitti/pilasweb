@@ -145,6 +145,11 @@ class Pilas {
   interpolar(objeto, atributo, valor_o_valores, tiempo) {
     return this.interpolaciones.interpolar(objeto, atributo, valor_o_valores, tiempo);
   }
+
+  definir_modos(modos) {
+    this.mundo.definir_modos(modos);
+  }
+  
 }
 
 pilas = new Pilas();
