@@ -12,6 +12,9 @@ class DepuradorDeshabilitado {
   }
 
   definir_modos(modos) {
+    modos = modos || {};
+    modos.puntos_de_control = modos.puntos_de_control || false;
+
     if (modos.puntos_de_control)
       this.modos.push(new ModoPuntosDeControl());
   }
@@ -58,4 +61,5 @@ class ModoPuntosDeControl {
     var pos = escena.obtener_posicion_escenario(escena.stage.mouseX, escena.stage.mouseY);
     this.text_coordenada.text = "Posición del mouse: x=" + pos.x + " y=" + pos.y;
   }
+
 }

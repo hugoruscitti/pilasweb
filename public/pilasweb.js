@@ -287,6 +287,9 @@ var DepuradorDeshabilitado = (function () {
         }
     };
     DepuradorDeshabilitado.prototype.definir_modos = function (modos) {
+        modos = modos || {
+        };
+        modos.puntos_de_control = modos.puntos_de_control || false;
         if(modos.puntos_de_control) {
             this.modos.push(new ModoPuntosDeControl());
         }
