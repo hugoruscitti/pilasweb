@@ -23,11 +23,15 @@ module.exports = function(grunt) {
 				files: ['src/**'],
 				tasks: ['typescript'],
       }
+    },
+    mocha_phantomjs: {
+      all: ['test/*.html']
     }
   });
 
   grunt.loadNpmTasks('grunt-typescript');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-mocha-phantomjs');
 
   grunt.registerTask('tags', ['tags']);
 

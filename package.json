@@ -5,6 +5,10 @@
     "grunt": "~0.4.1",
     "grunt-typescript": "*",
     "grunt-contrib-watch": "*",
-    "shelljs": "*"
+    "shelljs": "*",
+    "grunt-mocha-phantomjs": "~0.2.8",
+    "mocha": "~1.11.0",
+    "chai": "~1.7.0",
+    "mocha-phantomjs": "~3.0.0"
   }
 }
