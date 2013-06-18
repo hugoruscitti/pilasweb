@@ -3,4 +3,5 @@ node_js:
   - 0.8
 before_script:
   - npm install -g grunt-cli
-script: './node_modules/.bin/grunt mocha_phantomjs'
+  - npm install
+script: 'grunt mocha_phantomjs'
