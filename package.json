@@ -9,6 +9,7 @@
     "grunt-mocha-phantomjs": "~0.2.8",
     "mocha": "~1.11.0",
     "chai": "~1.7.0",
-    "mocha-phantomjs": "~3.0.0"
+    "mocha-phantomjs": "~3.0.0",
+    "process": "~0.5.1"
   }
 }
