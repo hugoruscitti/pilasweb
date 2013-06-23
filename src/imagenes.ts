@@ -34,6 +34,7 @@ class Imagenes {
     this.cargar_recurso('banana.png');
     this.cargar_recurso('bomba.png');
     this.cargar_recurso('caja.png');
+    this.cargar_recurso('explosion.png');
 
     this.cargar_recurso('sin_imagen.png');
 
@@ -61,29 +62,73 @@ class Imagenes {
       throw "No se puede encontrar la imagen: " + nombre;
   }
 
-  cargar_grilla(nombre, columnas, filas) {
+  cargar_grilla(nombre, columnas=1, filas=1) {
     return new Grilla(this.recursos[nombre], columnas, filas);
   }
 }
 
 class Imagen {
+  ruta;
   imagen;
 
   constructor(imagen) {
+    this.ruta = imagen;
     this.imagen = imagen;
   }
 
-  get ancho() {return this.imagen.width};
-  get alto() {return this.imagen.height};
+  instanciar() {
+    return new createjs.Bitmap(this.imagen);
+  }
+
+
+  get ancho() {return this.imagen.width}
+  get alto() {return this.imagen.height}
 }
 
 class Grilla extends Imagen {
   columnas;
   filas;
+  sprite;
+  cuadro;
 
-  constructor(imagen, columnas, filas) {
+  constructor(imagen, columnas=1, filas=1) {
     super(imagen);
     this.columnas = columnas;
     this.filas = filas;
+    this.cuadro = 0;
+  }
+
+  instanciar() {
+    var data = {
+       images: [this.ruta.src],
+       frames: {width: this.ancho / this.columnas, height: this.alto / this.filas},
+    };
+    var spritesheet = new createjs.SpriteSheet(data);
+
+    this.sprite = new createjs.BitmapAnimation(spritesheet);
+    this.definir_cuadro(0);
+    return this.sprite;
+  }
+
+  get cantidad_cuadros() {
+    return this.filas * this.columnas;
+  }
+
+  definir_cuadro(numero_de_cuadro) {
+    this.cuadro = numero_de_cuadro;
+    this.sprite.gotoAndStop(numero_de_cuadro);
+  }
+
+  avanzar() {
+    var ha_avanzado = true;
+    this.cuadro +=1; 
+
+    if (this.cuadro >= this.cantidad_cuadros) {
+      this.cuadro = 0;
+      ha_avanzado = false;
+    }
+
+    this.definir_cuadro(this.cuadro);
+    return ha_avanzado;
   }
 }

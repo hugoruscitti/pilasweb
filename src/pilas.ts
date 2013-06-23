@@ -9,6 +9,7 @@ declare var createjs;
 /// <reference path="mundo.ts />
 /// <reference path="escenas.ts />
 /// <reference path="interpolaciones.ts />
+/// <reference path="habilidades.ts />
 
 
 /**
@@ -36,6 +37,7 @@ class Pilas {
   fondos;       // acceso a modulo.
   imagenes;     // acceso a modulo.
   actores;      // acceso a modulo.
+  habilidades;  // acceso a modulo.
 
   interpolaciones;  // acceso al modulo.
 
@@ -57,6 +59,7 @@ class Pilas {
   iniciar(opciones) {
     this.inicializar_opciones(opciones);
     this.actores = new Actores();
+    this.habilidades = new Habilidades();
     this.obtener_canvas();
     this.definir_tamano_del_canvas();
 

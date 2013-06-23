@@ -1,4 +1,6 @@
 /// <reference path="actores/aceituna.ts />
+/// <reference path="actores/bomba.ts />
+/// <reference path="actores/explosion.ts />
 /**
 * @class Actores
 *
@@ -11,9 +13,29 @@ var Actores = (function () {
     function Actores() {
         this.Aceituna = Aceituna;
         this.Actor = Actor;
+        this.Bomba = Bomba;
+        this.Explosion = Explosion;
     }
     return Actores;
 })();
+var Estudiante = (function () {
+    function Estudiante() { }
+    Estudiante.prototype.aprender = function (clase_de_habilidad) {
+        // FIXME, hacer una lista de habilidades, chequear si la clase de
+        // habilidad ya se ha agregado y eliminarla.
+        this.agregar_habilidad(clase_de_habilidad);
+    };
+    Estudiante.prototype.agregar_habilidad = function (clase_de_habilidad) {
+        var habilidad = new clase_de_habilidad(this);
+    };
+    return Estudiante;
+})();
+var __extends = this.__extends || function (d, b) {
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+/// <reference path="estudiante.ts"/>
 /**
 * @class Actor
 *
@@ -60,8 +82,10 @@ var Actores = (function () {
 *     invisible = pilas.actores.Actor('invisible.png');
 *
 */
-var Actor = (function () {
+var Actor = (function (_super) {
+    __extends(Actor, _super);
     function Actor(imagen, x, y) {
+        _super.call(this);
         this.imagen = imagen || 'sin_imagen.png';
         this.crear_sprite();
         this.x = x || 0;
@@ -71,7 +95,10 @@ var Actor = (function () {
         pilas.escena_actual().agregar_actor(this);
     }
     Actor.prototype.crear_sprite = function () {
-        this.sprite = new createjs.Bitmap(this._imagen.imagen);
+        this.sprite = this._imagen.instanciar();
+    };
+    Actor.prototype.eliminar = function () {
+        pilas.escena_actual().eliminar_actor(this);
     };
     Object.defineProperty(Actor.prototype, "x", {
         get: function () {
@@ -216,12 +243,7 @@ var Actor = (function () {
     Actor.prototype.actualizar = function () {
     };
     return Actor;
-})();
-var __extends = this.__extends || function (d, b) {
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
+})(Estudiante);
 /// <reference path="actor.ts"/>
 var Aceituna = (function (_super) {
     __extends(Aceituna, _super);
@@ -232,6 +254,44 @@ var Aceituna = (function (_super) {
         this.centro_y = 18;
     }
     return Aceituna;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Bomba = (function (_super) {
+    __extends(Bomba, _super);
+    function Bomba(x, y) {
+        var imagen = pilas.imagenes.cargar_grilla("bomba.png", 2);
+        _super.call(this, imagen, x, y);
+        this.centro_x = 36;
+        this.centro_y = 31;
+        this.paso = 0;
+        this.aprender(pilas.habilidades.PuedeExplotar);
+    }
+    Bomba.prototype.actualizar = function () {
+        this.paso += 0.1;
+        this._imagen.definir_cuadro(parseInt(this.paso) % 2);
+    };
+    return Bomba;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Explosion = (function (_super) {
+    __extends(Explosion, _super);
+    function Explosion(x, y) {
+        var imagen = pilas.imagenes.cargar_grilla("explosion.png", 7);
+        _super.call(this, imagen, x, y);
+        this.centro_x = 16;
+        this.centro_y = 16;
+        this.paso = 0;
+    }
+    Explosion.prototype.actualizar = function () {
+        this.paso += 0.1;
+        if(this.paso > 1) {
+            if(!this._imagen.avanzar()) {
+                this.eliminar();
+            }
+            this.paso = 0;
+        }
+    };
+    return Explosion;
 })(Actor);
 /**
 * @class Camara
@@ -343,6 +403,12 @@ var Normal = (function () {
         this.stage.addChild(actor.sprite);
         this.stage.update();
     };
+    Normal.prototype.eliminar_actor = function (actor) {
+        var index = this.actores.indexOf(actor);
+        this.actores.splice(index, 1);
+        this.stage.removeChild(actor.sprite);
+        this.stage.update();
+    };
     Normal.prototype.obtener_posicion_pantalla = function (x, y) {
         return this.camara.obtener_posicion_pantalla(x, y);
     };
@@ -394,6 +460,52 @@ var GestorDeEscenas = (function () {
     };
     return GestorDeEscenas;
 })();
+/**
+* @class Habilidad
+*
+* Representa una habilidad que un actor puede aprender.
+*/
+var Habilidad = (function () {
+    function Habilidad(receptor) {
+        this.receptor = receptor;
+    }
+    Habilidad.prototype.actualizar = function () {
+    };
+    Habilidad.prototype.eliminar = function () {
+    };
+    return Habilidad;
+})();
+/**
+* @class PuedeExplotar
+*
+* Hace que un actor se pueda hacer explotar invocando al metodo eliminar.
+*/
+var PuedeExplotar = (function (_super) {
+    __extends(PuedeExplotar, _super);
+    function PuedeExplotar(receptor) {
+        var _this = this;
+        _super.call(this, receptor);
+        receptor.eliminar = function () {
+            var explosion = new pilas.actores.Explosion();
+            explosion.x = _this.receptor.x;
+            explosion.y = _this.receptor.y;
+            explosion.escala = _this.receptor.escala;
+            pilas.actores.Actor.prototype.eliminar.call(_this.receptor);
+        };
+    }
+    return PuedeExplotar;
+})(Habilidad);
+/**
+* @class Habilidades
+*
+* Representa todas las habilidades conocidas en pilas-engine.
+*/
+var Habilidades = (function () {
+    function Habilidades() {
+        this.PuedeExplotar = PuedeExplotar;
+    }
+    return Habilidades;
+})();
 var Imagenes = (function () {
     function Imagenes(callback_onready, data_path) {
         this.recursos = {
@@ -420,6 +532,7 @@ var Imagenes = (function () {
         this.cargar_recurso('banana.png');
         this.cargar_recurso('bomba.png');
         this.cargar_recurso('caja.png');
+        this.cargar_recurso('explosion.png');
         this.cargar_recurso('sin_imagen.png');
         this.cargar_recurso('plano.png');
         this.cargar_recurso('cooperativista/alerta.png');
@@ -443,14 +556,20 @@ var Imagenes = (function () {
         }
     };
     Imagenes.prototype.cargar_grilla = function (nombre, columnas, filas) {
+        if (typeof columnas === "undefined") { columnas = 1; }
+        if (typeof filas === "undefined") { filas = 1; }
         return new Grilla(this.recursos[nombre], columnas, filas);
     };
     return Imagenes;
 })();
 var Imagen = (function () {
     function Imagen(imagen) {
+        this.ruta = imagen;
         this.imagen = imagen;
     }
+    Imagen.prototype.instanciar = function () {
+        return new createjs.Bitmap(this.imagen);
+    };
     Object.defineProperty(Imagen.prototype, "ancho", {
         get: function () {
             return this.imagen.width;
@@ -470,10 +589,49 @@ var Imagen = (function () {
 var Grilla = (function (_super) {
     __extends(Grilla, _super);
     function Grilla(imagen, columnas, filas) {
+        if (typeof columnas === "undefined") { columnas = 1; }
+        if (typeof filas === "undefined") { filas = 1; }
         _super.call(this, imagen);
         this.columnas = columnas;
         this.filas = filas;
+        this.cuadro = 0;
     }
+    Grilla.prototype.instanciar = function () {
+        var data = {
+            images: [
+                this.ruta.src
+            ],
+            frames: {
+                width: this.ancho / this.columnas,
+                height: this.alto / this.filas
+            }
+        };
+        var spritesheet = new createjs.SpriteSheet(data);
+        this.sprite = new createjs.BitmapAnimation(spritesheet);
+        this.definir_cuadro(0);
+        return this.sprite;
+    };
+    Object.defineProperty(Grilla.prototype, "cantidad_cuadros", {
+        get: function () {
+            return this.filas * this.columnas;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Grilla.prototype.definir_cuadro = function (numero_de_cuadro) {
+        this.cuadro = numero_de_cuadro;
+        this.sprite.gotoAndStop(numero_de_cuadro);
+    };
+    Grilla.prototype.avanzar = function () {
+        var ha_avanzado = true;
+        this.cuadro += 1;
+        if(this.cuadro >= this.cantidad_cuadros) {
+            this.cuadro = 0;
+            ha_avanzado = false;
+        }
+        this.definir_cuadro(this.cuadro);
+        return ha_avanzado;
+    };
     return Grilla;
 })(Imagen);
 var Interpolaciones = (function () {
@@ -515,6 +673,7 @@ var Mundo = (function () {
 /// <reference path="mundo.ts />
 /// <reference path="escenas.ts />
 /// <reference path="interpolaciones.ts />
+/// <reference path="habilidades.ts />
 /**
 * @class Pilas
 * @singleton
@@ -553,6 +712,7 @@ var Pilas = (function () {
     function (opciones) {
         this.inicializar_opciones(opciones);
         this.actores = new Actores();
+        this.habilidades = new Habilidades();
         this.obtener_canvas();
         this.definir_tamano_del_canvas();
         this.imagenes = new Imagenes(this.onready, this.opciones.data_path);

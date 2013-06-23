@@ -9,7 +9,7 @@ class Plano extends Actor {
     this.centro_y = 0;
   }
 
-  crear_sprite() {
+   crear_sprite() {
     var img = this._imagen.imagen;
     var s = new createjs.Shape();
 
