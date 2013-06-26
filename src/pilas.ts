@@ -62,6 +62,7 @@ class Pilas {
     this.habilidades = new Habilidades();
     this.obtener_canvas();
     this.definir_tamano_del_canvas();
+    this.conectar_eventos();
 
     this.imagenes = new Imagenes(this.onready, this.opciones.data_path);
     this.fondos = new Fondos();
@@ -102,6 +103,21 @@ class Pilas {
   private definir_tamano_del_canvas() {
     this.canvas.width = this.opciones.ancho;
     this.canvas.height = this.opciones.alto;
+  }
+
+  /**
+   * @method conectar_eventos
+   * @private
+   *
+   * Conecta los eventos del mouse y teclado a los métodos manejadores
+   * de eventos de la escena actual.
+   */
+  private conectar_eventos() {
+    this.canvas.onmousemove = function (event) {
+      var camara = pilas.escena_actual().camara;
+      var posicion = camara.obtener_posicion_escenario(event.x, event.y);
+      pilas.escena_actual().mueve_mouse.emitir(posicion);
+    }
   }
 
   /**
