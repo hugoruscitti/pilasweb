@@ -32,6 +32,14 @@ pilas.onready = function() {
   window.aceituna = new pilas.actores.Aceituna();
   window.bomba = new pilas.actores.Bomba();
   window.bomba.x = 50;
+
+  var mover_aceituna = function (evento) {
+    window.aceituna.x = evento.x;
+    window.aceituna.y = evento.y;
+  }
+
+  pilas.escena_actual().mueve_mouse.conectar(mover_aceituna);
+
   //window.actor = new pilas.actores.Actor();
   //window.aceituna.x = [100, 0, 100, 0];
 
