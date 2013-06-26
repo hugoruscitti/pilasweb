@@ -386,8 +386,31 @@ var ModoPuntosDeControl = (function () {
     return ModoPuntosDeControl;
 })();
 /// <reference path="camara.ts />
-var Normal = (function () {
+/// <reference path="evento.ts />
+var Base = (function () {
+    function Base() {
+        this.mueve_mouse = new Evento('mueve_mouse')// ['x', 'y', 'dx', 'dy']
+        ;
+    }
+    return Base;
+})();
+/**
+* @class Normal
+*
+* Escena básica de pilas.
+*
+* Si no se define ninguna escena, cuando se ejecuta:
+*
+*     @example
+*     pilas.iniciar();
+*
+* esta es la escena que se muestra en la pantalla.
+*
+*/
+var Normal = (function (_super) {
+    __extends(Normal, _super);
     function Normal() {
+        _super.call(this);
         this.actores = [];
         this.stage = new createjs.Stage(pilas.canvas);
         this.camara = new Camara();
@@ -416,6 +439,25 @@ var Normal = (function () {
         return this.camara.obtener_posicion_escenario(x, y);
     };
     return Normal;
+})(Base);
+var Evento = (function () {
+    function Evento(nombre) {
+        this.respuestas = {
+        };
+        this.nombre = nombre;
+    }
+    Evento.prototype.emitir = function (evento) {
+        for(var respuesta in this.respuestas) {
+            this.respuestas[respuesta](evento);
+        }
+    };
+    Evento.prototype.conectar = function (respuesta) {
+        this.respuestas[respuesta.toString()] = respuesta;
+    };
+    Evento.prototype.desconectar = function (respuesta) {
+        delete this.respuestas[respuesta.toString()];
+    };
+    return Evento;
 })();
 /// <reference path="actores/actor.ts"/>
 var Plano = (function (_super) {
@@ -715,6 +757,7 @@ var Pilas = (function () {
         this.habilidades = new Habilidades();
         this.obtener_canvas();
         this.definir_tamano_del_canvas();
+        this.conectar_eventos();
         this.imagenes = new Imagenes(this.onready, this.opciones.data_path);
         this.fondos = new Fondos();
         this.mundo = new Mundo();
@@ -751,6 +794,20 @@ var Pilas = (function () {
     function () {
         this.canvas.width = this.opciones.ancho;
         this.canvas.height = this.opciones.alto;
+    };
+    Pilas.prototype.conectar_eventos = /**
+    * @method conectar_eventos
+    * @private
+    *
+    * Conecta los eventos del mouse y teclado a los métodos manejadores
+    * de eventos de la escena actual.
+    */
+    function () {
+        this.canvas.onmousemove = function (event) {
+            var camara = pilas.escena_actual().camara;
+            var posicion = camara.obtener_posicion_escenario(event.x, event.y);
+            pilas.escena_actual().mueve_mouse.emitir(posicion);
+        };
     };
     Pilas.prototype.obtener_canvas = /**
     * @method obtener_canvas
