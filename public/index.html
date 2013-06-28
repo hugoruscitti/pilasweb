@@ -48,6 +48,23 @@
         <script type="text/ng-template" id="demo2.html">
             <canvas ng-init='iniciar_ejemplo(2)' id='canvas'></canvas>
         </script>
+
+
+        <script type="text/ng-template" id="demo2.html">
+            <canvas ng-init='iniciar_ejemplo(2)' id='canvas'></canvas>
+        </script>
+
+        <script type="text/ng-template" id="editor.html">
+            <canvas id='canvas'></canvas>
+            <p>
+            <button ng-click='ejecutar()' class='btn'><i class='icon-play'></i> Ejecutar</button>
+            <span class='error'>{{ error }}</span>
+            <p>
+            <textarea style='width: 100%' rows=10 ng-model='codigo'>
+            </textarea>
+
+        </script>
+
     </div>
     </div>
   <script src='libs/PxLoader.js'></script>
