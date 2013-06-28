@@ -38,16 +38,18 @@ app.controller('Controller', function($scope, $location) {
 
 app.controller('EditorController', function($scope, $location) {
 
-  $scope.codigo = "\
-pilas = new Pilas(); \n\
-pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'}); \n\
-pilas.onready = function() { \n\
-  var fondo = new pilas.fondos.Plano(); \n\
-  aceituna = new pilas.actores.Aceituna(); \n\
-  //aceituna.escala = [2]; \n\
-} \n\
-\
-pilas.ejecutar();";
+  $scope.codigo = [
+    "pilas = new Pilas();",
+    "pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});",
+    "",
+    "pilas.onready = function() {",
+    "  var fondo = new pilas.fondos.Plano();",
+    "  aceituna = new pilas.actores.Aceituna();",
+    "  //aceituna.escala = [2];",
+    "}",
+    "",
+    "pilas.ejecutar();",
+  ].join('\n');
 
   $scope.error = "";
 
