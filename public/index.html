@@ -8,23 +8,17 @@
   <link href="css/custom.css" rel="stylesheet">
 </head>
 
-<body ng-controller='Controller'>
+<body ng-controller='AppController'>
 
   <div class="navbar navbar-fixed-top">
      <div class="navbar-inner">
        <div class="container">
-         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-           <span class="icon-bar"></span>
-           <span class="icon-bar"></span>
-           <span class="icon-bar"></span>
-         </a>
          <a class="brand" href="#">pilas-web</a>
 
          <div class="nav-collapse collapse" id="main-menu">
           <ul class="nav" id="main-menu-left">
             <li><a href='http://github.com/hugoruscitti/pilasweb'>github</a></li>
           </ul>
-          
          </div>
        </div>
      </div>
@@ -34,6 +28,7 @@
    <div class='container'>
 
      <div class="row"  style='margin-top: 70px'>
+
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix">
             <li ng-class='{active: $index == seleccionado}' ng-repeat='demo in demos'><a ng-click='seleccionar($index)' href='{{demo.url}}'><i class="icon-chevron-right"></i> {{demo.nombre}}</a></li>
@@ -45,21 +40,16 @@
         </div>
 
 
-<script type="text/ng-template" id="demo1.html">
-    <canvas ng-init='iniciar_ejemplo(1)' id='canvas'></canvas>
-</script>
+        <!-- PARTIALS -->
+        <script type="text/ng-template" id="demo1.html">
+            <canvas ng-init='iniciar_ejemplo(1)' id='canvas'></canvas>
+        </script>
         
-<script type="text/ng-template" id="demo2.html">
-    <canvas ng-init='iniciar_ejemplo(2)' id='canvas'></canvas>
-</script>
-  
-
-
-
+        <script type="text/ng-template" id="demo2.html">
+            <canvas ng-init='iniciar_ejemplo(2)' id='canvas'></canvas>
+        </script>
     </div>
-
-
-</div>
+    </div>
   <script src='libs/PxLoader.js'></script>
   <script src='libs/PxLoaderImage.js'></script>
   <script src='libs/Box2dWeb-2.1.a.3.js'></script>
@@ -73,51 +63,47 @@
 
 
 <script type='demo' id='/demo1'>
-    pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
+pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
 
-    pilas.onready = function() {
-      var fondo = new pilas.fondos.Plano();
-      window.aceituna = new pilas.actores.Aceituna();
-      window.bomba = new pilas.actores.Bomba();
-      window.bomba.x = 50;
+pilas.onready = function() {
+  var fondo = new pilas.fondos.Plano();
+  window.aceituna = new pilas.actores.Aceituna();
+  window.bomba = new pilas.actores.Bomba();
+  window.bomba.x = 50;
 
-      var mover_aceituna = function (evento) {
-        window.aceituna.x = evento.x;
-        window.aceituna.y = evento.y;
-      }
+  var mover_aceituna = function (evento) {
+    window.aceituna.x = evento.x;
+    window.aceituna.y = evento.y;
+  }
 
-      pilas.escena_actual().mueve_mouse.conectar(mover_aceituna);
+  pilas.escena_actual().mueve_mouse.conectar(mover_aceituna);
 
-      //window.actor = new pilas.actores.Actor();
-      //window.aceituna.x = [100, 0, 100, 0];
+  //window.actor = new pilas.actores.Actor();
+  //window.aceituna.x = [100, 0, 100, 0];
 
-      pilas.definir_modos({puntos_de_control: true})
-    }
-
+  pilas.definir_modos({puntos_de_control: true})
+}
 </script>
 
 
 <script type='demo' id='/demo2'>
-    pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
+pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
 
-    pilas.onready = function() {
-      var fondo = new pilas.fondos.Plano();
-      window.aceituna = new pilas.actores.Aceituna();
-      window.bomba = new pilas.actores.Bomba();
-      window.bomba.escala = [3];
+pilas.onready = function() {
+  var fondo = new pilas.fondos.Plano();
+  window.aceituna = new pilas.actores.Aceituna();
+  window.bomba = new pilas.actores.Bomba();
+  window.bomba.escala = [3];
 
-      var mover_aceituna = function (evento) {
-        window.aceituna.x = evento.x;
-        window.aceituna.y = evento.y;
-      }
+  var mover_aceituna = function (evento) {
+    window.aceituna.x = evento.x;
+    window.aceituna.y = evento.y;
+  }
 
-      pilas.escena_actual().mueve_mouse.conectar(mover_aceituna);
-
-      pilas.definir_modos({puntos_de_control: true})
-    }
+  pilas.escena_actual().mueve_mouse.conectar(mover_aceituna);
+  pilas.definir_modos({puntos_de_control: true})
+}
 </script>
-
-
 
 
 </body>

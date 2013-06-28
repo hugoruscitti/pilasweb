@@ -2,30 +2,32 @@ var app = angular.module('app', []);
 
 app.config(function($routeProvider) {
 
-  $routeProvider.when('/', {redirectTo: '/demo1', controller: 'Controller'}).
+  $routeProvider.when('/', {redirectTo: '/pepe', controller: 'Controller'}).
                  when('/demo1', {templateUrl: 'demo1.html', controller: 'Controller'}).
                  when('/demo2', {templateUrl: 'demo2.html', controller: 'Controller'});
+
 });
 
-app.run( function($rootScope, $location) {
+app.run(function($rootScope, $location) {
 
-  $rootScope.$on( "$routeChangeSuccess", function(event) {
-
+  $rootScope.$on("$routeChangeSuccess", function(event) {
   });
 });
 
-
-app.controller('Controller', function($scope, $location) {
-  $scope.seleccionado = 1;
+app.controller('AppController', function($scope, $location) {
+  $scope.seleccionado = 0;
   $scope.demos = [
-    {'nombre': 'demo1', 'url': '#/demo1'},
-    {'nombre': 'demo2', 'url': '#/demo2'},
+    {'nombre': 'Aceituna y bomba', 'url': '#/demo1'},
+    {'nombre': 'Escala', 'url': '#/demo2'},
   ];
 
   $scope.seleccionar = function(indice) {
     $scope.seleccionado = indice;
   }
+});
 
+
+app.controller('Controller', function($scope, $location) {
   $scope.iniciar_ejemplo = function(numero) {
     codigo = document.getElementById('/demo' + numero).innerHTML;
     eval(codigo);
