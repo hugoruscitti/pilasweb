@@ -131,7 +131,7 @@ class Pilas {
     this.canvas = document.getElementById(this.opciones.canvas_id);
 
     if (! this.canvas)
-      throw new Error("No se encuentra el elemento canvas (id=canvas)");
+      throw new Error("No se encuentra el elemento canvas (id='" + this.opciones.canvas_id + "')");
   }
 
   /**
