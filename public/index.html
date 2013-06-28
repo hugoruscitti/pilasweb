@@ -1,19 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html ng-app='app'>
 <head>
 	<meta charset=utf-8>
 	<title>pilasweb testing</title>
   <style>
     canvas {
       border: 1px solid gray;
+      width: 320px;
+      height: 240px;
     }
   </style>
 </head>
 
-<body>
+<body ng-controller='Controller'>
 
-  <canvas id='canvas'></canvas>
+  <div class="navbar navbar-fixed-top">
+     <div class="navbar-inner">
+       <div class="container">
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+         </a>
+         <a class="brand" href="#">pilas-web</a>
 
+         <div class="nav-collapse collapse" id="main-menu">
+          <ul class="nav" id="main-menu-left">
+            <li><a href='http://github.com/hugoruscitti/pilasweb'>github</a></li>
+          </ul>
+          
+         </div>
+       </div>
+     </div>
+   </div>
+
+
+   <div class='container'>
+
+     <div class="row"  style='margin-top: 70px'>
+        <div class="span3 bs-docs-sidebar">
+          <ul class="nav nav-list bs-docs-sidenav affix">
+            <li ng-class='{active: $index == seleccionado}' ng-repeat='demo in demos'><a ng-click='seleccionar($index)' href='{{demo.url}}'><i class="icon-chevron-right"></i> {{demo.nombre}}</a></li>
+          </ul>
+        </div>
+
+        <div class="span9">
+            <ng-view></ng-view>
+        </div>
+
+
+<script type="text/ng-template" id="demo1.html">
+    <canvas ng-init='iniciar_ejemplo(1)' id='canvas'></canvas>
+</script>
+        
+<script type="text/ng-template" id="demo2.html">
+    <canvas ng-init='iniciar_ejemplo(2)' id='canvas'></canvas>
+</script>
+  
+
+
+
+    </div>
+
+
+</div>
   <script src='libs/PxLoader.js'></script>
   <script src='libs/PxLoaderImage.js'></script>
   <script src='libs/Box2dWeb-2.1.a.3.js'></script>
@@ -21,33 +71,59 @@
   <script src='libs/tweenjs-0.4.1.min.js'></script>
 
   <script src='pilasweb.js'></script>
+  <link href="css/bootstrap.css" rel="stylesheet">
 
-<script>
+<script src='js/angular.min.js'></script>
+<script src='js/app.js'></script>
 
 
-pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
+<script type='demo' id='/demo1'>
+    pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
 
-pilas.onready = function() {
-  var fondo = new pilas.fondos.Plano();
-  window.aceituna = new pilas.actores.Aceituna();
-  window.bomba = new pilas.actores.Bomba();
-  window.bomba.x = 50;
+    pilas.onready = function() {
+      var fondo = new pilas.fondos.Plano();
+      window.aceituna = new pilas.actores.Aceituna();
+      window.bomba = new pilas.actores.Bomba();
+      window.bomba.x = 50;
 
-  var mover_aceituna = function (evento) {
-    window.aceituna.x = evento.x;
-    window.aceituna.y = evento.y;
-  }
+      var mover_aceituna = function (evento) {
+        window.aceituna.x = evento.x;
+        window.aceituna.y = evento.y;
+      }
 
-  pilas.escena_actual().mueve_mouse.conectar(mover_aceituna);
+      pilas.escena_actual().mueve_mouse.conectar(mover_aceituna);
 
-  //window.actor = new pilas.actores.Actor();
-  //window.aceituna.x = [100, 0, 100, 0];
+      //window.actor = new pilas.actores.Actor();
+      //window.aceituna.x = [100, 0, 100, 0];
 
-  pilas.definir_modos({puntos_de_control: true})
-}
+      pilas.definir_modos({puntos_de_control: true})
+    }
 
-//pilas.ejecutar();
 </script>
+
+
+<script type='demo' id='/demo2'>
+    pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
+
+    pilas.onready = function() {
+      var fondo = new pilas.fondos.Plano();
+      window.aceituna = new pilas.actores.Aceituna();
+      window.bomba = new pilas.actores.Bomba();
+      window.bomba.escala = [3];
+
+      var mover_aceituna = function (evento) {
+        window.aceituna.x = evento.x;
+        window.aceituna.y = evento.y;
+      }
+
+      pilas.escena_actual().mueve_mouse.conectar(mover_aceituna);
+
+      pilas.definir_modos({puntos_de_control: true})
+    }
+</script>
+
+
+
 
 </body>
 </html>
