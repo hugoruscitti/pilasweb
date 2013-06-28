@@ -149,6 +149,11 @@ class Pilas {
   ejecutar() {
     this.onready();
     var self = this;
+
+    // TODO: Limpiar los listeners con un mensaje y
+    //       no accediendo directamente a la propiedad.
+    createjs.Ticker._listeners = [];
+
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addListener(function() {self.actualizar()});
   }
