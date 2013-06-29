@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8>
+	<title>pilasweb testing</title>
+
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="css/custom.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <div class="navbar navbar-fixed-top">
+     <div class="navbar-inner">
+       <div class="container">
+         <a class="brand" href="./index.html">pilas-web</a>
+
+         <div class="nav-collapse collapse" id="main-menu">
+          <ul class="nav" id="main-menu-left">
+            <li><a href='http://github.com/hugoruscitti/pilasweb'>github</a></li>
+            <li><a href='./index.html'>ejemplos</a></li>
+            <li><a href='./interprete.html'>intérprete</a></li>
+          </ul>
+         </div>
+       </div>
+     </div>
+   </div>
+
+
+   <div class='container'>
+
+     <div class="row"  style='margin-top: 70px'>
+
+        <div class="span12">
+            <canvas id='canvas'></canvas>
+
+            <div class="stretch console">
+              <div id="console" class="stretch">
+                <ul id="output"></ul>
+                <form>
+                  <textarea autofocus id="exec" spellcheck="false" autocapitalize="off" rows="1" autocorrect="off"></textarea>
+                </form>
+              </div>
+            </div>
+        </div>
+
+
+    </div>
+    </div>
+  <script src='libs/PxLoader.js'></script>
+  <script src='libs/PxLoaderImage.js'></script>
+  <script src='libs/Box2dWeb-2.1.a.3.js'></script>
+  <script src='libs/easeljs-0.6.1.min.js'></script>
+  <script src='libs/tweenjs-0.4.1.min.js'></script>
+
+  <script src='pilasweb.js'></script>
+
+  <script src='js/angular.min.js'></script>
+  <script src='js/app.js'></script>
+  <script src='http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
+
+
+  <link rel="stylesheet" href="console/style_console.css" title="" type=""/>
+  <script type="text/javascript" charset="utf-8" src="console/console.js"></script>
+  <script type="text/javascript" charset="utf-8" src="console/prettyprint.js"></script>
+
+<script>
+pilas = new Pilas();
+pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
+
+pilas.onready = function() {
+  var fondo = new pilas.fondos.Plano();
+  window.bomba = new pilas.actores.Bomba();
+  window.bomba.escala = [3];
+}
+pilas.ejecutar();
+</script>
+
+
+</body>
+</html>
