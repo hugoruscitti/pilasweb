@@ -111,17 +111,8 @@ pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
 
 pilas.onready = function() {
   var fondo = new pilas.fondos.Plano();
-  window.aceituna = new pilas.actores.Aceituna();
   window.bomba = new pilas.actores.Bomba();
   window.bomba.escala = [3];
-
-  var mover_aceituna = function (evento) {
-    window.aceituna.x = evento.x;
-    window.aceituna.y = evento.y;
-  }
-
-  pilas.escena_actual().mueve_mouse.conectar(mover_aceituna);
-  pilas.definir_modos({puntos_de_control: true})
 }
 pilas.ejecutar();
 </script>
