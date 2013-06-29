@@ -2,10 +2,11 @@ var app = angular.module('app', []);
 
 app.config(function($routeProvider) {
 
-  $routeProvider.when('/', {redirectTo: '/pepe', controller: 'Controller'}).
-                 when('/editor', {templateUrl: 'editor.html', controller: 'EditorController'}).
+  $routeProvider.when('/editor', {templateUrl: 'editor.html', controller: 'EditorController'}).
                  when('/demo1', {templateUrl: 'demo1.html', controller: 'Controller'}).
-                 when('/demo2', {templateUrl: 'demo2.html', controller: 'Controller'});
+                 when('/demo2', {templateUrl: 'demo2.html', controller: 'Controller'}).
+                 otherwise({redirectTo: '/demo1'});
+          
 
 });
 
