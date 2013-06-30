@@ -805,7 +805,7 @@ var Pilas = (function () {
     function () {
         this.canvas.onmousemove = function (event) {
             var camara = pilas.escena_actual().camara;
-            var posicion = camara.obtener_posicion_escenario(event.x, event.y);
+            var posicion = camara.obtener_posicion_escenario(event.layerX, event.layerY);
             pilas.escena_actual().mueve_mouse.emitir(posicion);
         };
     };
@@ -819,7 +819,7 @@ var Pilas = (function () {
     function () {
         this.canvas = document.getElementById(this.opciones.canvas_id);
         if(!this.canvas) {
-            throw new Error("No se encuentra el elemento canvas (id=canvas)");
+            throw new Error("No se encuentra el elemento canvas (id='" + this.opciones.canvas_id + "')");
         }
     };
     Pilas.prototype.onready = /**
@@ -836,10 +836,13 @@ var Pilas = (function () {
     function () {
         this.onready();
         var self = this;
+        // TODO: Limpiar los listeners con un mensaje y
+        //       no accediendo directamente a la propiedad.
         createjs.Ticker.setFPS(60);
-        createjs.Ticker.addListener(function () {
+        var my_tick = function (event) {
             self.actualizar();
-        });
+        };
+        createjs.Ticker.addEventListener('tick', my_tick);
     };
     Pilas.prototype.actualizar = /**
     * @method actualizar
