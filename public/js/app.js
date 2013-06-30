@@ -21,7 +21,7 @@ app.controller('AppController', function($scope, $location) {
   $scope.demos = [
     {'nombre': 'Aceituna y bomba', 'url': '#/demo1'},
     {'nombre': 'Escala', 'url': '#/demo2'},
-    {'nombre': 'Editor', 'url': '#/editor'},
+    {'nombre': 'Editor simple', 'url': '#/editor'},
   ];
 
   $scope.seleccionar = function(indice) {
