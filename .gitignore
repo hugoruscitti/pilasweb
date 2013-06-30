@@ -1,0 +1,15 @@
+.DS_Store
+
+/build/
+/doc/
+
+/src/coffee/*.js
+/src/coffee/*/*.js
+/src/tags
+
+/src/js/
+!Box2eWeb-2.1.a.3.js
+!createjs-2013.02.12.min.js
+!requirejs-2.1.2.min.js
+node_modules/*
+docs/html/*

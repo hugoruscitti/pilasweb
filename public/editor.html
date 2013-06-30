@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8>
+	<title>pilasweb testing</title>
+
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="css/custom.css" rel="stylesheet">
+
+
+
+  <link rel="stylesheet" href="CodeMirror3/lib/codemirror.css">
+  <link rel="stylesheet" href="CodeMirror3/theme/monokai.css">
+  <link rel="stylesheet" href="css/inlet.css" type="text/css" media="screen"  title="no title" charset="utf-8">
+  <link rel="stylesheet" href="css/editor.css" type="text/css" media="screen"  title="no title" charset="utf-8">
+
+
+
+</head>
+
+<body>
+
+  <div class="navbar navbar-fixed-top">
+     <div class="navbar-inner">
+       <div class="container">
+         <a class="brand" href="./index.html">pilas-web</a>
+
+         <div class="nav-collapse collapse" id="main-menu">
+          <ul class="nav" id="main-menu-left">
+            <li><a href='./index.html'>ejemplos</a></li>
+            <li><a href='./interprete.html'>intérprete</a></li>
+            <li class="active"><a href='./editor.html'>editor</a></li>
+            <li><a href='./acercade.html'>acerca de...</a></li>
+          </ul>
+
+          <ul class="nav pull-right">
+            <li><a href='http://github.com/hugoruscitti/pilasweb'>github <i class='icon-share-alt'></i></a></li>
+            <li><a href='http://pilas-engine.com.ar'>pilas-engine <i class='icon-share-alt'></i></a></li>
+          </ul>
+
+         </div>
+       </div>
+     </div>
+   </div>
+
+   <div class='container'>
+
+     <div class="row"  style='margin-top: 70px'>
+
+
+        <div class='span6'>
+
+          <div id='editor'></div>
+          <script src="CodeMirror3/lib/codemirror.js"></script>
+          <script src="CodeMirror3/mode/javascript/javascript.js"></script>
+          <script src="js/inlet.js"></script>
+  
+          <textarea id="test-code" style="display:none;">
+// Pruebas
+
+window.aceituna.x = 0;
+window.aceituna.escala = 1;
+window.aceituna.escala_x = 1;
+
+window.aceituna.rotacion = 90;</textarea>
+
+  <script>
+
+    var editor = CodeMirror(document.getElementById("editor"),{
+      value: document.getElementById("test-code").value,
+      mode:  "javascript",
+      theme: "monokai",
+      lineNumbers: true,
+    });
+
+    editor.on("change", changeFunction)
+
+    function changeFunction() {
+        var numero_de_linea_actual = editor.getCursor().line;
+        var linea_actual = editor.getLine(numero_de_linea_actual);
+
+        
+        eval(linea_actual);
+
+      //let's affect the page when the code changes!
+      /*
+      eval(editor.getValue());
+      var example = document.getElementById("example");
+      example.innerHTML = theAnswer + " === The answer to life, the universe and everything.";
+      //example.style.left = x+"px";
+      //example.style.top = y+"px";
+      document.body.style['background-color'] = color;
+      */
+    };
+    changeFunction();
+
+    var inlet = Inlet(editor);
+  </script>
+    
+
+
+
+
+
+
+
+
+
+
+
+              <small>Puedes hacer click sobre un número para ver el deslizador <code>ñ_ñ</code>
+        </div>
+
+        <div class="span6">
+            <canvas id='canvas'></canvas>
+        </div>
+
+
+    </div>
+    </div>
+  <script src='libs/PxLoader.js'></script>
+  <script src='libs/PxLoaderImage.js'></script>
+  <script src='libs/Box2dWeb-2.1.a.3.js'></script>
+  <script src='libs/easeljs-0.6.1.min.js'></script>
+  <script src='libs/tweenjs-0.4.1.min.js'></script>
+
+  <script src='pilasweb.js'></script>
+
+
+  <script>
+    pilas = new Pilas();
+    pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
+
+    pilas.onready = function() {
+      var fondo = new pilas.fondos.Plano();
+      window.aceituna = new pilas.actores.Aceituna();
+
+      // Carga y evalúa el código directamente desde el editor.
+      var editor = document.getElementById("test-code");
+      var codigo = editor.innerHTML;
+      eval(codigo);
+    }
+
+    pilas.ejecutar();
+  </script>
+</body>
+</html>
