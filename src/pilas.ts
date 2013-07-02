@@ -116,6 +116,9 @@ class Pilas {
     this.canvas.onmousemove = function (event) {
       var camara = pilas.escena_actual().camara;
       var posicion = camara.obtener_posicion_escenario(event.layerX, event.layerY);
+      var rectangulo_canvas = this.getBoundingClientRect();
+      posicion.x -= rectangulo_canvas.left;
+      posicion.y -= rectangulo_canvas.top - (rectangulo_canvas.height / 2);
       pilas.escena_actual().mueve_mouse.emitir(posicion);
     }
   }
