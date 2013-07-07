@@ -8,8 +8,14 @@ class Evento {
   }
 
   public emitir(evento) {
-    for (var respuesta in this.respuestas) {
-      this.respuestas[respuesta](evento);
+    for (var nombre_respuesta in this.respuestas) {
+      var respuesta = this.respuestas[nombre_respuesta];
+      if (typeof(respuesta) == 'object') {
+        respuesta.recibir(evento, this);
+      }
+      else {
+        respuesta(evento);
+      }
     }
   }
 

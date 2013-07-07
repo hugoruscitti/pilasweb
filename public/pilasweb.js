@@ -447,8 +447,13 @@ var Evento = (function () {
         this.nombre = nombre;
     }
     Evento.prototype.emitir = function (evento) {
-        for(var respuesta in this.respuestas) {
-            this.respuestas[respuesta](evento);
+        for(var nombre_respuesta in this.respuestas) {
+            var respuesta = this.respuestas[nombre_respuesta];
+            if(typeof (respuesta) == 'object') {
+                respuesta.recibir(evento, this);
+            } else {
+                respuesta(evento);
+            }
         }
     };
     Evento.prototype.conectar = function (respuesta) {
@@ -538,6 +543,29 @@ var PuedeExplotar = (function (_super) {
     return PuedeExplotar;
 })(Habilidad);
 /**
+* @class SeguirAlMouse
+*
+* Hace que un actor siga la posición del mouse en todo momento.
+*/
+var SeguirAlMouse = (function (_super) {
+    __extends(SeguirAlMouse, _super);
+    function SeguirAlMouse(receptor) {
+        _super.call(this, receptor);
+        pilas.escena_actual().mueve_mouse.conectar(this);
+    }
+    SeguirAlMouse.prototype.recibir = function (evento, tipo) {
+        if(tipo == pilas.escena_actual().mueve_mouse) {
+            this.mover(evento);
+        }
+    };
+    SeguirAlMouse.prototype.mover = function (evento) {
+        console.log(this);
+        this.receptor.x = evento.x;
+        this.receptor.y = evento.y;
+    };
+    return SeguirAlMouse;
+})(Habilidad);
+/**
 * @class Habilidades
 *
 * Representa todas las habilidades conocidas en pilas-engine.
@@ -545,6 +573,7 @@ var PuedeExplotar = (function (_super) {
 var Habilidades = (function () {
     function Habilidades() {
         this.PuedeExplotar = PuedeExplotar;
+        this.SeguirAlMouse = SeguirAlMouse;
     }
     return Habilidades;
 })();
