@@ -37,6 +37,30 @@ class PuedeExplotar extends Habilidad {
 }
 
 /**
+ * @class SeguirAlMouse
+ *
+ * Hace que un actor siga la posición del mouse en todo momento.
+ */
+class SeguirAlMouse extends Habilidad {
+  constructor(receptor) {
+    super(receptor);
+    pilas.escena_actual().mueve_mouse.conectar(this);
+  }
+
+  recibir(evento, tipo) {
+    if (tipo == pilas.escena_actual().mueve_mouse) {
+      this.mover(evento);
+    }
+  }
+
+  mover(evento) {
+    console.log(this);
+    this.receptor.x = evento.x;
+    this.receptor.y = evento.y;
+  }
+}
+
+/**
  * @class Habilidades
  *
  * Representa todas las habilidades conocidas en pilas-engine.
@@ -44,8 +68,10 @@ class PuedeExplotar extends Habilidad {
 class Habilidades {
 
   PuedeExplotar;
+  SeguirAlMouse;
 
   constructor() {
     this.PuedeExplotar = PuedeExplotar;
+    this.SeguirAlMouse = SeguirAlMouse;
   }
 }
