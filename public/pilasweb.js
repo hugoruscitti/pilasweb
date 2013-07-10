@@ -15,6 +15,7 @@ var Actores = (function () {
         this.Actor = Actor;
         this.Bomba = Bomba;
         this.Explosion = Explosion;
+        this.Pelota = Pelota;
     }
     return Actores;
 })();
@@ -293,6 +294,17 @@ var Explosion = (function (_super) {
     };
     return Explosion;
 })(Actor);
+/// <reference path="actor.ts"/>
+var Pelota = (function (_super) {
+    __extends(Pelota, _super);
+    function Pelota(x, y) {
+        var imagen = "pelota.png";
+        _super.call(this, imagen, x, y);
+        this.centro_x = 18;
+        this.centro_y = 18;
+    }
+    return Pelota;
+})(Actor);
 /**
 * @class Camara
 *
@@ -387,6 +399,7 @@ var ModoPuntosDeControl = (function () {
 })();
 /// <reference path="camara.ts />
 /// <reference path="evento.ts />
+/// <reference path="fisica.ts />
 var Base = (function () {
     function Base() {
         this.mueve_mouse = new Evento('mueve_mouse')// ['x', 'y', 'dx', 'dy']
@@ -414,12 +427,14 @@ var Normal = (function (_super) {
         this.actores = [];
         this.stage = new createjs.Stage(pilas.canvas);
         this.camara = new Camara();
+        this.fisica = new Fisica();
     }
     Normal.prototype.actualizar = function () {
         for(var i = 0; i < this.actores.length; i++) {
             this.actores[i].actualizar();
         }
         this.stage.update();
+        this.fisica.actualizar();
     };
     Normal.prototype.agregar_actor = function (actor) {
         this.actores.push(actor);
@@ -458,6 +473,77 @@ var Evento = (function () {
         delete this.respuestas[respuesta.toString()];
     };
     return Evento;
+})();
+var Figura = (function () {
+    function Figura(cuerpo) {
+        this._cuerpo = cuerpo;
+    }
+    Figura.prototype.obtener_x = function () {
+        var box2d_position = this._cuerpo.GetBody().GetPosition();
+        return pilas.fisica.convertir_a_pixels(box2d_position.x);
+    };
+    Figura.prototype.obtener_y = function () {
+        var box2d_position = this._cuerpo.GetBody().GetPosition();
+        return pilas.fisica.convertir_a_pixels(box2d_position.y);
+    };
+    return Figura;
+})();
+var Circulo = (function (_super) {
+    __extends(Circulo, _super);
+    function Circulo(x, y, radio) {
+        console.log(this);
+        console.log(x, y, radio);
+        var bodyDef = new b2BodyDef();
+        bodyDef.type = b2Body.b2_dynamicBody;
+        var fixDef = new b2FixtureDef();
+        fixDef.density = 1.0;
+        fixDef.friction = 0.5;
+        fixDef.restitution = 0.2;
+        fixDef.shape = new b2CircleShape(pilas.fisica.convertir_a_metros(radio));
+        bodyDef.position.x = pilas.fisica.convertir_a_metros(120);
+        bodyDef.position.y = pilas.fisica.convertir_a_metros(100);
+        _super.call(this, pilas.fisica.mundo.CreateBody(bodyDef).CreateFixture(fixDef));
+    }
+    return Circulo;
+})(Figura);
+b2Vec2 = Box2D.Common.Math.b2Vec2;
+b2BodyDef = Box2D.Dynamics.b2BodyDef;
+b2Body = Box2D.Dynamics.b2Body;
+b2FixtureDef = Box2D.Dynamics.b2FixtureDef;
+b2Fixture = Box2D.Dynamics.b2Fixture;
+b2World = Box2D.Dynamics.b2World;
+b2MassData = Box2D.Collision.Shapes.b2MassData;
+b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
+b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
+b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
+/// <reference path="figuras.ts"/>
+var Fisica = (function () {
+    function Fisica() {
+        this.Circulo = Circulo;
+        this.mundo = new Box2D.Dynamics.b2World(new b2Vec2(0, 10), true);
+        this.PPM = 30;
+    }
+    Fisica.prototype.habilitar_depurado = function () {
+        var debugDraw = new b2DebugDraw();
+        debugDraw.SetSprite(pilas.canvas.getContext('2d'));
+        debugDraw.SetDrawScale(30);
+        debugDraw.SetFillAlpha(0.1);
+        debugDraw.SetLineThickness(1.0);
+        debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+        this.mundo.SetDebugDraw(debugDraw);
+    };
+    Fisica.prototype.actualizar = function () {
+        this.mundo.Step(1 / 120.0, 6, 3);
+        this.mundo.DrawDebugData();
+        this.mundo.ClearForces();
+    };
+    Fisica.prototype.convertir_a_metros = function (valor) {
+        return valor / this.PPM;
+    };
+    Fisica.prototype.convertir_a_pixels = function (valor) {
+        return valor * this.PPM;
+    };
+    return Fisica;
 })();
 /// <reference path="actores/actor.ts"/>
 var Plano = (function (_super) {
@@ -538,6 +624,22 @@ var PuedeExplotar = (function (_super) {
     return PuedeExplotar;
 })(Habilidad);
 /**
+* @class RebotarComoPelota
+*
+* Le indica al actor que rebote y colisiones como una pelota.
+*
+*     @example
+*     var un_actor = pilas.actores.Aceituna()
+*     un_actor.aprender(new pilas.habilidades.RebotarComoPelota)
+*/
+var RebotarComoPelota = (function (_super) {
+    __extends(RebotarComoPelota, _super);
+    function RebotarComoPelota(receptor) {
+        _super.call(this, receptor);
+    }
+    return RebotarComoPelota;
+})(Habilidad);
+/**
 * @class Habilidades
 *
 * Representa todas las habilidades conocidas en pilas-engine.
@@ -545,6 +647,7 @@ var PuedeExplotar = (function (_super) {
 var Habilidades = (function () {
     function Habilidades() {
         this.PuedeExplotar = PuedeExplotar;
+        this.RebotarComoPelota = RebotarComoPelota;
     }
     return Habilidades;
 })();
@@ -575,6 +678,7 @@ var Imagenes = (function () {
         this.cargar_recurso('bomba.png');
         this.cargar_recurso('caja.png');
         this.cargar_recurso('explosion.png');
+        this.cargar_recurso('pelota.png');
         this.cargar_recurso('sin_imagen.png');
         this.cargar_recurso('plano.png');
         this.cargar_recurso('cooperativista/alerta.png');
@@ -834,7 +938,6 @@ var Pilas = (function () {
     * Pone en funcionamiento el bucle principal.
     */
     function () {
-        this.onready();
         var self = this;
         // TODO: Limpiar los listeners con un mensaje y
         //       no accediendo directamente a la propiedad.
@@ -857,6 +960,13 @@ var Pilas = (function () {
     Pilas.prototype.definir_modos = function (modos) {
         this.mundo.definir_modos(modos);
     };
+    Object.defineProperty(Pilas.prototype, "fisica", {
+        get: function () {
+            return this.escena_actual().fisica;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Pilas;
 })();
 pilas = new Pilas();

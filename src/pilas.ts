@@ -147,7 +147,6 @@ class Pilas {
    * Pone en funcionamiento el bucle principal.
    */
   ejecutar() {
-    this.onready();
     var self = this;
 
     // TODO: Limpiar los listeners con un mensaje y
@@ -171,6 +170,10 @@ class Pilas {
 
   definir_modos(modos) {
     this.mundo.definir_modos(modos);
+  }
+
+  get fisica() {
+    return this.escena_actual().fisica;
   }
   
 }

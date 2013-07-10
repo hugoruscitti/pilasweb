@@ -1,5 +1,6 @@
 /// <reference path="camara.ts />
 /// <reference path="evento.ts />
+/// <reference path="fisica.ts />
 
 class Base {
   mueve_mouse;
@@ -26,12 +27,14 @@ class Normal extends Base {
   actores;
   stage;      // escenario de cretejs.
   camara;
+  fisica;
 
   constructor() {
     super();
     this.actores = [];
     this.stage = new createjs.Stage(pilas.canvas);
     this.camara = new Camara();
+    this.fisica = new Fisica();
   }
 
   actualizar() {
@@ -39,6 +42,7 @@ class Normal extends Base {
       this.actores[i].actualizar();
 
     this.stage.update();
+    this.fisica.actualizar();
   }
 
   agregar_actor(actor) {

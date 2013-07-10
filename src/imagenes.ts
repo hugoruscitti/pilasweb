@@ -36,6 +36,7 @@ class Imagenes {
     this.cargar_recurso('caja.png');
     this.cargar_recurso('explosion.png');
 
+    this.cargar_recurso('pelota.png');
     this.cargar_recurso('sin_imagen.png');
 
     this.cargar_recurso('plano.png');

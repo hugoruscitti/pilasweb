@@ -61,6 +61,11 @@
             <canvas ng-init='iniciar_ejemplo(2)' id='canvas'></canvas>
         </script>
 
+        <script type="text/ng-template" id="demo3.html">
+            <canvas ng-init='iniciar_ejemplo(3)' id='canvas'></canvas>
+        </script>
+
+
         <script type="text/ng-template" id="editor.html">
             <canvas id='canvas'></canvas>
             <p>
@@ -82,11 +87,11 @@
   <script src='libs/easeljs-0.6.1.min.js'></script>
   <script src='libs/tweenjs-0.4.1.min.js'></script>
 
-  <script src='pilasweb.js'></script>
 
   <script src='js/angular.min.js'></script>
   <script src='js/app.js'></script>
 
+  <script src='pilasweb.js'></script>
 
 <script type='demo' id='/demo1'>
 pilas = new Pilas();
@@ -123,6 +128,26 @@ pilas.onready = function() {
   window.bomba = new pilas.actores.Bomba();
   window.bomba.escala = [3];
 }
+pilas.ejecutar();
+</script>
+
+<script type='demo' id='/demo3'>
+pilas = new Pilas();
+pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
+
+
+pilas.onready = function() {
+  console.log("on ready!");
+  var fondo = new pilas.fondos.Plano();
+  //window.pelota = new pilas.actores.Pelota();
+  window.a = new pilas.fisica.Circulo(100, 100, 20);
+  var b = new pilas.fisica.Circulo(200, 100, 30);
+
+  // TODO: eliminar la llamada a habilitar_depurado. Porque se va a implementar
+  // mediante el depurador de pilas.
+  pilas.fisica.habilitar_depurado();
+}
+
 pilas.ejecutar();
 </script>
 

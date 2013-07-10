@@ -37,6 +37,23 @@ class PuedeExplotar extends Habilidad {
 }
 
 /**
+ * @class RebotarComoPelota
+ *
+ * Le indica al actor que rebote y colisiones como una pelota.
+ *
+ *     @example
+ *     var un_actor = pilas.actores.Aceituna()
+ *     un_actor.aprender(new pilas.habilidades.RebotarComoPelota)
+ */
+class RebotarComoPelota extends Habilidad {
+
+  constructor(receptor) {
+    super(receptor);
+  }
+}
+
+
+/**
  * @class Habilidades
  *
  * Representa todas las habilidades conocidas en pilas-engine.
@@ -44,8 +61,10 @@ class PuedeExplotar extends Habilidad {
 class Habilidades {
 
   PuedeExplotar;
+  RebotarComoPelota;
 
   constructor() {
     this.PuedeExplotar = PuedeExplotar;
+    this.RebotarComoPelota = RebotarComoPelota;
   }
 }

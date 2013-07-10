@@ -16,11 +16,13 @@ class Actores {
   Actor;
   Bomba;
   Explosion;
+  Pelota;
 
   constructor() {
     this.Aceituna = Aceituna;
     this.Actor = Actor;
     this.Bomba = Bomba;
     this.Explosion = Explosion;
+    this.Pelota = Pelota;
   }
 }
