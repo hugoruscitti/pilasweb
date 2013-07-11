@@ -14,20 +14,28 @@ class DepuradorDeshabilitado {
   definir_modos(modos) {
     modos = modos || {};
     modos.puntos_de_control = modos.puntos_de_control || false;
+    modos.fisica = modos.fisica || false;
 
     if (modos.puntos_de_control)
       this.modos.push(new ModoPuntosDeControl());
+
+    if (modos.fisica)
+      this.modos.push(new ModoFisica());
   }
 
 }
 
-class ModoPuntosDeControl {
+class ModoDepurador {
+}
+
+class ModoPuntosDeControl extends ModoDepurador {
   shape;
   container;
   text_modo;
   text_coordenada;
 
   constructor() {
+    super();
     this.container = new createjs.Container();
 
     this.shape = new createjs.Shape();
@@ -63,3 +71,33 @@ class ModoPuntosDeControl {
   }
 
 }
+
+
+class ModoFisica extends ModoDepurador {
+  shape;
+  container;
+  text_modo;
+
+  constructor() {
+    super();
+    this.container = new createjs.Container();
+
+    this.shape = new createjs.Shape();
+    this.container.addChild(this.shape);
+
+    this.text_modo = new createjs.Text("F11 ModoFisica habilitado", "12px Arial", "white");
+    this.text_modo.y = 20;
+    this.container.addChild(this.text_modo);
+
+    pilas.escena_actual().stage.addChild(this.container);
+  }
+
+  actualizar() {
+    var escena = pilas.escena_actual();
+    this.shape.graphics.clear();
+
+    pilas.fisica.dibujar_figuras_sobre_el_lienzo(this.shape.graphics)
+  }
+
+}
+

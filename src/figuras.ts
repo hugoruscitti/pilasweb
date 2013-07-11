@@ -16,6 +16,11 @@ class Figura {
     return pilas.fisica.convertir_a_pixels(box2d_position.y);
   }
 
+  obtener_rotacion() {
+    var box2d_cuerpo = this._cuerpo.GetBody();
+    return box2d_cuerpo.GetAngle();
+  }
+
 }
 
 class Circulo extends Figura {

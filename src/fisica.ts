@@ -34,18 +34,8 @@ class Fisica {
   constructor() {
     this.Circulo = Circulo;
 
-    this.mundo = new Box2D.Dynamics.b2World(new b2Vec2(0, 10), true);
+    this.mundo = new Box2D.Dynamics.b2World(new b2Vec2(0, -10), true);
     this.PPM = 30;
-  }
-
-  habilitar_depurado() {
-    var debugDraw = new b2DebugDraw;
-    debugDraw.SetSprite(pilas.canvas.getContext('2d'));
-    debugDraw.SetDrawScale(30);
-    debugDraw.SetFillAlpha(0.1);
-    debugDraw.SetLineThickness(1.0);
-    debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-    this.mundo.SetDebugDraw(debugDraw);
   }
 
   actualizar() {
@@ -60,5 +50,26 @@ class Fisica {
 
   convertir_a_pixels(valor) {
     return valor * this.PPM;
+  }
+
+  dibujar_figuras_sobre_el_lienzo(graphics) {
+    for (var b=this.mundo.GetBodyList(); b; b=b.GetNext()) {
+      var fixtures = b.GetFixtureList();
+
+      if (fixtures) {
+        var shape = fixtures.GetShape();
+        var shape_type = shape.GetType();
+
+        graphics.setStrokeStyle(1);
+        graphics.beginStroke("white");
+
+        if (shape_type == 0) {
+          graphics.drawCircle(
+            this.convertir_a_pixels(b.GetPosition().x),
+            120 -this.convertir_a_pixels(b.GetPosition().y),
+            this.convertir_a_pixels(shape.GetRadius()));
+        }
+      }
+    }
   }
 }

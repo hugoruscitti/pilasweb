@@ -46,9 +46,28 @@ class PuedeExplotar extends Habilidad {
  *     un_actor.aprender(new pilas.habilidades.RebotarComoPelota)
  */
 class RebotarComoPelota extends Habilidad {
+  circulo;
 
   constructor(receptor) {
     super(receptor);
+
+    this.circulo = new pilas.fisica.Circulo(receptor.x, receptor.y, 20);
+    receptor.aprender(pilas.habilidades.Imitar, this.circulo);
+  }
+
+}
+
+class Imitar extends Habilidad {
+  objeto_a_imitar;
+
+  constructor(receptor, objeto_a_imitar) {
+    super(receptor);
+    this.objeto_a_imitar = objeto_a_imitar;
+  }
+
+  actualizar() {
+    this.receptor.x = this.objeto_a_imitar.obtener_x();
+    this.receptor.y = this.objeto_a_imitar.obtener_y();
   }
 }
 
@@ -60,11 +79,13 @@ class RebotarComoPelota extends Habilidad {
  */
 class Habilidades {
 
+  Imitar;
   PuedeExplotar;
   RebotarComoPelota;
 
   constructor() {
     this.PuedeExplotar = PuedeExplotar;
     this.RebotarComoPelota = RebotarComoPelota;
+    this.Imitar = Imitar;
   }
 }

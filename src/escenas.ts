@@ -38,8 +38,10 @@ class Normal extends Base {
   }
 
   actualizar() {
-    for (var i=0; i<this.actores.length; i++)
+    for (var i=0; i<this.actores.length; i++) {
+      this.actores[i].pre_actualizar();
       this.actores[i].actualizar();
+    }
 
     this.stage.update();
     this.fisica.actualizar();

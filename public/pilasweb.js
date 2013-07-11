@@ -20,14 +20,22 @@ var Actores = (function () {
     return Actores;
 })();
 var Estudiante = (function () {
-    function Estudiante() { }
-    Estudiante.prototype.aprender = function (clase_de_habilidad) {
-        // FIXME, hacer una lista de habilidades, chequear si la clase de
-        // habilidad ya se ha agregado y eliminarla.
-        this.agregar_habilidad(clase_de_habilidad);
+    function Estudiante() {
+        this._habilidades = [];
+    }
+    Estudiante.prototype.aprender = function (clase_de_habilidad, opcional) {
+        // NOTA: aprender puede recibir un argumento opcional,
+        // si este argumento no se especifica, sera undefined
+        this.agregar_habilidad(clase_de_habilidad, opcional);
     };
-    Estudiante.prototype.agregar_habilidad = function (clase_de_habilidad) {
-        var habilidad = new clase_de_habilidad(this);
+    Estudiante.prototype.agregar_habilidad = function (clase_de_habilidad, opcional) {
+        var habilidad = new clase_de_habilidad(this, opcional);
+        this._habilidades.push(habilidad);
+    };
+    Estudiante.prototype.actualizar_habilidades = function () {
+        for(var i in this._habilidades) {
+            this._habilidades[i].actualizar();
+        }
     };
     return Estudiante;
 })();
@@ -243,6 +251,10 @@ var Actor = (function (_super) {
     });
     Actor.prototype.actualizar = function () {
     };
+    Actor.prototype.pre_actualizar = function () {
+        this.actualizar_habilidades()// definida en estudiante.ts
+        ;
+    };
     return Actor;
 })(Estudiante);
 /// <reference path="actor.ts"/>
@@ -300,8 +312,8 @@ var Pelota = (function (_super) {
     function Pelota(x, y) {
         var imagen = "pelota.png";
         _super.call(this, imagen, x, y);
-        this.centro_x = 18;
-        this.centro_y = 18;
+        this.centro_x = 25;
+        this.centro_y = 25;
     }
     return Pelota;
 })(Actor);
@@ -362,14 +374,24 @@ var DepuradorDeshabilitado = (function () {
         modos = modos || {
         };
         modos.puntos_de_control = modos.puntos_de_control || false;
+        modos.fisica = modos.fisica || false;
         if(modos.puntos_de_control) {
             this.modos.push(new ModoPuntosDeControl());
+        }
+        if(modos.fisica) {
+            this.modos.push(new ModoFisica());
         }
     };
     return DepuradorDeshabilitado;
 })();
-var ModoPuntosDeControl = (function () {
+var ModoDepurador = (function () {
+    function ModoDepurador() { }
+    return ModoDepurador;
+})();
+var ModoPuntosDeControl = (function (_super) {
+    __extends(ModoPuntosDeControl, _super);
     function ModoPuntosDeControl() {
+        _super.call(this);
         this.container = new createjs.Container();
         this.shape = new createjs.Shape();
         this.container.addChild(this.shape);
@@ -396,7 +418,26 @@ var ModoPuntosDeControl = (function () {
         this.text_coordenada.text = "Posición del mouse: x=" + pos.x + " y=" + pos.y;
     };
     return ModoPuntosDeControl;
-})();
+})(ModoDepurador);
+var ModoFisica = (function (_super) {
+    __extends(ModoFisica, _super);
+    function ModoFisica() {
+        _super.call(this);
+        this.container = new createjs.Container();
+        this.shape = new createjs.Shape();
+        this.container.addChild(this.shape);
+        this.text_modo = new createjs.Text("F11 ModoFisica habilitado", "12px Arial", "white");
+        this.text_modo.y = 20;
+        this.container.addChild(this.text_modo);
+        pilas.escena_actual().stage.addChild(this.container);
+    }
+    ModoFisica.prototype.actualizar = function () {
+        var escena = pilas.escena_actual();
+        this.shape.graphics.clear();
+        pilas.fisica.dibujar_figuras_sobre_el_lienzo(this.shape.graphics);
+    };
+    return ModoFisica;
+})(ModoDepurador);
 /// <reference path="camara.ts />
 /// <reference path="evento.ts />
 /// <reference path="fisica.ts />
@@ -431,6 +472,7 @@ var Normal = (function (_super) {
     }
     Normal.prototype.actualizar = function () {
         for(var i = 0; i < this.actores.length; i++) {
+            this.actores[i].pre_actualizar();
             this.actores[i].actualizar();
         }
         this.stage.update();
@@ -486,6 +528,10 @@ var Figura = (function () {
         var box2d_position = this._cuerpo.GetBody().GetPosition();
         return pilas.fisica.convertir_a_pixels(box2d_position.y);
     };
+    Figura.prototype.obtener_rotacion = function () {
+        var box2d_cuerpo = this._cuerpo.GetBody();
+        return box2d_cuerpo.GetAngle();
+    };
     return Figura;
 })();
 var Circulo = (function (_super) {
@@ -520,18 +566,9 @@ b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 var Fisica = (function () {
     function Fisica() {
         this.Circulo = Circulo;
-        this.mundo = new Box2D.Dynamics.b2World(new b2Vec2(0, 10), true);
+        this.mundo = new Box2D.Dynamics.b2World(new b2Vec2(0, -10), true);
         this.PPM = 30;
     }
-    Fisica.prototype.habilitar_depurado = function () {
-        var debugDraw = new b2DebugDraw();
-        debugDraw.SetSprite(pilas.canvas.getContext('2d'));
-        debugDraw.SetDrawScale(30);
-        debugDraw.SetFillAlpha(0.1);
-        debugDraw.SetLineThickness(1.0);
-        debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-        this.mundo.SetDebugDraw(debugDraw);
-    };
     Fisica.prototype.actualizar = function () {
         this.mundo.Step(1 / 120.0, 6, 3);
         this.mundo.DrawDebugData();
@@ -542,6 +579,20 @@ var Fisica = (function () {
     };
     Fisica.prototype.convertir_a_pixels = function (valor) {
         return valor * this.PPM;
+    };
+    Fisica.prototype.dibujar_figuras_sobre_el_lienzo = function (graphics) {
+        for(var b = this.mundo.GetBodyList(); b; b = b.GetNext()) {
+            var fixtures = b.GetFixtureList();
+            if(fixtures) {
+                var shape = fixtures.GetShape();
+                var shape_type = shape.GetType();
+                graphics.setStrokeStyle(1);
+                graphics.beginStroke("white");
+                if(shape_type == 0) {
+                    graphics.drawCircle(this.convertir_a_pixels(b.GetPosition().x), 120 - this.convertir_a_pixels(b.GetPosition().y), this.convertir_a_pixels(shape.GetRadius()));
+                }
+            }
+        }
     };
     return Fisica;
 })();
@@ -636,8 +687,22 @@ var RebotarComoPelota = (function (_super) {
     __extends(RebotarComoPelota, _super);
     function RebotarComoPelota(receptor) {
         _super.call(this, receptor);
+        this.circulo = new pilas.fisica.Circulo(receptor.x, receptor.y, 20);
+        receptor.aprender(pilas.habilidades.Imitar, this.circulo);
     }
     return RebotarComoPelota;
+})(Habilidad);
+var Imitar = (function (_super) {
+    __extends(Imitar, _super);
+    function Imitar(receptor, objeto_a_imitar) {
+        _super.call(this, receptor);
+        this.objeto_a_imitar = objeto_a_imitar;
+    }
+    Imitar.prototype.actualizar = function () {
+        this.receptor.x = this.objeto_a_imitar.obtener_x();
+        this.receptor.y = this.objeto_a_imitar.obtener_y();
+    };
+    return Imitar;
 })(Habilidad);
 /**
 * @class Habilidades
@@ -648,6 +713,7 @@ var Habilidades = (function () {
     function Habilidades() {
         this.PuedeExplotar = PuedeExplotar;
         this.RebotarComoPelota = RebotarComoPelota;
+        this.Imitar = Imitar;
     }
     return Habilidades;
 })();

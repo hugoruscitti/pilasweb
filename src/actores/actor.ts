@@ -149,4 +149,8 @@ class Actor extends Estudiante {
 
   actualizar() {
   }
+
+  pre_actualizar() {
+    this.actualizar_habilidades(); // definida en estudiante.ts
+  }
 }
