@@ -106,6 +106,29 @@ class Pilas {
   }
 
   /**
+   * @method obtener_codigo_y_texto_desde_evento
+   * @private
+   *
+   * A partir del evento de teclado, obtiene su codigo y el texto de
+   * la tecla presionada.
+   */
+  private obtener_codigo_y_texto_desde_evento(event) {
+    var codigo;
+    var texto;
+
+    if (typeof event.which == "number") {
+      codigo = event.which;
+    }
+    else {
+      codigo = event.keyCode;
+    }
+
+    texto = String.fromCharCode(codigo);
+
+    return {codigo: codigo, texto: texto};
+  }
+
+  /**
    * @method conectar_eventos
    * @private
    *
@@ -120,6 +143,16 @@ class Pilas {
       posicion.x -= rectangulo_canvas.left;
       posicion.y -= rectangulo_canvas.top - (rectangulo_canvas.height / 2);
       pilas.escena_actual().mueve_mouse.emitir(posicion);
+    }
+
+    document.onkeydown = function (event) {
+      var e = pilas.obtener_codigo_y_texto_desde_evento(event);
+      pilas.escena_actual().pulsa_tecla.emitir(e);
+    }
+
+    document.onkeyup = function (event) {
+      var e = pilas.obtener_codigo_y_texto_desde_evento(event);
+      pilas.escena_actual().suelta_tecla.emitir(e);
     }
   }
 

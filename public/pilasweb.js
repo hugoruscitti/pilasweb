@@ -337,6 +337,107 @@ var Camara = (function () {
     };
     return Camara;
 })();
+/// <reference path="simbolos.ts />
+/**
+* @class Control
+*
+* Representa un control de teclado sencillo.
+*
+* Este objeto permite acceder al estado del teclado usando atributos.
+*
+* Por ejemplo, con este objeto, para saber si el usuario está
+* pulsando el direccional hacia la izquierda puedes ejecutar::
+*
+*     @example
+*     if (pilas.escena_actual().control.izquierda) {
+*       console.log('Ha pulsado hacia la izquierda');
+*     }
+*
+* Es decir, si bien Control es una clase, no hace falta
+* instanciarla. Ya existe un objeto que se puede consultar bajo el
+* nombre ``pilas.escena_actual().control``.
+*
+* Entonces, una vez que tienes la referencia para consultar, los
+* atributos que tiene este objeto control son::
+*
+*     @example
+*     izquierda
+*     derecha
+*     arriba
+*     abajo
+*     boton
+*
+* Cada uno de estos atributos te pueden devolver true, o false,
+* indicando si el control está pulsado o no.
+*/
+var Control = (function () {
+    function Control(escena) {
+        this.izquierda = false;
+        this.derecha = false;
+        this.arriba = false;
+        this.abajo = false;
+        this.boton = false;
+        escena.pulsa_tecla.conectar(this);
+        escena.suelta_tecla.conectar(this);
+    }
+    Control.prototype.recibir = function (evento, tipo) {
+        if(tipo == pilas.escena_actual().pulsa_tecla) {
+            this.cuando_pulsa_una_tecla(evento);
+        }
+        if(tipo == pilas.escena_actual().suelta_tecla) {
+            this.cuando_suelta_una_tecla(evento);
+        }
+    };
+    Control.prototype.cuando_pulsa_una_tecla = function (evento) {
+        switch(evento.codigo) {
+            case simbolos.IZQUIERDA: {
+                this.izquierda = true;
+                break;
+            }
+            case simbolos.DERECHA: {
+                this.derecha = true;
+                break;
+            }
+            case simbolos.ARRIBA: {
+                this.arriba = true;
+                break;
+            }
+            case simbolos.ABAJO: {
+                this.abajo = true;
+                break;
+            }
+            case simbolos.ESPACIO: {
+                this.boton = true;
+                break;
+            }
+        }
+    };
+    Control.prototype.cuando_suelta_una_tecla = function (evento) {
+        switch(evento.codigo) {
+            case simbolos.IZQUIERDA: {
+                this.izquierda = false;
+                break;
+            }
+            case simbolos.DERECHA: {
+                this.derecha = false;
+                break;
+            }
+            case simbolos.ARRIBA: {
+                this.arriba = false;
+                break;
+            }
+            case simbolos.ABAJO: {
+                this.abajo = false;
+                break;
+            }
+            case simbolos.ESPACIO: {
+                this.boton = false;
+                break;
+            }
+        }
+    };
+    return Control;
+})();
 var DepuradorDeshabilitado = (function () {
     function DepuradorDeshabilitado() {
         this.modos = [];
@@ -387,10 +488,18 @@ var ModoPuntosDeControl = (function () {
 })();
 /// <reference path="camara.ts />
 /// <reference path="evento.ts />
+/// <reference path="control.ts />
 var Base = (function () {
     function Base() {
         this.mueve_mouse = new Evento('mueve_mouse')// ['x', 'y', 'dx', 'dy']
         ;
+        this.pulsa_tecla = new Evento('pulsa_tecla')// ['codigo', 'texto']
+        ;
+        this.suelta_tecla = new Evento('suelta_tecla')// ['codigo', 'texto']
+        ;
+        this.actualiza = new Evento('actualiza')// []
+        ;
+        this.control = new Control(this);
     }
     return Base;
 })();
@@ -420,6 +529,7 @@ var Normal = (function (_super) {
             this.actores[i].actualizar();
         }
         this.stage.update();
+        this.actualiza.emitir();
     };
     Normal.prototype.agregar_actor = function (actor) {
         this.actores.push(actor);
@@ -559,11 +669,39 @@ var SeguirAlMouse = (function (_super) {
         }
     };
     SeguirAlMouse.prototype.mover = function (evento) {
-        console.log(this);
         this.receptor.x = evento.x;
         this.receptor.y = evento.y;
     };
     return SeguirAlMouse;
+})(Habilidad);
+/**
+* @class MoverseConElTeclado
+*
+* Hace que un actor cambie de posición con pulsar el teclado.
+*/
+var MoverseConElTeclado = (function (_super) {
+    __extends(MoverseConElTeclado, _super);
+    function MoverseConElTeclado(receptor) {
+        _super.call(this, receptor);
+        pilas.escena_actual().actualiza.conectar(this);
+    }
+    MoverseConElTeclado.prototype.recibir = function (evento, tipo) {
+        if(tipo == pilas.escena_actual().actualiza) {
+            if(pilas.escena_actual().control.izquierda) {
+                this.receptor.x -= 5;
+            }
+            if(pilas.escena_actual().control.derecha) {
+                this.receptor.x += 5;
+            }
+            if(pilas.escena_actual().control.arriba) {
+                this.receptor.y += 5;
+            }
+            if(pilas.escena_actual().control.abajo) {
+                this.receptor.y -= 5;
+            }
+        }
+    };
+    return MoverseConElTeclado;
 })(Habilidad);
 /**
 * @class Habilidades
@@ -574,6 +712,7 @@ var Habilidades = (function () {
     function Habilidades() {
         this.PuedeExplotar = PuedeExplotar;
         this.SeguirAlMouse = SeguirAlMouse;
+        this.MoverseConElTeclado = MoverseConElTeclado;
     }
     return Habilidades;
 })();
@@ -824,6 +963,27 @@ var Pilas = (function () {
         this.canvas.width = this.opciones.ancho;
         this.canvas.height = this.opciones.alto;
     };
+    Pilas.prototype.obtener_codigo_y_texto_desde_evento = /**
+    * @method obtener_codigo_y_texto_desde_evento
+    * @private
+    *
+    * A partir del evento de teclado, obtiene su codigo y el texto de
+    * la tecla presionada.
+    */
+    function (event) {
+        var codigo;
+        var texto;
+        if(typeof event.which == "number") {
+            codigo = event.which;
+        } else {
+            codigo = event.keyCode;
+        }
+        texto = String.fromCharCode(codigo);
+        return {
+            codigo: codigo,
+            texto: texto
+        };
+    };
     Pilas.prototype.conectar_eventos = /**
     * @method conectar_eventos
     * @private
@@ -839,6 +999,14 @@ var Pilas = (function () {
             posicion.x -= rectangulo_canvas.left;
             posicion.y -= rectangulo_canvas.top - (rectangulo_canvas.height / 2);
             pilas.escena_actual().mueve_mouse.emitir(posicion);
+        };
+        document.onkeydown = function (event) {
+            var e = pilas.obtener_codigo_y_texto_desde_evento(event);
+            pilas.escena_actual().pulsa_tecla.emitir(e);
+        };
+        document.onkeyup = function (event) {
+            var e = pilas.obtener_codigo_y_texto_desde_evento(event);
+            pilas.escena_actual().suelta_tecla.emitir(e);
         };
     };
     Pilas.prototype.obtener_canvas = /**
@@ -892,3 +1060,10 @@ var Pilas = (function () {
     return Pilas;
 })();
 pilas = new Pilas();
+var simbolos = {
+    IZQUIERDA: 37,
+    DERECHA: 39,
+    ARRIBA: 38,
+    ABAJO: 40,
+    ESPACIO: 32
+};

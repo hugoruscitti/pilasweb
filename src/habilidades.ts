@@ -54,9 +54,37 @@ class SeguirAlMouse extends Habilidad {
   }
 
   mover(evento) {
-    console.log(this);
     this.receptor.x = evento.x;
     this.receptor.y = evento.y;
+  }
+}
+
+/**
+ * @class MoverseConElTeclado
+ *
+ * Hace que un actor cambie de posición con pulsar el teclado.
+ */
+class MoverseConElTeclado extends Habilidad {
+  constructor(receptor) {
+    super(receptor);
+    pilas.escena_actual().actualiza.conectar(this);
+  }
+
+  recibir(evento, tipo) {
+    if (tipo == pilas.escena_actual().actualiza) {
+      if (pilas.escena_actual().control.izquierda) {
+        this.receptor.x -= 5;
+      }
+      if (pilas.escena_actual().control.derecha) {
+        this.receptor.x += 5;
+      }
+      if (pilas.escena_actual().control.arriba) {
+        this.receptor.y += 5;
+      }
+      if (pilas.escena_actual().control.abajo) {
+        this.receptor.y -= 5;
+      }
+    }
   }
 }
 
@@ -69,9 +97,11 @@ class Habilidades {
 
   PuedeExplotar;
   SeguirAlMouse;
+  MoverseConElTeclado;
 
   constructor() {
     this.PuedeExplotar = PuedeExplotar;
     this.SeguirAlMouse = SeguirAlMouse;
+    this.MoverseConElTeclado = MoverseConElTeclado;
   }
 }
