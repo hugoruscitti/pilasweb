@@ -1,11 +1,22 @@
 /// <reference path="camara.ts />
 /// <reference path="evento.ts />
+/// <reference path="control.ts />
 
 class Base {
   mueve_mouse;
+  actualiza;
+  pulsa_tecla;
+  suelta_tecla;
+
+  control;
 
   constructor() {
-    this.mueve_mouse = new Evento('mueve_mouse');  // ['x', 'y', 'dx', 'dy']
+    this.mueve_mouse = new Evento('mueve_mouse');    // ['x', 'y', 'dx', 'dy']
+    this.pulsa_tecla = new Evento('pulsa_tecla');    // ['codigo', 'texto']
+    this.suelta_tecla = new Evento('suelta_tecla');  // ['codigo', 'texto']
+    this.actualiza = new Evento('actualiza');        // []
+
+    this.control = new Control(this);
   }
 }
 
@@ -39,6 +50,7 @@ class Normal extends Base {
       this.actores[i].actualizar();
 
     this.stage.update();
+    this.actualiza.emitir();
   }
 
   agregar_actor(actor) {
