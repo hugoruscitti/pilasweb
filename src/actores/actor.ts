@@ -147,6 +147,22 @@ class Actor extends Estudiante {
       this._imagen = _i;
   }
 
+  /**
+   * @method colisiona_con_un_punto
+   *
+   * Determina si un punto colisiona con el area del actor.
+   */
+  colisiona_con_un_punto(x, y) {
+    if (x >= ((this.x - this.centro_x * this.escala_x)) &&
+        (x <= (this.x + this.centro_x * this.escala_x))) {
+      if (y >= ((this.y - this.centro_y * this.escala_y)) &&
+          (y <= (this.y + this.centro_y * this.escala_y))) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   actualizar() {
   }
 }

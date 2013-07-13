@@ -136,12 +136,18 @@ class Pilas {
    * de eventos de la escena actual.
    */
   private conectar_eventos() {
+    this.canvas.onmousedown = function (event) {
+      var posicion = pilas.obtener_posicion_desde_evento(this, event);
+      pilas.escena_actual().click_de_mouse.emitir(posicion);
+    }
+
+    this.canvas.onmouseup = function (event) {
+      var posicion = pilas.obtener_posicion_desde_evento(this, event);
+      pilas.escena_actual().cuando_termina_click.emitir(posicion);
+    }
+
     this.canvas.onmousemove = function (event) {
-      var camara = pilas.escena_actual().camara;
-      var posicion = camara.obtener_posicion_escenario(event.layerX, event.layerY);
-      var rectangulo_canvas = this.getBoundingClientRect();
-      posicion.x -= rectangulo_canvas.left;
-      posicion.y -= rectangulo_canvas.top - (rectangulo_canvas.height / 2);
+      var posicion = pilas.obtener_posicion_desde_evento(this, event);
       pilas.escena_actual().mueve_mouse.emitir(posicion);
     }
 
@@ -154,6 +160,25 @@ class Pilas {
       var e = pilas.obtener_codigo_y_texto_desde_evento(event);
       pilas.escena_actual().suelta_tecla.emitir(e);
     }
+  }
+
+  /**
+   * @method obtener_posicion_desde_evento
+   * @private
+   *
+   * A partir del evento del mouse, obtiene la posicion del puntero en
+   * las coordenadas de Pilas.
+   */
+  private obtener_posicion_desde_evento(canvas, event) {
+    var camara = pilas.escena_actual().camara;
+    var posicion = camara.obtener_posicion_escenario(event.layerX, event.layerY);
+    var rectangulo_canvas = canvas.getBoundingClientRect();
+    posicion.x -= rectangulo_canvas.left;
+    posicion.y -= rectangulo_canvas.top - (rectangulo_canvas.height / 2);
+    posicion.boton = event.which;
+
+//    console.log([posicion.x, posicion.y, posicion.boton]);
+    return posicion;
   }
 
   /**

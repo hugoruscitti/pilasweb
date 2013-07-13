@@ -89,17 +89,73 @@ class MoverseConElTeclado extends Habilidad {
 }
 
 /**
+ * @class Arrastrable
+ *
+ * Hace que un objeto se pueda arrastrar con el puntero del mouse.
+ *
+ * Cuando comienza a mover al actor se llama al metodo
+ * ''comienza_a_arrastrar'' y cuando termina llama a
+ * ''termina_de_arrastrar''. Estos nombres de metodos se llaman para
+ * que puedas personalizar estos eventos, dado que puedes usar
+ * polimorfismo para redefinir el comportamiento de estos dos metodos.
+ */
+class Arrastrable extends Habilidad {
+  constructor(receptor) {
+    super(receptor);
+    pilas.escena_actual().click_de_mouse.conectar(this);
+  }
+
+  recibir(evento, tipo) {
+    if (tipo == pilas.escena_actual().click_de_mouse) {
+      this.cuando_intenta_arrastrar(evento);
+    }
+    if (tipo == pilas.escena_actual().cuando_termina_click) {
+      this.cuando_termina_de_arrastrar(evento);
+    }
+    if (tipo == pilas.escena_actual().mueve_mouse) {
+      this.cuando_arrastra(evento);
+    }
+  }
+
+  cuando_intenta_arrastrar(evento) {
+    if (evento.boton == 1) {
+      if (this.receptor.colisiona_con_un_punto(evento.x, evento.y)) {
+        pilas.escena_actual().cuando_termina_click.conectar(this);
+        pilas.escena_actual().mueve_mouse.conectar(this);
+        this.comienza_a_arrastrar();
+      }
+    }
+  }
+
+  cuando_arrastra(evento) {
+    this.receptor.x = evento.x;
+    this.receptor.y = evento.y;
+  }
+
+  cuando_termina_de_arrastrar(evento) {
+    pilas.escena_actual().cuando_termina_click.desconectar(this);
+    pilas.escena_actual().mueve_mouse.desconectar(this);
+    this.termina_de_arrastrar();
+  }
+
+  comienza_a_arrastrar() {}
+  termina_de_arrastrar() {}
+}
+
+/**
  * @class Habilidades
  *
  * Representa todas las habilidades conocidas en pilas-engine.
  */
 class Habilidades {
 
+  Arrastrable;
   PuedeExplotar;
   SeguirAlMouse;
   MoverseConElTeclado;
 
   constructor() {
+    this.Arrastrable = Arrastrable;
     this.PuedeExplotar = PuedeExplotar;
     this.SeguirAlMouse = SeguirAlMouse;
     this.MoverseConElTeclado = MoverseConElTeclado;

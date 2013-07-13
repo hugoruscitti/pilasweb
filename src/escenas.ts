@@ -3,6 +3,8 @@
 /// <reference path="control.ts />
 
 class Base {
+  click_de_mouse;
+  cuando_termina_click;
   mueve_mouse;
   actualiza;
   pulsa_tecla;
@@ -11,10 +13,12 @@ class Base {
   control;
 
   constructor() {
-    this.mueve_mouse = new Evento('mueve_mouse');    // ['x', 'y', 'dx', 'dy']
-    this.pulsa_tecla = new Evento('pulsa_tecla');    // ['codigo', 'texto']
-    this.suelta_tecla = new Evento('suelta_tecla');  // ['codigo', 'texto']
-    this.actualiza = new Evento('actualiza');        // []
+    this.click_de_mouse = new Evento('click_de_mouse');             // ['boton', 'x', 'y']
+    this.cuando_termina_click = new Evento('cuando_termina_click'); // ['boton', 'x', 'y']
+    this.mueve_mouse = new Evento('mueve_mouse');                   // ['x', 'y', 'dx', 'dy']
+    this.pulsa_tecla = new Evento('pulsa_tecla');                   // ['codigo', 'texto']
+    this.suelta_tecla = new Evento('suelta_tecla');                 // ['codigo', 'texto']
+    this.actualiza = new Evento('actualiza');                       // []
 
     this.control = new Control(this);
   }
