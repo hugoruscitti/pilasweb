@@ -240,6 +240,19 @@ var Actor = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Actor.prototype.colisiona_con_un_punto = /**
+    * @method colisiona_con_un_punto
+    *
+    * Determina si un punto colisiona con el area del actor.
+    */
+    function (x, y) {
+        if(x >= (this.x - this.centro_x * this.escala_x) && (x <= (this.x + this.centro_x * this.escala_x))) {
+            if(y >= (this.y - this.centro_y * this.escala_y) && (y <= (this.y + this.centro_y * this.escala_y))) {
+                return true;
+            }
+        }
+        return false;
+    };
     Actor.prototype.actualizar = function () {
     };
     return Actor;
@@ -491,6 +504,10 @@ var ModoPuntosDeControl = (function () {
 /// <reference path="control.ts />
 var Base = (function () {
     function Base() {
+        this.click_de_mouse = new Evento('click_de_mouse')// ['boton', 'x', 'y']
+        ;
+        this.cuando_termina_click = new Evento('cuando_termina_click')// ['boton', 'x', 'y']
+        ;
         this.mueve_mouse = new Evento('mueve_mouse')// ['x', 'y', 'dx', 'dy']
         ;
         this.pulsa_tecla = new Evento('pulsa_tecla')// ['codigo', 'texto']
@@ -704,12 +721,65 @@ var MoverseConElTeclado = (function (_super) {
     return MoverseConElTeclado;
 })(Habilidad);
 /**
+* @class Arrastrable
+*
+* Hace que un objeto se pueda arrastrar con el puntero del mouse.
+*
+* Cuando comienza a mover al actor se llama al metodo
+* ''comienza_a_arrastrar'' y cuando termina llama a
+* ''termina_de_arrastrar''. Estos nombres de metodos se llaman para
+* que puedas personalizar estos eventos, dado que puedes usar
+* polimorfismo para redefinir el comportamiento de estos dos metodos.
+*/
+var Arrastrable = (function (_super) {
+    __extends(Arrastrable, _super);
+    function Arrastrable(receptor) {
+        _super.call(this, receptor);
+        pilas.escena_actual().click_de_mouse.conectar(this);
+    }
+    Arrastrable.prototype.recibir = function (evento, tipo) {
+        if(tipo == pilas.escena_actual().click_de_mouse) {
+            this.cuando_intenta_arrastrar(evento);
+        }
+        if(tipo == pilas.escena_actual().cuando_termina_click) {
+            this.cuando_termina_de_arrastrar(evento);
+        }
+        if(tipo == pilas.escena_actual().mueve_mouse) {
+            this.cuando_arrastra(evento);
+        }
+    };
+    Arrastrable.prototype.cuando_intenta_arrastrar = function (evento) {
+        if(evento.boton == 1) {
+            if(this.receptor.colisiona_con_un_punto(evento.x, evento.y)) {
+                pilas.escena_actual().cuando_termina_click.conectar(this);
+                pilas.escena_actual().mueve_mouse.conectar(this);
+                this.comienza_a_arrastrar();
+            }
+        }
+    };
+    Arrastrable.prototype.cuando_arrastra = function (evento) {
+        this.receptor.x = evento.x;
+        this.receptor.y = evento.y;
+    };
+    Arrastrable.prototype.cuando_termina_de_arrastrar = function (evento) {
+        pilas.escena_actual().cuando_termina_click.desconectar(this);
+        pilas.escena_actual().mueve_mouse.desconectar(this);
+        this.termina_de_arrastrar();
+    };
+    Arrastrable.prototype.comienza_a_arrastrar = function () {
+    };
+    Arrastrable.prototype.termina_de_arrastrar = function () {
+    };
+    return Arrastrable;
+})(Habilidad);
+/**
 * @class Habilidades
 *
 * Representa todas las habilidades conocidas en pilas-engine.
 */
 var Habilidades = (function () {
     function Habilidades() {
+        this.Arrastrable = Arrastrable;
         this.PuedeExplotar = PuedeExplotar;
         this.SeguirAlMouse = SeguirAlMouse;
         this.MoverseConElTeclado = MoverseConElTeclado;
@@ -992,12 +1062,16 @@ var Pilas = (function () {
     * de eventos de la escena actual.
     */
     function () {
+        this.canvas.onmousedown = function (event) {
+            var posicion = pilas.obtener_posicion_desde_evento(this, event);
+            pilas.escena_actual().click_de_mouse.emitir(posicion);
+        };
+        this.canvas.onmouseup = function (event) {
+            var posicion = pilas.obtener_posicion_desde_evento(this, event);
+            pilas.escena_actual().cuando_termina_click.emitir(posicion);
+        };
         this.canvas.onmousemove = function (event) {
-            var camara = pilas.escena_actual().camara;
-            var posicion = camara.obtener_posicion_escenario(event.layerX, event.layerY);
-            var rectangulo_canvas = this.getBoundingClientRect();
-            posicion.x -= rectangulo_canvas.left;
-            posicion.y -= rectangulo_canvas.top - (rectangulo_canvas.height / 2);
+            var posicion = pilas.obtener_posicion_desde_evento(this, event);
             pilas.escena_actual().mueve_mouse.emitir(posicion);
         };
         document.onkeydown = function (event) {
@@ -1008,6 +1082,23 @@ var Pilas = (function () {
             var e = pilas.obtener_codigo_y_texto_desde_evento(event);
             pilas.escena_actual().suelta_tecla.emitir(e);
         };
+    };
+    Pilas.prototype.obtener_posicion_desde_evento = /**
+    * @method obtener_posicion_desde_evento
+    * @private
+    *
+    * A partir del evento del mouse, obtiene la posicion del puntero en
+    * las coordenadas de Pilas.
+    */
+    function (canvas, event) {
+        var camara = pilas.escena_actual().camara;
+        var posicion = camara.obtener_posicion_escenario(event.layerX, event.layerY);
+        var rectangulo_canvas = canvas.getBoundingClientRect();
+        posicion.x -= rectangulo_canvas.left;
+        posicion.y -= rectangulo_canvas.top - (rectangulo_canvas.height / 2);
+        posicion.boton = event.which;
+        //    console.log([posicion.x, posicion.y, posicion.boton]);
+        return posicion;
     };
     Pilas.prototype.obtener_canvas = /**
     * @method obtener_canvas
