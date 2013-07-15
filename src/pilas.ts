@@ -170,14 +170,12 @@ class Pilas {
    * las coordenadas de Pilas.
    */
   private obtener_posicion_desde_evento(canvas, event) {
-    var camara = pilas.escena_actual().camara;
-    var posicion = camara.obtener_posicion_escenario(event.layerX, event.layerY);
-    var rectangulo_canvas = canvas.getBoundingClientRect();
-    posicion.x -= rectangulo_canvas.left;
-    posicion.y -= rectangulo_canvas.top - (rectangulo_canvas.height / 2);
+    var escena = pilas.escena_actual();
+    var camara = escena.camara;
+    var posicion = escena.obtener_posicion_escenario(escena.stage.mouseX,
+                                                     escena.stage.mouseY);
     posicion.boton = event.which;
 
-//    console.log([posicion.x, posicion.y, posicion.boton]);
     return posicion;
   }
 
