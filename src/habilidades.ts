@@ -60,6 +60,30 @@ class SeguirAlMouse extends Habilidad {
 }
 
 /**
+ * @class SeguirClicks
+ *
+ * Hace que el actor se coloque la posición del cursor cuando se hace click.
+ */
+class SeguirClicks extends Habilidad {
+
+  constructor(receptor) {
+    super(receptor);
+    pilas.escena_actual().click_de_mouse.conectar(this);
+  }
+
+  recibir(evento, tipo) {
+    if (tipo == pilas.escena_actual().click_de_mouse) {
+      this.moverse_a_este_punto(evento);
+    }
+  }
+
+  moverse_a_este_punto(evento) {
+    this.receptor.x = [evento.x], 0.5;
+    this.receptor.y = [evento.y], 0.5;
+  }
+}
+
+/**
  * @class MoverseConElTeclado
  *
  * Hace que un actor cambie de posición con pulsar el teclado.
@@ -152,12 +176,14 @@ class Habilidades {
   Arrastrable;
   PuedeExplotar;
   SeguirAlMouse;
+  SeguirClicks;
   MoverseConElTeclado;
 
   constructor() {
     this.Arrastrable = Arrastrable;
     this.PuedeExplotar = PuedeExplotar;
     this.SeguirAlMouse = SeguirAlMouse;
+    this.SeguirClicks = SeguirClicks;
     this.MoverseConElTeclado = MoverseConElTeclado;
   }
 }

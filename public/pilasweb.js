@@ -692,6 +692,32 @@ var SeguirAlMouse = (function (_super) {
     return SeguirAlMouse;
 })(Habilidad);
 /**
+* @class SeguirClicks
+*
+* Hace que el actor se coloque la posición del cursor cuando se hace click.
+*/
+var SeguirClicks = (function (_super) {
+    __extends(SeguirClicks, _super);
+    function SeguirClicks(receptor) {
+        _super.call(this, receptor);
+        pilas.escena_actual().click_de_mouse.conectar(this);
+    }
+    SeguirClicks.prototype.recibir = function (evento, tipo) {
+        if(tipo == pilas.escena_actual().click_de_mouse) {
+            this.moverse_a_este_punto(evento);
+        }
+    };
+    SeguirClicks.prototype.moverse_a_este_punto = function (evento) {
+        this.receptor.x = [
+            evento.x
+        ] , 0.5;
+        this.receptor.y = [
+            evento.y
+        ] , 0.5;
+    };
+    return SeguirClicks;
+})(Habilidad);
+/**
 * @class MoverseConElTeclado
 *
 * Hace que un actor cambie de posición con pulsar el teclado.
@@ -782,6 +808,7 @@ var Habilidades = (function () {
         this.Arrastrable = Arrastrable;
         this.PuedeExplotar = PuedeExplotar;
         this.SeguirAlMouse = SeguirAlMouse;
+        this.SeguirClicks = SeguirClicks;
         this.MoverseConElTeclado = MoverseConElTeclado;
     }
     return Habilidades;
@@ -1091,13 +1118,10 @@ var Pilas = (function () {
     * las coordenadas de Pilas.
     */
     function (canvas, event) {
-        var camara = pilas.escena_actual().camara;
-        var posicion = camara.obtener_posicion_escenario(event.layerX, event.layerY);
-        var rectangulo_canvas = canvas.getBoundingClientRect();
-        posicion.x -= rectangulo_canvas.left;
-        posicion.y -= rectangulo_canvas.top - (rectangulo_canvas.height / 2);
+        var escena = pilas.escena_actual();
+        var camara = escena.camara;
+        var posicion = escena.obtener_posicion_escenario(escena.stage.mouseX, escena.stage.mouseY);
         posicion.boton = event.which;
-        //    console.log([posicion.x, posicion.y, posicion.boton]);
         return posicion;
     };
     Pilas.prototype.obtener_canvas = /**
