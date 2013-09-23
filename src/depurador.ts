@@ -59,7 +59,7 @@ class ModoPuntosDeControl {
     }
 
     var pos = escena.obtener_posicion_escenario(escena.stage.mouseX, escena.stage.mouseY);
-    this.text_coordenada.text = "Posición del mouse: x=" + pos.x + " y=" + pos.y;
+    this.text_coordenada.text = "Posición del mouse: x=" + Math.floor(pos.x) + " y=" + Math.floor(pos.y);
   }
 
 }

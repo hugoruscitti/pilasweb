@@ -89,6 +89,7 @@ class SeguirClicks extends Habilidad {
  * Hace que un actor cambie de posición con pulsar el teclado.
  */
 class MoverseConElTeclado extends Habilidad {
+  
   constructor(receptor) {
     super(receptor);
     pilas.escena_actual().actualiza.conectar(this);
@@ -96,21 +97,48 @@ class MoverseConElTeclado extends Habilidad {
 
   recibir(evento, tipo) {
     if (tipo == pilas.escena_actual().actualiza) {
-      if (pilas.escena_actual().control.izquierda) {
+      var control = pilas.escena_actual().control;
+      
+      if (control.izquierda)
         this.receptor.x -= 5;
-      }
-      if (pilas.escena_actual().control.derecha) {
+      
+      if (control.derecha)
         this.receptor.x += 5;
-      }
-      if (pilas.escena_actual().control.arriba) {
+      
+      if (control.arriba)
         this.receptor.y += 5;
-      }
-      if (pilas.escena_actual().control.abajo) {
+      
+      if (control.abajo)
         this.receptor.y -= 5;
-      }
     }
   }
 }
+
+class MoverseConElTecladoConRotacion extends Habilidad {
+  
+  constructor(receptor) {
+    super(receptor);
+    pilas.escena_actual().actualiza.conectar(this);
+  }
+
+  recibir(evento, tipo) {
+    if (tipo == pilas.escena_actual().actualiza) {
+      var control = pilas.escena_actual().control;
+      
+      if (control.izquierda)
+      	this.receptor.rotacion -= 2;
+        
+      if (control.derecha)
+      	this.receptor.rotacion += 2;
+      
+      if (control.arriba)
+        this.receptor.avanzar(1.5);
+    }
+  }
+}
+
+
+
 
 /**
  * @class Arrastrable
@@ -178,6 +206,7 @@ class Habilidades {
   SeguirAlMouse;
   SeguirClicks;
   MoverseConElTeclado;
+  MoverseConElTecladoConRotacion;
 
   constructor() {
     this.Arrastrable = Arrastrable;
@@ -185,5 +214,6 @@ class Habilidades {
     this.SeguirAlMouse = SeguirAlMouse;
     this.SeguirClicks = SeguirClicks;
     this.MoverseConElTeclado = MoverseConElTeclado;
+    this.MoverseConElTecladoConRotacion = MoverseConElTecladoConRotacion;
   }
 }

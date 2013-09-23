@@ -1,6 +1,7 @@
 /// <reference path="actores/aceituna.ts />
 /// <reference path="actores/bomba.ts />
 /// <reference path="actores/explosion.ts />
+/// <reference path="actores/nave.ts />
 /**
 * @class Actores
 *
@@ -14,28 +15,33 @@ var Actores = (function () {
         this.Aceituna = Aceituna;
         this.Actor = Actor;
         this.Bomba = Bomba;
+        this.Nave = Nave;
         this.Explosion = Explosion;
+        this.Proyectil = Proyectil;
     }
     return Actores;
 })();
 var Estudiante = (function () {
-    function Estudiante() { }
+    function Estudiante() {
+    }
     Estudiante.prototype.aprender = function (clase_de_habilidad) {
         // FIXME, hacer una lista de habilidades, chequear si la clase de
         // habilidad ya se ha agregado y eliminarla.
         this.agregar_habilidad(clase_de_habilidad);
     };
+
     Estudiante.prototype.agregar_habilidad = function (clase_de_habilidad) {
         var habilidad = new clase_de_habilidad(this);
     };
     return Estudiante;
 })();
+/// <reference path="estudiante.ts"/>
 var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="estudiante.ts"/>
 /**
 * @class Actor
 *
@@ -97,18 +103,20 @@ var Actor = (function (_super) {
     Actor.prototype.crear_sprite = function () {
         this.sprite = this._imagen.instanciar();
     };
+
     Actor.prototype.eliminar = function () {
         pilas.escena_actual().eliminar_actor(this);
     };
+
     Object.defineProperty(Actor.prototype, "x", {
         get: function () {
             var pos = pilas.escena_actual().obtener_posicion_escenario(this.sprite.x, 0);
             return pos.x;
         },
         set: function (_x) {
-            if(_x instanceof Array) {
+            if (_x instanceof Array)
                 pilas.interpolar(this, 'x', _x, 1000);
-            } else {
+else {
                 var pos = pilas.escena_actual().obtener_posicion_pantalla(_x, 0);
                 this.sprite.x = pos.x;
             }
@@ -116,15 +124,17 @@ var Actor = (function (_super) {
         enumerable: true,
         configurable: true
     });
+
+
     Object.defineProperty(Actor.prototype, "y", {
         get: function () {
             var pos = pilas.escena_actual().obtener_posicion_escenario(0, this.sprite.y);
             return pos.y;
         },
         set: function (_y) {
-            if(_y instanceof Array) {
+            if (_y instanceof Array)
                 pilas.interpolar(this, 'y', _y, 1000);
-            } else {
+else {
                 var pos = pilas.escena_actual().obtener_posicion_pantalla(0, _y);
                 this.sprite.y = pos.y;
             }
@@ -132,6 +142,8 @@ var Actor = (function (_super) {
         enumerable: true,
         configurable: true
     });
+
+
     Object.defineProperty(Actor.prototype, "centro_x", {
         get: function () {
             return this.sprite.regX;
@@ -142,6 +154,7 @@ var Actor = (function (_super) {
         enumerable: true,
         configurable: true
     });
+
     Object.defineProperty(Actor.prototype, "centro_y", {
         get: function () {
             return this.sprite.regY;
@@ -152,34 +165,35 @@ var Actor = (function (_super) {
         enumerable: true,
         configurable: true
     });
+
     Object.defineProperty(Actor.prototype, "escala_x", {
         get: function () {
             return this.sprite.scaleX;
         },
         set: function (valor) {
-            if(valor instanceof Array) {
+            if (valor instanceof Array)
                 pilas.interpolar(this.sprite, 'scaleX', valor, 1000);
-            } else {
+else
                 this.sprite.scaleX = valor;
-            }
         },
         enumerable: true,
         configurable: true
     });
+
     Object.defineProperty(Actor.prototype, "escala_y", {
         get: function () {
             return this.sprite.scaleY;
         },
         set: function (valor) {
-            if(valor instanceof Array) {
+            if (valor instanceof Array)
                 pilas.interpolar(this.sprite, 'scaleY', valor, 1000);
-            } else {
+else
                 this.sprite.scaleY = valor;
-            }
         },
         enumerable: true,
         configurable: true
     });
+
     Object.defineProperty(Actor.prototype, "escala", {
         get: function () {
             return this.escala_x;
@@ -191,20 +205,21 @@ var Actor = (function (_super) {
         enumerable: true,
         configurable: true
     });
+
     Object.defineProperty(Actor.prototype, "rotacion", {
         get: function () {
             return this.sprite.rotation;
         },
         set: function (valor) {
-            if(valor instanceof Array) {
+            if (valor instanceof Array)
                 pilas.interpolar(this.sprite, 'rotation', valor, 1000);
-            } else {
+else
                 this.sprite.rotation = valor;
-            }
         },
         enumerable: true,
         configurable: true
     });
+
     Object.defineProperty(Actor.prototype, "transparencia", {
         get: function () {
             return (-100 * this.sprite.alpha) + 100;
@@ -215,6 +230,7 @@ var Actor = (function (_super) {
         enumerable: true,
         configurable: true
     });
+
     Object.defineProperty(Actor.prototype, "ancho", {
         get: function () {
             return this._imagen.ancho;
@@ -229,30 +245,32 @@ var Actor = (function (_super) {
         enumerable: true,
         configurable: true
     });
+
     Object.defineProperty(Actor.prototype, "imagen", {
         set: function (_i) {
-            if(_i.substring) {
+            if (_i.substring)
                 this._imagen = pilas.imagenes.cargar(_i);
-            } else {
+else
                 this._imagen = _i;
-            }
         },
         enumerable: true,
         configurable: true
     });
-    Actor.prototype.colisiona_con_un_punto = /**
+
+    /**
     * @method colisiona_con_un_punto
     *
     * Determina si un punto colisiona con el area del actor.
     */
-    function (x, y) {
-        if(x >= (this.x - this.centro_x * this.escala_x) && (x <= (this.x + this.centro_x * this.escala_x))) {
-            if(y >= (this.y - this.centro_y * this.escala_y) && (y <= (this.y + this.centro_y * this.escala_y))) {
+    Actor.prototype.colisiona_con_un_punto = function (x, y) {
+        if (x >= ((this.x - this.centro_x * this.escala_x)) && (x <= (this.x + this.centro_x * this.escala_x))) {
+            if (y >= ((this.y - this.centro_y * this.escala_y)) && (y <= (this.y + this.centro_y * this.escala_y))) {
                 return true;
             }
         }
         return false;
     };
+
     Actor.prototype.actualizar = function () {
     };
     return Actor;
@@ -297,14 +315,90 @@ var Explosion = (function (_super) {
     }
     Explosion.prototype.actualizar = function () {
         this.paso += 0.1;
-        if(this.paso > 1) {
-            if(!this._imagen.avanzar()) {
+
+        if (this.paso > 1) {
+            if (!this._imagen.avanzar())
                 this.eliminar();
-            }
             this.paso = 0;
         }
     };
     return Explosion;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Nave = (function (_super) {
+    __extends(Nave, _super);
+    function Nave(x, y) {
+        var imagen = pilas.imagenes.cargar_grilla("nave.png", 2);
+        _super.call(this, imagen, x, y);
+        this.centro_x = 23;
+        this.centro_y = 23;
+        this.paso = 0;
+        this.aprender(pilas.habilidades.PuedeExplotar);
+        this.aprender(pilas.habilidades.MoverseConElTecladoConRotacion);
+    }
+    Nave.prototype.actualizar = function () {
+        this.paso += 0.1;
+        this._imagen.definir_cuadro(parseInt(this.paso) % 2);
+        var control = pilas.escena_actual().control;
+    };
+
+    Nave.prototype.disparar = function () {
+        // TODO: convertir en una habilidad.
+        var disparo = new pilas.actores.Proyectil();
+        disparo.rotacion = this.rotacion - 90;
+        disparo.x = this.x;
+        disparo.y = this.y;
+    };
+
+    Nave.prototype.avanzar = function (velocidad) {
+        var rotacion_en_radianes;
+        var dx;
+        var dy;
+
+        var rotacion_en_radianes = pilas.utils.convertir_a_radianes(-this.rotacion + 90);
+
+        dx = Math.cos(rotacion_en_radianes) * velocidad;
+        dy = Math.sin(rotacion_en_radianes) * velocidad;
+
+        this.x += dx;
+        this.y += dy;
+    };
+    return Nave;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Proyectil = (function (_super) {
+    __extends(Proyectil, _super);
+    function Proyectil(x, y) {
+        var imagen = pilas.imagenes.cargar_grilla("disparos/misil.png", 3);
+        _super.call(this, imagen, x, y);
+        this.centro_x = 20;
+        this.centro_y = 8;
+        this.paso = 0;
+        //this.aprender(pilas.habilidades.PuedeExplotar);
+    }
+    Proyectil.prototype.actualizar = function () {
+        this.paso += 0.1;
+        this._imagen.definir_cuadro(parseInt(this.paso) % 2);
+
+        // TODO: Convertir en una habilidad.
+        this.avanzar_respecto_del_angulo();
+    };
+
+    Proyectil.prototype.avanzar_respecto_del_angulo = function () {
+        var velocidad = 2;
+        var rotacion_en_radianes;
+        var dx;
+        var dy;
+
+        var rotacion_en_radianes = pilas.utils.convertir_a_radianes(-this.rotacion + 90 - 90);
+
+        dx = Math.cos(rotacion_en_radianes) * velocidad;
+        dy = Math.sin(rotacion_en_radianes) * velocidad;
+
+        this.x += dx;
+        this.y += dy;
+    };
+    return Proyectil;
 })(Actor);
 /**
 * @class Camara
@@ -320,7 +414,7 @@ var Camara = (function () {
         this.x = 0;
         this.y = 0;
     }
-    Camara.prototype.obtener_posicion_pantalla = /**
+    /**
     * @method obtener_posicion_pantalla
     *
     * Convierte una posición del escenario de pilas al formato
@@ -329,24 +423,19 @@ var Camara = (function () {
     * Por ejemplo, el punto (0, 0) es el centro del escenario para
     * pilas, pero el navegador lo interpreta como el punto (160, 120).
     */
-    function (x, y) {
-        return {
-            x: x + 160,
-            y: 120 - y
-        };
+    Camara.prototype.obtener_posicion_pantalla = function (x, y) {
+        return { x: x + 160, y: 120 - y };
     };
-    Camara.prototype.obtener_posicion_escenario = /**
+
+    /**
     * @method obtener_posicion_escenario
     *
     * Convierte una posición dada en un sistema de coordenadas
     * tradicional, en una posición de escenario, donde el punto (0, 0)
     * es el centro de la pantalla.
     */
-    function (x, y) {
-        return {
-            x: x - 160,
-            y: 120 - y
-        };
+    Camara.prototype.obtener_posicion_escenario = function (x, y) {
+        return { x: x - 160, y: 120 - y };
     };
     return Camara;
 })();
@@ -390,19 +479,21 @@ var Control = (function () {
         this.arriba = false;
         this.abajo = false;
         this.boton = false;
+
         escena.pulsa_tecla.conectar(this);
         escena.suelta_tecla.conectar(this);
     }
     Control.prototype.recibir = function (evento, tipo) {
-        if(tipo == pilas.escena_actual().pulsa_tecla) {
+        if (tipo == pilas.escena_actual().pulsa_tecla) {
             this.cuando_pulsa_una_tecla(evento);
         }
-        if(tipo == pilas.escena_actual().suelta_tecla) {
+        if (tipo == pilas.escena_actual().suelta_tecla) {
             this.cuando_suelta_una_tecla(evento);
         }
     };
+
     Control.prototype.cuando_pulsa_una_tecla = function (evento) {
-        switch(evento.codigo) {
+        switch (evento.codigo) {
             case simbolos.IZQUIERDA: {
                 this.izquierda = true;
                 break;
@@ -425,8 +516,9 @@ var Control = (function () {
             }
         }
     };
+
     Control.prototype.cuando_suelta_una_tecla = function (evento) {
-        switch(evento.codigo) {
+        switch (evento.codigo) {
             case simbolos.IZQUIERDA: {
                 this.izquierda = false;
                 break;
@@ -456,46 +548,54 @@ var DepuradorDeshabilitado = (function () {
         this.modos = [];
     }
     DepuradorDeshabilitado.prototype.actualizar = function () {
-        for(var i = 0; i < this.modos.length; i++) {
+        for (var i = 0; i < this.modos.length; i++) {
             this.modos[i].actualizar();
         }
     };
+
     DepuradorDeshabilitado.prototype.definir_modos = function (modos) {
-        modos = modos || {
-        };
+        modos = modos || {};
         modos.puntos_de_control = modos.puntos_de_control || false;
-        if(modos.puntos_de_control) {
+
+        if (modos.puntos_de_control)
             this.modos.push(new ModoPuntosDeControl());
-        }
     };
     return DepuradorDeshabilitado;
 })();
+
 var ModoPuntosDeControl = (function () {
     function ModoPuntosDeControl() {
         this.container = new createjs.Container();
+
         this.shape = new createjs.Shape();
         this.container.addChild(this.shape);
+
         this.text_modo = new createjs.Text("F12 ModoPosicion habilitado", "12px Arial", "white");
         this.container.addChild(this.text_modo);
+
         this.text_coordenada = new createjs.Text("Posición del mouse: x=12 y=33", "12px Arial", "white");
         this.text_coordenada.y = 220;
         this.text_coordenada.x = 120;
         this.container.addChild(this.text_coordenada);
+
         pilas.escena_actual().stage.addChild(this.container);
     }
     ModoPuntosDeControl.prototype.actualizar = function () {
         var escena = pilas.escena_actual();
         this.shape.graphics.clear();
-        for(var i = 0; i < escena.actores.length; i++) {
+
+        for (var i = 0; i < escena.actores.length; i++) {
             var actor = escena.actores[i];
             var posicion = escena.obtener_posicion_pantalla(actor.x, actor.y);
             var size = 3;
+
             // Dibuja una cruz
             this.shape.graphics.beginStroke("#ffffff").moveTo(posicion.x - size, posicion.y - size).lineTo(posicion.x + size, posicion.y + size).endStroke();
             this.shape.graphics.beginStroke("#ffffff").moveTo(posicion.x - size, posicion.y + size).lineTo(posicion.x + size, posicion.y - size).endStroke();
         }
+
         var pos = escena.obtener_posicion_escenario(escena.stage.mouseX, escena.stage.mouseY);
-        this.text_coordenada.text = "Posición del mouse: x=" + pos.x + " y=" + pos.y;
+        this.text_coordenada.text = "Posición del mouse: x=" + Math.floor(pos.x) + " y=" + Math.floor(pos.y);
     };
     return ModoPuntosDeControl;
 })();
@@ -504,22 +604,18 @@ var ModoPuntosDeControl = (function () {
 /// <reference path="control.ts />
 var Base = (function () {
     function Base() {
-        this.click_de_mouse = new Evento('click_de_mouse')// ['boton', 'x', 'y']
-        ;
-        this.cuando_termina_click = new Evento('cuando_termina_click')// ['boton', 'x', 'y']
-        ;
-        this.mueve_mouse = new Evento('mueve_mouse')// ['x', 'y', 'dx', 'dy']
-        ;
-        this.pulsa_tecla = new Evento('pulsa_tecla')// ['codigo', 'texto']
-        ;
-        this.suelta_tecla = new Evento('suelta_tecla')// ['codigo', 'texto']
-        ;
-        this.actualiza = new Evento('actualiza')// []
-        ;
+        this.click_de_mouse = new Evento('click_de_mouse');
+        this.cuando_termina_click = new Evento('cuando_termina_click');
+        this.mueve_mouse = new Evento('mueve_mouse');
+        this.pulsa_tecla = new Evento('pulsa_tecla');
+        this.suelta_tecla = new Evento('suelta_tecla');
+        this.actualiza = new Evento('actualiza');
+
         this.control = new Control(this);
     }
     return Base;
 })();
+
 /**
 * @class Normal
 *
@@ -542,26 +638,32 @@ var Normal = (function (_super) {
         this.camara = new Camara();
     }
     Normal.prototype.actualizar = function () {
-        for(var i = 0; i < this.actores.length; i++) {
+        for (var i = 0; i < this.actores.length; i++)
             this.actores[i].actualizar();
-        }
+
         this.stage.update();
         this.actualiza.emitir();
     };
+
     Normal.prototype.agregar_actor = function (actor) {
         this.actores.push(actor);
+
         this.stage.addChild(actor.sprite);
         this.stage.update();
     };
+
     Normal.prototype.eliminar_actor = function (actor) {
         var index = this.actores.indexOf(actor);
         this.actores.splice(index, 1);
+
         this.stage.removeChild(actor.sprite);
         this.stage.update();
     };
+
     Normal.prototype.obtener_posicion_pantalla = function (x, y) {
         return this.camara.obtener_posicion_pantalla(x, y);
     };
+
     Normal.prototype.obtener_posicion_escenario = function (x, y) {
         return this.camara.obtener_posicion_escenario(x, y);
     };
@@ -569,23 +671,24 @@ var Normal = (function (_super) {
 })(Base);
 var Evento = (function () {
     function Evento(nombre) {
-        this.respuestas = {
-        };
+        this.respuestas = {};
         this.nombre = nombre;
     }
     Evento.prototype.emitir = function (evento) {
-        for(var nombre_respuesta in this.respuestas) {
+        for (var nombre_respuesta in this.respuestas) {
             var respuesta = this.respuestas[nombre_respuesta];
-            if(typeof (respuesta) == 'object') {
+            if (typeof (respuesta) == 'object') {
                 respuesta.recibir(evento, this);
             } else {
                 respuesta(evento);
             }
         }
     };
+
     Evento.prototype.conectar = function (respuesta) {
         this.respuestas[respuesta.toString()] = respuesta;
     };
+
     Evento.prototype.desconectar = function (respuesta) {
         delete this.respuestas[respuesta.toString()];
     };
@@ -602,15 +705,17 @@ var Plano = (function (_super) {
     Plano.prototype.crear_sprite = function () {
         var img = this._imagen.imagen;
         var s = new createjs.Shape();
+
         s.graphics.beginBitmapFill(img, 'repeat');
-        s.graphics.drawRect(-160, -120, 320, 240)// TODO: detectar el area visible de pantalla.
-        ;
+        s.graphics.drawRect(-160, -120, 320, 240);
         this.sprite = s;
     };
+
     Plano.prototype.actualizar = function () {
     };
     return Plano;
 })(Actor);
+
 var Fondos = (function () {
     function Fondos() {
         this.Plano = Plano;
@@ -625,10 +730,12 @@ var GestorDeEscenas = (function () {
     GestorDeEscenas.prototype.cambiar_escena = function (nueva_escena) {
         this.escena = nueva_escena;
     };
+
     GestorDeEscenas.prototype.actualizar = function () {
         var escena = this.escena_actual();
         escena.actualizar();
     };
+
     GestorDeEscenas.prototype.escena_actual = function () {
         return this.escena;
     };
@@ -645,10 +752,12 @@ var Habilidad = (function () {
     }
     Habilidad.prototype.actualizar = function () {
     };
+
     Habilidad.prototype.eliminar = function () {
     };
     return Habilidad;
 })();
+
 /**
 * @class PuedeExplotar
 *
@@ -669,6 +778,7 @@ var PuedeExplotar = (function (_super) {
     }
     return PuedeExplotar;
 })(Habilidad);
+
 /**
 * @class SeguirAlMouse
 *
@@ -681,16 +791,18 @@ var SeguirAlMouse = (function (_super) {
         pilas.escena_actual().mueve_mouse.conectar(this);
     }
     SeguirAlMouse.prototype.recibir = function (evento, tipo) {
-        if(tipo == pilas.escena_actual().mueve_mouse) {
+        if (tipo == pilas.escena_actual().mueve_mouse) {
             this.mover(evento);
         }
     };
+
     SeguirAlMouse.prototype.mover = function (evento) {
         this.receptor.x = evento.x;
         this.receptor.y = evento.y;
     };
     return SeguirAlMouse;
 })(Habilidad);
+
 /**
 * @class SeguirClicks
 *
@@ -703,20 +815,18 @@ var SeguirClicks = (function (_super) {
         pilas.escena_actual().click_de_mouse.conectar(this);
     }
     SeguirClicks.prototype.recibir = function (evento, tipo) {
-        if(tipo == pilas.escena_actual().click_de_mouse) {
+        if (tipo == pilas.escena_actual().click_de_mouse) {
             this.moverse_a_este_punto(evento);
         }
     };
+
     SeguirClicks.prototype.moverse_a_este_punto = function (evento) {
-        this.receptor.x = [
-            evento.x
-        ] , 0.5;
-        this.receptor.y = [
-            evento.y
-        ] , 0.5;
+        this.receptor.x = [evento.x], 0.5;
+        this.receptor.y = [evento.y], 0.5;
     };
     return SeguirClicks;
 })(Habilidad);
+
 /**
 * @class MoverseConElTeclado
 *
@@ -729,23 +839,48 @@ var MoverseConElTeclado = (function (_super) {
         pilas.escena_actual().actualiza.conectar(this);
     }
     MoverseConElTeclado.prototype.recibir = function (evento, tipo) {
-        if(tipo == pilas.escena_actual().actualiza) {
-            if(pilas.escena_actual().control.izquierda) {
+        if (tipo == pilas.escena_actual().actualiza) {
+            var control = pilas.escena_actual().control;
+
+            if (control.izquierda)
                 this.receptor.x -= 5;
-            }
-            if(pilas.escena_actual().control.derecha) {
+
+            if (control.derecha)
                 this.receptor.x += 5;
-            }
-            if(pilas.escena_actual().control.arriba) {
+
+            if (control.arriba)
                 this.receptor.y += 5;
-            }
-            if(pilas.escena_actual().control.abajo) {
+
+            if (control.abajo)
                 this.receptor.y -= 5;
-            }
         }
     };
     return MoverseConElTeclado;
 })(Habilidad);
+
+var MoverseConElTecladoConRotacion = (function (_super) {
+    __extends(MoverseConElTecladoConRotacion, _super);
+    function MoverseConElTecladoConRotacion(receptor) {
+        _super.call(this, receptor);
+        pilas.escena_actual().actualiza.conectar(this);
+    }
+    MoverseConElTecladoConRotacion.prototype.recibir = function (evento, tipo) {
+        if (tipo == pilas.escena_actual().actualiza) {
+            var control = pilas.escena_actual().control;
+
+            if (control.izquierda)
+                this.receptor.rotacion -= 2;
+
+            if (control.derecha)
+                this.receptor.rotacion += 2;
+
+            if (control.arriba)
+                this.receptor.avanzar(1.5);
+        }
+    };
+    return MoverseConElTecladoConRotacion;
+})(Habilidad);
+
 /**
 * @class Arrastrable
 *
@@ -764,40 +899,45 @@ var Arrastrable = (function (_super) {
         pilas.escena_actual().click_de_mouse.conectar(this);
     }
     Arrastrable.prototype.recibir = function (evento, tipo) {
-        if(tipo == pilas.escena_actual().click_de_mouse) {
+        if (tipo == pilas.escena_actual().click_de_mouse) {
             this.cuando_intenta_arrastrar(evento);
         }
-        if(tipo == pilas.escena_actual().cuando_termina_click) {
+        if (tipo == pilas.escena_actual().cuando_termina_click) {
             this.cuando_termina_de_arrastrar(evento);
         }
-        if(tipo == pilas.escena_actual().mueve_mouse) {
+        if (tipo == pilas.escena_actual().mueve_mouse) {
             this.cuando_arrastra(evento);
         }
     };
+
     Arrastrable.prototype.cuando_intenta_arrastrar = function (evento) {
-        if(evento.boton == 1) {
-            if(this.receptor.colisiona_con_un_punto(evento.x, evento.y)) {
+        if (evento.boton == 1) {
+            if (this.receptor.colisiona_con_un_punto(evento.x, evento.y)) {
                 pilas.escena_actual().cuando_termina_click.conectar(this);
                 pilas.escena_actual().mueve_mouse.conectar(this);
                 this.comienza_a_arrastrar();
             }
         }
     };
+
     Arrastrable.prototype.cuando_arrastra = function (evento) {
         this.receptor.x = evento.x;
         this.receptor.y = evento.y;
     };
+
     Arrastrable.prototype.cuando_termina_de_arrastrar = function (evento) {
         pilas.escena_actual().cuando_termina_click.desconectar(this);
         pilas.escena_actual().mueve_mouse.desconectar(this);
         this.termina_de_arrastrar();
     };
+
     Arrastrable.prototype.comienza_a_arrastrar = function () {
     };
     Arrastrable.prototype.termina_de_arrastrar = function () {
     };
     return Arrastrable;
 })(Habilidad);
+
 /**
 * @class Habilidades
 *
@@ -810,17 +950,19 @@ var Habilidades = (function () {
         this.SeguirAlMouse = SeguirAlMouse;
         this.SeguirClicks = SeguirClicks;
         this.MoverseConElTeclado = MoverseConElTeclado;
+        this.MoverseConElTecladoConRotacion = MoverseConElTecladoConRotacion;
     }
     return Habilidades;
 })();
 var Imagenes = (function () {
     function Imagenes(callback_onready, data_path) {
-        this.recursos = {
-        };
+        this.recursos = {};
         this.data_path = data_path;
         this.loader = new PxLoader();
         this.imagenes_solicitadas = 0;
+
         this.cargar_recursos();
+
         //loader.addProgressListener(function (e) {
         //    this.actualizar_progreso(e);
         //            return true
@@ -829,6 +971,7 @@ var Imagenes = (function () {
             pilas.onready();
             pilas.ejecutar();
         });
+
         this.loader.start();
     }
     Imagenes.prototype.cargar_recursos = function () {
@@ -836,12 +979,19 @@ var Imagenes = (function () {
         this.cargar_recurso('aceituna_grita.png');
         this.cargar_recurso('aceituna_risa.png');
         this.cargar_recurso('aceituna_burla.png');
+
         this.cargar_recurso('banana.png');
         this.cargar_recurso('bomba.png');
         this.cargar_recurso('caja.png');
         this.cargar_recurso('explosion.png');
+
         this.cargar_recurso('sin_imagen.png');
+
         this.cargar_recurso('plano.png');
+        this.cargar_recurso('nave.png');
+
+        this.cargar_recurso('disparos/misil.png');
+
         this.cargar_recurso('cooperativista/alerta.png');
         this.cargar_recurso('cooperativista/camina.png');
         this.cargar_recurso('cooperativista/camina_sujeta.png');
@@ -850,18 +1000,20 @@ var Imagenes = (function () {
         this.cargar_recurso('cooperativista/parado_sujeta.png');
         this.cargar_recurso('cooperativista/trabajando.png');
     };
+
     Imagenes.prototype.cargar_recurso = function (nombre) {
         var path = this.data_path + '/' + nombre;
         this.recursos[nombre] = this.loader.addImage(path);
         this.imagenes_solicitadas += 1;
     };
+
     Imagenes.prototype.cargar = function (nombre) {
-        if(nombre in this.recursos) {
+        if (nombre in this.recursos)
             return new Imagen(this.recursos[nombre]);
-        } else {
+else
             throw "No se puede encontrar la imagen: " + nombre;
-        }
     };
+
     Imagenes.prototype.cargar_grilla = function (nombre, columnas, filas) {
         if (typeof columnas === "undefined") { columnas = 1; }
         if (typeof filas === "undefined") { filas = 1; }
@@ -869,6 +1021,7 @@ var Imagenes = (function () {
     };
     return Imagenes;
 })();
+
 var Imagen = (function () {
     function Imagen(imagen) {
         this.ruta = imagen;
@@ -877,6 +1030,7 @@ var Imagen = (function () {
     Imagen.prototype.instanciar = function () {
         return new createjs.Bitmap(this.imagen);
     };
+
     Object.defineProperty(Imagen.prototype, "ancho", {
         get: function () {
             return this.imagen.width;
@@ -893,6 +1047,7 @@ var Imagen = (function () {
     });
     return Imagen;
 })();
+
 var Grilla = (function (_super) {
     __extends(Grilla, _super);
     function Grilla(imagen, columnas, filas) {
@@ -905,19 +1060,16 @@ var Grilla = (function (_super) {
     }
     Grilla.prototype.instanciar = function () {
         var data = {
-            images: [
-                this.ruta.src
-            ],
-            frames: {
-                width: this.ancho / this.columnas,
-                height: this.alto / this.filas
-            }
+            images: [this.ruta.src],
+            frames: { width: this.ancho / this.columnas, height: this.alto / this.filas }
         };
         var spritesheet = new createjs.SpriteSheet(data);
+
         this.sprite = new createjs.BitmapAnimation(spritesheet);
         this.definir_cuadro(0);
         return this.sprite;
     };
+
     Object.defineProperty(Grilla.prototype, "cantidad_cuadros", {
         get: function () {
             return this.filas * this.columnas;
@@ -925,32 +1077,37 @@ var Grilla = (function (_super) {
         enumerable: true,
         configurable: true
     });
+
     Grilla.prototype.definir_cuadro = function (numero_de_cuadro) {
         this.cuadro = numero_de_cuadro;
         this.sprite.gotoAndStop(numero_de_cuadro);
     };
+
     Grilla.prototype.avanzar = function () {
         var ha_avanzado = true;
         this.cuadro += 1;
-        if(this.cuadro >= this.cantidad_cuadros) {
+
+        if (this.cuadro >= this.cantidad_cuadros) {
             this.cuadro = 0;
             ha_avanzado = false;
         }
+
         this.definir_cuadro(this.cuadro);
         return ha_avanzado;
     };
     return Grilla;
 })(Imagen);
 var Interpolaciones = (function () {
-    function Interpolaciones() { }
+    function Interpolaciones() {
+    }
     Interpolaciones.prototype.interpolar = function (objeto, atributo, valor_o_valores, tiempo) {
         var tiempo = tiempo || 1000;
         var step = tiempo / valor_o_valores.length;
         var tween = createjs.Tween.get(objeto);
-        for(var i = 0; i < valor_o_valores.length; i++) {
+
+        for (var i = 0; i < valor_o_valores.length; i++) {
             var attr = atributo.toString();
-            var diccionario = {
-            };
+            var diccionario = {};
             diccionario[attr] = valor_o_valores[i];
             tween = tween.to(diccionario, step);
         }
@@ -968,6 +1125,7 @@ var Mundo = (function () {
         this.gestor_escenas.actualizar();
         this.depurador.actualizar();
     };
+
     Mundo.prototype.definir_modos = function (modos) {
         this.depurador.definir_modos(modos);
     };
@@ -999,8 +1157,8 @@ var Mundo = (function () {
 *     aceituna = new pilas.actores.Aceituna();
 */
 var Pilas = (function () {
-    function Pilas() { }
-    Pilas.prototype.iniciar = // acceso al modulo.
+    function Pilas() {
+    }
     /**
     * @method iniciar
     *
@@ -1016,141 +1174,158 @@ var Pilas = (function () {
     * - data_path: La ruta hacia la carpeta donde están las imágenes de los actores. (Por defecto 'data/')
     *
     */
-    function (opciones) {
+    Pilas.prototype.iniciar = function (opciones) {
         this.inicializar_opciones(opciones);
         this.actores = new Actores();
         this.habilidades = new Habilidades();
         this.obtener_canvas();
         this.definir_tamano_del_canvas();
         this.conectar_eventos();
+
         this.imagenes = new Imagenes(this.onready, this.opciones.data_path);
         this.fondos = new Fondos();
         this.mundo = new Mundo();
         this.interpolaciones = new Interpolaciones();
+        this.utils = new Utils();
+
         this.mundo.gestor_escenas.cambiar_escena(new Normal());
     };
-    Pilas.prototype.escena_actual = /**
+
+    /**
     * @method escena_actual
     * Retorna la escena en curso.
     */
-    function () {
+    Pilas.prototype.escena_actual = function () {
         return this.mundo.gestor_escenas.escena_actual();
     };
-    Pilas.prototype.inicializar_opciones = /**
+
+    /**
     * @method inicializar_opciones
     * @private
     *
     * Carga las opciones iniciales y define los valores por omisión si es necesario.
     */
-    function (opciones) {
-        this.opciones = opciones || {
-        };
+    Pilas.prototype.inicializar_opciones = function (opciones) {
+        this.opciones = opciones || {};
         this.opciones.ancho = opciones.ancho || 320;
         this.opciones.alto = opciones.alto || 240;
         this.opciones.data_path = opciones.data_path || 'data';
         this.opciones.canvas_id = opciones.canvas_id || 'canvas';
     };
-    Pilas.prototype.definir_tamano_del_canvas = /**
+
+    /**
     * @method definir_tamano_del_canvas
     * @private
     *
     * Cambia el tamaño del canvas HTML en base a las opciones iniciales.
     */
-    function () {
+    Pilas.prototype.definir_tamano_del_canvas = function () {
         this.canvas.width = this.opciones.ancho;
         this.canvas.height = this.opciones.alto;
     };
-    Pilas.prototype.obtener_codigo_y_texto_desde_evento = /**
+
+    /**
     * @method obtener_codigo_y_texto_desde_evento
     * @private
     *
     * A partir del evento de teclado, obtiene su codigo y el texto de
     * la tecla presionada.
     */
-    function (event) {
+    Pilas.prototype.obtener_codigo_y_texto_desde_evento = function (event) {
         var codigo;
         var texto;
-        if(typeof event.which == "number") {
+
+        if (typeof event.which == "number") {
             codigo = event.which;
         } else {
             codigo = event.keyCode;
         }
+
         texto = String.fromCharCode(codigo);
-        return {
-            codigo: codigo,
-            texto: texto
-        };
+
+        return { codigo: codigo, texto: texto };
     };
-    Pilas.prototype.conectar_eventos = /**
+
+    /**
     * @method conectar_eventos
     * @private
     *
     * Conecta los eventos del mouse y teclado a los métodos manejadores
     * de eventos de la escena actual.
     */
-    function () {
+    Pilas.prototype.conectar_eventos = function () {
         this.canvas.onmousedown = function (event) {
             var posicion = pilas.obtener_posicion_desde_evento(this, event);
             pilas.escena_actual().click_de_mouse.emitir(posicion);
         };
+
         this.canvas.onmouseup = function (event) {
             var posicion = pilas.obtener_posicion_desde_evento(this, event);
             pilas.escena_actual().cuando_termina_click.emitir(posicion);
         };
+
         this.canvas.onmousemove = function (event) {
             var posicion = pilas.obtener_posicion_desde_evento(this, event);
             pilas.escena_actual().mueve_mouse.emitir(posicion);
         };
+
         document.onkeydown = function (event) {
             var e = pilas.obtener_codigo_y_texto_desde_evento(event);
             pilas.escena_actual().pulsa_tecla.emitir(e);
         };
+
         document.onkeyup = function (event) {
             var e = pilas.obtener_codigo_y_texto_desde_evento(event);
             pilas.escena_actual().suelta_tecla.emitir(e);
         };
     };
-    Pilas.prototype.obtener_posicion_desde_evento = /**
+
+    /**
     * @method obtener_posicion_desde_evento
     * @private
     *
     * A partir del evento del mouse, obtiene la posicion del puntero en
     * las coordenadas de Pilas.
     */
-    function (canvas, event) {
+    Pilas.prototype.obtener_posicion_desde_evento = function (canvas, event) {
         var escena = pilas.escena_actual();
         var camara = escena.camara;
         var posicion = escena.obtener_posicion_escenario(escena.stage.mouseX, escena.stage.mouseY);
         posicion.boton = event.which;
+
         return posicion;
     };
-    Pilas.prototype.obtener_canvas = /**
+
+    /**
     * @method obtener_canvas
     * @private
     *
     * Obtiene la referencia al elemento HTML canvas usando
     * el atributo *canvas_id* de las opciones iniciales.
     */
-    function () {
+    Pilas.prototype.obtener_canvas = function () {
         this.canvas = document.getElementById(this.opciones.canvas_id);
-        if(!this.canvas) {
+
+        if (!this.canvas)
             throw new Error("No se encuentra el elemento canvas (id='" + this.opciones.canvas_id + "')");
-        }
     };
-    Pilas.prototype.onready = /**
+
+    /**
     * @method onready
     * Callback que se invoca una vez que pilas puede comenzar a funcionar.
     */
-    function () {
+    Pilas.prototype.onready = function () {
         throw "pilas-engine ha iniciado, pero el metodo onload está vacío. Tienes que sobre-escribirlo...";
     };
-    Pilas.prototype.ejecutar = /**
+
+    /**
     * @method ejecutar
     * Pone en funcionamiento el bucle principal.
     */
-    function () {
+    Pilas.prototype.ejecutar = function () {
         this.onready();
         var self = this;
+
         // TODO: Limpiar los listeners con un mensaje y
         //       no accediendo directamente a la propiedad.
         createjs.Ticker.setFPS(60);
@@ -1159,21 +1334,25 @@ var Pilas = (function () {
         };
         createjs.Ticker.addEventListener('tick', my_tick);
     };
-    Pilas.prototype.actualizar = /**
+
+    /**
     * @method actualizar
     * Se ejecuta automáticamente 60 veces por segundo, para mantener el juego en funcionamiento.
     */
-    function () {
+    Pilas.prototype.actualizar = function () {
         this.mundo.actualizar();
     };
+
     Pilas.prototype.interpolar = function (objeto, atributo, valor_o_valores, tiempo) {
         return this.interpolaciones.interpolar(objeto, atributo, valor_o_valores, tiempo);
     };
+
     Pilas.prototype.definir_modos = function (modos) {
         this.mundo.definir_modos(modos);
     };
     return Pilas;
 })();
+
 pilas = new Pilas();
 var simbolos = {
     IZQUIERDA: 37,
@@ -1182,3 +1361,15 @@ var simbolos = {
     ABAJO: 40,
     ESPACIO: 32
 };
+var Utils = (function () {
+    function Utils() {
+    }
+    Utils.prototype.convertir_a_grados = function (angulo_en_radianes) {
+        return angulo_en_radianes * (180 / Math.PI);
+    };
+
+    Utils.prototype.convertir_a_radianes = function (angulo_en_grados) {
+        return angulo_en_grados * (Math.PI / 180);
+    };
+    return Utils;
+})();

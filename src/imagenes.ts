@@ -39,7 +39,11 @@ class Imagenes {
     this.cargar_recurso('sin_imagen.png');
 
     this.cargar_recurso('plano.png');
+    this.cargar_recurso('nave.png');
 
+    this.cargar_recurso('disparos/misil.png');
+    
+    
     this.cargar_recurso('cooperativista/alerta.png');
     this.cargar_recurso('cooperativista/camina.png');
     this.cargar_recurso('cooperativista/camina_sujeta.png');

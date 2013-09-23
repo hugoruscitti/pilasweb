@@ -38,6 +38,7 @@ class Pilas {
   imagenes;     // acceso a modulo.
   actores;      // acceso a modulo.
   habilidades;  // acceso a modulo.
+  utils;        // acceso a modulo.
 
   interpolaciones;  // acceso al modulo.
 
@@ -68,6 +69,7 @@ class Pilas {
     this.fondos = new Fondos();
     this.mundo = new Mundo();
     this.interpolaciones = new Interpolaciones();
+    this.utils = new Utils();
 
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
   }

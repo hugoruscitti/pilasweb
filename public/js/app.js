@@ -6,6 +6,7 @@ app.config(function($routeProvider) {
                  when('/demo1', {templateUrl: 'demo1.html', controller: 'Controller'}).
                  when('/demo2', {templateUrl: 'demo2.html', controller: 'Controller'}).
                  when('/demo3', {templateUrl: 'demo3.html', controller: 'Controller'}).
+                 when('/demo4', {templateUrl: 'demo4.html', controller: 'Controller'}).
                  otherwise({redirectTo: '/demo1'});
           
 
@@ -24,6 +25,7 @@ app.controller('AppController', function($scope, $location) {
     {'nombre': 'Escala', 'url': '#/demo2'},
     {'nombre': 'Arrastrable', 'url': '#/demo3'},
     {'nombre': 'Editor simple', 'url': '#/editor'},
+    {'nombre': 'Nave', 'url': '#/demo4'},
   ];
 
   $scope.seleccionar = function(indice) {

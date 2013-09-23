@@ -58,6 +58,10 @@
         <script type="text/ng-template" id="demo3.html">
             <canvas ng-init='iniciar_ejemplo(3)' id='canvas'></canvas>
         </script>
+       
+        <script type="text/ng-template" id="demo4.html">
+            <canvas ng-init='iniciar_ejemplo(4)' id='canvas'></canvas>
+        </script>
 
         <script type="text/ng-template" id="editor.html">
             <canvas id='canvas'></canvas>
@@ -132,6 +136,21 @@ pilas.onready = function() {
   window.aceituna = new pilas.actores.Aceituna();
   window.aceituna.aprender(pilas.habilidades.Arrastrable);
   window.aceituna.escala = 2;
+
+  pilas.definir_modos({puntos_de_control: true})
+}
+pilas.ejecutar();
+</script>
+  
+<script type='demo' id='/demo4'>
+pilas = new Pilas();
+pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
+
+pilas.onready = function() {
+  var fondo = new pilas.fondos.Plano();
+
+  window.nave = new pilas.actores.Nave();
+  nave.disparar();
 
   pilas.definir_modos({puntos_de_control: true})
 }
