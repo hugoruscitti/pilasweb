@@ -153,12 +153,12 @@ class Pilas {
       pilas.escena_actual().mueve_mouse.emitir(posicion);
     }
 
-    document.onkeydown = function (event) {
+    window.onkeydown = function (event) {
       var e = pilas.obtener_codigo_y_texto_desde_evento(event);
       pilas.escena_actual().pulsa_tecla.emitir(e);
     }
 
-    document.onkeyup = function (event) {
+    window.onkeyup = function (event) {
       var e = pilas.obtener_codigo_y_texto_desde_evento(event);
       pilas.escena_actual().suelta_tecla.emitir(e);
     }

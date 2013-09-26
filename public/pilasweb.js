@@ -333,9 +333,19 @@ var Nave = (function (_super) {
         this.centro_x = 23;
         this.centro_y = 23;
         this.paso = 0;
+        this.teclado_habilitado = false;
         this.aprender(pilas.habilidades.PuedeExplotar);
-        this.aprender(pilas.habilidades.MoverseConElTecladoConRotacion);
     }
+    Nave.prototype.habilitar_teclado = function () {
+        if (this.teclado_habilitado === false) {
+            this.aprender(pilas.habilidades.MoverseConElTecladoConRotacion);
+            this.teclado_habilitado = true;
+            return "Habilitando el teclado";
+        } else {
+            return "El teclado ya estaba habilitado.";
+        }
+    };
+
     Nave.prototype.actualizar = function () {
         this.paso += 0.1;
         this._imagen.definir_cuadro(parseInt(this.paso) % 2);
@@ -348,12 +358,16 @@ var Nave = (function (_super) {
         disparo.rotacion = this.rotacion - 90;
         disparo.x = this.x;
         disparo.y = this.y;
+        return "Disparando ...";
     };
 
     Nave.prototype.avanzar = function (velocidad) {
         var rotacion_en_radianes;
         var dx;
         var dy;
+
+        if (velocidad === undefined)
+            velocidad = 5;
 
         var rotacion_en_radianes = pilas.utils.convertir_a_radianes(-this.rotacion + 90);
 
@@ -1269,12 +1283,12 @@ var Pilas = (function () {
             pilas.escena_actual().mueve_mouse.emitir(posicion);
         };
 
-        document.onkeydown = function (event) {
+        window.onkeydown = function (event) {
             var e = pilas.obtener_codigo_y_texto_desde_evento(event);
             pilas.escena_actual().pulsa_tecla.emitir(e);
         };
 
-        document.onkeyup = function (event) {
+        window.onkeyup = function (event) {
             var e = pilas.obtener_codigo_y_texto_desde_evento(event);
             pilas.escena_actual().suelta_tecla.emitir(e);
         };
