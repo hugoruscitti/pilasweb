@@ -47,7 +47,6 @@ class Imagenes {
 
     this.cargar_recurso('disparos/misil.png');
     
-    
     this.cargar_recurso('cooperativista/alerta.png');
     this.cargar_recurso('cooperativista/camina.png');
     this.cargar_recurso('cooperativista/camina_sujeta.png');

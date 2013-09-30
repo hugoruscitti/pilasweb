@@ -12,8 +12,28 @@ class Piedra extends Actor {
     var imagen = "piedra_" + tamano + ".png";
 		
     super(imagen, x, y);
-    this.centro_x = 18;
-    this.centro_y = 18;
+		
+		switch (tamano) {
+				case 'chica':
+					this.centro_x = 7;
+					this.centro_y = 7;
+					break;
+				
+				case 'media':
+					this.centro_x = 16;
+					this.centro_y = 16;
+					break;
+				
+				case 'grande':
+					this.centro_x = 26;
+					this.centro_y = 26;
+					break;
+				
+				default:
+					throw "El tamaño " + tamano + "no está permitido. Use 'chica', 'media' o 'grande'."
+					break;
+		}
+		
 		this.rotacion = 0;
   }
 	
