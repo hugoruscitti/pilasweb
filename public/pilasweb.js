@@ -1123,6 +1123,10 @@ var Imagenes = (function () {
         this.cargar_recurso('plano.png');
         this.cargar_recurso('nave.png');
 
+        this.cargar_recurso('piedra_chica.png');
+        this.cargar_recurso('piedra_grande.png');
+        this.cargar_recurso('piedra_media.png');
+
         this.cargar_recurso('disparos/misil.png');
 
         this.cargar_recurso('cooperativista/alerta.png');
