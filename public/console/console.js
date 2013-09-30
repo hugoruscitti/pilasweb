@@ -47,6 +47,10 @@ function stringify(o, simple, visited) {
     }
     json += parts.join(', ') + ']';
   } else if (type == '[object Object]') {
+		
+		json = "[Instancia de objeto]";
+		
+		/*
     visited.push(o);
 
     json = '{';
@@ -58,6 +62,8 @@ function stringify(o, simple, visited) {
       parts.push( stringify(names[i], undefined, visited) + ': ' + stringify(o[ names[i] ], simple, visited) );
     }
     json += parts.join(', ') + '}';
+		*/
+		
   } else if (type == '[object Number]') {
     json = o+'';
   } else if (type == '[object Boolean]') {

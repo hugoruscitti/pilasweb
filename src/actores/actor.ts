@@ -53,6 +53,15 @@ class Actor extends Estudiante {
   constructor(imagen, x, y) {
     super();
     this.imagen = imagen || 'sin_imagen.png';
+		
+		/* Se ejecuta si el usuario intenta llamar al constructor sin usar 'new' 
+		
+			 Por ejemplo, si escribe "pilas.actores.Nave()" da un error. Si el usuario
+			 escribe "new pilas.actores.Nave()" sale bien :)
+		*/
+		if (this === pilas.actores)
+			throw Error("Lo siento, tienes que anteponer 'new' para crear actores en esta versión.");
+		
     this.crear_sprite();
     this.x = x || 0;
     this.y = y || 0;
@@ -146,6 +155,40 @@ class Actor extends Estudiante {
     else
       this._imagen = _i;
   }
+	
+	/* TODO: hacer que se puedan interpolar
+		       las propiedades: izquierda, derecha, arriba, abajo.
+	*/
+	get izquierda() {
+		return this.x - (this.centro_x * this.escala);
+	}
+	set izquierda(x) {
+		this.x = x + (this.centro_x * this.escala);
+	}
+	
+	get derecha() {
+		return this.x + (this.centro_x * this.escala);
+	}
+	set derecha(x) {
+		this.x = x - (this.centro_x * this.escala);
+	}
+	
+	get arriba() {
+		return this.y + (this.centro_y * this.escala);
+	}
+	
+	set arriba(y) {
+		this.y = y - (this.centro_y * this.escala);
+	}
+	
+	get abajo() {
+		return this.arriba - (this.alto * this.escala);
+	}
+	
+	set abajo(y) {
+		this.arriba = y + this.alto;
+	}
+	
 
   /**
    * @method colisiona_con_un_punto

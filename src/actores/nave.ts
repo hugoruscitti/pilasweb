@@ -11,6 +11,7 @@ class Nave extends Actor {
     this.paso = 0;
     this.aprender(pilas.habilidades.PuedeExplotar);
     this.aprender(pilas.habilidades.MoverseConElTecladoConRotacion);
+    this.aprender(pilas.habilidades.Disparar);
   }
 
   actualizar() {

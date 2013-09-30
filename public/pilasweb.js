@@ -2,6 +2,7 @@
 /// <reference path="actores/bomba.ts />
 /// <reference path="actores/explosion.ts />
 /// <reference path="actores/nave.ts />
+/// <reference path="actores/piedra.ts />
 /**
 * @class Actores
 *
@@ -18,20 +19,24 @@ var Actores = (function () {
         this.Nave = Nave;
         this.Explosion = Explosion;
         this.Proyectil = Proyectil;
+        this.Piedra = Piedra;
     }
     return Actores;
 })();
 var Estudiante = (function () {
     function Estudiante() {
+        this.habilidades = [];
     }
     Estudiante.prototype.aprender = function (clase_de_habilidad) {
-        // FIXME, hacer una lista de habilidades, chequear si la clase de
-        // habilidad ya se ha agregado y eliminarla.
         this.agregar_habilidad(clase_de_habilidad);
     };
 
     Estudiante.prototype.agregar_habilidad = function (clase_de_habilidad) {
+        // TODO chequear si la clase de habilidad ya se ha agregado y eliminarla.
         var habilidad = new clase_de_habilidad(this);
+
+        // TODO permitir que se puedan enviar habiliades ya instanciadas.
+        this.habilidades.push(habilidad);
     };
     return Estudiante;
 })();
@@ -93,6 +98,10 @@ var Actor = (function (_super) {
     function Actor(imagen, x, y) {
         _super.call(this);
         this.imagen = imagen || 'sin_imagen.png';
+
+        if (this === pilas.actores)
+            throw Error("Lo siento, tienes que anteponer 'new' para crear actores en esta versión.");
+
         this.crear_sprite();
         this.x = x || 0;
         this.y = y || 0;
@@ -257,6 +266,55 @@ else
         configurable: true
     });
 
+    Object.defineProperty(Actor.prototype, "izquierda", {
+        get: /* TODO: hacer que se puedan interpolar
+        las propiedades: izquierda, derecha, arriba, abajo.
+        */
+        function () {
+            return this.x - (this.centro_x * this.escala);
+        },
+        set: function (x) {
+            this.x = x + (this.centro_x * this.escala);
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    Object.defineProperty(Actor.prototype, "derecha", {
+        get: function () {
+            return this.x + (this.centro_x * this.escala);
+        },
+        set: function (x) {
+            this.x = x - (this.centro_x * this.escala);
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    Object.defineProperty(Actor.prototype, "arriba", {
+        get: function () {
+            return this.y + (this.centro_y * this.escala);
+        },
+        set: function (y) {
+            this.y = y - (this.centro_y * this.escala);
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+
+    Object.defineProperty(Actor.prototype, "abajo", {
+        get: function () {
+            return this.arriba - (this.alto * this.escala);
+        },
+        set: function (y) {
+            this.arriba = y + this.alto;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+
     /**
     * @method colisiona_con_un_punto
     *
@@ -296,6 +354,8 @@ var Bomba = (function (_super) {
         this.centro_y = 31;
         this.paso = 0;
         this.aprender(pilas.habilidades.PuedeExplotar);
+
+        this.aprender(pilas.habilidades.SeMantieneEnPantalla);
     }
     Bomba.prototype.actualizar = function () {
         this.paso += 0.1;
@@ -335,6 +395,7 @@ var Nave = (function (_super) {
         this.paso = 0;
         this.aprender(pilas.habilidades.PuedeExplotar);
         this.aprender(pilas.habilidades.MoverseConElTecladoConRotacion);
+        this.aprender(pilas.habilidades.Disparar);
     }
     Nave.prototype.actualizar = function () {
         this.paso += 0.1;
@@ -364,6 +425,28 @@ var Nave = (function (_super) {
         this.y += dy;
     };
     return Nave;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Piedra = (function (_super) {
+    __extends(Piedra, _super);
+    function Piedra(x, y, tamano, dx, dy) {
+        this.dx = dx || 0;
+        this.dy = dy || 0;
+
+        var tamano = tamano || "grande";
+        var imagen = "piedra_" + tamano + ".png";
+
+        _super.call(this, imagen, x, y);
+        this.centro_x = 18;
+        this.centro_y = 18;
+        this.rotacion = 0;
+    }
+    Piedra.prototype.actualizar = function () {
+        this.x += this.dx;
+        this.y += this.dy;
+        this.rotacion += 1;
+    };
+    return Piedra;
 })(Actor);
 /// <reference path="actor.ts"/>
 var Proyectil = (function (_super) {
@@ -686,7 +769,7 @@ var Evento = (function () {
     };
 
     Evento.prototype.conectar = function (respuesta) {
-        this.respuestas[respuesta.toString()] = respuesta;
+        this.respuestas[respuesta.toString() + Math.random().toString()] = respuesta;
     };
 
     Evento.prototype.desconectar = function (respuesta) {
@@ -938,6 +1021,54 @@ var Arrastrable = (function (_super) {
     return Arrastrable;
 })(Habilidad);
 
+var Disparar = (function (_super) {
+    __extends(Disparar, _super);
+    function Disparar(receptor) {
+        this.contador = 0;
+        _super.call(this, receptor);
+        pilas.escena_actual().actualiza.conectar(this);
+    }
+    Disparar.prototype.recibir = function (evento, tipo) {
+        if (this.contador < 1) {
+            if (tipo == pilas.escena_actual().actualiza) {
+                var control = pilas.escena_actual().control;
+
+                if (control.boton) {
+                    this.receptor.disparar();
+                    this.contador = 30;
+                }
+            }
+        } else {
+            this.contador -= 1;
+        }
+    };
+    return Disparar;
+})(Habilidad);
+
+var SeMantieneEnPantalla = (function (_super) {
+    __extends(SeMantieneEnPantalla, _super);
+    function SeMantieneEnPantalla(receptor) {
+        _super.call(this, receptor);
+        pilas.escena_actual().actualiza.conectar(this);
+    }
+    SeMantieneEnPantalla.prototype.recibir = function (evento, tipo) {
+        if (tipo == pilas.escena_actual().actualiza) {
+            if (this.receptor.izquierda > 160)
+                this.receptor.derecha = -160;
+
+            if (this.receptor.derecha < -160)
+                this.receptor.izquierda = 160;
+
+            if (this.receptor.abajo > 120)
+                this.receptor.arriba = -120;
+
+            if (this.receptor.arriba < -120)
+                this.receptor.abajo = 120;
+        }
+    };
+    return SeMantieneEnPantalla;
+})(Habilidad);
+
 /**
 * @class Habilidades
 *
@@ -951,6 +1082,8 @@ var Habilidades = (function () {
         this.SeguirClicks = SeguirClicks;
         this.MoverseConElTeclado = MoverseConElTeclado;
         this.MoverseConElTecladoConRotacion = MoverseConElTecladoConRotacion;
+        this.SeMantieneEnPantalla = SeMantieneEnPantalla;
+        this.Disparar = Disparar;
     }
     return Habilidades;
 })();

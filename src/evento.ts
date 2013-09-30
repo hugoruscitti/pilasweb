@@ -20,7 +20,7 @@ class Evento {
   }
 
   public conectar(respuesta) {
-    this.respuestas[respuesta.toString()] = respuesta;
+    this.respuestas[respuesta.toString() + Math.random().toString()] = respuesta;
   }
 
   public desconectar(respuesta) {

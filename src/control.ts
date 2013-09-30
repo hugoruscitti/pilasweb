@@ -60,6 +60,7 @@ class Control {
   }
 
   cuando_pulsa_una_tecla(evento) {
+		
     switch (evento.codigo) {
       case simbolos.IZQUIERDA: {
         this.izquierda = true;

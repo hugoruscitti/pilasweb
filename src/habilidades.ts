@@ -194,6 +194,66 @@ class Arrastrable extends Habilidad {
   termina_de_arrastrar() {}
 }
 
+
+class Disparar extends Habilidad {
+	contador;
+	
+	constructor(receptor) {
+		this.contador = 0;
+		super(receptor);
+    pilas.escena_actual().actualiza.conectar(this);
+	}
+	
+  recibir(evento, tipo) {
+		
+		if (this.contador < 1) {
+			if (tipo == pilas.escena_actual().actualiza) {
+				var control = pilas.escena_actual().control;
+				
+				if (control.boton) {
+					this.receptor.disparar();
+					this.contador = 30;
+				}
+			}
+		} else {
+			this.contador -= 1;
+		}
+	}
+	
+	
+}
+
+
+class SeMantieneEnPantalla extends Habilidad {
+  
+  constructor(receptor) {
+    super(receptor);
+    pilas.escena_actual().actualiza.conectar(this);
+  }
+
+  recibir(evento, tipo) {
+    if (tipo == pilas.escena_actual().actualiza) {
+			/* TODO: obtener el area del escenario desde
+			         algun atributo de la escena o 
+							 pilas.mundo.obtener_area() como hace
+							 pilas en python.
+							 */
+			if (this.receptor.izquierda > 160)
+				this.receptor.derecha = -160;
+			
+			if (this.receptor.derecha < -160)
+				this.receptor.izquierda = 160;
+			
+			if (this.receptor.abajo > 120)
+				this.receptor.arriba = -120;
+			
+			if (this.receptor.arriba < -120)
+				this.receptor.abajo = 120;
+			
+    }
+  }
+}
+
 /**
  * @class Habilidades
  *
@@ -207,6 +267,8 @@ class Habilidades {
   SeguirClicks;
   MoverseConElTeclado;
   MoverseConElTecladoConRotacion;
+	SeMantieneEnPantalla;
+	Disparar;
 
   constructor() {
     this.Arrastrable = Arrastrable;
@@ -215,5 +277,7 @@ class Habilidades {
     this.SeguirClicks = SeguirClicks;
     this.MoverseConElTeclado = MoverseConElTeclado;
     this.MoverseConElTecladoConRotacion = MoverseConElTecladoConRotacion;
+		this.SeMantieneEnPantalla = SeMantieneEnPantalla;
+		this.Disparar = Disparar;
   }
 }

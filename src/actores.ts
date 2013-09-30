@@ -2,6 +2,7 @@
 /// <reference path="actores/bomba.ts />
 /// <reference path="actores/explosion.ts />
 /// <reference path="actores/nave.ts />
+/// <reference path="actores/piedra.ts />
 
 /**
  * @class Actores
@@ -19,6 +20,7 @@ class Actores {
   Explosion;
   Nave;
   Proyectil;
+	Piedra;
 
   constructor() {
     this.Aceituna = Aceituna;
@@ -27,5 +29,6 @@ class Actores {
     this.Nave = Nave;
     this.Explosion = Explosion;
     this.Proyectil = Proyectil;
+		this.Piedra = Piedra;
   }
 }
