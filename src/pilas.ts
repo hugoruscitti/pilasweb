@@ -233,7 +233,16 @@ class Pilas {
   definir_modos(modos) {
     this.mundo.definir_modos(modos);
   }
+
+  mostrar_posiciones() {
+    this.definir_modos({puntos_de_control: true});
+    return "Mostrando posiciones";
+  }
   
+  ocultar_posiciones() {
+    this.definir_modos({puntos_de_control: false});
+    return "Ocultando posiciones";
+  }
 }
 
 pilas = new Pilas();

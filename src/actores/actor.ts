@@ -49,10 +49,13 @@
 class Actor extends Estudiante {
   sprite;
   _imagen;
+  vivo;
 
-  constructor(imagen, x, y) {
+  constructor(imagen, x, y, atributos = {}) {
     super();
     this.imagen = imagen || 'sin_imagen.png';
+    atributos = atributos || {};
+    this.vivo = true;
 		
 		/* Se ejecuta si el usuario intenta llamar al constructor sin usar 'new' 
 		
@@ -67,6 +70,16 @@ class Actor extends Estudiante {
     this.y = y || 0;
     this.centro_x = this.ancho / 2;
     this.centro_y = this.alto / 2;
+
+    if (atributos['rotacion'])
+      this.rotacion = atributos['rotacion'];
+
+    if (atributos['centro_x'])
+      this.centro_x = atributos['centro_x'];
+
+    if (atributos['centro_x'])
+      this.centro_y = atributos['centro_y'];
+
     pilas.escena_actual().agregar_actor(this);
   }
 
@@ -75,6 +88,7 @@ class Actor extends Estudiante {
   }
 
   public eliminar() {
+    this.vivo = false;
     pilas.escena_actual().eliminar_actor(this);
   }
 

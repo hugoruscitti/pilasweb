@@ -2,14 +2,16 @@
 
 class Proyectil extends Actor {
   paso;
+  enemigos;
 
-  constructor(x, y) {
+  constructor(x, y, atributos) {
     var imagen = pilas.imagenes.cargar_grilla("disparos/misil.png", 3);
-    super(imagen, x, y);
-    this.centro_x = 20;
-    this.centro_y = 8;
+    atributos['centro_x'] = 20;
+    atributos['centro_y'] = 8;
+    super(imagen, x, y, atributos);
+
     this.paso = 0;
-    //this.aprender(pilas.habilidades.PuedeExplotar);
+    this.enemigos = [];
   }
 
   actualizar() {
@@ -18,8 +20,20 @@ class Proyectil extends Actor {
     
     // TODO: Convertir en una habilidad.
     this.avanzar_respecto_del_angulo();
+    this.analizar_colisiones();
   }
   
+  analizar_colisiones() {
+    for (var i=0; i<this.enemigos.length; i++) {
+      var enemigo = this.enemigos[i];
+
+      if (enemigo.vivo && enemigo.colisiona_con_un_punto(this.x, this.y)) {
+        enemigo.eliminar();
+        this.eliminar();
+      }
+    }
+  }
+
   avanzar_respecto_del_angulo() {
     var velocidad = 2;
     var rotacion_en_radianes;

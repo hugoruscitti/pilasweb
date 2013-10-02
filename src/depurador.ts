@@ -17,6 +17,13 @@ class DepuradorDeshabilitado {
 
     if (modos.puntos_de_control)
       this.modos.push(new ModoPuntosDeControl());
+
+    if (modos.puntos_de_control == false) {
+      for (var i=0; i<this.modos.length; i++) {
+        this.modos[i].eliminar();
+      }
+      this.modos = [];
+    }
   }
 
 }
@@ -42,6 +49,10 @@ class ModoPuntosDeControl {
     this.container.addChild(this.text_coordenada);
 
     pilas.escena_actual().stage.addChild(this.container);
+  }
+
+  eliminar() {
+    pilas.escena_actual().stage.removeChild(this.container);
   }
 
   actualizar() {

@@ -47,13 +47,13 @@ class Imagenes {
 
     this.cargar_recurso('disparos/misil.png');
     
-    this.cargar_recurso('cooperativista/alerta.png');
-    this.cargar_recurso('cooperativista/camina.png');
-    this.cargar_recurso('cooperativista/camina_sujeta.png');
-    this.cargar_recurso('cooperativista/ok.png');
-    this.cargar_recurso('cooperativista/parado.png');
-    this.cargar_recurso('cooperativista/parado_sujeta.png');
-    this.cargar_recurso('cooperativista/trabajando.png');
+    //this.cargar_recurso('cooperativista/alerta.png');
+    //this.cargar_recurso('cooperativista/camina.png');
+    //this.cargar_recurso('cooperativista/camina_sujeta.png');
+    //this.cargar_recurso('cooperativista/ok.png');
+    //this.cargar_recurso('cooperativista/parado.png');
+    //this.cargar_recurso('cooperativista/parado_sujeta.png');
+    //this.cargar_recurso('cooperativista/trabajando.png');
   }
 
   private cargar_recurso(nombre) {

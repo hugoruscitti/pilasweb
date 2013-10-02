@@ -95,9 +95,12 @@ var __extends = this.__extends || function (d, b) {
 */
 var Actor = (function (_super) {
     __extends(Actor, _super);
-    function Actor(imagen, x, y) {
+    function Actor(imagen, x, y, atributos) {
+        if (typeof atributos === "undefined") { atributos = {}; }
         _super.call(this);
         this.imagen = imagen || 'sin_imagen.png';
+        atributos = atributos || {};
+        this.vivo = true;
 
         if (this === pilas.actores)
             throw Error("Lo siento, tienes que anteponer 'new' para crear actores en esta versión.");
@@ -107,6 +110,16 @@ var Actor = (function (_super) {
         this.y = y || 0;
         this.centro_x = this.ancho / 2;
         this.centro_y = this.alto / 2;
+
+        if (atributos['rotacion'])
+            this.rotacion = atributos['rotacion'];
+
+        if (atributos['centro_x'])
+            this.centro_x = atributos['centro_x'];
+
+        if (atributos['centro_x'])
+            this.centro_y = atributos['centro_y'];
+
         pilas.escena_actual().agregar_actor(this);
     }
     Actor.prototype.crear_sprite = function () {
@@ -114,6 +127,7 @@ var Actor = (function (_super) {
     };
 
     Actor.prototype.eliminar = function () {
+        this.vivo = false;
         pilas.escena_actual().eliminar_actor(this);
     };
 
@@ -354,8 +368,6 @@ var Bomba = (function (_super) {
         this.centro_y = 31;
         this.paso = 0;
         this.aprender(pilas.habilidades.PuedeExplotar);
-
-        this.aprender(pilas.habilidades.SeMantieneEnPantalla);
     }
     Bomba.prototype.actualizar = function () {
         this.paso += 0.1;
@@ -393,8 +405,10 @@ var Nave = (function (_super) {
         this.centro_x = 23;
         this.centro_y = 23;
         this.paso = 0;
+        this.enemigos = [];
         this.teclado_habilitado = false;
         this.aprender(pilas.habilidades.PuedeExplotar);
+        this.aprender(pilas.habilidades.SeMantieneEnPantalla);
     }
     Nave.prototype.habilitar_teclado = function () {
         if (this.teclado_habilitado === false) {
@@ -414,11 +428,8 @@ var Nave = (function (_super) {
     };
 
     Nave.prototype.disparar = function () {
-        // TODO: convertir en una habilidad.
-        var disparo = new pilas.actores.Proyectil();
-        disparo.rotacion = this.rotacion - 90;
-        disparo.x = this.x;
-        disparo.y = this.y;
+        var disparo = new pilas.actores.Proyectil(this.x, this.y, { rotacion: this.rotacion - 90 });
+        disparo.enemigos = this.enemigos;
         return "Disparando ...";
     };
 
@@ -428,7 +439,7 @@ var Nave = (function (_super) {
         var dy;
 
         if (velocidad === undefined)
-            velocidad = 5;
+            velocidad = 10;
 
         var rotacion_en_radianes = pilas.utils.convertir_a_radianes(-this.rotacion + 90);
 
@@ -437,6 +448,11 @@ var Nave = (function (_super) {
 
         this.x += dx;
         this.y += dy;
+    };
+
+    Nave.prototype.definir_enemigos = function (enemigos) {
+        this.enemigos = enemigos;
+        return "Definiendo enemigos.";
     };
     return Nave;
 })(Actor);
@@ -474,24 +490,67 @@ var Piedra = (function (_super) {
         }
 
         this.rotacion = 0;
+        this.aprender(pilas.habilidades.SeMantieneEnPantalla);
+        this.aprender(pilas.habilidades.PuedeExplotar);
     }
     Piedra.prototype.actualizar = function () {
         this.x += this.dx;
         this.y += this.dy;
         this.rotacion += 1;
     };
+
+    Piedra.prototype.empujar = function (dx, dy) {
+        dx = dx || 0;
+        dy = dy || 0;
+
+        this.dx = dx / 10;
+        this.dy = dy / 10;
+        return "Empujando al actor";
+    };
+
+    Piedra.prototype.clonar = function (veces) {
+        veces = veces || 0;
+        veces = Math.min(veces, 5);
+
+        for (var i = 0; i < veces; i++) {
+            var dx = (Math.random() * 2) - 1;
+            var dy = (Math.random() * 2) - 1;
+            var tamano = this.obtener_tamano_al_azar();
+
+            var tmp = new Piedra(this.x, this.y, tamano, 0, 0);
+            tmp.empujar(dx, dy);
+
+            if (window['enemigos'] === undefined) {
+                window['enemigos'] = [this];
+            }
+
+            window['enemigos'].push(tmp);
+        }
+
+        return "Clonando el actor piedra.";
+    };
+
+    Piedra.prototype.obtener_tamano_al_azar = function () {
+        var valores = ['chica', 'media', 'grande'];
+        var max = 2;
+        var min = 0;
+        var indice = Math.floor((Math.random() * ((max + 1) - min)) + min);
+
+        return valores[indice];
+    };
     return Piedra;
 })(Actor);
 /// <reference path="actor.ts"/>
 var Proyectil = (function (_super) {
     __extends(Proyectil, _super);
-    function Proyectil(x, y) {
+    function Proyectil(x, y, atributos) {
         var imagen = pilas.imagenes.cargar_grilla("disparos/misil.png", 3);
-        _super.call(this, imagen, x, y);
-        this.centro_x = 20;
-        this.centro_y = 8;
+        atributos['centro_x'] = 20;
+        atributos['centro_y'] = 8;
+        _super.call(this, imagen, x, y, atributos);
+
         this.paso = 0;
-        //this.aprender(pilas.habilidades.PuedeExplotar);
+        this.enemigos = [];
     }
     Proyectil.prototype.actualizar = function () {
         this.paso += 0.1;
@@ -499,6 +558,18 @@ var Proyectil = (function (_super) {
 
         // TODO: Convertir en una habilidad.
         this.avanzar_respecto_del_angulo();
+        this.analizar_colisiones();
+    };
+
+    Proyectil.prototype.analizar_colisiones = function () {
+        for (var i = 0; i < this.enemigos.length; i++) {
+            var enemigo = this.enemigos[i];
+
+            if (enemigo.vivo && enemigo.colisiona_con_un_punto(this.x, this.y)) {
+                enemigo.eliminar();
+                this.eliminar();
+            }
+        }
     };
 
     Proyectil.prototype.avanzar_respecto_del_angulo = function () {
@@ -676,6 +747,13 @@ var DepuradorDeshabilitado = (function () {
 
         if (modos.puntos_de_control)
             this.modos.push(new ModoPuntosDeControl());
+
+        if (modos.puntos_de_control == false) {
+            for (var i = 0; i < this.modos.length; i++) {
+                this.modos[i].eliminar();
+            }
+            this.modos = [];
+        }
     };
     return DepuradorDeshabilitado;
 })();
@@ -697,6 +775,10 @@ var ModoPuntosDeControl = (function () {
 
         pilas.escena_actual().stage.addChild(this.container);
     }
+    ModoPuntosDeControl.prototype.eliminar = function () {
+        pilas.escena_actual().stage.removeChild(this.container);
+    };
+
     ModoPuntosDeControl.prototype.actualizar = function () {
         var escena = pilas.escena_actual();
         this.shape.graphics.clear();
@@ -1162,14 +1244,13 @@ var Imagenes = (function () {
         this.cargar_recurso('piedra_media.png');
 
         this.cargar_recurso('disparos/misil.png');
-
-        this.cargar_recurso('cooperativista/alerta.png');
-        this.cargar_recurso('cooperativista/camina.png');
-        this.cargar_recurso('cooperativista/camina_sujeta.png');
-        this.cargar_recurso('cooperativista/ok.png');
-        this.cargar_recurso('cooperativista/parado.png');
-        this.cargar_recurso('cooperativista/parado_sujeta.png');
-        this.cargar_recurso('cooperativista/trabajando.png');
+        //this.cargar_recurso('cooperativista/alerta.png');
+        //this.cargar_recurso('cooperativista/camina.png');
+        //this.cargar_recurso('cooperativista/camina_sujeta.png');
+        //this.cargar_recurso('cooperativista/ok.png');
+        //this.cargar_recurso('cooperativista/parado.png');
+        //this.cargar_recurso('cooperativista/parado_sujeta.png');
+        //this.cargar_recurso('cooperativista/trabajando.png');
     };
 
     Imagenes.prototype.cargar_recurso = function (nombre) {
@@ -1520,6 +1601,16 @@ var Pilas = (function () {
 
     Pilas.prototype.definir_modos = function (modos) {
         this.mundo.definir_modos(modos);
+    };
+
+    Pilas.prototype.mostrar_posiciones = function () {
+        this.definir_modos({ puntos_de_control: true });
+        return "Mostrando posiciones";
+    };
+
+    Pilas.prototype.ocultar_posiciones = function () {
+        this.definir_modos({ puntos_de_control: false });
+        return "Ocultando posiciones";
     };
     return Pilas;
 })();
