@@ -82,6 +82,33 @@ class Control {
         this.boton = true;
         break;
       }
+            
+      case simbolos.W: {
+          this.arriba = true;
+          break;
+      }
+            
+      case simbolos.A: {
+          this.izquierda = true;
+          break;
+      }
+            
+      case simbolos.D: {
+          this.derecha = true;
+          break;
+      }
+            
+      case simbolos.S: {
+          this.abajo = true;
+          break;
+      }
+            
+      case simbolos.J: {
+          this.boton = true;
+          break;
+      }
+            
+       
     }
   }
 
@@ -106,6 +133,31 @@ class Control {
       case simbolos.ESPACIO: {
         this.boton = false;
         break;
+      }
+            
+      case simbolos.W: {
+          this.arriba = false;
+          break;
+      }
+            
+      case simbolos.A: {
+          this.izquierda = false;
+          break;
+      }
+            
+      case simbolos.D: {
+          this.derecha = false;
+          break;
+      }
+            
+      case simbolos.S: {
+          this.abajo = false;
+          break;
+      }
+            
+      case simbolos.J: {
+          this.boton = false;
+          break;
       }
     }
   }

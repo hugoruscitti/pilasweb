@@ -3,6 +3,7 @@
 /// <reference path="actores/explosion.ts />
 /// <reference path="actores/nave.ts />
 /// <reference path="actores/piedra.ts />
+/// <reference path="actores/eje.ts />
 /**
 * @class Actores
 *
@@ -20,6 +21,7 @@ var Actores = (function () {
         this.Explosion = Explosion;
         this.Proyectil = Proyectil;
         this.Piedra = Piedra;
+        this.Eje = Eje;
     }
     return Actores;
 })();
@@ -376,6 +378,17 @@ var Bomba = (function (_super) {
     return Bomba;
 })(Actor);
 /// <reference path="actor.ts"/>
+var Eje = (function (_super) {
+    __extends(Eje, _super);
+    function Eje(x, y) {
+        var imagen = "ejes.png";
+        _super.call(this, imagen, x, y);
+        this.centro_x = 256;
+        this.centro_y = 256;
+    }
+    return Eje;
+})(Actor);
+/// <reference path="actor.ts"/>
 var Explosion = (function (_super) {
     __extends(Explosion, _super);
     function Explosion(x, y) {
@@ -702,6 +715,31 @@ var Control = (function () {
                 this.boton = true;
                 break;
             }
+
+            case simbolos.W: {
+                this.arriba = true;
+                break;
+            }
+
+            case simbolos.A: {
+                this.izquierda = true;
+                break;
+            }
+
+            case simbolos.D: {
+                this.derecha = true;
+                break;
+            }
+
+            case simbolos.S: {
+                this.abajo = true;
+                break;
+            }
+
+            case simbolos.J: {
+                this.boton = true;
+                break;
+            }
         }
     };
 
@@ -724,6 +762,31 @@ var Control = (function () {
                 break;
             }
             case simbolos.ESPACIO: {
+                this.boton = false;
+                break;
+            }
+
+            case simbolos.W: {
+                this.arriba = false;
+                break;
+            }
+
+            case simbolos.A: {
+                this.izquierda = false;
+                break;
+            }
+
+            case simbolos.D: {
+                this.derecha = false;
+                break;
+            }
+
+            case simbolos.S: {
+                this.abajo = false;
+                break;
+            }
+
+            case simbolos.J: {
                 this.boton = false;
                 break;
             }
@@ -772,11 +835,13 @@ var ModoPuntosDeControl = (function () {
         this.text_coordenada.y = 220;
         this.text_coordenada.x = 120;
         this.container.addChild(this.text_coordenada);
+        this.eje = new pilas.actores.Eje();
 
         pilas.escena_actual().stage.addChild(this.container);
     }
     ModoPuntosDeControl.prototype.eliminar = function () {
         pilas.escena_actual().stage.removeChild(this.container);
+        this.eje.eliminar();
     };
 
     ModoPuntosDeControl.prototype.actualizar = function () {
@@ -1242,6 +1307,7 @@ var Imagenes = (function () {
         this.cargar_recurso('piedra_chica.png');
         this.cargar_recurso('piedra_grande.png');
         this.cargar_recurso('piedra_media.png');
+        this.cargar_recurso('ejes.png');
 
         this.cargar_recurso('disparos/misil.png');
         //this.cargar_recurso('cooperativista/alerta.png');
@@ -1621,7 +1687,12 @@ var simbolos = {
     DERECHA: 39,
     ARRIBA: 38,
     ABAJO: 40,
-    ESPACIO: 32
+    ESPACIO: 32,
+    W: 87,
+    A: 65,
+    S: 83,
+    D: 68,
+    J: 74
 };
 var Utils = (function () {
     function Utils() {

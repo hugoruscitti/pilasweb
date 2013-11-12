@@ -33,6 +33,7 @@ class ModoPuntosDeControl {
   container;
   text_modo;
   text_coordenada;
+  eje;
 
   constructor() {
     this.container = new createjs.Container();
@@ -47,12 +48,14 @@ class ModoPuntosDeControl {
     this.text_coordenada.y = 220;
     this.text_coordenada.x = 120;
     this.container.addChild(this.text_coordenada);
+    this.eje = new pilas.actores.Eje();
 
     pilas.escena_actual().stage.addChild(this.container);
   }
 
   eliminar() {
     pilas.escena_actual().stage.removeChild(this.container);
+    this.eje.eliminar();
   }
 
   actualizar() {
