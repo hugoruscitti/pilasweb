@@ -3,6 +3,7 @@
 /// <reference path="actores/explosion.ts />
 /// <reference path="actores/nave.ts />
 /// <reference path="actores/piedra.ts />
+/// <reference path="actores/eje.ts />
 
 /**
  * @class Actores
@@ -21,6 +22,7 @@ class Actores {
   Nave;
   Proyectil;
 	Piedra;
+	Eje;
 
   constructor() {
     this.Aceituna = Aceituna;
@@ -30,5 +32,6 @@ class Actores {
     this.Explosion = Explosion;
     this.Proyectil = Proyectil;
 		this.Piedra = Piedra;
+		this.Eje = Eje;
   }
 }
