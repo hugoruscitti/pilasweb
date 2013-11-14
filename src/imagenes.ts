@@ -47,6 +47,8 @@ class Imagenes {
     this.cargar_recurso('ejes.png');
 
     this.cargar_recurso('disparos/misil.png');
+    this.cargar_recurso('rpg/maton.png');
+    this.cargar_recurso('pasto.png');
     
     //this.cargar_recurso('cooperativista/alerta.png');
     //this.cargar_recurso('cooperativista/camina.png');

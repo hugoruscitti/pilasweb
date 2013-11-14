@@ -4,6 +4,7 @@
 /// <reference path="actores/nave.ts />
 /// <reference path="actores/piedra.ts />
 /// <reference path="actores/eje.ts />
+/// <reference path="actores/maton.ts />
 /**
 * @class Actores
 *
@@ -22,6 +23,7 @@ var Actores = (function () {
         this.Proyectil = Proyectil;
         this.Piedra = Piedra;
         this.Eje = Eje;
+        this.Maton = Maton;
     }
     return Actores;
 })();
@@ -408,6 +410,60 @@ var Explosion = (function (_super) {
         }
     };
     return Explosion;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Maton = (function (_super) {
+    __extends(Maton, _super);
+    function Maton(x, y) {
+        var imagen = pilas.imagenes.cargar_grilla("rpg/maton.png", 3, 4);
+        _super.call(this, imagen, x, y);
+        this.centro_x = 36;
+        this.centro_y = 31;
+        this.paso = 0;
+        this.aprender(pilas.habilidades.PuedeExplotar);
+        this.cuadros = [
+            [1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2],
+            [4, 4, 4, 4, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5],
+            [7, 7, 7, 7, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8],
+            [10, 10, 10, 10, 9, 9, 9, 9, 10, 10, 10, 10, 11, 11, 11, 11]
+        ];
+        this.direccion = 0;
+        this.velocidad = 3;
+        window['maton'] = this;
+    }
+    Maton.prototype.actualizar = function () {
+        this.avanzar_animacion();
+    };
+
+    Maton.prototype.avanzar_animacion = function () {
+        this.paso += 0.3;
+
+        if (this.paso >= this.cuadros[this.direccion].length) {
+            this.paso = 0;
+        }
+
+        var cuadro_a_mostrar = this.cuadros[this.direccion][parseInt(this.paso, 10)];
+
+        this._imagen.definir_cuadro(cuadro_a_mostrar);
+    };
+
+    Maton.prototype.mover = function (x, y) {
+        if (x < 0)
+            this.direccion = 3;
+
+        if (x > 0)
+            this.direccion = 1;
+
+        if (y > 0)
+            this.direccion = 0;
+
+        if (y < 0)
+            this.direccion = 2;
+
+        this.x += x * this.velocidad;
+        this.y += y * this.velocidad;
+    };
+    return Maton;
 })(Actor);
 /// <reference path="actor.ts"/>
 var Nave = (function (_super) {
@@ -980,9 +1036,31 @@ var Plano = (function (_super) {
     return Plano;
 })(Actor);
 
+var Pasto = (function (_super) {
+    __extends(Pasto, _super);
+    function Pasto() {
+        _super.call(this, 'pasto.png', 0, 0);
+        this.centro_x = 0;
+        this.centro_y = 0;
+    }
+    Pasto.prototype.crear_sprite = function () {
+        var img = this._imagen.imagen;
+        var s = new createjs.Shape();
+
+        s.graphics.beginBitmapFill(img, 'repeat');
+        s.graphics.drawRect(-160, -120, 320, 240);
+        this.sprite = s;
+    };
+
+    Pasto.prototype.actualizar = function () {
+    };
+    return Pasto;
+})(Actor);
+
 var Fondos = (function () {
     function Fondos() {
         this.Plano = Plano;
+        this.Pasto = Pasto;
     }
     return Fondos;
 })();
@@ -1310,6 +1388,8 @@ var Imagenes = (function () {
         this.cargar_recurso('ejes.png');
 
         this.cargar_recurso('disparos/misil.png');
+        this.cargar_recurso('rpg/maton.png');
+        this.cargar_recurso('pasto.png');
         //this.cargar_recurso('cooperativista/alerta.png');
         //this.cargar_recurso('cooperativista/camina.png');
         //this.cargar_recurso('cooperativista/camina_sujeta.png');
