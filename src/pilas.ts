@@ -10,6 +10,7 @@ declare var createjs;
 /// <reference path="escenas.ts />
 /// <reference path="interpolaciones.ts />
 /// <reference path="habilidades.ts />
+/// <reference path="comportamientos.ts />
 
 
 /**
@@ -34,11 +35,12 @@ class Pilas {
   opciones;   // dict de opciones iniciales.
   mundo;
   
-  fondos;       // acceso a modulo.
-  imagenes;     // acceso a modulo.
-  actores;      // acceso a modulo.
-  habilidades;  // acceso a modulo.
-  utils;        // acceso a modulo.
+  fondos;           // acceso a modulo.
+  imagenes;         // acceso a modulo.
+  actores;          // acceso a modulo.
+  habilidades;      // acceso a modulo.
+  comportamientos;  // acceso a modulo.
+  utils;            // acceso a modulo.
 
   interpolaciones;  // acceso al modulo.
 
@@ -61,6 +63,7 @@ class Pilas {
     this.inicializar_opciones(opciones);
     this.actores = new Actores();
     this.habilidades = new Habilidades();
+    this.comportamientos = new Comportamientos();
     this.obtener_canvas();
     this.definir_tamano_del_canvas();
     this.conectar_eventos();

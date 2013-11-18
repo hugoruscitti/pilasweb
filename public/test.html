@@ -65,10 +65,11 @@
     pilas = new Pilas();
     pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
 
-
     pilas.onready = function() {
       var fondo = new pilas.fondos.Pasto();
-      window.aceituna = new pilas.actores.Maton();
+      var maton = new pilas.actores.Maton();
+
+      maton.subir(4);
     }
 
     pilas.ejecutar();

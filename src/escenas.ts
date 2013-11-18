@@ -50,8 +50,10 @@ class Normal extends Base {
   }
 
   actualizar() {
-    for (var i=0; i<this.actores.length; i++)
+    for (var i=0; i<this.actores.length; i++) {
       this.actores[i].actualizar();
+      this.actores[i].actualizar_comportamientos(); // TODO: implementar dentro del actualizar del actor.
+    }
 
     this.stage.update();
     this.actualiza.emitir();

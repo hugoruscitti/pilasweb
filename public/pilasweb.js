@@ -30,6 +30,7 @@ var Actores = (function () {
 var Estudiante = (function () {
     function Estudiante() {
         this.habilidades = [];
+        this.comportamiento = undefined;
     }
     Estudiante.prototype.aprender = function (clase_de_habilidad) {
         this.agregar_habilidad(clase_de_habilidad);
@@ -41,6 +42,20 @@ var Estudiante = (function () {
 
         // TODO permitir que se puedan enviar habiliades ya instanciadas.
         this.habilidades.push(habilidad);
+    };
+
+    Estudiante.prototype.hacer = function (comportamiento, argumentos) {
+        this.comportamiento = new comportamiento(argumentos);
+        this.comportamiento.iniciar(this);
+    };
+
+    Estudiante.prototype.actualizar_comportamientos = function () {
+        if (this.comportamiento !== undefined) {
+            var termina = this.comportamiento.actualizar();
+
+            if (termina)
+                this.comportamiento = undefined;
+        }
     };
     return Estudiante;
 })();
@@ -430,8 +445,20 @@ var Maton = (function (_super) {
         this.direccion = 0;
         this.velocidad = 3;
         window['maton'] = this;
+        this.animar = false;
     }
     Maton.prototype.actualizar = function () {
+        if (this.animar)
+            this.avanzar_animacion();
+    };
+
+    Maton.prototype.iniciar_animacion = function () {
+        this.animar = true;
+    };
+
+    Maton.prototype.detener_animacion = function () {
+        this.animar = false;
+        this.paso = 0;
         this.avanzar_animacion();
     };
 
@@ -462,6 +489,11 @@ var Maton = (function (_super) {
 
         this.x += x * this.velocidad;
         this.y += y * this.velocidad;
+        this.avanzar_animacion();
+    };
+
+    Maton.prototype.subir = function (pasos) {
+        this.hacer(pilas.comportamientos.Subir, { pasos: pasos });
     };
     return Maton;
 })(Actor);
@@ -695,6 +727,60 @@ var Camara = (function () {
         return { x: x - 160, y: 120 - y };
     };
     return Camara;
+})();
+/**
+* @class Comportamiento
+*
+* Representa una habilidad que un actor puede aprender.
+*/
+var Comportamiento = (function () {
+    function Comportamiento(argumentos) {
+        this.argumentos = argumentos;
+    }
+    Comportamiento.prototype.iniciar = function (receptor) {
+        this.receptor = receptor;
+    };
+
+    Comportamiento.prototype.actualizar = function () {
+    };
+
+    Comportamiento.prototype.eliminar = function () {
+    };
+    return Comportamiento;
+})();
+
+var Subir = (function (_super) {
+    __extends(Subir, _super);
+    function Subir() {
+        _super.apply(this, arguments);
+    }
+    Subir.prototype.iniciar = function (receptor) {
+        this.receptor = receptor;
+        this.pasos = this.argumentos.pasos;
+    };
+
+    Subir.prototype.actualizar = function () {
+        this.pasos -= 0.01;
+        this.receptor.mover(0, -0.05);
+
+        if (this.pasos < 0) {
+            this.receptor.detener_animacion();
+            return true;
+        }
+    };
+    return Subir;
+})(Comportamiento);
+
+/**
+* @class Comportamientos
+*
+* Representa todos los comportamientos que puede hacer un actor en pilas-engine.
+*/
+var Comportamientos = (function () {
+    function Comportamientos() {
+        this.Subir = Subir;
+    }
+    return Comportamientos;
 })();
 /// <reference path="simbolos.ts />
 /**
@@ -958,8 +1044,10 @@ var Normal = (function (_super) {
         this.camara = new Camara();
     }
     Normal.prototype.actualizar = function () {
-        for (var i = 0; i < this.actores.length; i++)
+        for (var i = 0; i < this.actores.length; i++) {
             this.actores[i].actualizar();
+            this.actores[i].actualizar_comportamientos();
+        }
 
         this.stage.update();
         this.actualiza.emitir();
@@ -1537,6 +1625,7 @@ var Mundo = (function () {
 /// <reference path="escenas.ts />
 /// <reference path="interpolaciones.ts />
 /// <reference path="habilidades.ts />
+/// <reference path="comportamientos.ts />
 /**
 * @class Pilas
 * @singleton
@@ -1576,6 +1665,7 @@ var Pilas = (function () {
         this.inicializar_opciones(opciones);
         this.actores = new Actores();
         this.habilidades = new Habilidades();
+        this.comportamientos = new Comportamientos();
         this.obtener_canvas();
         this.definir_tamano_del_canvas();
         this.conectar_eventos();

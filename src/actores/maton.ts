@@ -5,6 +5,7 @@ class Maton extends Actor {
   cuadros;
   direccion;
   velocidad;
+  animar;
 
   constructor(x, y) {
     var imagen = pilas.imagenes.cargar_grilla("rpg/maton.png", 3, 4);
@@ -21,9 +22,21 @@ class Maton extends Actor {
     this.direccion = 0;
     this.velocidad = 3;
     window['maton'] = this;
+    this.animar = false;
   }
 
   actualizar() {
+    if (this.animar)
+      this.avanzar_animacion();
+  }
+
+  iniciar_animacion() {
+    this.animar = true;
+  }
+
+  detener_animacion() {
+    this.animar = false;
+    this.paso = 0;
     this.avanzar_animacion();
   }
 
@@ -54,6 +67,11 @@ class Maton extends Actor {
 
     this.x += x * this.velocidad;
     this.y += y * this.velocidad;
+    this.avanzar_animacion(); // TODO: 
+  }
+
+  subir(pasos) {
+    this.hacer(pilas.comportamientos.Subir, {pasos: pasos});
   }
 
 }
