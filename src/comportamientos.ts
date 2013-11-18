@@ -22,22 +22,51 @@ class Comportamiento {
   }
 }
 
-class Subir extends Comportamiento {
+class CaminarBase extends Comportamiento {
   pasos;
+  velocidad;
 
   iniciar(receptor) {
     this.receptor = receptor;
-    this.pasos = this.argumentos.pasos;
+    this.pasos = this.argumentos.pasos || 1;
+    this.velocidad = 0.1;
   }
 
   actualizar() {
     this.pasos -= 0.01;
-    this.receptor.mover(0, -0.05);
+    this.mover();
 
     if (this.pasos < 0) {
       this.receptor.detener_animacion()
       return true;
     }
+  }
+
+  mover() {
+  }
+}
+
+class CaminaArriba extends CaminarBase {
+  mover() {
+    this.receptor.mover(0, this.velocidad);
+  }
+}
+
+class CaminaAbajo extends CaminarBase {
+  mover() {
+    this.receptor.mover(0, -this.velocidad);
+  }
+}
+
+class CaminaIzquierda extends CaminarBase {
+  mover() {
+    this.receptor.mover(-this.velocidad, 0);
+  }
+}
+
+class CaminaDerecha extends CaminarBase {
+  mover() {
+    this.receptor.mover(this.velocidad, 0);
   }
 }
 
@@ -49,8 +78,17 @@ class Subir extends Comportamiento {
  */
 class Comportamientos {
   Subir;
+  CaminarBase;
+  CaminaArriba;
+  CaminaAbajo;
+  CaminaIzquierda;
+  CaminaDerecha;
 
   constructor() {
-    this.Subir = Subir;
+    this.CaminarBase = CaminarBase;
+    this.CaminaArriba = CaminaArriba;
+    this.CaminaAbajo = CaminaAbajo;
+    this.CaminaIzquierda = CaminaIzquierda;
+    this.CaminaDerecha = CaminaDerecha;
   }
 }

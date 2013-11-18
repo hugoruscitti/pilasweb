@@ -446,6 +446,7 @@ var Maton = (function (_super) {
         this.velocidad = 3;
         window['maton'] = this;
         this.animar = false;
+        this._imagen.definir_cuadro(7);
     }
     Maton.prototype.actualizar = function () {
         if (this.animar)
@@ -492,8 +493,20 @@ var Maton = (function (_super) {
         this.avanzar_animacion();
     };
 
-    Maton.prototype.subir = function (pasos) {
-        this.hacer(pilas.comportamientos.Subir, { pasos: pasos });
+    Maton.prototype.caminar_arriba = function (pasos) {
+        this.hacer(pilas.comportamientos.CaminaArriba, { pasos: pasos });
+    };
+
+    Maton.prototype.caminar_abajo = function (pasos) {
+        this.hacer(pilas.comportamientos.CaminaAbajo, { pasos: pasos });
+    };
+
+    Maton.prototype.caminar_izquierda = function (pasos) {
+        this.hacer(pilas.comportamientos.CaminaIzquierda, { pasos: pasos });
+    };
+
+    Maton.prototype.caminar_derecha = function (pasos) {
+        this.hacer(pilas.comportamientos.CaminaDerecha, { pasos: pasos });
     };
     return Maton;
 })(Actor);
@@ -749,27 +762,75 @@ var Comportamiento = (function () {
     return Comportamiento;
 })();
 
-var Subir = (function (_super) {
-    __extends(Subir, _super);
-    function Subir() {
+var CaminarBase = (function (_super) {
+    __extends(CaminarBase, _super);
+    function CaminarBase() {
         _super.apply(this, arguments);
     }
-    Subir.prototype.iniciar = function (receptor) {
+    CaminarBase.prototype.iniciar = function (receptor) {
         this.receptor = receptor;
-        this.pasos = this.argumentos.pasos;
+        this.pasos = this.argumentos.pasos || 1;
+        this.velocidad = 0.1;
     };
 
-    Subir.prototype.actualizar = function () {
+    CaminarBase.prototype.actualizar = function () {
         this.pasos -= 0.01;
-        this.receptor.mover(0, -0.05);
+        this.mover();
 
         if (this.pasos < 0) {
             this.receptor.detener_animacion();
             return true;
         }
     };
-    return Subir;
+
+    CaminarBase.prototype.mover = function () {
+    };
+    return CaminarBase;
 })(Comportamiento);
+
+var CaminaArriba = (function (_super) {
+    __extends(CaminaArriba, _super);
+    function CaminaArriba() {
+        _super.apply(this, arguments);
+    }
+    CaminaArriba.prototype.mover = function () {
+        this.receptor.mover(0, this.velocidad);
+    };
+    return CaminaArriba;
+})(CaminarBase);
+
+var CaminaAbajo = (function (_super) {
+    __extends(CaminaAbajo, _super);
+    function CaminaAbajo() {
+        _super.apply(this, arguments);
+    }
+    CaminaAbajo.prototype.mover = function () {
+        this.receptor.mover(0, -this.velocidad);
+    };
+    return CaminaAbajo;
+})(CaminarBase);
+
+var CaminaIzquierda = (function (_super) {
+    __extends(CaminaIzquierda, _super);
+    function CaminaIzquierda() {
+        _super.apply(this, arguments);
+    }
+    CaminaIzquierda.prototype.mover = function () {
+        this.receptor.mover(-this.velocidad, 0);
+    };
+    return CaminaIzquierda;
+})(CaminarBase);
+
+var CaminaDerecha = (function (_super) {
+    __extends(CaminaDerecha, _super);
+    function CaminaDerecha() {
+        _super.apply(this, arguments);
+    }
+    CaminaDerecha.prototype.mover = function () {
+        this.receptor.mover(this.velocidad, 0);
+    };
+    return CaminaDerecha;
+})(CaminarBase);
 
 /**
 * @class Comportamientos
@@ -778,7 +839,11 @@ var Subir = (function (_super) {
 */
 var Comportamientos = (function () {
     function Comportamientos() {
-        this.Subir = Subir;
+        this.CaminarBase = CaminarBase;
+        this.CaminaArriba = CaminaArriba;
+        this.CaminaAbajo = CaminaAbajo;
+        this.CaminaIzquierda = CaminaIzquierda;
+        this.CaminaDerecha = CaminaDerecha;
     }
     return Comportamientos;
 })();

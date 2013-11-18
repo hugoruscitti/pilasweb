@@ -237,7 +237,7 @@ class SeMantieneEnPantalla extends Habilidad {
 			         algun atributo de la escena o 
 							 pilas.mundo.obtener_area() como hace
 							 pilas en python.
-							 */
+		    */
 			if (this.receptor.izquierda > 160)
 				this.receptor.derecha = -160;
 			
@@ -267,8 +267,8 @@ class Habilidades {
   SeguirClicks;
   MoverseConElTeclado;
   MoverseConElTecladoConRotacion;
-	SeMantieneEnPantalla;
-	Disparar;
+  SeMantieneEnPantalla;
+  Disparar;
 
   constructor() {
     this.Arrastrable = Arrastrable;
@@ -277,7 +277,7 @@ class Habilidades {
     this.SeguirClicks = SeguirClicks;
     this.MoverseConElTeclado = MoverseConElTeclado;
     this.MoverseConElTecladoConRotacion = MoverseConElTecladoConRotacion;
-		this.SeMantieneEnPantalla = SeMantieneEnPantalla;
-		this.Disparar = Disparar;
+    this.SeMantieneEnPantalla = SeMantieneEnPantalla;
+    this.Disparar = Disparar;
   }
 }

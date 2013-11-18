@@ -23,6 +23,7 @@ class Maton extends Actor {
     this.velocidad = 3;
     window['maton'] = this;
     this.animar = false;
+    this._imagen.definir_cuadro(7);
   }
 
   actualizar() {
@@ -33,6 +34,7 @@ class Maton extends Actor {
   iniciar_animacion() {
     this.animar = true;
   }
+
 
   detener_animacion() {
     this.animar = false;
@@ -70,8 +72,20 @@ class Maton extends Actor {
     this.avanzar_animacion(); // TODO: 
   }
 
-  subir(pasos) {
-    this.hacer(pilas.comportamientos.Subir, {pasos: pasos});
+  caminar_arriba(pasos) {
+    this.hacer(pilas.comportamientos.CaminaArriba, {pasos: pasos});
+  }
+
+  caminar_abajo(pasos) {
+    this.hacer(pilas.comportamientos.CaminaAbajo, {pasos: pasos});
+  }
+
+  caminar_izquierda(pasos) {
+    this.hacer(pilas.comportamientos.CaminaIzquierda, {pasos: pasos});
+  }
+
+  caminar_derecha(pasos) {
+    this.hacer(pilas.comportamientos.CaminaDerecha, {pasos: pasos});
   }
 
 }
