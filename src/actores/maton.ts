@@ -24,6 +24,8 @@ class Maton extends Actor {
     window['maton'] = this;
     this.animar = false;
     this._imagen.definir_cuadro(7);
+    this.centro_x = 18;
+    this.centro_y = 40;
   }
 
   actualizar() {
