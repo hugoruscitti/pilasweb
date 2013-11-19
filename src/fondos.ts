@@ -1,7 +1,6 @@
 /// <reference path="actores/actor.ts"/>
 
 class Plano extends Actor {
-  g;
 
   constructor() {
     super('plano.png', 0, 0);
@@ -23,7 +22,6 @@ class Plano extends Actor {
 }
 
 class Pasto extends Actor {
-  g;
 
   constructor() {
     super('pasto.png', 0, 0);

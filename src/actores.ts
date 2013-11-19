@@ -24,6 +24,8 @@ class Actores {
 	Piedra;
 	Eje;
   Maton;
+  Globo;
+  Texto;
 
   constructor() {
     this.Aceituna = Aceituna;
@@ -35,5 +37,7 @@ class Actores {
 		this.Piedra = Piedra;
 		this.Eje = Eje;
     this.Maton = Maton;
+    this.Globo = Globo;
+    this.Texto = Texto;
   }
 }

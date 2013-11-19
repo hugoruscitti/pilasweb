@@ -220,6 +220,11 @@ class Actor extends Estudiante {
     return false;
   }
 
+  decir(mensaje) {
+    window['globo'] = new pilas.actores.Globo(this.x, this.y, mensaje);
+    //globo.z = this.z - 1;
+  }
+
   actualizar() {
   }
 }

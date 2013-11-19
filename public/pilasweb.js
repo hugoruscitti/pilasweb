@@ -24,6 +24,8 @@ var Actores = (function () {
         this.Piedra = Piedra;
         this.Eje = Eje;
         this.Maton = Maton;
+        this.Globo = Globo;
+        this.Texto = Texto;
     }
     return Actores;
 })();
@@ -362,6 +364,11 @@ else
         return false;
     };
 
+    Actor.prototype.decir = function (mensaje) {
+        window['globo'] = new pilas.actores.Globo(this.x, this.y, mensaje);
+        //globo.z = this.z - 1;
+    };
+
     Actor.prototype.actualizar = function () {
     };
     return Actor;
@@ -425,6 +432,19 @@ var Explosion = (function (_super) {
         }
     };
     return Explosion;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Globo = (function (_super) {
+    __extends(Globo, _super);
+    function Globo(x, y, mensaje) {
+        var imagen = "globo.png";
+        _super.call(this, imagen, x, y);
+        this.centro_x = 85;
+        this.centro_y = 80;
+        this.mensaje = mensaje;
+        this.actor_texto = new pilas.actores.Texto(x, y, mensaje);
+    }
+    return Globo;
 })(Actor);
 /// <reference path="actor.ts"/>
 var Maton = (function (_super) {
@@ -703,6 +723,29 @@ var Proyectil = (function (_super) {
         this.y += dy;
     };
     return Proyectil;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Texto = (function (_super) {
+    __extends(Texto, _super);
+    function Texto(x, y, texto) {
+        var imagen = "aceituna.png";
+        _super.call(this, imagen, x, y);
+        this.centro_x = 18;
+        this.centro_y = 18;
+        this.texto = texto || "Sin texto";
+        this.crear_texto();
+    }
+    Texto.prototype.crear_texto = function () {
+        var s = new createjs.Text(this.texto, "12px Arial", "black");
+        var pos = pilas.escena_actual().obtener_posicion_pantalla(this.x, this.y);
+        s.x = pos.x - this.ancho + 10;
+        s.y = pos.y - (this.alto + 15);
+        s.textBaseline = "bottom";
+        s.textAlign = "center";
+
+        pilas.escena_actual().stage.addChild(s);
+    };
+    return Texto;
 })(Actor);
 /**
 * @class Camara
@@ -1559,6 +1602,7 @@ var Imagenes = (function () {
         this.cargar_recurso('rpg/maton.png');
         this.cargar_recurso('pasto.png');
         this.cargar_recurso('pasto_cuadriculado.png');
+        this.cargar_recurso('globo.png');
         //this.cargar_recurso('cooperativista/alerta.png');
         //this.cargar_recurso('cooperativista/camina.png');
         //this.cargar_recurso('cooperativista/camina_sujeta.png');
