@@ -72,13 +72,16 @@
       //maton.decir("hola mundo !!!");
 
 
-      var bloque = new pilas.actores.Bloque(100);
+      var bloque2 = new pilas.actores.Bloque(20*5, 20);
+      var bloque1 = new pilas.actores.Bloque(20*5);
+
       var maton = new pilas.actores.Maton();
       maton.aprender(pilas.habilidades.SeMantieneEnPantalla)
       maton.caminar_derecha(5);
 
-      maton.obstaculos.push(bloque);
-      window['bloque'] = bloque;
+      maton.obstaculos.push(bloque1);
+      maton.obstaculos.push(bloque2);
+      var manzana = new pilas.actores.Manzana();
     }
 
     pilas.ejecutar();

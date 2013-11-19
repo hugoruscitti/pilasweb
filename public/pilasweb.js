@@ -27,6 +27,7 @@ var Actores = (function () {
         this.Globo = Globo;
         this.Texto = Texto;
         this.Bloque = Bloque;
+        this.Manzana = Manzana;
     }
     return Actores;
 })();
@@ -467,6 +468,16 @@ var Globo = (function (_super) {
         _super.prototype.eliminar.call(this);
     };
     return Globo;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Manzana = (function (_super) {
+    __extends(Manzana, _super);
+    function Manzana(x, y) {
+        var imagen = "manzana_chica.png";
+        _super.call(this, imagen, x, y);
+        console.log(this.ancho);
+    }
+    return Manzana;
 })(Actor);
 /// <reference path="actor.ts"/>
 var Maton = (function (_super) {
@@ -1649,6 +1660,7 @@ var Imagenes = (function () {
         this.cargar_recurso('pasto_cuadriculado.png');
         this.cargar_recurso('globo.png');
         this.cargar_recurso('bloque.png');
+        this.cargar_recurso('manzana_chica.png');
         //this.cargar_recurso('cooperativista/alerta.png');
         //this.cargar_recurso('cooperativista/camina.png');
         //this.cargar_recurso('cooperativista/camina_sujeta.png');
