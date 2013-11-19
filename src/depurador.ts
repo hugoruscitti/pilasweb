@@ -41,7 +41,7 @@ class ModoPuntosDeControl {
     this.shape = new createjs.Shape();
     this.container.addChild(this.shape);
 
-    this.text_modo = new createjs.Text("F12 ModoPosicion habilitado", "12px Arial", "white");
+    this.text_modo = new createjs.Text("F12 ModoPosición habilitado", "12px Arial", "white");
     this.container.addChild(this.text_modo);
 
     this.text_coordenada = new createjs.Text("Posición del mouse: x=12 y=33", "12px Arial", "white");

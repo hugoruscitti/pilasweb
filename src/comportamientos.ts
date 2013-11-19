@@ -29,14 +29,14 @@ class CaminarBase extends Comportamiento {
   iniciar(receptor) {
     this.receptor = receptor;
     this.pasos = this.argumentos.pasos || 1;
-    this.velocidad = 0.1;
+    this.velocidad = 1;
   }
 
   actualizar() {
-    this.pasos -= 0.01;
     this.mover();
+    this.pasos -= 0.05;
 
-    if (this.pasos < 0) {
+    if (this.pasos <= 0.05) { // TODO: en realidad tendría que ser 0.0 en vez de 0.1, pero por algún motivo siempre avanza un pixel mas...
       this.receptor.detener_animacion()
       return true;
     }
@@ -66,6 +66,8 @@ class CaminaIzquierda extends CaminarBase {
 
 class CaminaDerecha extends CaminarBase {
   mover() {
+    console.log(this.receptor.x);
+    alert("tick");
     this.receptor.mover(this.velocidad, 0);
   }
 }

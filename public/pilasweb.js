@@ -443,7 +443,7 @@ var Maton = (function (_super) {
             [10, 10, 10, 10, 9, 9, 9, 9, 10, 10, 10, 10, 11, 11, 11, 11]
         ];
         this.direccion = 0;
-        this.velocidad = 3;
+        this.velocidad = 1;
         window['maton'] = this;
         this.animar = false;
         this._imagen.definir_cuadro(7);
@@ -772,14 +772,14 @@ var CaminarBase = (function (_super) {
     CaminarBase.prototype.iniciar = function (receptor) {
         this.receptor = receptor;
         this.pasos = this.argumentos.pasos || 1;
-        this.velocidad = 0.1;
+        this.velocidad = 1;
     };
 
     CaminarBase.prototype.actualizar = function () {
-        this.pasos -= 0.01;
         this.mover();
+        this.pasos -= 0.05;
 
-        if (this.pasos < 0) {
+        if (this.pasos <= 0.05) {
             this.receptor.detener_animacion();
             return true;
         }
@@ -829,6 +829,8 @@ var CaminaDerecha = (function (_super) {
         _super.apply(this, arguments);
     }
     CaminaDerecha.prototype.mover = function () {
+        console.log(this.receptor.x);
+        alert("tick");
         this.receptor.mover(this.velocidad, 0);
     };
     return CaminaDerecha;
@@ -1037,7 +1039,7 @@ var ModoPuntosDeControl = (function () {
         this.shape = new createjs.Shape();
         this.container.addChild(this.shape);
 
-        this.text_modo = new createjs.Text("F12 ModoPosicion habilitado", "12px Arial", "white");
+        this.text_modo = new createjs.Text("F12 ModoPosición habilitado", "12px Arial", "white");
         this.container.addChild(this.text_modo);
 
         this.text_coordenada = new createjs.Text("Posición del mouse: x=12 y=33", "12px Arial", "white");
@@ -1212,10 +1214,21 @@ var Pasto = (function (_super) {
     return Pasto;
 })(Actor);
 
+var PastoCuadriculado = (function (_super) {
+    __extends(PastoCuadriculado, _super);
+    function PastoCuadriculado() {
+        _super.call(this, 'pasto_cuadriculado.png', 0, 0);
+    }
+    PastoCuadriculado.prototype.actualizar = function () {
+    };
+    return PastoCuadriculado;
+})(Actor);
+
 var Fondos = (function () {
     function Fondos() {
         this.Plano = Plano;
         this.Pasto = Pasto;
+        this.PastoCuadriculado = PastoCuadriculado;
     }
     return Fondos;
 })();
@@ -1545,6 +1558,7 @@ var Imagenes = (function () {
         this.cargar_recurso('disparos/misil.png');
         this.cargar_recurso('rpg/maton.png');
         this.cargar_recurso('pasto.png');
+        this.cargar_recurso('pasto_cuadriculado.png');
         //this.cargar_recurso('cooperativista/alerta.png');
         //this.cargar_recurso('cooperativista/camina.png');
         //this.cargar_recurso('cooperativista/camina_sujeta.png');

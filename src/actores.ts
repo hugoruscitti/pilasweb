@@ -15,7 +15,6 @@
  * Representa todos los actores conocidos en pilas-engine.
  */
 class Actores {
-
   Aceituna;
   Actor;
   Bomba;

@@ -44,12 +44,24 @@ class Pasto extends Actor {
   }
 }
 
+class PastoCuadriculado extends Actor {
+
+  constructor() {
+    super('pasto_cuadriculado.png', 0, 0);
+  }
+
+  actualizar() {
+  }
+}
+
 class Fondos {
   Plano;
   Pasto;
+  PastoCuadriculado;
 
   constructor() {
     this.Plano = Plano;
     this.Pasto = Pasto;
+    this.PastoCuadriculado = PastoCuadriculado;
   }
 }

@@ -20,7 +20,7 @@ class Maton extends Actor {
                     [10,10,10,10,9,9,9,9,10,10,10,10,11,11,11,11] // izquierda
                    ];
     this.direccion = 0;
-    this.velocidad = 3;
+    this.velocidad = 1;
     window['maton'] = this;
     this.animar = false;
     this._imagen.definir_cuadro(7);
