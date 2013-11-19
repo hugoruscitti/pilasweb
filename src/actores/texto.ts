@@ -4,6 +4,7 @@ class Texto extends Actor {
   s;
   container;
   texto;
+  sprite_texto;
 
   constructor(x, y, texto) {
     var imagen = "aceituna.png";
@@ -12,6 +13,7 @@ class Texto extends Actor {
     this.centro_y = 18;
     this.texto = texto || "Sin texto";
     this.crear_texto();
+    this.transparencia = 100;
   }
 
   crear_texto() {
@@ -23,7 +25,16 @@ class Texto extends Actor {
     s.textAlign = "center";
 
     pilas.escena_actual().stage.addChild(s);
+    this.sprite_texto = s;
   }
 
+  eliminar_texto() {
+    pilas.escena_actual().stage.removeChild(this.sprite_texto);
+  }
+
+  eliminar(){
+    this.eliminar_texto();
+    super.eliminar();
+  }
 }
 

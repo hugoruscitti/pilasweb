@@ -87,7 +87,7 @@ class Actor extends Estudiante {
     this.sprite = this._imagen.instanciar();
   }
 
-  public eliminar() {
+  eliminar() {
     this.vivo = false;
     pilas.escena_actual().eliminar_actor(this);
   }

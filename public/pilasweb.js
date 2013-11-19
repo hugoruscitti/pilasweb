@@ -443,7 +443,17 @@ var Globo = (function (_super) {
         this.centro_y = 80;
         this.mensaje = mensaje;
         this.actor_texto = new pilas.actores.Texto(x, y, mensaje);
+
+        // TODO: Reemplazar por tareas, como hace pilas-python.
+        var _this = this;
+        setTimeout(function () {
+            _this.eliminar();
+        }, 1000);
     }
+    Globo.prototype.eliminar = function () {
+        this.actor_texto.eliminar();
+        _super.prototype.eliminar.call(this);
+    };
     return Globo;
 })(Actor);
 /// <reference path="actor.ts"/>
@@ -734,6 +744,7 @@ var Texto = (function (_super) {
         this.centro_y = 18;
         this.texto = texto || "Sin texto";
         this.crear_texto();
+        this.transparencia = 100;
     }
     Texto.prototype.crear_texto = function () {
         var s = new createjs.Text(this.texto, "12px Arial", "black");
@@ -744,6 +755,16 @@ var Texto = (function (_super) {
         s.textAlign = "center";
 
         pilas.escena_actual().stage.addChild(s);
+        this.sprite_texto = s;
+    };
+
+    Texto.prototype.eliminar_texto = function () {
+        pilas.escena_actual().stage.removeChild(this.sprite_texto);
+    };
+
+    Texto.prototype.eliminar = function () {
+        this.eliminar_texto();
+        _super.prototype.eliminar.call(this);
     };
     return Texto;
 })(Actor);
