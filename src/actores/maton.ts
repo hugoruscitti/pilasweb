@@ -6,6 +6,7 @@ class Maton extends Actor {
   direccion;
   velocidad;
   animar;
+  obstaculos; // TODO: eliminar luego, solo para tutorial.
 
   constructor(x, y) {
     var imagen = pilas.imagenes.cargar_grilla("rpg/maton.png", 3, 4);
@@ -26,6 +27,7 @@ class Maton extends Actor {
     this._imagen.definir_cuadro(7);
     this.centro_x = 18;
     this.centro_y = 40;
+    this.obstaculos = [];
   }
 
   actualizar() {
@@ -69,9 +71,22 @@ class Maton extends Actor {
     if (y < 0)
       this.direccion = 2;
 
-    this.x += x * this.velocidad;
-    this.y += y * this.velocidad;
+    if (this.puede_moverse_a(this.x + x * this.velocidad, this.y))
+      this.x += x * this.velocidad;
+
+    if (this.puede_moverse_a(this.x, this.y + y * this.velocidad))
+      this.y += y * this.velocidad;
+
     this.avanzar_animacion(); // TODO: 
+  }
+
+  puede_moverse_a(x, y) {
+    for (var i=0; i<this.obstaculos.length; i++) {
+      if (this.obstaculos[i].colisiona_con_un_punto(x, y))
+        return false;
+    }
+
+    return true;
   }
 
   caminar_arriba(pasos) {

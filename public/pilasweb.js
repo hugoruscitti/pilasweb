@@ -26,6 +26,7 @@ var Actores = (function () {
         this.Maton = Maton;
         this.Globo = Globo;
         this.Texto = Texto;
+        this.Bloque = Bloque;
     }
     return Actores;
 })();
@@ -385,6 +386,17 @@ var Aceituna = (function (_super) {
     return Aceituna;
 })(Actor);
 /// <reference path="actor.ts"/>
+var Bloque = (function (_super) {
+    __extends(Bloque, _super);
+    function Bloque(x, y, nombre_imagen) {
+        var imagen = nombre_imagen || "bloque.png";
+        _super.call(this, imagen, x, y);
+        this.centro_x = 13;
+        this.centro_y = 21;
+    }
+    return Bloque;
+})(Actor);
+/// <reference path="actor.ts"/>
 var Bomba = (function (_super) {
     __extends(Bomba, _super);
     function Bomba(x, y) {
@@ -479,6 +491,7 @@ var Maton = (function (_super) {
         this._imagen.definir_cuadro(7);
         this.centro_x = 18;
         this.centro_y = 40;
+        this.obstaculos = [];
     }
     Maton.prototype.actualizar = function () {
         if (this.animar)
@@ -520,9 +533,22 @@ var Maton = (function (_super) {
         if (y < 0)
             this.direccion = 2;
 
-        this.x += x * this.velocidad;
-        this.y += y * this.velocidad;
+        if (this.puede_moverse_a(this.x + x * this.velocidad, this.y))
+            this.x += x * this.velocidad;
+
+        if (this.puede_moverse_a(this.x, this.y + y * this.velocidad))
+            this.y += y * this.velocidad;
+
         this.avanzar_animacion();
+    };
+
+    Maton.prototype.puede_moverse_a = function (x, y) {
+        for (var i = 0; i < this.obstaculos.length; i++) {
+            if (this.obstaculos[i].colisiona_con_un_punto(x, y))
+                return false;
+        }
+
+        return true;
     };
 
     Maton.prototype.caminar_arriba = function (pasos) {
@@ -893,8 +919,6 @@ var CaminaDerecha = (function (_super) {
         _super.apply(this, arguments);
     }
     CaminaDerecha.prototype.mover = function () {
-        console.log(this.receptor.x);
-        alert("tick");
         this.receptor.mover(this.velocidad, 0);
     };
     return CaminaDerecha;
@@ -1624,6 +1648,7 @@ var Imagenes = (function () {
         this.cargar_recurso('pasto.png');
         this.cargar_recurso('pasto_cuadriculado.png');
         this.cargar_recurso('globo.png');
+        this.cargar_recurso('bloque.png');
         //this.cargar_recurso('cooperativista/alerta.png');
         //this.cargar_recurso('cooperativista/camina.png');
         //this.cargar_recurso('cooperativista/camina_sujeta.png');

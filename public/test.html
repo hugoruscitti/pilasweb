@@ -67,10 +67,18 @@
 
     pilas.onready = function() {
       var fondo = new pilas.fondos.PastoCuadriculado();
+
+      //pilas.mundo.definir_modos({puntos_de_control: true});
+      //maton.decir("hola mundo !!!");
+
+
+      var bloque = new pilas.actores.Bloque(100);
       var maton = new pilas.actores.Maton();
       maton.aprender(pilas.habilidades.SeMantieneEnPantalla)
-      pilas.mundo.definir_modos({puntos_de_control: true});
-      maton.decir("hola mundo !!!");
+      maton.caminar_derecha(5);
+
+      maton.obstaculos.push(bloque);
+      window['bloque'] = bloque;
     }
 
     pilas.ejecutar();

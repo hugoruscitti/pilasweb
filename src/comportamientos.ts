@@ -66,8 +66,6 @@ class CaminaIzquierda extends CaminarBase {
 
 class CaminaDerecha extends CaminarBase {
   mover() {
-    console.log(this.receptor.x);
-    alert("tick");
     this.receptor.mover(this.velocidad, 0);
   }
 }
