@@ -998,22 +998,22 @@ var Saltar = (function (_super) {
     }
     Saltar.prototype.iniciar = function (receptor) {
         this.receptor = receptor;
-        this.suelo = this.receptor.centro_y;
+        this.suelo = this.receptor.y;
         this.velocidad_inicial = this.argumentos.velocidad_inicial || 10;
         this.velocidad = this.velocidad_inicial;
         this.velocidad_aux = this.velocidad_inicial;
     };
 
     Saltar.prototype.actualizar = function () {
-        this.receptor.centro_y += this.velocidad;
+        this.receptor.y += this.velocidad;
         this.velocidad -= 0.3;
 
-        if (this.receptor.centro_y <= this.suelo) {
+        if (this.receptor.y <= this.suelo) {
             this.velocidad_aux /= 2.0;
             this.velocidad = this.velocidad_aux;
 
             if (this.velocidad_aux <= 1) {
-                this.receptor.centro_y = this.suelo;
+                this.receptor.y = this.suelo;
                 return true;
             }
         }
