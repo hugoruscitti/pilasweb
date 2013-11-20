@@ -13,3 +13,5 @@
 !requirejs-2.1.2.min.js
 node_modules/*
 docs/html/*
+
+*.swp
