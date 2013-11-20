@@ -82,6 +82,7 @@ class Actor extends Estudiante {
     if (atributos['centro_x'])
       this.centro_y = atributos['centro_y'];
 
+    this.z = 0;
     pilas.escena_actual().agregar_actor(this);
   }
 
@@ -92,6 +93,14 @@ class Actor extends Estudiante {
   eliminar() {
     this.vivo = false;
     pilas.escena_actual().eliminar_actor(this);
+  }
+
+  get z() {
+    return this.sprite.z;
+  }
+
+  set z(_z) {
+    this.sprite.z = _z;
   }
 
   get x() {

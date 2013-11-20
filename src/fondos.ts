@@ -1,6 +1,16 @@
 /// <reference path="actores/actor.ts"/>
 
-class Plano extends Actor {
+
+class Fondo extends Actor {
+
+  constructor(imagen, x, y) {
+    super(imagen, x, y);
+    this.z = 1000;
+  }
+
+}
+
+class Plano extends Fondo {
 
   constructor() {
     super('plano.png', 0, 0);
@@ -21,7 +31,7 @@ class Plano extends Actor {
   }
 }
 
-class Pasto extends Actor {
+class Pasto extends Fondo {
 
   constructor() {
     super('pasto.png', 0, 0);
@@ -42,7 +52,7 @@ class Pasto extends Actor {
   }
 }
 
-class PastoCuadriculado extends Actor {
+class PastoCuadriculado extends Fondo {
 
   constructor() {
     super('pasto_cuadriculado.png', 0, 0);

@@ -78,6 +78,7 @@ class Maton extends Actor {
       this.y += y * this.velocidad;
 
     this.avanzar_animacion(); // TODO: 
+    this.z = this.y;
   }
 
   puede_moverse_a(x, y) {

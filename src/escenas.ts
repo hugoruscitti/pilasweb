@@ -55,9 +55,23 @@ class Normal extends Base {
       this.actores[i].actualizar_comportamientos(); // TODO: implementar dentro del actualizar del actor.
     }
 
+    this.ordenar_actores_por_valor_z();
     this.stage.update();
     this.actualiza.emitir();
     pilas.colisiones.verificar_colisiones();
+  }
+
+  ordenar_actores_por_valor_z() {
+    var sortFunction = function(item1, item2, options) {
+      if (item1.z < item2.z)
+        return 1; 
+
+      if (item1.z > item2.z)
+        return -1; 
+
+      return 0;
+    }
+    this.stage.sortChildren(sortFunction);
   }
 
   agregar_actor(actor) {

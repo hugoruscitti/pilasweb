@@ -144,6 +144,7 @@ var Actor = (function (_super) {
         if (atributos['centro_x'])
             this.centro_y = atributos['centro_y'];
 
+        this.z = 0;
         pilas.escena_actual().agregar_actor(this);
     }
     Actor.prototype.crear_sprite = function () {
@@ -154,6 +155,18 @@ var Actor = (function (_super) {
         this.vivo = false;
         pilas.escena_actual().eliminar_actor(this);
     };
+
+    Object.defineProperty(Actor.prototype, "z", {
+        get: function () {
+            return this.sprite.z;
+        },
+        set: function (_z) {
+            this.sprite.z = _z;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
 
     Object.defineProperty(Actor.prototype, "x", {
         get: function () {
@@ -399,6 +412,7 @@ var Bloque = (function (_super) {
         _super.call(this, imagen, x, y);
         this.centro_x = 13;
         this.centro_y = 21;
+        this.z = y;
     }
     return Bloque;
 })(Actor);
@@ -556,6 +570,7 @@ var Maton = (function (_super) {
             this.y += y * this.velocidad;
 
         this.avanzar_animacion();
+        this.z = this.y;
     };
 
     Maton.prototype.puede_moverse_a = function (x, y) {
@@ -1258,9 +1273,23 @@ var Normal = (function (_super) {
             this.actores[i].actualizar_comportamientos();
         }
 
+        this.ordenar_actores_por_valor_z();
         this.stage.update();
         this.actualiza.emitir();
         pilas.colisiones.verificar_colisiones();
+    };
+
+    Normal.prototype.ordenar_actores_por_valor_z = function () {
+        var sortFunction = function (item1, item2, options) {
+            if (item1.z < item2.z)
+                return 1;
+
+            if (item1.z > item2.z)
+                return -1;
+
+            return 0;
+        };
+        this.stage.sortChildren(sortFunction);
     };
 
     Normal.prototype.agregar_actor = function (actor) {
@@ -1313,6 +1342,15 @@ var Evento = (function () {
     return Evento;
 })();
 /// <reference path="actores/actor.ts"/>
+var Fondo = (function (_super) {
+    __extends(Fondo, _super);
+    function Fondo(imagen, x, y) {
+        _super.call(this, imagen, x, y);
+        this.z = 1000;
+    }
+    return Fondo;
+})(Actor);
+
 var Plano = (function (_super) {
     __extends(Plano, _super);
     function Plano() {
@@ -1332,7 +1370,7 @@ var Plano = (function (_super) {
     Plano.prototype.actualizar = function () {
     };
     return Plano;
-})(Actor);
+})(Fondo);
 
 var Pasto = (function (_super) {
     __extends(Pasto, _super);
@@ -1353,7 +1391,7 @@ var Pasto = (function (_super) {
     Pasto.prototype.actualizar = function () {
     };
     return Pasto;
-})(Actor);
+})(Fondo);
 
 var PastoCuadriculado = (function (_super) {
     __extends(PastoCuadriculado, _super);
@@ -1363,7 +1401,7 @@ var PastoCuadriculado = (function (_super) {
     PastoCuadriculado.prototype.actualizar = function () {
     };
     return PastoCuadriculado;
-})(Actor);
+})(Fondo);
 
 var Fondos = (function () {
     function Fondos() {
