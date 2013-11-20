@@ -861,7 +861,6 @@ var Colisiones = (function () {
             grupo_b = [grupo_b];
 
         this.colisiones.push({ grupo_a: grupo_a, grupo_b: grupo_b, callback: funcion_a_llamar });
-        console.log(this.colisiones);
     };
 
     Colisiones.prototype.verificar_colisiones = function () {
@@ -2031,7 +2030,7 @@ var Pilas = (function () {
     * Callback que se invoca una vez que pilas puede comenzar a funcionar.
     */
     Pilas.prototype.onready = function () {
-        throw "pilas-engine ha iniciado, pero el metodo onload está vacío. Tienes que sobre-escribirlo...";
+        throw "pilas-engine ha iniciado, pero el metodo onready está vacío. Tienes que sobre-escribirlo...";
     };
 
     /**
@@ -2039,7 +2038,6 @@ var Pilas = (function () {
     * Pone en funcionamiento el bucle principal.
     */
     Pilas.prototype.ejecutar = function () {
-        this.onready();
         var self = this;
 
         // TODO: Limpiar los listeners con un mensaje y

@@ -206,7 +206,7 @@ class Pilas {
    * Callback que se invoca una vez que pilas puede comenzar a funcionar.
    */
   onready() {
-    throw "pilas-engine ha iniciado, pero el metodo onload está vacío. Tienes que sobre-escribirlo...";
+    throw "pilas-engine ha iniciado, pero el metodo onready está vacío. Tienes que sobre-escribirlo...";
   }
 
   /**
@@ -214,7 +214,6 @@ class Pilas {
    * Pone en funcionamiento el bucle principal.
    */
   ejecutar() {
-    this.onready();
     var self = this;
 
     // TODO: Limpiar los listeners con un mensaje y
