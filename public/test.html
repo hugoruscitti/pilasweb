@@ -65,7 +65,6 @@
     pilas = new Pilas();
 
     pilas.onready = function() {
-      console.log("hola");
       var fondo = new pilas.fondos.PastoCuadriculado();
 
       //pilas.mundo.definir_modos({puntos_de_control: true});
@@ -76,8 +75,9 @@
       var bloque1 = new pilas.actores.Bloque(20*5);
 
       var maton = new pilas.actores.Maton();
+      maton.decir("hola?");
       maton.aprender(pilas.habilidades.SeMantieneEnPantalla)
-      maton.caminar_derecha(5);
+      //maton.caminar_derecha(5);
 
       maton.obstaculos.push(bloque1);
       maton.obstaculos.push(bloque2);

@@ -92,18 +92,27 @@ class Maton extends Actor {
 
   caminar_arriba(pasos) {
     this.hacer(pilas.comportamientos.CaminaArriba, {pasos: pasos});
+    return "caminando " + pasos + " pasos";
   }
 
   caminar_abajo(pasos) {
     this.hacer(pilas.comportamientos.CaminaAbajo, {pasos: pasos});
+    return "caminando " + pasos + " pasos";
   }
 
   caminar_izquierda(pasos) {
     this.hacer(pilas.comportamientos.CaminaIzquierda, {pasos: pasos});
+    return "caminando " + pasos + " pasos";
   }
 
   caminar_derecha(pasos) {
     this.hacer(pilas.comportamientos.CaminaDerecha, {pasos: pasos});
+    return "caminando " + pasos + " pasos";
+  }
+
+  saludar() {
+    this.decir("¡ Hola !");
+    return "saludando ...";
   }
 
 }

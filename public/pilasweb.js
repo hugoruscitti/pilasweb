@@ -480,7 +480,7 @@ var Globo = (function (_super) {
         var _this = this;
         setTimeout(function () {
             _this.eliminar();
-        }, 1000);
+        }, 3000);
     }
     Globo.prototype.eliminar = function () {
         this.actor_texto.eliminar();
@@ -584,18 +584,27 @@ var Maton = (function (_super) {
 
     Maton.prototype.caminar_arriba = function (pasos) {
         this.hacer(pilas.comportamientos.CaminaArriba, { pasos: pasos });
+        return "caminando " + pasos + " pasos";
     };
 
     Maton.prototype.caminar_abajo = function (pasos) {
         this.hacer(pilas.comportamientos.CaminaAbajo, { pasos: pasos });
+        return "caminando " + pasos + " pasos";
     };
 
     Maton.prototype.caminar_izquierda = function (pasos) {
         this.hacer(pilas.comportamientos.CaminaIzquierda, { pasos: pasos });
+        return "caminando " + pasos + " pasos";
     };
 
     Maton.prototype.caminar_derecha = function (pasos) {
         this.hacer(pilas.comportamientos.CaminaDerecha, { pasos: pasos });
+        return "caminando " + pasos + " pasos";
+    };
+
+    Maton.prototype.saludar = function () {
+        this.decir("¡ Hola !");
+        return "saludando ...";
     };
     return Maton;
 })(Actor);
