@@ -70,22 +70,25 @@ class Orbitar extends Comportamiento {
     this.direccion = this.argumentos.direccion || "derecha";
     this.angulo = 0;
 
-    if(this.direccion == "derecha") {
+    if(this.direccion == "izquierda") {
       this.velocidad = -this.velocidad
     }
 
-    else if(this.direccion == "izquierda") {
+    else if(this.direccion == "derecha") {
       this.velocidad;
     }
   }
 
   actualizar() {
     this.angulo += this.velocidad;
+    this.mover_astro();
+  }
 
-    this.receptor.centro_x = this.punto_de_orbita_x + 
+  mover_astro() {
+    this.receptor.x = this.punto_de_orbita_x + 
     (Math.cos((this.angulo*(180 / Math.PI))) * this.radio);
 
-    this.receptor.centro_y = this.punto_de_orbita_y - 
+    this.receptor.y = this.punto_de_orbita_y - 
     (Math.sin((this.angulo*(180 / Math.PI))) * this.radio);
   }
 

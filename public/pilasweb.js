@@ -1035,19 +1035,22 @@ var Orbitar = (function (_super) {
         this.direccion = this.argumentos.direccion || "derecha";
         this.angulo = 0;
 
-        if (this.direccion == "derecha") {
+        if (this.direccion == "izquierda") {
             this.velocidad = -this.velocidad;
-        } else if (this.direccion == "izquierda") {
+        } else if (this.direccion == "derecha") {
             this.velocidad;
         }
     };
 
     Orbitar.prototype.actualizar = function () {
         this.angulo += this.velocidad;
+        this.mover_astro();
+    };
 
-        this.receptor.centro_x = this.punto_de_orbita_x + (Math.cos((this.angulo * (180 / Math.PI))) * this.radio);
+    Orbitar.prototype.mover_astro = function () {
+        this.receptor.x = this.punto_de_orbita_x + (Math.cos((this.angulo * (180 / Math.PI))) * this.radio);
 
-        this.receptor.centro_y = this.punto_de_orbita_y - (Math.sin((this.angulo * (180 / Math.PI))) * this.radio);
+        this.receptor.y = this.punto_de_orbita_y - (Math.sin((this.angulo * (180 / Math.PI))) * this.radio);
     };
     return Orbitar;
 })(Comportamiento);
