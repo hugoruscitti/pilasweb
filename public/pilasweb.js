@@ -401,6 +401,7 @@ var Aceituna = (function (_super) {
         _super.call(this, imagen, x, y);
         this.centro_x = 18;
         this.centro_y = 18;
+        this.radio_de_colision = 20;
     }
     return Aceituna;
 })(Actor);
@@ -1214,6 +1215,7 @@ var DepuradorDeshabilitado = (function () {
     DepuradorDeshabilitado.prototype.definir_modos = function (modos) {
         modos = modos || {};
         modos.puntos_de_control = modos.puntos_de_control || false;
+        modos.radios_de_colision = modos.radios_de_colision || false;
 
         if (modos.puntos_de_control)
             this.modos.push(new ModoPuntosDeControl());
@@ -1224,8 +1226,39 @@ var DepuradorDeshabilitado = (function () {
             }
             this.modos = [];
         }
+
+        if (modos.radios_de_colision) {
+            this.modos.push(new ModoRadiosDeColision());
+        }
     };
     return DepuradorDeshabilitado;
+})();
+
+var ModoRadiosDeColision = (function () {
+    function ModoRadiosDeColision() {
+        this.container = new createjs.Container();
+
+        this.shape = new createjs.Shape();
+        this.container.addChild(this.shape);
+
+        pilas.escena_actual().stage.addChild(this.container);
+    }
+    ModoRadiosDeColision.prototype.eliminar = function () {
+        pilas.escena_actual().stage.removeChild(this.container);
+    };
+
+    ModoRadiosDeColision.prototype.actualizar = function () {
+        var escena = pilas.escena_actual();
+        this.shape.graphics.clear();
+
+        for (var i = 0; i < escena.actores.length; i++) {
+            var actor = escena.actores[i];
+            var posicion = escena.obtener_posicion_pantalla(actor.x, actor.y);
+
+            this.shape.graphics.beginStroke("#FFF").drawCircle(posicion.x, posicion.y, actor.radio_de_colision).endStroke();
+        }
+    };
+    return ModoRadiosDeColision;
 })();
 
 var ModoPuntosDeControl = (function () {
