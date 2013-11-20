@@ -496,6 +496,7 @@ var Manzana = (function (_super) {
         var imagen = "manzana_chica.png";
         _super.call(this, imagen, x, y);
         this.radio_de_colision = 11;
+        this.centro_y = 20;
     }
     return Manzana;
 })(Actor);
