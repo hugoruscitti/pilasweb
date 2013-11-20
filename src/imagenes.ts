@@ -53,6 +53,9 @@ class Imagenes {
     this.cargar_recurso('globo.png');
     this.cargar_recurso('bloque.png');
     this.cargar_recurso('manzana_chica.png');
+    this.cargar_recurso('invisible.png');
+    this.cargar_recurso('cofre.png');
+    this.cargar_recurso('llave.png');
     
     //this.cargar_recurso('cooperativista/alerta.png');
     //this.cargar_recurso('cooperativista/camina.png');

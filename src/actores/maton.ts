@@ -7,6 +7,7 @@ class Maton extends Actor {
   velocidad;
   animar;
   obstaculos; // TODO: eliminar luego, solo para tutorial.
+  teclado_habilitado;
 
   constructor(x, y) {
     var imagen = pilas.imagenes.cargar_grilla("rpg/maton.png", 3, 4);
@@ -28,6 +29,7 @@ class Maton extends Actor {
     this.centro_x = 18;
     this.centro_y = 40;
     this.obstaculos = [];
+    this.teclado_habilitado = false;
   }
 
   actualizar() {
@@ -113,6 +115,31 @@ class Maton extends Actor {
   saludar() {
     this.decir("¡ Hola !");
     return "saludando ...";
+  }
+
+  habilitar_teclado() {
+  	if (this.teclado_habilitado === false) {
+      this.aprender(pilas.habilidades.MoverseConElTeclado);
+      this.teclado_habilitado = true;
+      return "Habilitando el teclado";
+    } else {
+    	return "El teclado ya estaba habilitado.";
+    }
+  }
+
+  inspeccionar() {
+    console.log("inspeccionando ...");
+
+    return "Métodos del actor Maton: \n" + 
+    "\n" + 
+    "- saludar() \n" + 
+    "- caminar_arriba(pasos) \n" + 
+    "- caminar_abajo(pasos) \n" + 
+    "- caminar_izquierda(pasos) \n" + 
+    "- caminar_derecha(pasos) \n" + 
+    "- mover(x, y) \n" + 
+    "- habilitar_teclado() \n" + 
+    "";
   }
 
 }

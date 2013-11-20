@@ -98,18 +98,32 @@ class MoverseConElTeclado extends Habilidad {
   recibir(evento, tipo) {
     if (tipo == pilas.escena_actual().actualiza) {
       var control = pilas.escena_actual().control;
+      var x = 0;
+      var y = 0;
+      var velocidad = this.receptor.velocidad || 5;
       
       if (control.izquierda)
-        this.receptor.x -= 5;
+        x = -velocidad;
       
       if (control.derecha)
-        this.receptor.x += 5;
+        x = velocidad;
       
       if (control.arriba)
-        this.receptor.y += 5;
+        y = velocidad;
       
       if (control.abajo)
-        this.receptor.y -= 5;
+        y = -velocidad;
+
+      this.mover(x, y)
+    }
+  }
+
+  mover(x, y) {
+    if (this.receptor.mover !== undefined) {
+      this.receptor.mover(x, y);
+    } else {
+      this.receptor.x += x;
+      this.receptor.y += y;
     }
   }
 }

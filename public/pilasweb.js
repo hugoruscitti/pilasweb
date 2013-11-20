@@ -28,6 +28,8 @@ var Actores = (function () {
         this.Texto = Texto;
         this.Bloque = Bloque;
         this.Manzana = Manzana;
+        this.Cofre = Cofre;
+        this.Llave = Llave;
     }
     return Actores;
 })();
@@ -434,6 +436,35 @@ var Bomba = (function (_super) {
     return Bomba;
 })(Actor);
 /// <reference path="actor.ts"/>
+var Cofre = (function (_super) {
+    __extends(Cofre, _super);
+    function Cofre(x, y) {
+        var imagen = pilas.imagenes.cargar_grilla("cofre.png", 4);
+        _super.call(this, imagen, x, y);
+        this.centro_x = 10;
+        this.centro_y = 17;
+        this.z = y;
+        this._imagen.definir_cuadro(0);
+        this.paso = 0;
+        this.esta_abierto = false;
+    }
+    Cofre.prototype.abrir = function () {
+        this.esta_abierto = true;
+    };
+
+    Cofre.prototype.actualizar = function () {
+        if (this.esta_abierto) {
+            this.paso += 0.1;
+
+            if (this.paso > 3)
+                this.paso = 3;
+
+            this._imagen.definir_cuadro(parseInt(this.paso));
+        }
+    };
+    return Cofre;
+})(Actor);
+/// <reference path="actor.ts"/>
 var Eje = (function (_super) {
     __extends(Eje, _super);
     function Eje(x, y) {
@@ -489,6 +520,18 @@ var Globo = (function (_super) {
     return Globo;
 })(Actor);
 /// <reference path="actor.ts"/>
+var Llave = (function (_super) {
+    __extends(Llave, _super);
+    function Llave(x, y) {
+        var imagen = "llave.png";
+        _super.call(this, imagen, x, y);
+        this.centro_x = 9;
+        this.centro_y = 13;
+        this.z = y;
+    }
+    return Llave;
+})(Actor);
+/// <reference path="actor.ts"/>
 var Manzana = (function (_super) {
     __extends(Manzana, _super);
     function Manzana(x, y) {
@@ -523,6 +566,7 @@ var Maton = (function (_super) {
         this.centro_x = 18;
         this.centro_y = 40;
         this.obstaculos = [];
+        this.teclado_habilitado = false;
     }
     Maton.prototype.actualizar = function () {
         if (this.animar)
@@ -606,6 +650,22 @@ var Maton = (function (_super) {
     Maton.prototype.saludar = function () {
         this.decir("¡ Hola !");
         return "saludando ...";
+    };
+
+    Maton.prototype.habilitar_teclado = function () {
+        if (this.teclado_habilitado === false) {
+            this.aprender(pilas.habilidades.MoverseConElTeclado);
+            this.teclado_habilitado = true;
+            return "Habilitando el teclado";
+        } else {
+            return "El teclado ya estaba habilitado.";
+        }
+    };
+
+    Maton.prototype.inspeccionar = function () {
+        console.log("inspeccionando ...");
+
+        return "Métodos del actor Maton: \n" + "\n" + "- saludar() \n" + "- caminar_arriba(pasos) \n" + "- caminar_abajo(pasos) \n" + "- caminar_izquierda(pasos) \n" + "- caminar_derecha(pasos) \n" + "- mover(x, y) \n" + "- habilitar_teclado() \n" + "";
     };
     return Maton;
 })(Actor);
@@ -805,7 +865,7 @@ var Proyectil = (function (_super) {
 var Texto = (function (_super) {
     __extends(Texto, _super);
     function Texto(x, y, texto) {
-        var imagen = "aceituna.png";
+        var imagen = "invisible.png";
         _super.call(this, imagen, x, y);
         this.centro_x = 18;
         this.centro_y = 18;
@@ -816,8 +876,8 @@ var Texto = (function (_super) {
     Texto.prototype.crear_texto = function () {
         var s = new createjs.Text(this.texto, "12px Arial", "black");
         var pos = pilas.escena_actual().obtener_posicion_pantalla(this.x, this.y);
-        s.x = pos.x - this.ancho + 10;
-        s.y = pos.y - (this.alto + 15);
+        s.x = pos.x - 25;
+        s.y = pos.y - (35 + 15);
         s.textBaseline = "bottom";
         s.textAlign = "center";
 
@@ -1604,18 +1664,32 @@ var MoverseConElTeclado = (function (_super) {
     MoverseConElTeclado.prototype.recibir = function (evento, tipo) {
         if (tipo == pilas.escena_actual().actualiza) {
             var control = pilas.escena_actual().control;
+            var x = 0;
+            var y = 0;
+            var velocidad = this.receptor.velocidad || 5;
 
             if (control.izquierda)
-                this.receptor.x -= 5;
+                x = -velocidad;
 
             if (control.derecha)
-                this.receptor.x += 5;
+                x = velocidad;
 
             if (control.arriba)
-                this.receptor.y += 5;
+                y = velocidad;
 
             if (control.abajo)
-                this.receptor.y -= 5;
+                y = -velocidad;
+
+            this.mover(x, y);
+        }
+    };
+
+    MoverseConElTeclado.prototype.mover = function (x, y) {
+        if (this.receptor.mover !== undefined) {
+            this.receptor.mover(x, y);
+        } else {
+            this.receptor.x += x;
+            this.receptor.y += y;
         }
     };
     return MoverseConElTeclado;
@@ -1815,6 +1889,9 @@ var Imagenes = (function () {
         this.cargar_recurso('globo.png');
         this.cargar_recurso('bloque.png');
         this.cargar_recurso('manzana_chica.png');
+        this.cargar_recurso('invisible.png');
+        this.cargar_recurso('cofre.png');
+        this.cargar_recurso('llave.png');
         //this.cargar_recurso('cooperativista/alerta.png');
         //this.cargar_recurso('cooperativista/camina.png');
         //this.cargar_recurso('cooperativista/camina_sujeta.png');

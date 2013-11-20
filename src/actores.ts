@@ -28,6 +28,8 @@ class Actores {
   Texto;
   Bloque;
   Manzana;
+  Cofre;
+  Llave;
 
   constructor() {
     this.Aceituna = Aceituna;
@@ -43,5 +45,7 @@ class Actores {
     this.Texto = Texto;
     this.Bloque = Bloque; // TODO: eliminar, es solo para implementar tutorial.
     this.Manzana = Manzana;
+    this.Cofre = Cofre;
+    this.Llave = Llave;
   }
 }

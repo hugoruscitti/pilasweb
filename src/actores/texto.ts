@@ -7,7 +7,7 @@ class Texto extends Actor {
   sprite_texto;
 
   constructor(x, y, texto) {
-    var imagen = "aceituna.png";
+    var imagen = "invisible.png";
     super(imagen, x, y);
     this.centro_x = 18;
     this.centro_y = 18;
@@ -19,8 +19,8 @@ class Texto extends Actor {
   crear_texto() {
     var s = new createjs.Text(this.texto, "12px Arial", "black");
     var pos = pilas.escena_actual().obtener_posicion_pantalla(this.x, this.y);
-    s.x = pos.x - this.ancho + 10;
-    s.y = pos.y - (this.alto + 15);
+    s.x = pos.x - 25;
+    s.y = pos.y - (35 + 15);
     s.textBaseline = "bottom";
     s.textAlign = "center";
 
