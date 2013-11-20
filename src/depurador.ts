@@ -14,6 +14,7 @@ class DepuradorDeshabilitado {
   definir_modos(modos) {
     modos = modos || {};
     modos.puntos_de_control = modos.puntos_de_control || false;
+    modos.radios_de_colision = modos.radios_de_colision || false;
 
     if (modos.puntos_de_control)
       this.modos.push(new ModoPuntosDeControl());
@@ -24,8 +25,45 @@ class DepuradorDeshabilitado {
       }
       this.modos = [];
     }
+
+    if(modos.radios_de_colision) {
+      this.modos.push(new ModoRadiosDeColision());
+    }
+
   }
 
+}
+
+
+class ModoRadiosDeColision {
+  shape;
+  container;
+
+  constructor() {
+    this.container = new createjs.Container();
+
+    this.shape = new createjs.Shape();
+    this.container.addChild(this.shape);
+
+    pilas.escena_actual().stage.addChild(this.container)
+  }
+
+  eliminar() {
+    pilas.escena_actual().stage.removeChild(this.container);
+  }
+
+  actualizar() {
+    var escena = pilas.escena_actual();
+    this.shape.graphics.clear();
+
+    for (var i=0; i<escena.actores.length; i++) {
+      var actor = escena.actores[i];
+      var posicion = escena.obtener_posicion_pantalla(actor.x, actor.y);
+
+      this.shape.graphics.beginStroke("#FFF").drawCircle(posicion.x, posicion.y, actor.radio_de_colision).endStroke();
+
+    }
+  }
 }
 
 class ModoPuntosDeControl {
