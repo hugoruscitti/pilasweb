@@ -22,6 +22,45 @@ class Comportamiento {
   }
 }
 
+
+class Orbitar extends Comportamiento {
+  punto_de_orbita_x;
+  punto_de_orbita_y;
+  radio;
+  velocidad;
+  direccion;
+  angulo;
+
+  iniciar(receptor) {
+    this.receptor = receptor;
+    this.punto_de_orbita_x = this.argumentos.punto_de_orbita_x || 0; 
+    this.punto_de_orbita_y = this.argumentos.punto_de_orbita_y || 0;
+    this.radio = this.argumentos.radio || 10;
+    this.velocidad = this.argumentos.velocidad || .0001;
+    this.direccion = this.argumentos.direccion || "derecha";
+    this.angulo = 0;
+
+    if(this.direccion == "derecha") {
+      this.velocidad = -this.velocidad
+    }
+
+    else if(this.direccion == "izquierda") {
+      this.velocidad;
+    }
+  }
+
+  actualizar() {
+    this.angulo += this.velocidad;
+
+    this.receptor.centro_x = this.punto_de_orbita_x + 
+    (Math.cos((this.angulo*(180 / Math.PI))) * this.radio);
+
+    this.receptor.centro_y = this.punto_de_orbita_y - 
+    (Math.sin((this.angulo*(180 / Math.PI))) * this.radio);
+  }
+
+}
+
 class CaminarBase extends Comportamiento {
   pasos;
   velocidad;
@@ -83,6 +122,7 @@ class Comportamientos {
   CaminaAbajo;
   CaminaIzquierda;
   CaminaDerecha;
+  Orbitar;
 
   constructor() {
     this.CaminarBase = CaminarBase;
@@ -90,5 +130,6 @@ class Comportamientos {
     this.CaminaAbajo = CaminaAbajo;
     this.CaminaIzquierda = CaminaIzquierda;
     this.CaminaDerecha = CaminaDerecha;
+    this.Orbitar = Orbitar;
   }
 }
