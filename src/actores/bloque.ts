@@ -7,6 +7,7 @@ class Bloque extends Actor {
     super(imagen, x, y);
     this.centro_x = 13;
     this.centro_y = 21;
+    this.z = y;
   }
 
 }

@@ -16,7 +16,7 @@ class Globo extends Actor {
     var _this = this;
     setTimeout(function() {
       _this.eliminar();
-    }, 1000);
+    }, 3000);
   }
 
   eliminar() {

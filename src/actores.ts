@@ -27,6 +27,7 @@ class Actores {
   Globo;
   Texto;
   Bloque;
+  Manzana;
 
   constructor() {
     this.Aceituna = Aceituna;
@@ -41,5 +42,6 @@ class Actores {
     this.Globo = Globo;
     this.Texto = Texto;
     this.Bloque = Bloque; // TODO: eliminar, es solo para implementar tutorial.
+    this.Manzana = Manzana;
   }
 }

@@ -27,6 +27,7 @@ var Actores = (function () {
         this.Globo = Globo;
         this.Texto = Texto;
         this.Bloque = Bloque;
+        this.Manzana = Manzana;
     }
     return Actores;
 })();
@@ -123,6 +124,7 @@ var Actor = (function (_super) {
         this.imagen = imagen || 'sin_imagen.png';
         atributos = atributos || {};
         this.vivo = true;
+        this.radio_de_colision = 10;
 
         if (this === pilas.actores)
             throw Error("Lo siento, tienes que anteponer 'new' para crear actores en esta versión.");
@@ -142,6 +144,7 @@ var Actor = (function (_super) {
         if (atributos['centro_x'])
             this.centro_y = atributos['centro_y'];
 
+        this.z = 0;
         pilas.escena_actual().agregar_actor(this);
     }
     Actor.prototype.crear_sprite = function () {
@@ -152,6 +155,18 @@ var Actor = (function (_super) {
         this.vivo = false;
         pilas.escena_actual().eliminar_actor(this);
     };
+
+    Object.defineProperty(Actor.prototype, "z", {
+        get: function () {
+            return this.sprite.z;
+        },
+        set: function (_z) {
+            this.sprite.z = _z;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
 
     Object.defineProperty(Actor.prototype, "x", {
         get: function () {
@@ -372,6 +387,10 @@ else
 
     Actor.prototype.actualizar = function () {
     };
+
+    Actor.prototype.colisiona_con = function (otro_actor) {
+        return pilas.utils.colisionan(this, otro_actor);
+    };
     return Actor;
 })(Estudiante);
 /// <reference path="actor.ts"/>
@@ -393,6 +412,7 @@ var Bloque = (function (_super) {
         _super.call(this, imagen, x, y);
         this.centro_x = 13;
         this.centro_y = 21;
+        this.z = y;
     }
     return Bloque;
 })(Actor);
@@ -460,13 +480,23 @@ var Globo = (function (_super) {
         var _this = this;
         setTimeout(function () {
             _this.eliminar();
-        }, 1000);
+        }, 3000);
     }
     Globo.prototype.eliminar = function () {
         this.actor_texto.eliminar();
         _super.prototype.eliminar.call(this);
     };
     return Globo;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Manzana = (function (_super) {
+    __extends(Manzana, _super);
+    function Manzana(x, y) {
+        var imagen = "manzana_chica.png";
+        _super.call(this, imagen, x, y);
+        this.radio_de_colision = 11;
+    }
+    return Manzana;
 })(Actor);
 /// <reference path="actor.ts"/>
 var Maton = (function (_super) {
@@ -540,6 +570,7 @@ var Maton = (function (_super) {
             this.y += y * this.velocidad;
 
         this.avanzar_animacion();
+        this.z = this.y;
     };
 
     Maton.prototype.puede_moverse_a = function (x, y) {
@@ -553,18 +584,27 @@ var Maton = (function (_super) {
 
     Maton.prototype.caminar_arriba = function (pasos) {
         this.hacer(pilas.comportamientos.CaminaArriba, { pasos: pasos });
+        return "caminando " + pasos + " pasos";
     };
 
     Maton.prototype.caminar_abajo = function (pasos) {
         this.hacer(pilas.comportamientos.CaminaAbajo, { pasos: pasos });
+        return "caminando " + pasos + " pasos";
     };
 
     Maton.prototype.caminar_izquierda = function (pasos) {
         this.hacer(pilas.comportamientos.CaminaIzquierda, { pasos: pasos });
+        return "caminando " + pasos + " pasos";
     };
 
     Maton.prototype.caminar_derecha = function (pasos) {
         this.hacer(pilas.comportamientos.CaminaDerecha, { pasos: pasos });
+        return "caminando " + pasos + " pasos";
+    };
+
+    Maton.prototype.saludar = function () {
+        this.decir("¡ Hola !");
+        return "saludando ...";
     };
     return Maton;
 })(Actor);
@@ -832,6 +872,42 @@ var Camara = (function () {
         return { x: x - 160, y: 120 - y };
     };
     return Camara;
+})();
+var Colisiones = (function () {
+    function Colisiones() {
+        this.colisiones = [];
+    }
+    Colisiones.prototype.agregar = function (grupo_a, grupo_b, funcion_a_llamar) {
+        if (grupo_a.length === undefined)
+            grupo_a = [grupo_a];
+
+        if (grupo_b.length === undefined)
+            grupo_b = [grupo_b];
+
+        this.colisiones.push({ grupo_a: grupo_a, grupo_b: grupo_b, callback: funcion_a_llamar });
+    };
+
+    Colisiones.prototype.verificar_colisiones = function () {
+        for (var i = 0; i < this.colisiones.length; i++) {
+            this._verificar_colisiones_en_tupla(this.colisiones[i]);
+        }
+    };
+
+    Colisiones.prototype._verificar_colisiones_en_tupla = function (tupla) {
+        for (var i = 0; i < tupla.grupo_a.length; i++) {
+            for (var j = 0; j < tupla.grupo_b.length; j++) {
+                var actor_a = tupla.grupo_a[i];
+                var actor_b = tupla.grupo_b[j];
+
+                if (actor_a.vivo && actor_b.vivo && actor_a.colisiona_con(actor_b)) {
+                    tupla.callback.call(this, actor_a, actor_b);
+                    // TODO: implementar alguna forma para quitar a los actores del
+                    //       grupo si es que ya no están vivos.
+                }
+            }
+        }
+    };
+    return Colisiones;
 })();
 /**
 * @class Comportamiento
@@ -1238,8 +1314,23 @@ var Normal = (function (_super) {
             this.actores[i].actualizar_comportamientos();
         }
 
+        this.ordenar_actores_por_valor_z();
         this.stage.update();
         this.actualiza.emitir();
+        pilas.colisiones.verificar_colisiones();
+    };
+
+    Normal.prototype.ordenar_actores_por_valor_z = function () {
+        var sortFunction = function (item1, item2, options) {
+            if (item1.z < item2.z)
+                return 1;
+
+            if (item1.z > item2.z)
+                return -1;
+
+            return 0;
+        };
+        this.stage.sortChildren(sortFunction);
     };
 
     Normal.prototype.agregar_actor = function (actor) {
@@ -1292,6 +1383,15 @@ var Evento = (function () {
     return Evento;
 })();
 /// <reference path="actores/actor.ts"/>
+var Fondo = (function (_super) {
+    __extends(Fondo, _super);
+    function Fondo(imagen, x, y) {
+        _super.call(this, imagen, x, y);
+        this.z = 1000;
+    }
+    return Fondo;
+})(Actor);
+
 var Plano = (function (_super) {
     __extends(Plano, _super);
     function Plano() {
@@ -1311,7 +1411,7 @@ var Plano = (function (_super) {
     Plano.prototype.actualizar = function () {
     };
     return Plano;
-})(Actor);
+})(Fondo);
 
 var Pasto = (function (_super) {
     __extends(Pasto, _super);
@@ -1332,7 +1432,7 @@ var Pasto = (function (_super) {
     Pasto.prototype.actualizar = function () {
     };
     return Pasto;
-})(Actor);
+})(Fondo);
 
 var PastoCuadriculado = (function (_super) {
     __extends(PastoCuadriculado, _super);
@@ -1342,7 +1442,7 @@ var PastoCuadriculado = (function (_super) {
     PastoCuadriculado.prototype.actualizar = function () {
     };
     return PastoCuadriculado;
-})(Actor);
+})(Fondo);
 
 var Fondos = (function () {
     function Fondos() {
@@ -1681,6 +1781,7 @@ var Imagenes = (function () {
         this.cargar_recurso('pasto_cuadriculado.png');
         this.cargar_recurso('globo.png');
         this.cargar_recurso('bloque.png');
+        this.cargar_recurso('manzana_chica.png');
         //this.cargar_recurso('cooperativista/alerta.png');
         //this.cargar_recurso('cooperativista/camina.png');
         //this.cargar_recurso('cooperativista/camina_sujeta.png');
@@ -1829,6 +1930,7 @@ var Mundo = (function () {
 /// <reference path="interpolaciones.ts />
 /// <reference path="habilidades.ts />
 /// <reference path="comportamientos.ts />
+/// <reference path="colisiones.ts />
 /**
 * @class Pilas
 * @singleton
@@ -1878,6 +1980,7 @@ var Pilas = (function () {
         this.mundo = new Mundo();
         this.interpolaciones = new Interpolaciones();
         this.utils = new Utils();
+        this.colisiones = new Colisiones();
 
         this.mundo.gestor_escenas.cambiar_escena(new Normal());
     };
@@ -2006,7 +2109,7 @@ var Pilas = (function () {
     * Callback que se invoca una vez que pilas puede comenzar a funcionar.
     */
     Pilas.prototype.onready = function () {
-        throw "pilas-engine ha iniciado, pero el metodo onload está vacío. Tienes que sobre-escribirlo...";
+        throw "pilas-engine ha iniciado, pero el metodo onready está vacío. Tienes que sobre-escribirlo...";
     };
 
     /**
@@ -2014,7 +2117,6 @@ var Pilas = (function () {
     * Pone en funcionamiento el bucle principal.
     */
     Pilas.prototype.ejecutar = function () {
-        this.onready();
         var self = this;
 
         // TODO: Limpiar los listeners con un mensaje y
@@ -2076,6 +2178,22 @@ var Utils = (function () {
 
     Utils.prototype.convertir_a_radianes = function (angulo_en_grados) {
         return angulo_en_grados * (Math.PI / 180);
+    };
+
+    Utils.prototype.colisionan = function (a, b) {
+        return (this.distancia_entre_dos_actores(a, b) < a.radio_de_colision + b.radio_de_colision);
+    };
+
+    Utils.prototype.distancia_entre_dos_actores = function (a, b) {
+        return this.distancia_entre_dos_puntos(a.x, a.y, b.x, b.y);
+    };
+
+    Utils.prototype.distancia_entre_dos_puntos = function (x1, y1, x2, y2) {
+        return Math.sqrt(Math.pow(this.distancia(x1, x2), 2) + Math.pow(this.distancia(y1, y2), 2));
+    };
+
+    Utils.prototype.distancia = function (a, b) {
+        return Math.abs(b - a);
     };
     return Utils;
 })();
