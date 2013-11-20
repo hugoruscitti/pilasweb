@@ -21,8 +21,8 @@ class Actores {
   Explosion;
   Nave;
   Proyectil;
-	Piedra;
-	Eje;
+  Piedra;
+  Eje;
   Maton;
   Globo;
   Texto;
@@ -36,8 +36,8 @@ class Actores {
     this.Nave = Nave;
     this.Explosion = Explosion;
     this.Proyectil = Proyectil;
-		this.Piedra = Piedra;
-		this.Eje = Eje;
+    this.Piedra = Piedra;
+    this.Eje = Eje;
     this.Maton = Maton;
     this.Globo = Globo;
     this.Texto = Texto;

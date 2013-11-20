@@ -333,10 +333,10 @@ else
 
     Object.defineProperty(Actor.prototype, "derecha", {
         get: function () {
-            return this.x + (this.centro_x * this.escala);
+            return this.izquierda + (this.ancho * this.escala);
         },
         set: function (x) {
-            this.x = x - (this.centro_x * this.escala);
+            this.izquierda = x - (this.ancho * this.escala);
         },
         enumerable: true,
         configurable: true
@@ -359,7 +359,7 @@ else
             return this.arriba - (this.alto * this.escala);
         },
         set: function (y) {
-            this.arriba = y + this.alto;
+            this.arriba = y + (this.alto * this.escala);
         },
         enumerable: true,
         configurable: true
@@ -412,7 +412,7 @@ var Bloque = (function (_super) {
         var imagen = nombre_imagen || "bloque.png";
         _super.call(this, imagen, x, y);
         this.centro_x = 13;
-        this.centro_y = 21;
+        this.centro_y = this.alto;
         this.z = y;
     }
     return Bloque;

@@ -6,7 +6,7 @@ class Bloque extends Actor {
     var imagen = nombre_imagen || "bloque.png";
     super(imagen, x, y);
     this.centro_x = 13;
-    this.centro_y = 21;
+    this.centro_y = this.alto;
     this.z = y;
   }
 

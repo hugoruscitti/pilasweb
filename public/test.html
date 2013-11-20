@@ -70,7 +70,6 @@
       //pilas.mundo.definir_modos({puntos_de_control: true});
       //maton.decir("hola mundo !!!");
 
-
       var bloque2 = new pilas.actores.Bloque(20*5, 20);
       var bloque1 = new pilas.actores.Bloque(20*5);
 
@@ -82,7 +81,7 @@
       maton.obstaculos.push(bloque1);
       maton.obstaculos.push(bloque2);
       var manzana = new pilas.actores.Manzana();
-      manzana.x = 50;
+      manzana.x = 60;
 
       pilas.colisiones.agregar(maton, [manzana], function(m, manzana) {
         manzana.eliminar();

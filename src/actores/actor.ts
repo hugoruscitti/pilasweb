@@ -192,10 +192,10 @@ class Actor extends Estudiante {
 	}
 	
 	get derecha() {
-		return this.x + (this.centro_x * this.escala);
+		return this.izquierda + (this.ancho * this.escala);
 	}
 	set derecha(x) {
-		this.x = x - (this.centro_x * this.escala);
+		this.izquierda = x - (this.ancho * this.escala);
 	}
 	
 	get arriba() {
@@ -211,7 +211,7 @@ class Actor extends Estudiante {
 	}
 	
 	set abajo(y) {
-		this.arriba = y + this.alto;
+		this.arriba = y + (this.alto * this.escala);
 	}
 	
 
