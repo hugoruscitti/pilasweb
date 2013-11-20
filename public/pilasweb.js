@@ -381,8 +381,7 @@ else
     };
 
     Actor.prototype.decir = function (mensaje) {
-        window['globo'] = new pilas.actores.Globo(this.x, this.y, mensaje);
-        //globo.z = this.z - 1;
+        var globo = new pilas.actores.Globo(this.x, this.y, mensaje);
     };
 
     Actor.prototype.actualizar = function () {
