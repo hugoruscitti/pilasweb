@@ -22,6 +22,36 @@ class Comportamiento {
   }
 }
 
+class Saltar extends Comportamiento {
+  suelo;
+  velocidad_inicial;
+  velocidad;
+  velocidad_aux;
+
+  iniciar(receptor) {
+    this.receptor = receptor;
+    this.suelo = this.receptor.centro_y;
+    this.velocidad_inicial = this.argumentos.velocidad_inicial || 10;
+    this.velocidad = this.velocidad_inicial;
+    this.velocidad_aux = this.velocidad_inicial;
+  }
+
+  actualizar() {
+    this.receptor.centro_y += this.velocidad;
+    this.velocidad -= 0.3;
+
+    if(this.receptor.centro_y <= this.suelo) {
+      this.velocidad_aux /= 2.0;
+      this.velocidad = this.velocidad_aux;
+
+      if(this.velocidad_aux <= 1) {
+        this.receptor.centro_y = this.suelo;
+        return true;
+      }
+    }
+  }
+}
+
 
 class Orbitar extends Comportamiento {
   punto_de_orbita_x;
@@ -123,6 +153,7 @@ class Comportamientos {
   CaminaIzquierda;
   CaminaDerecha;
   Orbitar;
+  Saltar;
 
   constructor() {
     this.CaminarBase = CaminarBase;
@@ -131,5 +162,6 @@ class Comportamientos {
     this.CaminaIzquierda = CaminaIzquierda;
     this.CaminaDerecha = CaminaDerecha;
     this.Orbitar = Orbitar;
+    this.Saltar = Saltar;
   }
 }
