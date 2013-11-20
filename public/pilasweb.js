@@ -991,6 +991,36 @@ var Comportamiento = (function () {
     return Comportamiento;
 })();
 
+var Saltar = (function (_super) {
+    __extends(Saltar, _super);
+    function Saltar() {
+        _super.apply(this, arguments);
+    }
+    Saltar.prototype.iniciar = function (receptor) {
+        this.receptor = receptor;
+        this.suelo = this.receptor.y;
+        this.velocidad_inicial = this.argumentos.velocidad_inicial || 10;
+        this.velocidad = this.velocidad_inicial;
+        this.velocidad_aux = this.velocidad_inicial;
+    };
+
+    Saltar.prototype.actualizar = function () {
+        this.receptor.y += this.velocidad;
+        this.velocidad -= 0.3;
+
+        if (this.receptor.y <= this.suelo) {
+            this.velocidad_aux /= 2.0;
+            this.velocidad = this.velocidad_aux;
+
+            if (this.velocidad_aux <= 1) {
+                this.receptor.y = this.suelo;
+                return true;
+            }
+        }
+    };
+    return Saltar;
+})(Comportamiento);
+
 var Orbitar = (function (_super) {
     __extends(Orbitar, _super);
     function Orbitar() {
@@ -1105,6 +1135,7 @@ var Comportamientos = (function () {
         this.CaminaIzquierda = CaminaIzquierda;
         this.CaminaDerecha = CaminaDerecha;
         this.Orbitar = Orbitar;
+        this.Saltar = Saltar;
     }
     return Comportamientos;
 })();
