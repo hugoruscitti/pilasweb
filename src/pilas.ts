@@ -11,6 +11,7 @@ declare var createjs;
 /// <reference path="interpolaciones.ts />
 /// <reference path="habilidades.ts />
 /// <reference path="comportamientos.ts />
+/// <reference path="colisiones.ts />
 
 
 /**
@@ -35,14 +36,15 @@ class Pilas {
   opciones;   // dict de opciones iniciales.
   mundo;
   
-  fondos;           // acceso a modulo.
-  imagenes;         // acceso a modulo.
-  actores;          // acceso a modulo.
-  habilidades;      // acceso a modulo.
-  comportamientos;  // acceso a modulo.
-  utils;            // acceso a modulo.
+  fondos;           // acceso a módulo.
+  imagenes;         // acceso a módulo.
+  actores;          // acceso a módulo.
+  habilidades;      // acceso a módulo.
+  comportamientos;  // acceso a módulo.
+  utils;            // acceso a módulo.
 
-  interpolaciones;  // acceso al modulo.
+  interpolaciones;  // acceso al módulo.
+  colisiones;       // acceso al módulo.
 
   /**
    * @method iniciar 
@@ -73,6 +75,7 @@ class Pilas {
     this.mundo = new Mundo();
     this.interpolaciones = new Interpolaciones();
     this.utils = new Utils();
+    this.colisiones = new Colisiones();
 
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
   }

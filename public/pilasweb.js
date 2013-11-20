@@ -124,6 +124,7 @@ var Actor = (function (_super) {
         this.imagen = imagen || 'sin_imagen.png';
         atributos = atributos || {};
         this.vivo = true;
+        this.radio_de_colision = 10;
 
         if (this === pilas.actores)
             throw Error("Lo siento, tienes que anteponer 'new' para crear actores en esta versión.");
@@ -373,6 +374,10 @@ else
 
     Actor.prototype.actualizar = function () {
     };
+
+    Actor.prototype.colisiona_con = function (otro_actor) {
+        return pilas.utils.colisionan(this, otro_actor);
+    };
     return Actor;
 })(Estudiante);
 /// <reference path="actor.ts"/>
@@ -475,7 +480,7 @@ var Manzana = (function (_super) {
     function Manzana(x, y) {
         var imagen = "manzana_chica.png";
         _super.call(this, imagen, x, y);
-        console.log(this.ancho);
+        this.radio_de_colision = 11;
     }
     return Manzana;
 })(Actor);
@@ -843,6 +848,43 @@ var Camara = (function () {
         return { x: x - 160, y: 120 - y };
     };
     return Camara;
+})();
+var Colisiones = (function () {
+    function Colisiones() {
+        this.colisiones = [];
+    }
+    Colisiones.prototype.agregar = function (grupo_a, grupo_b, funcion_a_llamar) {
+        if (grupo_a.length === undefined)
+            grupo_a = [grupo_a];
+
+        if (grupo_b.length === undefined)
+            grupo_b = [grupo_b];
+
+        this.colisiones.push({ grupo_a: grupo_a, grupo_b: grupo_b, callback: funcion_a_llamar });
+        console.log(this.colisiones);
+    };
+
+    Colisiones.prototype.verificar_colisiones = function () {
+        for (var i = 0; i < this.colisiones.length; i++) {
+            this._verificar_colisiones_en_tupla(this.colisiones[i]);
+        }
+    };
+
+    Colisiones.prototype._verificar_colisiones_en_tupla = function (tupla) {
+        for (var i = 0; i < tupla.grupo_a.length; i++) {
+            for (var j = 0; j < tupla.grupo_b.length; j++) {
+                var actor_a = tupla.grupo_a[i];
+                var actor_b = tupla.grupo_b[j];
+
+                if (actor_a.vivo && actor_b.vivo && actor_a.colisiona_con(actor_b)) {
+                    tupla.callback.call(this, actor_a, actor_b);
+                    // TODO: implementar alguna forma para quitar a los actores del
+                    //       grupo si es que ya no están vivos.
+                }
+            }
+        }
+    };
+    return Colisiones;
 })();
 /**
 * @class Comportamiento
@@ -1219,6 +1261,7 @@ var Normal = (function (_super) {
 
         this.stage.update();
         this.actualiza.emitir();
+        pilas.colisiones.verificar_colisiones();
     };
 
     Normal.prototype.agregar_actor = function (actor) {
@@ -1809,6 +1852,7 @@ var Mundo = (function () {
 /// <reference path="interpolaciones.ts />
 /// <reference path="habilidades.ts />
 /// <reference path="comportamientos.ts />
+/// <reference path="colisiones.ts />
 /**
 * @class Pilas
 * @singleton
@@ -1858,6 +1902,7 @@ var Pilas = (function () {
         this.mundo = new Mundo();
         this.interpolaciones = new Interpolaciones();
         this.utils = new Utils();
+        this.colisiones = new Colisiones();
 
         this.mundo.gestor_escenas.cambiar_escena(new Normal());
     };
@@ -2056,6 +2101,22 @@ var Utils = (function () {
 
     Utils.prototype.convertir_a_radianes = function (angulo_en_grados) {
         return angulo_en_grados * (Math.PI / 180);
+    };
+
+    Utils.prototype.colisionan = function (a, b) {
+        return (this.distancia_entre_dos_actores(a, b) < a.radio_de_colision + b.radio_de_colision);
+    };
+
+    Utils.prototype.distancia_entre_dos_actores = function (a, b) {
+        return this.distancia_entre_dos_puntos(a.x, a.y, b.x, b.y);
+    };
+
+    Utils.prototype.distancia_entre_dos_puntos = function (x1, y1, x2, y2) {
+        return Math.sqrt(Math.pow(this.distancia(x1, x2), 2) + Math.pow(this.distancia(y1, y2), 2));
+    };
+
+    Utils.prototype.distancia = function (a, b) {
+        return Math.abs(b - a);
     };
     return Utils;
 })();

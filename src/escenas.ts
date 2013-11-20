@@ -57,6 +57,7 @@ class Normal extends Base {
 
     this.stage.update();
     this.actualiza.emitir();
+    pilas.colisiones.verificar_colisiones();
   }
 
   agregar_actor(actor) {

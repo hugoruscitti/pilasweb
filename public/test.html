@@ -63,9 +63,9 @@
 
   <script>
     pilas = new Pilas();
-    pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
 
     pilas.onready = function() {
+      console.log("hola");
       var fondo = new pilas.fondos.PastoCuadriculado();
 
       //pilas.mundo.definir_modos({puntos_de_control: true});
@@ -82,8 +82,18 @@
       maton.obstaculos.push(bloque1);
       maton.obstaculos.push(bloque2);
       var manzana = new pilas.actores.Manzana();
+      manzana.x = 50;
+
+      pilas.colisiones.agregar(maton, [manzana], function(m, manzana) {
+        manzana.eliminar();
+        console.log("yeah!");
+      });
+
+
+
     }
 
+    pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
     pilas.ejecutar();
   </script>
 </body>

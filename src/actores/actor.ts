@@ -50,12 +50,14 @@ class Actor extends Estudiante {
   sprite;
   _imagen;
   vivo;
+  radio_de_colision;
 
   constructor(imagen, x, y, atributos = {}) {
     super();
     this.imagen = imagen || 'sin_imagen.png';
     atributos = atributos || {};
     this.vivo = true;
+    this.radio_de_colision = 10;
 		
 		/* Se ejecuta si el usuario intenta llamar al constructor sin usar 'new' 
 		
@@ -226,5 +228,9 @@ class Actor extends Estudiante {
   }
 
   actualizar() {
+  }
+
+  colisiona_con(otro_actor) {
+    return pilas.utils.colisionan(this, otro_actor);
   }
 }
