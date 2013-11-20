@@ -89,17 +89,20 @@ class SeguirClicks extends Habilidad {
  * Hace que un actor cambie de posición con pulsar el teclado.
  */
 class MoverseConElTeclado extends Habilidad {
+  en_movimiento;
   
   constructor(receptor) {
     super(receptor);
     pilas.escena_actual().actualiza.conectar(this);
+    this.en_movimiento = false;
   }
 
   recibir(evento, tipo) {
+    var x = 0;
+    var y = 0;
+
     if (tipo == pilas.escena_actual().actualiza) {
       var control = pilas.escena_actual().control;
-      var x = 0;
-      var y = 0;
       var velocidad = this.receptor.velocidad || 5;
       
       if (control.izquierda)
@@ -114,7 +117,21 @@ class MoverseConElTeclado extends Habilidad {
       if (control.abajo)
         y = -velocidad;
 
-      this.mover(x, y)
+        if (x != 0 || y != 0) {
+            if (this.en_movimiento == false) {
+                this.en_movimiento = true;
+            }
+            this.mover(x, y)
+        }
+
+
+    }
+
+    if (this.en_movimiento) {
+        if (x == 0 && y == 0) {
+            this.en_movimiento = false;
+            this.receptor.detener_animacion();
+        }
     }
   }
 
