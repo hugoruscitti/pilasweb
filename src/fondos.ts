@@ -10,6 +10,17 @@ class Fondo extends Actor {
 
 }
 
+
+class Tarde extends Fondo {
+
+  constructor() {
+    super("fondos/tarde.jpg", 0, 0);
+    this.z = 1000;
+    this.y = 120;   // TODO: temporal solo para tutorial.
+  }
+
+}
+
 class Plano extends Fondo {
 
   constructor() {
@@ -66,10 +77,12 @@ class Fondos {
   Plano;
   Pasto;
   PastoCuadriculado;
+  Tarde;
 
   constructor() {
     this.Plano = Plano;
     this.Pasto = Pasto;
     this.PastoCuadriculado = PastoCuadriculado;
+    this.Tarde = Tarde;
   }
 }
