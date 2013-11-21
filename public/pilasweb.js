@@ -991,6 +991,36 @@ var Comportamiento = (function () {
     return Comportamiento;
 })();
 
+var Saltar = (function (_super) {
+    __extends(Saltar, _super);
+    function Saltar() {
+        _super.apply(this, arguments);
+    }
+    Saltar.prototype.iniciar = function (receptor) {
+        this.receptor = receptor;
+        this.suelo = this.receptor.y;
+        this.velocidad_inicial = this.argumentos.velocidad_inicial || 10;
+        this.velocidad = this.velocidad_inicial;
+        this.velocidad_aux = this.velocidad_inicial;
+    };
+
+    Saltar.prototype.actualizar = function () {
+        this.receptor.y += this.velocidad;
+        this.velocidad -= 0.3;
+
+        if (this.receptor.y <= this.suelo) {
+            this.velocidad_aux /= 2.0;
+            this.velocidad = this.velocidad_aux;
+
+            if (this.velocidad_aux <= 1) {
+                this.receptor.y = this.suelo;
+                return true;
+            }
+        }
+    };
+    return Saltar;
+})(Comportamiento);
+
 var Orbitar = (function (_super) {
     __extends(Orbitar, _super);
     function Orbitar() {
@@ -1005,19 +1035,22 @@ var Orbitar = (function (_super) {
         this.direccion = this.argumentos.direccion || "derecha";
         this.angulo = 0;
 
-        if (this.direccion == "derecha") {
+        if (this.direccion == "izquierda") {
             this.velocidad = -this.velocidad;
-        } else if (this.direccion == "izquierda") {
+        } else if (this.direccion == "derecha") {
             this.velocidad;
         }
     };
 
     Orbitar.prototype.actualizar = function () {
         this.angulo += this.velocidad;
+        this.mover_astro();
+    };
 
-        this.receptor.centro_x = this.punto_de_orbita_x + (Math.cos((this.angulo * (180 / Math.PI))) * this.radio);
+    Orbitar.prototype.mover_astro = function () {
+        this.receptor.x = this.punto_de_orbita_x + (Math.cos((this.angulo * (180 / Math.PI))) * this.radio);
 
-        this.receptor.centro_y = this.punto_de_orbita_y - (Math.sin((this.angulo * (180 / Math.PI))) * this.radio);
+        this.receptor.y = this.punto_de_orbita_y - (Math.sin((this.angulo * (180 / Math.PI))) * this.radio);
     };
     return Orbitar;
 })(Comportamiento);
@@ -1105,6 +1138,7 @@ var Comportamientos = (function () {
         this.CaminaIzquierda = CaminaIzquierda;
         this.CaminaDerecha = CaminaDerecha;
         this.Orbitar = Orbitar;
+        this.Saltar = Saltar;
     }
     return Comportamientos;
 })();
