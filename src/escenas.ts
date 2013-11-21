@@ -9,6 +9,7 @@ class Base {
   actualiza;
   pulsa_tecla;
   suelta_tecla;
+  fisica;
 
   control;
 
@@ -19,6 +20,7 @@ class Base {
     this.pulsa_tecla = new Evento('pulsa_tecla');                   // ['codigo', 'texto']
     this.suelta_tecla = new Evento('suelta_tecla');                 // ['codigo', 'texto']
     this.actualiza = new Evento('actualiza');                       // []
+    this.fisica = new Fisica();
 
     this.control = new Control(this);
   }
@@ -50,6 +52,8 @@ class Normal extends Base {
   }
 
   actualizar() {
+    this.fisica.actualizar();
+
     for (var i=0; i<this.actores.length; i++) {
       this.actores[i].actualizar();
       this.actores[i].actualizar_comportamientos(); // TODO: implementar dentro del actualizar del actor.

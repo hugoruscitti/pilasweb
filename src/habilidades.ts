@@ -15,6 +15,7 @@ class Habilidad {
 
   eliminar() {
   }
+
 }
 
 /**
@@ -254,6 +255,23 @@ class Disparar extends Habilidad {
 	
 }
 
+class RebotarComoPelota extends Habilidad {
+
+  constructor(receptor) {
+    super(receptor);
+    pilas.escena_actual().actualiza.conectar(this);
+    receptor.figura = pilas.escena_actual().fisica.crear_circulo(receptor.x, receptor.y, 18, {});
+  }
+
+  recibir(evento, tipo) {
+    if (tipo == pilas.escena_actual().actualiza) {
+      var posicion = this.receptor.figura.obtener_posicion();
+      this.receptor.x = posicion.x;
+      this.receptor.y = posicion.y;
+    }
+  }
+
+}
 
 class SeMantieneEnPantalla extends Habilidad {
   
@@ -291,7 +309,6 @@ class SeMantieneEnPantalla extends Habilidad {
  * Representa todas las habilidades conocidas en pilas-engine.
  */
 class Habilidades {
-
   Arrastrable;
   PuedeExplotar;
   SeguirAlMouse;
@@ -300,6 +317,7 @@ class Habilidades {
   MoverseConElTecladoConRotacion;
   SeMantieneEnPantalla;
   Disparar;
+  RebotarComoPelota;
 
   constructor() {
     this.Arrastrable = Arrastrable;
@@ -310,5 +328,6 @@ class Habilidades {
     this.MoverseConElTecladoConRotacion = MoverseConElTecladoConRotacion;
     this.SeMantieneEnPantalla = SeMantieneEnPantalla;
     this.Disparar = Disparar;
+    this.RebotarComoPelota = RebotarComoPelota;
   }
 }
