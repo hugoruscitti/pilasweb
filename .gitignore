@@ -15,3 +15,5 @@ node_modules/*
 docs/html/*
 
 *.swp
+
+npm-debug.log
