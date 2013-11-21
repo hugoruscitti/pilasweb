@@ -908,6 +908,8 @@ var Camara = (function () {
     function Camara() {
         this.x = 0;
         this.y = 0;
+        this.centro_x = 320 / 2;
+        this.centro_y = 240 / 2;
     }
     /**
     * @method obtener_posicion_pantalla
@@ -919,7 +921,7 @@ var Camara = (function () {
     * pilas, pero el navegador lo interpreta como el punto (160, 120).
     */
     Camara.prototype.obtener_posicion_pantalla = function (x, y) {
-        return { x: x + 160, y: 120 - y };
+        return { x: x + this.centro_x, y: this.centro_y - y };
     };
 
     /**
@@ -930,7 +932,30 @@ var Camara = (function () {
     * es el centro de la pantalla.
     */
     Camara.prototype.obtener_posicion_escenario = function (x, y) {
-        return { x: x - 160, y: 120 - y };
+        return { x: x - this.centro_x, y: this.centro_y - y };
+    };
+
+    Camara.prototype.obtener_posicion = function () {
+        return {
+            x: this.centro_x - this.x,
+            y: this.centro_y + this.y
+        };
+    };
+
+    Camara.prototype.convertir_de_posicion_relativa_a_fisica = function (x, y) {
+        var centro = this.obtener_posicion();
+        return {
+            x: centro.x + x,
+            y: centro.y - y
+        };
+    };
+
+    Camara.prototype.convertir_de_posicion_fisica_a_relativa = function (x, y) {
+        var centro = this.obtener_posicion();
+        return {
+            x: -centro.x + x,
+            y: +centro.y - y
+        };
     };
     return Camara;
 })();
@@ -1512,14 +1537,25 @@ var Evento = (function () {
     };
     return Evento;
 })();
+var PPM = 30;
+
+function convertir_a_metros(valor) {
+    return valor / PPM;
+}
+
+function convertir_a_pixels(valor) {
+    return valor * PPM;
+}
+
 var Figura = (function () {
     function Figura() {
     }
     Figura.prototype.obtener_posicion = function () {
         var posicion = this.cuerpo.GetPosition();
+        posicion.x = convertir_a_pixels(posicion.x);
+        posicion.y = convertir_a_pixels(posicion.y);
 
-        // TODO: Convertir a coordenadas de pantalla.
-        return posicion;
+        return pilas.escena_actual().camara.convertir_de_posicion_fisica_a_relativa(posicion.x, posicion.y);
     };
     return Figura;
 })();
@@ -1539,10 +1575,9 @@ var Circulo = (function (_super) {
         // crear el body dinamico
         var bodyDef = new Box2D.Dynamics.b2BodyDef();
 
-        //var posicion = pilas.camara.convertir_de_posicion_relativa_a_fisica(this._opciones.x, this._opciones.y);
-        // TODO: convertir las coordenadas x e y desde coordenadas pixels a coordenadas fisica.
-        bodyDef.position.x = x;
-        bodyDef.position.y = y;
+        var posicion = pilas.escena_actual().camara.convertir_de_posicion_relativa_a_fisica(x, y);
+        bodyDef.position.x = convertir_a_metros(posicion.x);
+        bodyDef.position.y = convertir_a_metros(posicion.y);
 
         bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
         this.cuerpo = pilas.escena_actual().fisica.mundo.CreateBody(bodyDef);
@@ -1558,11 +1593,34 @@ var Fisica = (function () {
     function Fisica() {
         this.Circulo = Circulo;
 
-        this.gravedad = new Box2D.Common.Math.b2Vec2(0, 90);
+        this.gravedad = new Box2D.Common.Math.b2Vec2(0, 10);
         this.mundo = new Box2D.Dynamics.b2World(this.gravedad, false);
+        this.velocidad = 1.0;
+        this.timeStep = this.velocidad / 120.0;
+
+        this.crear_bordes_del_escenario();
     }
+    Fisica.prototype.crear_bordes_del_escenario = function () {
+        // crear el objeto suelo
+        // usa un fixture con la forma de rectangular
+        var fixDef = new Box2D.Dynamics.b2FixtureDef();
+        fixDef.density = 1.0;
+        fixDef.friction = 0.5;
+        fixDef.restitution = 0.7;
+        fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape();
+        fixDef.shape.SetAsBox(convertir_a_metros(500), convertir_a_metros(10));
+
+        // crear el cuerpo como un objeto estatico
+        var bodyDef = new Box2D.Dynamics.b2BodyDef();
+        bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
+        bodyDef.position.Set(convertir_a_metros(-100), convertir_a_metros(100));
+
+        // instertar el objeto suelo en el mundo
+        this.mundo.CreateBody(bodyDef).CreateFixture(fixDef);
+    };
+
     Fisica.prototype.actualizar = function () {
-        this.mundo.Step(1 / 20.0, 1, 1);
+        this.mundo.Step(this.timeStep, 6, 3);
     };
 
     Fisica.prototype.crear_circulo = function (x, y, radio, opciones) {

@@ -10,10 +10,14 @@
 class Camara {
   x;
   y;
+  centro_x;
+  centro_y;
 
   constructor() {
     this.x = 0;
     this.y = 0;
+    this.centro_x = 320 / 2;
+    this.centro_y = 240 / 2;
   }
 
   /**
@@ -26,7 +30,7 @@ class Camara {
    * pilas, pero el navegador lo interpreta como el punto (160, 120).
    */
   obtener_posicion_pantalla(x, y) {
-    return {x: x + 160, y: 120 - y};
+    return {x: x + this.centro_x, y: this.centro_y - y};
   }
 
   /**
@@ -37,7 +41,24 @@ class Camara {
    * es el centro de la pantalla.
    */
   obtener_posicion_escenario(x, y) {
-    return {x: x - 160, y: 120 -y};
+    return {x: x - this.centro_x, y: this.centro_y -y};
+  }
+
+  obtener_posicion() {
+    return {x: this.centro_x - this.x, 
+            y: this.centro_y + this.y};
+  }
+
+  convertir_de_posicion_relativa_a_fisica(x, y) {
+    var centro = this.obtener_posicion();
+    return {x: centro.x + x,
+            y: centro.y - y}
+  }
+
+  convertir_de_posicion_fisica_a_relativa(x, y) {
+    var centro = this.obtener_posicion();
+    return {x: - centro.x + x,
+            y: + centro.y - y}
   }
 
 }
