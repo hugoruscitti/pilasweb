@@ -26,7 +26,7 @@ class DepuradorDeshabilitado {
       this.modos = [];
     }
 
-    if(modos.radios_de_colision) {
+    if (modos.radios_de_colision) {
       this.modos.push(new ModoRadiosDeColision());
     }
 
@@ -38,12 +38,16 @@ class DepuradorDeshabilitado {
 class ModoRadiosDeColision {
   shape;
   container;
+  text_modo;
 
   constructor() {
     this.container = new createjs.Container();
 
     this.shape = new createjs.Shape();
     this.container.addChild(this.shape);
+
+    this.text_modo = new createjs.Text("F9 ModoRadiosDeColision habilitado", "12px Arial", "white");
+    this.container.addChild(this.text_modo);
 
     pilas.escena_actual().stage.addChild(this.container)
   }
