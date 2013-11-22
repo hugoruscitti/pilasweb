@@ -1433,8 +1433,9 @@ var Base = (function () {
         this.pulsa_tecla = new Evento('pulsa_tecla');
         this.suelta_tecla = new Evento('suelta_tecla');
         this.actualiza = new Evento('actualiza');
-        this.fisica = new Fisica();
-
+        this.stage = new createjs.Stage(pilas.canvas);
+        this.camara = new Camara();
+        this.fisica = new Fisica(this.camara);
         this.control = new Control(this);
     }
     return Base;
@@ -1458,8 +1459,6 @@ var Normal = (function (_super) {
     function Normal() {
         _super.call(this);
         this.actores = [];
-        this.stage = new createjs.Stage(pilas.canvas);
-        this.camara = new Camara();
     }
     Normal.prototype.actualizar = function () {
         this.fisica.actualizar();
@@ -1539,6 +1538,12 @@ var Evento = (function () {
 })();
 var PPM = 30;
 
+var box2d = {
+    b2World: Box2D.Dynamics.b2World,
+    b2Vec2: Box2D.Common.Math.b2Vec2,
+    b2DebugDraw: Box2D.Dynamics.b2DebugDraw
+};
+
 function convertir_a_metros(valor) {
     return valor / PPM;
 }
@@ -1564,6 +1569,7 @@ var Circulo = (function (_super) {
     __extends(Circulo, _super);
     function Circulo(x, y, radio, opciones) {
         _super.call(this);
+        opciones.dinamico = opciones.dinamico || true;
         var fixDef = new Box2D.Dynamics.b2FixtureDef();
 
         fixDef.density = opciones.densidad || 1.0;
@@ -1576,12 +1582,20 @@ var Circulo = (function (_super) {
         var bodyDef = new Box2D.Dynamics.b2BodyDef();
 
         var posicion = pilas.escena_actual().camara.convertir_de_posicion_relativa_a_fisica(x, y);
-        bodyDef.position.x = convertir_a_metros(posicion.x);
-        bodyDef.position.y = convertir_a_metros(posicion.y);
+        posicion.x = convertir_a_metros(posicion.x);
+        posicion.y = convertir_a_metros(posicion.y);
 
-        bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
+        bodyDef.position.x = posicion.x;
+        bodyDef.position.y = posicion.y;
+
+        if (opciones.dinamico)
+            bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
+else
+            bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
+
         this.cuerpo = pilas.escena_actual().fisica.mundo.CreateBody(bodyDef);
         this.cuerpo.CreateFixture(fixDef);
+        window['cuerpo'] = this.cuerpo;
     }
     return Circulo;
 })(Figura);
@@ -1590,15 +1604,15 @@ var Circulo = (function (_super) {
 * @class Fisica
 */
 var Fisica = (function () {
-    function Fisica() {
+    function Fisica(camara) {
         this.Circulo = Circulo;
+        this.camara = camara;
 
-        this.gravedad = new Box2D.Common.Math.b2Vec2(0, 10);
-        this.mundo = new Box2D.Dynamics.b2World(this.gravedad, false);
+        this.gravedad = new box2d.b2Vec2(0, 9);
+        this.mundo = new box2d.b2World(this.gravedad, false);
         this.velocidad = 1.0;
         this.timeStep = this.velocidad / 120.0;
-
-        this.crear_bordes_del_escenario();
+        //this.crear_bordes_del_escenario();
     }
     Fisica.prototype.crear_bordes_del_escenario = function () {
         // crear el objeto suelo
@@ -1606,14 +1620,20 @@ var Fisica = (function () {
         var fixDef = new Box2D.Dynamics.b2FixtureDef();
         fixDef.density = 1.0;
         fixDef.friction = 0.5;
-        fixDef.restitution = 0.7;
+        fixDef.restitution = 1.0;
         fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape();
-        fixDef.shape.SetAsBox(convertir_a_metros(500), convertir_a_metros(10));
+        fixDef.shape.SetAsBox(1, 1);
 
         // crear el cuerpo como un objeto estatico
         var bodyDef = new Box2D.Dynamics.b2BodyDef();
         bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
-        bodyDef.position.Set(convertir_a_metros(-100), convertir_a_metros(100));
+
+        var posicion = this.camara.obtener_posicion_pantalla(-100, -100);
+        console.log(posicion);
+
+        //var posicion = {x: 100, y: 100};
+        bodyDef.position.y = convertir_a_metros(200);
+        bodyDef.position.x = convertir_a_metros(0);
 
         // instertar el objeto suelo en el mundo
         this.mundo.CreateBody(bodyDef).CreateFixture(fixDef);

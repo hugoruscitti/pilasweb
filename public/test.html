@@ -44,6 +44,7 @@
 
      <div class="row"  style='margin-top: 70px'>
         <div class="span12">
+            <canvas id='nuevo_canvas'></canvas>
             <canvas id='canvas'></canvas>
         </div>
 
@@ -68,7 +69,9 @@
       var aceituna = new pilas.actores.Aceituna();
       aceituna.aprender(pilas.habilidades.RebotarComoPelota);
 
-      //pilas.mostrar_posiciones();
+      var bloque = new pilas.escena_actual().fisica.crear_circulo(0, -100, {dinamico: false});
+
+      pilas.mostrar_posiciones();
     }
 
     pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});

@@ -10,6 +10,8 @@ class Base {
   pulsa_tecla;
   suelta_tecla;
   fisica;
+  stage;      // escenario de cretejs.
+  camara;
 
   control;
 
@@ -20,8 +22,9 @@ class Base {
     this.pulsa_tecla = new Evento('pulsa_tecla');                   // ['codigo', 'texto']
     this.suelta_tecla = new Evento('suelta_tecla');                 // ['codigo', 'texto']
     this.actualiza = new Evento('actualiza');                       // []
-    this.fisica = new Fisica();
-
+    this.stage = new createjs.Stage(pilas.canvas);
+    this.camara = new Camara();
+    this.fisica = new Fisica(this.camara);
     this.control = new Control(this);
   }
 }
@@ -41,14 +44,10 @@ class Base {
  */
 class Normal extends Base {
   actores;
-  stage;      // escenario de cretejs.
-  camara;
 
   constructor() {
     super();
     this.actores = [];
-    this.stage = new createjs.Stage(pilas.canvas);
-    this.camara = new Camara();
   }
 
   actualizar() {
