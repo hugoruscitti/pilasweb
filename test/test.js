@@ -9,9 +9,8 @@ describe("Inicializar", function(){
   });
 
   it("Tiene que dar error si no está el canvas", function() {
-    var pilas = new pilasengine.Pilas('id_de_un_canvas_que_no_existe');
+    pilas = new Pilas();
   }).should.throw(Error);
-
 
 });
 

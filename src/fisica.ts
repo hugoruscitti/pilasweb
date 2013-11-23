@@ -1,7 +1,6 @@
 declare var Box2D;
 var PPM = 30
 
-
 var box2d = {
   b2World: Box2D.Dynamics.b2World,
   b2Vec2: Box2D.Common.Math.b2Vec2,

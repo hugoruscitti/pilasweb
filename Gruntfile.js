@@ -20,8 +20,8 @@ module.exports = function(grunt) {
       },
 		watch: {
 			scripts: {
-				files: ['src/**'],
-				tasks: ['typescript'],
+				files: ['src/**', 'test/**'],
+				tasks: ['clear', 'typescript', 'test'],
       }
     },
     mocha_phantomjs: {
@@ -34,11 +34,20 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-phantomjs');
 
   grunt.registerTask('tags', ['tags']);
+  grunt.registerTask('test', ['test']);
+  grunt.registerTask('clear', ['clear']);
 
   grunt.registerTask('tags', "create ctags files", function() {
     shell.exec('ctags src/*');
   });
 
+  grunt.registerTask('test', "ejecuta las pruebas", function() {
+    shell.exec('./node_modules/.bin/mocha-phantomjs test/init.html');
+  });
+
+  grunt.registerTask('clear', "limpia la pantalla", function() {
+    shell.exec('clear');
+  });
 
   grunt.registerTask('make_docs', "create documentation files", function() {
     shell.exec('jsduck public/pilasweb.js --title="pilas-engine web" --images=docs/images/ -o docs/html');
