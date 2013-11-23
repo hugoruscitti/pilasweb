@@ -1360,6 +1360,9 @@ var ModoRadiosDeColision = (function () {
         this.shape = new createjs.Shape();
         this.container.addChild(this.shape);
 
+        this.text_modo = new createjs.Text("F9 ModoRadiosDeColision habilitado", "12px Arial", "white");
+        this.container.addChild(this.text_modo);
+
         pilas.escena_actual().stage.addChild(this.container);
     }
     ModoRadiosDeColision.prototype.eliminar = function () {
@@ -1553,22 +1556,24 @@ function convertir_a_pixels(valor) {
 }
 
 var Figura = (function () {
-    function Figura() {
+    function Figura(fisica) {
+        this.fisica = fisica;
+        this.camara = fisica.camara;
     }
     Figura.prototype.obtener_posicion = function () {
         var posicion = this.cuerpo.GetPosition();
         posicion.x = convertir_a_pixels(posicion.x);
         posicion.y = convertir_a_pixels(posicion.y);
 
-        return pilas.escena_actual().camara.convertir_de_posicion_fisica_a_relativa(posicion.x, posicion.y);
+        return this.camara.convertir_de_posicion_fisica_a_relativa(posicion.x, posicion.y);
     };
     return Figura;
 })();
 
 var Circulo = (function (_super) {
     __extends(Circulo, _super);
-    function Circulo(x, y, radio, opciones) {
-        _super.call(this);
+    function Circulo(fisica, x, y, radio, opciones) {
+        _super.call(this, fisica);
         opciones.dinamico = opciones.dinamico || true;
         var fixDef = new Box2D.Dynamics.b2FixtureDef();
 
@@ -1581,7 +1586,7 @@ var Circulo = (function (_super) {
         // crear el body dinamico
         var bodyDef = new Box2D.Dynamics.b2BodyDef();
 
-        var posicion = pilas.escena_actual().camara.convertir_de_posicion_relativa_a_fisica(x, y);
+        var posicion = this.camara.convertir_de_posicion_relativa_a_fisica(x, y);
         posicion.x = convertir_a_metros(posicion.x);
         posicion.y = convertir_a_metros(posicion.y);
 
@@ -1593,8 +1598,9 @@ var Circulo = (function (_super) {
 else
             bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
 
-        this.cuerpo = pilas.escena_actual().fisica.mundo.CreateBody(bodyDef);
+        this.cuerpo = this.fisica.mundo.CreateBody(bodyDef);
         this.cuerpo.CreateFixture(fixDef);
+
         window['cuerpo'] = this.cuerpo;
     }
     return Circulo;
@@ -1613,7 +1619,13 @@ var Fisica = (function () {
         this.velocidad = 1.0;
         this.timeStep = this.velocidad / 120.0;
         //this.crear_bordes_del_escenario();
+        //this.crear_modo_depuracion();
     }
+    Fisica.prototype.crear_modo_depuracion = function () {
+        this.debug = new box2d.b2DebugDraw();
+        this.debug.SetDrawScale(PPM);
+    };
+
     Fisica.prototype.crear_bordes_del_escenario = function () {
         // crear el objeto suelo
         // usa un fixture con la forma de rectangular
@@ -1644,7 +1656,7 @@ var Fisica = (function () {
     };
 
     Fisica.prototype.crear_circulo = function (x, y, radio, opciones) {
-        return new this.Circulo(x, y, radio, opciones);
+        return new this.Circulo(this, x, y, radio, opciones);
     };
     return Fisica;
 })();

@@ -19,20 +19,27 @@ function convertir_a_pixels(valor) {
 
 class Figura {
   cuerpo;
+  camara;
+  fisica;
+
+  constructor(fisica) {
+    this.fisica = fisica;
+    this.camara = fisica.camara;
+  }
 
   obtener_posicion() {
     var posicion = this.cuerpo.GetPosition();
     posicion.x = convertir_a_pixels(posicion.x);
     posicion.y = convertir_a_pixels(posicion.y);
 
-    return pilas.escena_actual().camara.convertir_de_posicion_fisica_a_relativa(posicion.x, posicion.y);
+    return this.camara.convertir_de_posicion_fisica_a_relativa(posicion.x, posicion.y);
   }
 }
 
 
 class Circulo extends Figura {
-  constructor(x, y, radio, opciones) {
-    super();
+  constructor(fisica, x, y, radio, opciones) {
+    super(fisica);
     opciones.dinamico = opciones.dinamico || true;
     var fixDef = new Box2D.Dynamics.b2FixtureDef;
 
@@ -45,7 +52,7 @@ class Circulo extends Figura {
     // crear el body dinamico
     var bodyDef = new Box2D.Dynamics.b2BodyDef;
 
-    var posicion = pilas.escena_actual().camara.convertir_de_posicion_relativa_a_fisica(x, y);
+    var posicion = this.camara.convertir_de_posicion_relativa_a_fisica(x, y);
     posicion.x = convertir_a_metros(posicion.x);
     posicion.y = convertir_a_metros(posicion.y);
 
@@ -57,8 +64,9 @@ class Circulo extends Figura {
     else
       bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
 
-    this.cuerpo = pilas.escena_actual().fisica.mundo.CreateBody(bodyDef);
+    this.cuerpo = this.fisica.mundo.CreateBody(bodyDef);
     this.cuerpo.CreateFixture(fixDef);
+
     window['cuerpo'] = this.cuerpo;
   }
 }
@@ -74,6 +82,7 @@ class Fisica {
 
   Circulo;
   camara;
+  debug;
 
   constructor(camara) {
     this.Circulo = Circulo;  // TODO: separar fisica como Motor y Módulo, dos clases separadas.
@@ -85,7 +94,12 @@ class Fisica {
     this.timeStep = this.velocidad/120.0;
 
     //this.crear_bordes_del_escenario();
+    //this.crear_modo_depuracion();
+  }
 
+  crear_modo_depuracion() {
+    this.debug = new box2d.b2DebugDraw();
+    this.debug.SetDrawScale(PPM);
   }
 
   crear_bordes_del_escenario() {
@@ -118,6 +132,6 @@ class Fisica {
   }
 
   crear_circulo(x, y, radio, opciones) {
-    return new this.Circulo(x, y, radio, opciones);
+    return new this.Circulo(this, x, y, radio, opciones);
   }
 }
