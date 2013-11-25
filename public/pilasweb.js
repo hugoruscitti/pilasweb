@@ -1335,20 +1335,25 @@ var DepuradorDeshabilitado = (function () {
         modos = modos || {};
         modos.puntos_de_control = modos.puntos_de_control || false;
         modos.radios_de_colision = modos.radios_de_colision || false;
+        modos.fisica = modos.fisica || false;
+
+        this.eliminar_todos_los_modos();
+
+        if (modos.radios_de_colision)
+            this.modos.push(new ModoRadiosDeColision());
 
         if (modos.puntos_de_control)
             this.modos.push(new ModoPuntosDeControl());
 
-        if (modos.puntos_de_control == false) {
-            for (var i = 0; i < this.modos.length; i++) {
-                this.modos[i].eliminar();
-            }
-            this.modos = [];
-        }
+        if (modos.fisica)
+            this.modos.push(new ModoFisica());
+    };
 
-        if (modos.radios_de_colision) {
-            this.modos.push(new ModoRadiosDeColision());
-        }
+    DepuradorDeshabilitado.prototype.eliminar_todos_los_modos = function () {
+        for (var i = 0; i < this.modos.length; i++)
+            this.modos[i].eliminar();
+
+        this.modos = [];
     };
     return DepuradorDeshabilitado;
 })();
@@ -1391,6 +1396,7 @@ var ModoPuntosDeControl = (function () {
         this.container.addChild(this.shape);
 
         this.text_modo = new createjs.Text("F12 ModoPosición habilitado", "12px Arial", "white");
+        this.text_modo.y = 15;
         this.container.addChild(this.text_modo);
 
         this.text_coordenada = new createjs.Text("Posición del mouse: x=12 y=33", "12px Arial", "white");
@@ -1424,6 +1430,30 @@ var ModoPuntosDeControl = (function () {
         this.text_coordenada.text = "Posición del mouse: x=" + Math.floor(pos.x) + " y=" + Math.floor(pos.y);
     };
     return ModoPuntosDeControl;
+})();
+
+var ModoFisica = (function () {
+    function ModoFisica() {
+        this.container = new createjs.Container();
+
+        this.shape = new createjs.Shape();
+        this.container.addChild(this.shape);
+
+        this.text_modo = new createjs.Text("F11 ModoFisica habilitado", "12px Arial", "white");
+        this.container.addChild(this.text_modo);
+
+        pilas.escena_actual().stage.addChild(this.container);
+    }
+    ModoFisica.prototype.eliminar = function () {
+        pilas.escena_actual().stage.removeChild(this.container);
+    };
+
+    ModoFisica.prototype.actualizar = function () {
+        var escena = pilas.escena_actual();
+        this.shape.graphics.clear();
+        escena.fisica.dibujar_figuras_sobre_lienzo(this.shape.graphics);
+    };
+    return ModoFisica;
 })();
 /// <reference path="camara.ts />
 /// <reference path="evento.ts />
@@ -1544,6 +1574,15 @@ var PPM = 30;
 var box2d = {
     b2World: Box2D.Dynamics.b2World,
     b2Vec2: Box2D.Common.Math.b2Vec2,
+    b2DebugDraw: Box2D.Dynamics.b2DebugDraw,
+    b2Vec2: Box2D.Common.Math.b2Vec2,
+    b2AABB: Box2D.Collision.b2AABB,
+    b2BodyDef: Box2D.Dynamics.b2BodyDef,
+    b2Body: Box2D.Dynamics.b2Body,
+    b2FixtureDef: Box2D.Dynamics.b2FixtureDef,
+    b2Fixture: Box2D.Dynamics.b2Fixture,
+    b2World: Box2D.Dynamics.b2World,
+    b2PolygonShape: Box2D.Collision.Shapes.b2PolygonShape,
     b2DebugDraw: Box2D.Dynamics.b2DebugDraw
 };
 
@@ -1581,7 +1620,7 @@ var Circulo = (function (_super) {
         fixDef.friction = opciones.friccion || 0.5;
         fixDef.restitution = opciones.restitucion || 0.2;
 
-        fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(radio);
+        fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(convertir_a_metros(radio));
 
         // crear el body dinamico
         var bodyDef = new Box2D.Dynamics.b2BodyDef();
@@ -1600,10 +1639,42 @@ else
 
         this.cuerpo = this.fisica.mundo.CreateBody(bodyDef);
         this.cuerpo.CreateFixture(fixDef);
-
-        window['cuerpo'] = this.cuerpo;
     }
     return Circulo;
+})(Figura);
+
+var Rectangulo = (function (_super) {
+    __extends(Rectangulo, _super);
+    function Rectangulo(fisica, x, y, radio, opciones) {
+        _super.call(this, fisica);
+        opciones.dinamico = opciones.dinamico || true;
+        var fixDef = new Box2D.Dynamics.b2FixtureDef();
+
+        fixDef.density = opciones.densidad || 1.0;
+        fixDef.friction = opciones.friccion || 0.5;
+        fixDef.restitution = opciones.restitucion || 0.2;
+
+        fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(convertir_a_metros(radio));
+
+        // crear el body dinamico
+        var bodyDef = new Box2D.Dynamics.b2BodyDef();
+
+        var posicion = this.camara.convertir_de_posicion_relativa_a_fisica(x, y);
+        posicion.x = convertir_a_metros(posicion.x);
+        posicion.y = convertir_a_metros(posicion.y);
+
+        bodyDef.position.x = posicion.x;
+        bodyDef.position.y = posicion.y;
+
+        if (opciones.dinamico)
+            bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
+else
+            bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
+
+        this.cuerpo = this.fisica.mundo.CreateBody(bodyDef);
+        this.cuerpo.CreateFixture(fixDef);
+    }
+    return Rectangulo;
 })(Figura);
 
 /**
@@ -1612,51 +1683,113 @@ else
 var Fisica = (function () {
     function Fisica(camara) {
         this.Circulo = Circulo;
+        this.Rectangulo = Rectangulo;
         this.camara = camara;
 
-        this.gravedad = new box2d.b2Vec2(0, 9);
-        this.mundo = new box2d.b2World(this.gravedad, false);
         this.velocidad = 1.0;
         this.timeStep = this.velocidad / 120.0;
+
         //this.crear_bordes_del_escenario();
-        //this.crear_modo_depuracion();
+        var b2Vec2 = Box2D.Common.Math.b2Vec2, b2AABB = Box2D.Collision.b2AABB, b2BodyDef = Box2D.Dynamics.b2BodyDef, b2Body = Box2D.Dynamics.b2Body, b2FixtureDef = Box2D.Dynamics.b2FixtureDef, b2Fixture = Box2D.Dynamics.b2Fixture, b2World = Box2D.Dynamics.b2World, b2MassData = Box2D.Collision.Shapes.b2MassData, b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape, b2CircleShape = Box2D.Collision.Shapes.b2CircleShape, b2DebugDraw = Box2D.Dynamics.b2DebugDraw, b2MouseJointDef = Box2D.Dynamics.Joints.b2MouseJointDef;
+
+        this.gravedad = new box2d.b2Vec2(0, 9);
+        this.mundo = new box2d.b2World(this.gravedad, true);
     }
-    Fisica.prototype.crear_modo_depuracion = function () {
-        this.debug = new box2d.b2DebugDraw();
-        this.debug.SetDrawScale(PPM);
-    };
-
     Fisica.prototype.crear_bordes_del_escenario = function () {
-        // crear el objeto suelo
-        // usa un fixture con la forma de rectangular
-        var fixDef = new Box2D.Dynamics.b2FixtureDef();
-        fixDef.density = 1.0;
-        fixDef.friction = 0.5;
-        fixDef.restitution = 1.0;
-        fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape();
-        fixDef.shape.SetAsBox(1, 1);
+        var b2Vec2 = Box2D.Common.Math.b2Vec2;
+        var b2AABB = Box2D.Collision.b2AABB;
+        var b2BodyDef = Box2D.Dynamics.b2BodyDef;
+        var b2Body = Box2D.Dynamics.b2Body;
+        var b2FixtureDef = Box2D.Dynamics.b2FixtureDef;
+        var b2Fixture = Box2D.Dynamics.b2Fixture;
+        var b2World = Box2D.Dynamics.b2World;
+        var b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
+        var b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 
-        // crear el cuerpo como un objeto estatico
-        var bodyDef = new Box2D.Dynamics.b2BodyDef();
+        var bodyDef = new b2BodyDef();
         bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
+        var posicion = this.camara.convertir_de_posicion_relativa_a_fisica(0, -50);
+        posicion.x = convertir_a_metros(posicion.x);
+        posicion.y = convertir_a_metros(posicion.y);
 
-        var posicion = this.camara.obtener_posicion_pantalla(-100, -100);
-        console.log(posicion);
+        bodyDef.position.Set(posicion.x, posicion.y);
 
-        //var posicion = {x: 100, y: 100};
-        bodyDef.position.y = convertir_a_metros(200);
-        bodyDef.position.x = convertir_a_metros(0);
-
-        // instertar el objeto suelo en el mundo
-        this.mundo.CreateBody(bodyDef).CreateFixture(fixDef);
+        //bodyDef.userData=data;
+        var polygonShape = new b2PolygonShape();
+        polygonShape.SetAsBox(convertir_a_metros(50), convertir_a_metros(1));
+        var fixtureDef = new b2FixtureDef();
+        fixtureDef.density = 1.0;
+        fixtureDef.friction = 0.5;
+        fixtureDef.restitution = 1;
+        fixtureDef.shape = polygonShape;
+        var body = this.mundo.CreateBody(bodyDef);
+        body.CreateFixture(fixtureDef);
     };
 
     Fisica.prototype.actualizar = function () {
         this.mundo.Step(this.timeStep, 6, 3);
+
+        //this.mundo.DrawDebugData();
+        this.mundo.ClearForces();
     };
 
     Fisica.prototype.crear_circulo = function (x, y, radio, opciones) {
         return new this.Circulo(this, x, y, radio, opciones);
+    };
+
+    Fisica.prototype.crear_rectangulo = function (x, y, ancho, alto, opciones) {
+        return new this.Rectangulo(this, x, y, ancho, alto, opciones);
+    };
+
+    Fisica.prototype.dibujar_figuras_sobre_lienzo = function (graphics) {
+        var cuerpo = this.mundo.GetBodyList();
+
+        while (cuerpo !== null) {
+            //cuerpo.GetType() == 2 -> (es dinámico)
+            var fixture = cuerpo.GetFixtureList();
+
+            if (fixture) {
+                var shape = fixture.GetShape();
+                var posicion = cuerpo.GetPosition();
+
+                if (shape.GetRadius !== undefined) {
+                    var radio = shape.GetRadius();
+                    graphics.beginStroke("#FFF").drawCircle(posicion.x, posicion.y, convertir_a_pixels(radio)).endStroke();
+                }
+
+                if (shape.b2PolygonShape !== undefined) {
+                    var vertices = shape.GetVertices();
+                    var v2 = {};
+
+                    v2[0] = this.convertir_a_vertice_pantalla(vertices[0].x, vertices[0].y);
+                    v2[1] = this.convertir_a_vertice_pantalla(vertices[1].x, vertices[1].y);
+                    v2[2] = this.convertir_a_vertice_pantalla(vertices[2].x, vertices[2].y);
+                    v2[3] = this.convertir_a_vertice_pantalla(vertices[3].x, vertices[3].y);
+
+                    graphics.beginStroke("white").moveTo(v2[0].x, v2[0].y).lineTo(v2[1].x, v2[1].y).lineTo(v2[2].x, v2[2].y).lineTo(v2[3].x, v2[3].y).lineTo(v2[0].x, v2[0].y).endStroke();
+                }
+                // else {
+                //  console.log("No es circulo!");
+                // }
+            }
+
+            cuerpo = cuerpo.m_next;
+        }
+        //for (var i=0; i<escena.actores.length; i++) {
+        //    var actor = escena.actores[i];
+        //  var posicion = escena.obtener_posicion_pantalla(actor.x, actor.y);
+        //  graphics.beginStroke("#FFF").drawCircle(posicion.x, posicion.y, actor.radio_de_colision).endStroke();
+        // }
+    };
+
+    Fisica.prototype.convertir_a_vertice_pantalla = function (x, y) {
+        return { x: 160 + (x * 30), y: 120 - (y * 30) };
+        /*var v = {
+        x: convertir_a_pixels(x),
+        y: convertir_a_pixels(y)
+        }
+        return {x: v.x + 160, y: 120 - v.y};
+        */
     };
     return Fisica;
 })();
@@ -2014,7 +2147,7 @@ var RebotarComoPelota = (function (_super) {
     function RebotarComoPelota(receptor) {
         _super.call(this, receptor);
         pilas.escena_actual().actualiza.conectar(this);
-        receptor.figura = pilas.escena_actual().fisica.crear_circulo(receptor.x, receptor.y, 18, {});
+        receptor.figura = pilas.escena_actual().fisica.crear_circulo(receptor.x, receptor.y, 30, {});
     }
     RebotarComoPelota.prototype.recibir = function (evento, tipo) {
         if (tipo == pilas.escena_actual().actualiza) {
@@ -2024,6 +2157,23 @@ var RebotarComoPelota = (function (_super) {
         }
     };
     return RebotarComoPelota;
+})(Habilidad);
+
+var RebotarComoCaja = (function (_super) {
+    __extends(RebotarComoCaja, _super);
+    function RebotarComoCaja(receptor) {
+        _super.call(this, receptor);
+        pilas.escena_actual().actualiza.conectar(this);
+        receptor.figura = pilas.escena_actual().fisica.crear_rectangulo(receptor.x, receptor.y, 30, 30, {});
+    }
+    RebotarComoCaja.prototype.recibir = function (evento, tipo) {
+        if (tipo == pilas.escena_actual().actualiza) {
+            var posicion = this.receptor.figura.obtener_posicion();
+            this.receptor.x = posicion.x;
+            this.receptor.y = posicion.y;
+        }
+    };
+    return RebotarComoCaja;
 })(Habilidad);
 
 var SeMantieneEnPantalla = (function (_super) {
@@ -2066,6 +2216,7 @@ var Habilidades = (function () {
         this.SeMantieneEnPantalla = SeMantieneEnPantalla;
         this.Disparar = Disparar;
         this.RebotarComoPelota = RebotarComoPelota;
+        this.RebotarComoCaja = RebotarComoCaja;
     }
     return Habilidades;
 })();
@@ -2330,7 +2481,12 @@ var Pilas = (function () {
     * Retorna la escena en curso.
     */
     Pilas.prototype.escena_actual = function () {
-        return this.mundo.gestor_escenas.escena_actual();
+        if (this.mundo === undefined) {
+            console.log("epa!");
+        } else {
+            var escena = this.mundo.gestor_escenas.escena_actual();
+            return escena;
+        }
     };
 
     /**

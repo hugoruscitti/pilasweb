@@ -260,7 +260,7 @@ class RebotarComoPelota extends Habilidad {
   constructor(receptor) {
     super(receptor);
     pilas.escena_actual().actualiza.conectar(this);
-    receptor.figura = pilas.escena_actual().fisica.crear_circulo(receptor.x, receptor.y, 18, {});
+    receptor.figura = pilas.escena_actual().fisica.crear_circulo(receptor.x, receptor.y, 30, {});
   }
 
   recibir(evento, tipo) {
@@ -272,6 +272,25 @@ class RebotarComoPelota extends Habilidad {
   }
 
 }
+
+class RebotarComoCaja extends Habilidad {
+
+  constructor(receptor) {
+    super(receptor);
+    pilas.escena_actual().actualiza.conectar(this);
+    receptor.figura = pilas.escena_actual().fisica.crear_rectangulo(receptor.x, receptor.y, 30, 30, {});
+  }
+
+  recibir(evento, tipo) {
+    if (tipo == pilas.escena_actual().actualiza) {
+      var posicion = this.receptor.figura.obtener_posicion();
+      this.receptor.x = posicion.x;
+      this.receptor.y = posicion.y;
+    }
+  }
+
+}
+
 
 class SeMantieneEnPantalla extends Habilidad {
   
@@ -318,6 +337,7 @@ class Habilidades {
   SeMantieneEnPantalla;
   Disparar;
   RebotarComoPelota;
+  RebotarComoCaja;
 
   constructor() {
     this.Arrastrable = Arrastrable;
@@ -329,5 +349,6 @@ class Habilidades {
     this.SeMantieneEnPantalla = SeMantieneEnPantalla;
     this.Disparar = Disparar;
     this.RebotarComoPelota = RebotarComoPelota;
+    this.RebotarComoCaja = RebotarComoCaja;
   }
 }

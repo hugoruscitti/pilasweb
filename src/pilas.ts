@@ -85,7 +85,12 @@ class Pilas {
    * Retorna la escena en curso.
    */
   escena_actual() {
-    return this.mundo.gestor_escenas.escena_actual();
+    if (this.mundo === undefined) {
+      console.log("epa!");
+    } else {
+      var escena = this.mundo.gestor_escenas.escena_actual();
+      return escena;
+    }
   }
 
   /**

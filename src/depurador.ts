@@ -15,21 +15,26 @@ class DepuradorDeshabilitado {
     modos = modos || {};
     modos.puntos_de_control = modos.puntos_de_control || false;
     modos.radios_de_colision = modos.radios_de_colision || false;
+    modos.fisica = modos.fisica || false;
+
+    this.eliminar_todos_los_modos();
+
+    if (modos.radios_de_colision)
+      this.modos.push(new ModoRadiosDeColision());
 
     if (modos.puntos_de_control)
       this.modos.push(new ModoPuntosDeControl());
 
-    if (modos.puntos_de_control == false) {
-      for (var i=0; i<this.modos.length; i++) {
-        this.modos[i].eliminar();
-      }
-      this.modos = [];
-    }
+    if (modos.fisica)
+      this.modos.push(new ModoFisica());
 
-    if (modos.radios_de_colision) {
-      this.modos.push(new ModoRadiosDeColision());
-    }
+  }
 
+  eliminar_todos_los_modos() {
+    for (var i=0; i<this.modos.length; i++)
+      this.modos[i].eliminar();
+
+    this.modos = [];
   }
 
 }
@@ -84,6 +89,7 @@ class ModoPuntosDeControl {
     this.container.addChild(this.shape);
 
     this.text_modo = new createjs.Text("F12 ModoPosición habilitado", "12px Arial", "white");
+    this.text_modo.y = 15; // TODO: Buscar la forma de posicion este texto solo, uno arriba de otro.
     this.container.addChild(this.text_modo);
 
     this.text_coordenada = new createjs.Text("Posición del mouse: x=12 y=33", "12px Arial", "white");
@@ -119,3 +125,35 @@ class ModoPuntosDeControl {
   }
 
 }
+
+
+class ModoFisica {
+  shape;
+  container;
+  text_modo;
+
+  constructor() {
+    this.container = new createjs.Container();
+
+    this.shape = new createjs.Shape();
+    this.container.addChild(this.shape);
+
+    this.text_modo = new createjs.Text("F11 ModoFisica habilitado", "12px Arial", "white");
+    this.container.addChild(this.text_modo);
+
+    pilas.escena_actual().stage.addChild(this.container)
+  }
+
+  eliminar() {
+    pilas.escena_actual().stage.removeChild(this.container);
+  }
+
+  actualizar() {
+    var escena = pilas.escena_actual();
+    this.shape.graphics.clear();
+    escena.fisica.dibujar_figuras_sobre_lienzo(this.shape.graphics);
+  }
+}
+
+
+

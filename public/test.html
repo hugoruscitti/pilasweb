@@ -40,17 +40,16 @@
      </div>
    </div>
 
-   <div class='container'>
+    <div class='container'>
 
-     <div class="row"  style='margin-top: 70px'>
-        <div class="span12">
-            <canvas id='nuevo_canvas'></canvas>
-            <canvas id='canvas'></canvas>
-        </div>
-
+      <div class="row"  style='margin-top: 70px'>
+          <div class="span12">
+              <canvas id='canvas'></canvas>
+          </div>
+      </div>
 
     </div>
-    </div>
+
   <script src='libs/PxLoader.js'></script>
   <script src='libs/PxLoaderImage.js'></script>
   <script src='libs/Box2dWeb-2.1.a.3.js'></script>
@@ -61,20 +60,23 @@
 
 
   <script>
+    window['canvas'] = canvas;
     pilas = new Pilas();
-
+    pilas.iniciar({ancho: 640, alto: 480, data_path: 'data'});
     pilas.onready = function() {
       var fondo = new pilas.fondos.Tarde();
 
-      var aceituna = new pilas.actores.Aceituna();
+      var aceituna = new pilas.actores.Aceituna(10, 100);
       aceituna.aprender(pilas.habilidades.RebotarComoPelota);
 
-      var bloque = new pilas.escena_actual().fisica.crear_circulo(0, -100, {dinamico: false});
+      var aceituna2 = new pilas.actores.Aceituna(0, 140);
+      aceituna2.aprender(pilas.habilidades.RebotarComoPelota);
 
-      pilas.mostrar_posiciones();
+      pilas.definir_modos({
+        fisica: true,
+      });
     }
 
-    pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
     pilas.ejecutar();
   </script>
 </body>
