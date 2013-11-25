@@ -1708,9 +1708,11 @@ else
 var Fisica = (function () {
     function Fisica(camara) {
         this.camara = camara;
-        this.mundo = new box2d.b2World(new box2d.b2Vec2(0, 10), true);
+        this.mundo = new box2d.b2World(new box2d.b2Vec2(0, 10), false);
         this.Rectangulo = Rectangulo;
         this.Circulo = Circulo;
+        this.velocidad = 1.0;
+        this.timeStep = this.velocidad / 120.0;
 
         // Bordes del escenario
         this.crear_rectangulo(0, -118, 320, 5, { dinamico: false });
@@ -1723,9 +1725,12 @@ var Fisica = (function () {
         window['rectangulo'] = a;
     }
     Fisica.prototype.actualizar = function () {
-        this.mundo.Step(1 / 60, 10, 10);
-
+        this.mundo.Step(this.timeStep, 6, 3);
         this.mundo.ClearForces();
+    };
+
+    Fisica.prototype.definir_gravedad = function (dx, dy) {
+        this.mundo.SetGravity(new box2d.b2Vec2(dx, dy));
     };
 
     Fisica.prototype.dibujar_figuras_sobre_lienzo = function (graphics) {

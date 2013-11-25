@@ -120,12 +120,16 @@ class Fisica {
   Circulo;
   Rectangulo;
   camara;
+  velocidad;
+  timeStep;
 
   constructor(camara) {
     this.camara = camara;
-    this.mundo = new box2d.b2World(new box2d.b2Vec2(0, 10), true);
+    this.mundo = new box2d.b2World(new box2d.b2Vec2(0, 10), false);
     this.Rectangulo = Rectangulo; // TODO: separar fisica como Motor y Módulo, dos clases separadas.
     this.Circulo = Circulo;       // TODO: separar fisica como Motor y Módulo, dos clases separadas.
+    this.velocidad = 1.0;
+    this.timeStep = this.velocidad/120.0;
 
     // Bordes del escenario
     this.crear_rectangulo(0, -118, 320, 5, {dinamico: false}); // abajo
@@ -139,9 +143,12 @@ class Fisica {
   }
 
   actualizar() {
-    this.mundo.Step(1/60, 10, 10);
-
+    this.mundo.Step(this.timeStep, 6, 3);
     this.mundo.ClearForces();
+  }
+
+  definir_gravedad(dx, dy) {
+    this.mundo.SetGravity(new box2d.b2Vec2(dx, dy));
   }
 
   dibujar_figuras_sobre_lienzo(graphics) {
