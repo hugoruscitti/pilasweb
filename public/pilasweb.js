@@ -942,6 +942,10 @@ var Camara = (function () {
         };
     };
 
+    /*
+    * Convierte una coordenada de pilas (donde 0,0 es el centro de pantalla)
+    * en una coordenada real de pantalla (donde 0,0 es la esquina superior izquierda).
+    */
     Camara.prototype.convertir_de_posicion_relativa_a_fisica = function (x, y) {
         var centro = this.obtener_posicion();
         return {
@@ -950,6 +954,10 @@ var Camara = (function () {
         };
     };
 
+    /*
+    * Convierte una coordenada real de pantalla (donde 0,0 es la esquina superior izquierda)
+    * en una coordenada de pilas (donde 0,0 es el centro de pantalla).
+    */
     Camara.prototype.convertir_de_posicion_fisica_a_relativa = function (x, y) {
         var centro = this.obtener_posicion();
         return {
@@ -1583,20 +1591,119 @@ var box2d = {
     b2DebugDraw: Box2D.Dynamics.b2DebugDraw
 };
 
+function convertir_a_metros(valor) {
+    return valor / PPM;
+}
+
+function convertir_a_pixels(valor) {
+    return valor * PPM;
+}
+
+var Figura = (function () {
+    function Figura(fisica) {
+        this.fisica = fisica;
+        this.camara = fisica.camara;
+    }
+    Figura.prototype.obtener_posicion = function () {
+        var posicion = this.cuerpo.GetPosition();
+        var x = convertir_a_pixels(posicion.x);
+        var y = convertir_a_pixels(posicion.y);
+
+        return this.camara.convertir_de_posicion_fisica_a_relativa(x, y);
+    };
+
+    Figura.prototype.obtener_rotacion = function () {
+        return (this.cuerpo.GetAngle() * 180) / Math.PI;
+    };
+    return Figura;
+})();
+
+var Rectangulo = (function (_super) {
+    __extends(Rectangulo, _super);
+    function Rectangulo(fisica, x, y, ancho, alto, opciones) {
+        _super.call(this, fisica);
+
+        if (opciones.dinamico === undefined)
+            opciones.dinamico = true;
+
+        var bodyDef = new box2d.b2BodyDef();
+
+        if (opciones.dinamico)
+            bodyDef.type = box2d.b2Body.b2_dynamicBody;
+else
+            bodyDef.type = box2d.b2Body.b2_staticBody;
+
+        var pos = this.fisica.camara.convertir_de_posicion_relativa_a_fisica(x, y);
+        bodyDef.position.Set(convertir_a_metros(pos.x), convertir_a_metros(pos.y));
+
+        //bodyDef.userData=data;
+        var polygonShape = new box2d.b2PolygonShape();
+        polygonShape.SetAsBox(convertir_a_metros(ancho / 2), convertir_a_metros(alto / 2));
+
+        var fixtureDef = new box2d.b2FixtureDef();
+        fixtureDef.density = 1.0;
+        fixtureDef.friction = 0.5;
+        fixtureDef.restitution = 0.5;
+        fixtureDef.shape = polygonShape;
+
+        var body = this.fisica.mundo.CreateBody(bodyDef);
+        body.CreateFixture(fixtureDef);
+
+        this.cuerpo = body;
+    }
+    return Rectangulo;
+})(Figura);
+
+var Circulo = (function (_super) {
+    __extends(Circulo, _super);
+    function Circulo(fisica, x, y, radio, opciones) {
+        _super.call(this, fisica);
+        opciones.dinamico = opciones.dinamico || true;
+        var fixDef = new Box2D.Dynamics.b2FixtureDef();
+
+        fixDef.density = opciones.densidad || 1.0;
+        fixDef.friction = opciones.friccion || 0.5;
+        fixDef.restitution = opciones.restitucion || 0.2;
+
+        fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(convertir_a_metros(radio));
+
+        // crear el body dinamico
+        var bodyDef = new Box2D.Dynamics.b2BodyDef();
+
+        var posicion = this.camara.convertir_de_posicion_relativa_a_fisica(x, y);
+        posicion.x = convertir_a_metros(posicion.x);
+        posicion.y = convertir_a_metros(posicion.y);
+
+        bodyDef.position.x = posicion.x;
+        bodyDef.position.y = posicion.y;
+
+        if (opciones.dinamico)
+            bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
+else
+            bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
+
+        this.cuerpo = this.fisica.mundo.CreateBody(bodyDef);
+        this.cuerpo.CreateFixture(fixDef);
+    }
+    return Circulo;
+})(Figura);
+
 var Fisica = (function () {
     function Fisica(camara) {
         this.camara = camara;
         this.mundo = new box2d.b2World(new box2d.b2Vec2(0, 10), true);
+        this.Rectangulo = Rectangulo;
+        this.Circulo = Circulo;
 
         // Bordes del escenario
-        this.createBox(640 / 2, 30 / 2, 320 / 2, 480 / 2, box2d.b2Body.b2_staticBody, null);
-        this.createBox(640 / 2, 30 / 2, 320 / 2, 0, box2d.b2Body.b2_staticBody, null);
-        this.createBox(30 / 2, 480 / 2, 0, 240 / 2, box2d.b2Body.b2_staticBody, null);
-        this.createBox(30 / 2, 480 / 2, 640 / 2, 240 / 2, box2d.b2Body.b2_staticBody, null);
+        this.crear_rectangulo(0, -118, 320, 5, { dinamico: false });
+        this.crear_rectangulo(0, 118, 320, 5, { dinamico: false });
+        this.crear_rectangulo(-158, 0, 5, 240, { dinamico: false });
+        this.crear_rectangulo(158, 0, 5, 240, { dinamico: false });
 
-        //
-        this.createBox(64, 64, 40, 40, box2d.b2Body.b2_dynamicBody, {});
-        this.createBox(64, 64, 20, 10, box2d.b2Body.b2_dynamicBody, {});
+        // Una caja
+        var a = this.crear_rectangulo(0, 0, 10, 10, { dinamico: true });
+        window['rectangulo'] = a;
     }
     Fisica.prototype.actualizar = function () {
         this.mundo.Step(1 / 60, 10, 10);
@@ -1616,40 +1723,26 @@ var Fisica = (function () {
                 // dibuja un circulo en el centro de la figura.
                 graphics.beginStroke("#FFF").drawCircle(x, y, 5).endStroke();
 
+                if (shape.GetRadius !== undefined) {
+                    var radio = shape.GetRadius();
+                    graphics.beginStroke("#FFF").drawCircle(x, y, convertir_a_pixels(radio)).endStroke();
+
+                    var dx = Math.cos(b.GetAngle());
+                    var dy = Math.sin(b.GetAngle());
+
+                    graphics.beginStroke("white").moveTo(x, y).lineTo(x + convertir_a_pixels(dx * radio), y + convertir_a_pixels(dy * radio)).endStroke();
+                }
+
                 if (shape.b2PolygonShape !== undefined) {
                     var vertices = shape.GetVertices();
                     var v2 = {};
 
-                    window['b'] = b;
-                    window['a'] = vertices[0];
-
-                    v2[0] = b.GetWorldVector(vertices[0]);
-
-                    v2[0] = {
-                        x: v2[0].x * PPM + x,
-                        y: v2[0].y * PPM + y
-                    };
-
-                    v2[1] = b.GetWorldVector(vertices[1]);
-
-                    v2[1] = {
-                        x: v2[1].x * PPM + x,
-                        y: v2[1].y * PPM + y
-                    };
-
-                    v2[2] = b.GetWorldVector(vertices[2]);
-
-                    v2[2] = {
-                        x: v2[2].x * PPM + x,
-                        y: v2[2].y * PPM + y
-                    };
-
-                    v2[3] = b.GetWorldVector(vertices[3]);
-
-                    v2[3] = {
-                        x: v2[3].x * PPM + x,
-                        y: v2[3].y * PPM + y
-                    };
+                    // TODO: reconstruir para que dibuje poligonos de cualquier cantidad
+                    //       de vertices.
+                    v2[0] = this.convertir_vector_relativo_a_pantalla(b, x, y, vertices[0]);
+                    v2[1] = this.convertir_vector_relativo_a_pantalla(b, x, y, vertices[1]);
+                    v2[2] = this.convertir_vector_relativo_a_pantalla(b, x, y, vertices[2]);
+                    v2[3] = this.convertir_vector_relativo_a_pantalla(b, x, y, vertices[3]);
 
                     graphics.beginStroke("white").moveTo(v2[0].x, v2[0].y).lineTo(v2[1].x, v2[1].y).lineTo(v2[2].x, v2[2].y).lineTo(v2[3].x, v2[3].y).lineTo(v2[0].x, v2[0].y).endStroke();
                 }
@@ -1657,12 +1750,20 @@ var Fisica = (function () {
         }
     };
 
+    Fisica.prototype.convertir_vector_relativo_a_pantalla = function (cuerpo, x, y, v) {
+        var vector_salida = cuerpo.GetWorldVector(v);
+        return {
+            x: vector_salida.x * PPM + x,
+            y: vector_salida.y * PPM + y
+        };
+    };
+
     Fisica.prototype.createBox = function (width, height, pX, pY, type, data) {
         var bodyDef = new box2d.b2BodyDef();
         bodyDef.type = type;
         bodyDef.position.Set(pX / PPM, pY / PPM);
-        bodyDef.userData = data;
 
+        //bodyDef.userData=data;
         var polygonShape = new box2d.b2PolygonShape();
         polygonShape.SetAsBox(width / 2 / PPM, height / 2 / PPM);
 
@@ -1674,6 +1775,14 @@ var Fisica = (function () {
 
         var body = this.mundo.CreateBody(bodyDef);
         body.CreateFixture(fixtureDef);
+    };
+
+    Fisica.prototype.crear_rectangulo = function (x, y, ancho, alto, opciones) {
+        return new this.Rectangulo(this, x, y, ancho, alto, opciones);
+    };
+
+    Fisica.prototype.crear_circulo = function (x, y, radio, opciones) {
+        return new this.Circulo(this, x, y, radio, opciones);
     };
     return Fisica;
 })();
@@ -2031,13 +2140,14 @@ var RebotarComoPelota = (function (_super) {
     function RebotarComoPelota(receptor) {
         _super.call(this, receptor);
         pilas.escena_actual().actualiza.conectar(this);
-        receptor.figura = pilas.escena_actual().fisica.crear_circulo(receptor.x, receptor.y, 30, {});
+        receptor.figura = pilas.escena_actual().fisica.crear_circulo(receptor.x, receptor.y, receptor.radio_de_colision, {});
     }
     RebotarComoPelota.prototype.recibir = function (evento, tipo) {
         if (tipo == pilas.escena_actual().actualiza) {
             var posicion = this.receptor.figura.obtener_posicion();
             this.receptor.x = posicion.x;
             this.receptor.y = posicion.y;
+            this.receptor.rotacion = this.receptor.figura.obtener_rotacion();
         }
     };
     return RebotarComoPelota;
@@ -2050,11 +2160,14 @@ var RebotarComoCaja = (function (_super) {
         pilas.escena_actual().actualiza.conectar(this);
         receptor.figura = pilas.escena_actual().fisica.crear_rectangulo(receptor.x, receptor.y, 30, 30, {});
     }
+    // TODO: identico a RebotarComoPelota.recibir (ver si hago que tengan la misma superclase las dos.
+    //       (o mejor, hacer la habilidad imitar).
     RebotarComoCaja.prototype.recibir = function (evento, tipo) {
         if (tipo == pilas.escena_actual().actualiza) {
             var posicion = this.receptor.figura.obtener_posicion();
             this.receptor.x = posicion.x;
             this.receptor.y = posicion.y;
+            this.receptor.rotacion = this.receptor.figura.obtener_rotacion();
         }
     };
     return RebotarComoCaja;

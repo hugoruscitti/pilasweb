@@ -49,12 +49,20 @@ class Camara {
             y: this.centro_y + this.y};
   }
 
+  /*
+   * Convierte una coordenada de pilas (donde 0,0 es el centro de pantalla)
+   * en una coordenada real de pantalla (donde 0,0 es la esquina superior izquierda).
+   */
   convertir_de_posicion_relativa_a_fisica(x, y) {
     var centro = this.obtener_posicion();
     return {x: centro.x + x,
             y: centro.y - y}
   }
 
+  /*
+   * Convierte una coordenada real de pantalla (donde 0,0 es la esquina superior izquierda)
+   * en una coordenada de pilas (donde 0,0 es el centro de pantalla).
+   */
   convertir_de_posicion_fisica_a_relativa(x, y) {
     var centro = this.obtener_posicion();
     return {x: - centro.x + x,

@@ -260,7 +260,7 @@ class RebotarComoPelota extends Habilidad {
   constructor(receptor) {
     super(receptor);
     pilas.escena_actual().actualiza.conectar(this);
-    receptor.figura = pilas.escena_actual().fisica.crear_circulo(receptor.x, receptor.y, 30, {});
+    receptor.figura = pilas.escena_actual().fisica.crear_circulo(receptor.x, receptor.y, receptor.radio_de_colision, {});
   }
 
   recibir(evento, tipo) {
@@ -268,6 +268,7 @@ class RebotarComoPelota extends Habilidad {
       var posicion = this.receptor.figura.obtener_posicion();
       this.receptor.x = posicion.x;
       this.receptor.y = posicion.y;
+      this.receptor.rotacion = this.receptor.figura.obtener_rotacion();
     }
   }
 
@@ -281,11 +282,14 @@ class RebotarComoCaja extends Habilidad {
     receptor.figura = pilas.escena_actual().fisica.crear_rectangulo(receptor.x, receptor.y, 30, 30, {});
   }
 
+  // TODO: identico a RebotarComoPelota.recibir (ver si hago que tengan la misma superclase las dos.
+  //       (o mejor, hacer la habilidad imitar).
   recibir(evento, tipo) {
     if (tipo == pilas.escena_actual().actualiza) {
       var posicion = this.receptor.figura.obtener_posicion();
       this.receptor.x = posicion.x;
       this.receptor.y = posicion.y;
+      this.receptor.rotacion = this.receptor.figura.obtener_rotacion();
     }
   }
 

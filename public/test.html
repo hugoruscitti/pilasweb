@@ -66,14 +66,15 @@
     pilas.onready = function() {
       var fondo = new pilas.fondos.Tarde();
 
-      //var aceituna = new pilas.actores.Aceituna(10, 100);
-      //aceituna.aprender(pilas.habilidades.RebotarComoPelota);
+      var aceituna = new pilas.actores.Aceituna(10, 100);
+      aceituna.aprender(pilas.habilidades.RebotarComoPelota);
 
       //var aceituna2 = new pilas.actores.Aceituna(0, 140);
       //aceituna2.aprender(pilas.habilidades.RebotarComoPelota);
 
       pilas.definir_modos({
         fisica: true,
+        puntos_de_control: true,
       });
     }
 
