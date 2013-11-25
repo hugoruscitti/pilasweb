@@ -279,7 +279,7 @@ class RebotarComoCaja extends Habilidad {
   constructor(receptor) {
     super(receptor);
     pilas.escena_actual().actualiza.conectar(this);
-    receptor.figura = pilas.escena_actual().fisica.crear_rectangulo(receptor.x, receptor.y, 30, 30, {});
+    receptor.figura = pilas.escena_actual().fisica.crear_rectangulo(receptor.x, receptor.y, receptor.radio_de_colision, receptor.radio_de_colision, {});
   }
 
   // TODO: identico a RebotarComoPelota.recibir (ver si hago que tengan la misma superclase las dos.

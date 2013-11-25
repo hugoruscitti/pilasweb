@@ -5,6 +5,7 @@
 /// <reference path="actores/piedra.ts />
 /// <reference path="actores/eje.ts />
 /// <reference path="actores/maton.ts />
+/// <reference path="actores/caja.ts />
 /**
 * @class Actores
 *
@@ -30,6 +31,7 @@ var Actores = (function () {
         this.Manzana = Manzana;
         this.Cofre = Cofre;
         this.Llave = Llave;
+        this.Caja = Caja;
     }
     return Actores;
 })();
@@ -434,6 +436,21 @@ var Bomba = (function (_super) {
         this._imagen.definir_cuadro(parseInt(this.paso) % 2);
     };
     return Bomba;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Caja = (function (_super) {
+    __extends(Caja, _super);
+    function Caja(x, y) {
+        var imagen = "caja.png";
+        _super.call(this, imagen, x, y);
+        this.centro_x = 24;
+        this.centro_y = 24;
+        this.radio_de_colision = 45;
+    }
+    Caja.prototype.iniciar = function () {
+        this.aprender(pilas.habilidades.RebotarComoPelota);
+    };
+    return Caja;
 })(Actor);
 /// <reference path="actor.ts"/>
 var Cofre = (function (_super) {
@@ -2158,7 +2175,7 @@ var RebotarComoCaja = (function (_super) {
     function RebotarComoCaja(receptor) {
         _super.call(this, receptor);
         pilas.escena_actual().actualiza.conectar(this);
-        receptor.figura = pilas.escena_actual().fisica.crear_rectangulo(receptor.x, receptor.y, 30, 30, {});
+        receptor.figura = pilas.escena_actual().fisica.crear_rectangulo(receptor.x, receptor.y, receptor.radio_de_colision, receptor.radio_de_colision, {});
     }
     // TODO: identico a RebotarComoPelota.recibir (ver si hago que tengan la misma superclase las dos.
     //       (o mejor, hacer la habilidad imitar).
