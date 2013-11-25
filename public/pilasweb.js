@@ -1719,10 +1719,6 @@ var Fisica = (function () {
         this.crear_rectangulo(0, 118, 320, 5, { dinamico: false });
         this.crear_rectangulo(-158, 0, 5, 240, { dinamico: false });
         this.crear_rectangulo(158, 0, 5, 240, { dinamico: false });
-
-        // Una caja
-        var a = this.crear_rectangulo(0, 0, 10, 10, { dinamico: true });
-        window['rectangulo'] = a;
     }
     Fisica.prototype.actualizar = function () {
         this.mundo.Step(this.timeStep, 6, 3);
@@ -1741,9 +1737,6 @@ var Fisica = (function () {
                 var x = b.GetPosition().x * PPM;
                 var y = b.GetPosition().y * PPM;
                 var shape = fixture.GetShape();
-
-                // dibuja un circulo en el centro de la figura.
-                graphics.beginStroke("#FFF").drawCircle(x, y, 5).endStroke();
 
                 if (shape.GetRadius !== undefined) {
                     var radio = shape.GetRadius();

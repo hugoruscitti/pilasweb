@@ -136,10 +136,6 @@ class Fisica {
     this.crear_rectangulo(0, 118, 320, 5,  {dinamico: false}); // arriba
     this.crear_rectangulo(-158, 0, 5, 240, {dinamico: false}); // izquierda
     this.crear_rectangulo( 158, 0, 5, 240, {dinamico: false}); // derecha
-
-    // Una caja
-    var  a = this.crear_rectangulo(0, 0, 10, 10, {dinamico: true});
-    window['rectangulo'] = a;
   }
 
   actualizar() {
@@ -163,13 +159,13 @@ class Fisica {
         var shape = fixture.GetShape();
 
         // dibuja un circulo en el centro de la figura.
-        graphics.beginStroke("#FFF").
-            drawCircle(
-              x,
-              y,
-              5
-            ).
-        endStroke();
+        //graphics.beginStroke("#FFF").
+        //    drawCircle(
+        //      x,
+        //      y,
+        //      5
+        //    ).
+        //endStroke();
 
         if (shape.GetRadius !== undefined) {
           var radio = shape.GetRadius();
@@ -243,5 +239,4 @@ class Fisica {
   crear_circulo(x, y, radio, opciones) {
     return new this.Circulo(this, x, y, radio, opciones);
   }
-
 }
