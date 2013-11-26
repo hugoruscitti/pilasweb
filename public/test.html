@@ -77,8 +77,10 @@
       var caja = new pilas.actores.Caja();
       caja.aprender(pilas.habilidades.RebotarComoCaja);
 
-      var cesto = new pilas.actores.Cesto();
       var pelota = new pilas.actores.Pelota();
+      window.pelota = pelota;
+
+      var cesto = new pilas.actores.Cesto();
 
       pilas.definir_modos({
         fisica: true,

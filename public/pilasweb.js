@@ -472,6 +472,8 @@ var Caja = (function (_super) {
 var Cesto = (function (_super) {
     __extends(Cesto, _super);
     function Cesto(x, y) {
+        if (typeof x === "undefined") { x = 120; }
+        if (typeof y === "undefined") { y = 0; }
         var ancho = 40;
         var imagen = "cesto.png";
         _super.call(this, imagen, x, y);
@@ -481,8 +483,9 @@ var Cesto = (function (_super) {
 
         var fisica = pilas.escena_actual().fisica;
 
-        this.figura1 = fisica.crear_rectangulo(-ancho, 0, 10, 30, { dinamico: false });
-        this.figura1 = fisica.crear_rectangulo(+ancho, 0, 10, 30, { dinamico: false });
+        this.figura1 = fisica.crear_rectangulo(x - ancho, 0, y + 10, 30, { dinamico: false });
+        this.figura2 = fisica.crear_rectangulo(x + ancho - 15, y + 0, 20, 20, { dinamico: false });
+        this.figura3 = fisica.crear_rectangulo(x + ancho - 5, y + 20, 5, 40, { dinamico: false });
     }
     return Cesto;
 })(Actor);
