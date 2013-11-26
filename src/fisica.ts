@@ -40,8 +40,47 @@ class Figura {
     return this.camara.convertir_de_posicion_fisica_a_relativa(x, y);
   }
 
+  definir_posicion(x, y) {
+    var v = this.cuerpo.GetPosition();
+    var pos = this.camara.convertir_de_posicion_relativa_a_fisica(x, y);
+
+    var _x = convertir_a_metros(pos.x);
+    var _y = convertir_a_metros(pos.y);
+
+    v.x = _x;
+    v.y = _y;
+
+    this.cuerpo.SetPosition(v);
+    this.empujar(0, 0);
+  }
+
   obtener_rotacion() {
     return (this.cuerpo.GetAngle() * 180) / Math.PI;
+  }
+
+  empujar(dx, dy) {
+    var v = this.cuerpo.GetLinearVelocity();
+    v.x = convertir_a_metros(dx);
+    v.y = convertir_a_metros(dy);
+    this.cuerpo.SetLinearVelocity(v);
+  }
+
+  definir_radio(radio) {
+    var fixture = this.cuerpo.GetFixtureList();
+
+    if (fixture) {
+      var shape = fixture.GetShape();
+      shape.SetRadius(convertir_a_metros(radio));
+    }
+  }
+
+  obtener_radio() {
+    var fixture = this.cuerpo.GetFixtureList();
+
+    if (fixture) {
+      var shape = fixture.GetShape();
+      return convertir_a_pixels(shape.GetRadius());
+    }
   }
 }
 

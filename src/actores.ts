@@ -6,6 +6,8 @@
 /// <reference path="actores/eje.ts />
 /// <reference path="actores/maton.ts />
 /// <reference path="actores/caja.ts />
+/// <reference path="actores/cesto.ts />
+/// <reference path="actores/pelota.ts />
 
 /**
  * @class Actores
@@ -32,6 +34,8 @@ class Actores {
   Cofre;
   Llave;
   Caja;
+  Cesto;
+  Pelota;
 
   constructor() {
     this.Aceituna = Aceituna;
@@ -50,5 +54,7 @@ class Actores {
     this.Cofre = Cofre;
     this.Llave = Llave;
     this.Caja = Caja;
+    this.Cesto = Cesto;
+    this.Pelota = Pelota;
   }
 }

@@ -69,12 +69,16 @@
       var aceituna = new pilas.actores.Aceituna(10, 100);
       aceituna.aprender(pilas.habilidades.RebotarComoPelota);
 
+      window['figura'] = aceituna.figura;
+
       //var aceituna2 = new pilas.actores.Aceituna(0, 140);
       //aceituna2.aprender(pilas.habilidades.RebotarComoPelota);
 
       var caja = new pilas.actores.Caja();
       caja.aprender(pilas.habilidades.RebotarComoCaja);
 
+      var cesto = new pilas.actores.Cesto();
+      var pelota = new pilas.actores.Pelota();
 
       pilas.definir_modos({
         fisica: true,

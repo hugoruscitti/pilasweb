@@ -6,6 +6,8 @@
 /// <reference path="actores/eje.ts />
 /// <reference path="actores/maton.ts />
 /// <reference path="actores/caja.ts />
+/// <reference path="actores/cesto.ts />
+/// <reference path="actores/pelota.ts />
 /**
 * @class Actores
 *
@@ -32,6 +34,8 @@ var Actores = (function () {
         this.Cofre = Cofre;
         this.Llave = Llave;
         this.Caja = Caja;
+        this.Cesto = Cesto;
+        this.Pelota = Pelota;
     }
     return Actores;
 })();
@@ -265,6 +269,7 @@ else
         set: function (valor) {
             this.escala_x = valor;
             this.escala_y = valor;
+            this.definir_radio(this.radio_de_colision * valor);
         },
         enumerable: true,
         configurable: true
@@ -394,6 +399,17 @@ else
     Actor.prototype.colisiona_con = function (otro_actor) {
         return pilas.utils.colisionan(this, otro_actor);
     };
+
+    Actor.prototype.definir_radio = function (radio) {
+        if (this.figura !== undefined) {
+            this.figura.definir_radio(radio);
+        }
+        //this.radio_de_colision = radio;
+    };
+
+    Actor.prototype.obtener_radio = function (radio) {
+        return this.radio_de_colision;
+    };
     return Actor;
 })(Estudiante);
 /// <reference path="actor.ts"/>
@@ -451,6 +467,24 @@ var Caja = (function (_super) {
         this.aprender(pilas.habilidades.RebotarComoPelota);
     };
     return Caja;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Cesto = (function (_super) {
+    __extends(Cesto, _super);
+    function Cesto(x, y) {
+        var ancho = 40;
+        var imagen = "cesto.png";
+        _super.call(this, imagen, x, y);
+        this.centro_x = ancho;
+        this.centro_y = ancho;
+        this.radio_de_colision = 20;
+
+        var fisica = pilas.escena_actual().fisica;
+
+        this.figura1 = fisica.crear_rectangulo(-ancho, 0, 10, 30, { dinamico: false });
+        this.figura1 = fisica.crear_rectangulo(+ancho, 0, 10, 30, { dinamico: false });
+    }
+    return Cesto;
 })(Actor);
 /// <reference path="actor.ts"/>
 var Cofre = (function (_super) {
@@ -745,6 +779,33 @@ var Nave = (function (_super) {
         return "Definiendo enemigos.";
     };
     return Nave;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Pelota = (function (_super) {
+    __extends(Pelota, _super);
+    function Pelota(x, y) {
+        var imagen = "pelota.png";
+        _super.call(this, imagen, x, y);
+        this.centro_x = 25;
+        this.centro_y = 25;
+        this.radio_de_colision = 25;
+
+        this.aprender(pilas.habilidades.RebotarComoPelota);
+        window['aaa'] = this;
+    }
+    Pelota.prototype.empujar = function (dx, dy) {
+        this.figura.empujar(dx * 100, -dy * 100);
+    };
+
+    Pelota.prototype.posicion = function (x, y) {
+        if (this.figura !== undefined) {
+            this.figura.definir_posicion(x, y);
+        } else {
+            this.x = x;
+            this.y = y;
+        }
+    };
+    return Pelota;
 })(Actor);
 /// <reference path="actor.ts"/>
 var Piedra = (function (_super) {
@@ -1629,8 +1690,47 @@ var Figura = (function () {
         return this.camara.convertir_de_posicion_fisica_a_relativa(x, y);
     };
 
+    Figura.prototype.definir_posicion = function (x, y) {
+        var v = this.cuerpo.GetPosition();
+        var pos = this.camara.convertir_de_posicion_relativa_a_fisica(x, y);
+
+        var _x = convertir_a_metros(pos.x);
+        var _y = convertir_a_metros(pos.y);
+
+        v.x = _x;
+        v.y = _y;
+
+        this.cuerpo.SetPosition(v);
+        this.empujar(0, 0);
+    };
+
     Figura.prototype.obtener_rotacion = function () {
         return (this.cuerpo.GetAngle() * 180) / Math.PI;
+    };
+
+    Figura.prototype.empujar = function (dx, dy) {
+        var v = this.cuerpo.GetLinearVelocity();
+        v.x = convertir_a_metros(dx);
+        v.y = convertir_a_metros(dy);
+        this.cuerpo.SetLinearVelocity(v);
+    };
+
+    Figura.prototype.definir_radio = function (radio) {
+        var fixture = this.cuerpo.GetFixtureList();
+
+        if (fixture) {
+            var shape = fixture.GetShape();
+            shape.SetRadius(convertir_a_metros(radio));
+        }
+    };
+
+    Figura.prototype.obtener_radio = function () {
+        var fixture = this.cuerpo.GetFixtureList();
+
+        if (fixture) {
+            var shape = fixture.GetShape();
+            return convertir_a_pixels(shape.GetRadius());
+        }
     };
     return Figura;
 })();
@@ -2283,6 +2383,8 @@ var Imagenes = (function () {
         this.cargar_recurso('invisible.png');
         this.cargar_recurso('cofre.png');
         this.cargar_recurso('llave.png');
+        this.cargar_recurso('cesto.png');
+        this.cargar_recurso('pelota.png');
 
         this.cargar_recurso('fondos/tarde.jpg');
         //this.cargar_recurso('cooperativista/alerta.png');

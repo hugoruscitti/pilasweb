@@ -51,6 +51,7 @@ class Actor extends Estudiante {
   _imagen;
   vivo;
   radio_de_colision;
+  figura;
 
   constructor(imagen, x, y, atributos = {}) {
     super();
@@ -158,6 +159,7 @@ class Actor extends Estudiante {
   set escala(valor) {
     this.escala_x = valor;
     this.escala_y = valor;
+    this.definir_radio(this.radio_de_colision * valor);
   }
 
   get rotacion() {return this.sprite.rotation}
@@ -241,4 +243,18 @@ class Actor extends Estudiante {
   colisiona_con(otro_actor) {
     return pilas.utils.colisionan(this, otro_actor);
   }
+
+  definir_radio(radio) {
+    if (this.figura !== undefined) {
+      this.figura.definir_radio(radio);
+    }
+
+    //this.radio_de_colision = radio;
+  }
+
+  obtener_radio(radio) {
+    return this.radio_de_colision;
+  }
+
+
 }

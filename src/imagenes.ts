@@ -56,6 +56,8 @@ class Imagenes {
     this.cargar_recurso('invisible.png');
     this.cargar_recurso('cofre.png');
     this.cargar_recurso('llave.png');
+    this.cargar_recurso('cesto.png');
+    this.cargar_recurso('pelota.png');
 
     this.cargar_recurso('fondos/tarde.jpg');
     
