@@ -86,10 +86,10 @@ class Orbitar extends Comportamiento {
 
   mover_astro() {
     this.receptor.x = this.punto_de_orbita_x + 
-    (Math.cos((this.angulo*(180 / Math.PI))) * this.radio);
+    (Math.cos(pilas.utils.convertir_a_grados(this.angulo)) * this.radio);
 
     this.receptor.y = this.punto_de_orbita_y - 
-    (Math.sin((this.angulo*(180 / Math.PI))) * this.radio);
+    (Math.sin(pilas.utils.convertir_a_grados(this.angulo)) * this.radio);
   }
 
 }
