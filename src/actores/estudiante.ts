@@ -9,6 +9,7 @@ class Estudiante {
 
   public aprender(clase_de_habilidad) {
     this.agregar_habilidad(clase_de_habilidad);
+    return "Enseñando una habilidad ...";
   }
 
   public agregar_habilidad(clase_de_habilidad) {

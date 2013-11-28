@@ -46,6 +46,7 @@ var Estudiante = (function () {
     }
     Estudiante.prototype.aprender = function (clase_de_habilidad) {
         this.agregar_habilidad(clase_de_habilidad);
+        return "Enseñando una habilidad ...";
     };
 
     Estudiante.prototype.agregar_habilidad = function (clase_de_habilidad) {
