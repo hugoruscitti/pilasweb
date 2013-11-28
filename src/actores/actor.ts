@@ -51,6 +51,7 @@ class Actor extends Estudiante {
   _imagen;
   vivo;
   radio_de_colision;
+  id;
   figura;
 
   constructor(imagen, x, y, atributos = {}) {
@@ -59,6 +60,8 @@ class Actor extends Estudiante {
     atributos = atributos || {};
     this.vivo = true;
     this.radio_de_colision = 10;
+    this.id = pilas.utils.obtener_uuid();
+    console.log(this.id);
 		
 		/* Se ejecuta si el usuario intenta llamar al constructor sin usar 'new' 
 		
