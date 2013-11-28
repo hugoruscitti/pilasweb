@@ -184,9 +184,13 @@ class MoverseConElTecladoConRotacion extends Habilidad {
  * polimorfismo para redefinir el comportamiento de estos dos metodos.
  */
 class Arrastrable extends Habilidad {
+  debe_arrastrar;
+
   constructor(receptor) {
     super(receptor);
     pilas.escena_actual().click_de_mouse.conectar(this);
+    pilas.escena_actual().mueve_mouse.conectar(this);
+    this.debe_arrastrar = false;
   }
 
   recibir(evento, tipo) {
@@ -205,15 +209,29 @@ class Arrastrable extends Habilidad {
     if (evento.boton == 1) {
       if (this.receptor.colisiona_con_un_punto(evento.x, evento.y)) {
         pilas.escena_actual().cuando_termina_click.conectar(this);
-        pilas.escena_actual().mueve_mouse.conectar(this);
         this.comienza_a_arrastrar();
       }
     }
   }
 
   cuando_arrastra(evento) {
-    this.receptor.x = evento.x;
-    this.receptor.y = evento.y;
+
+    // Muestra un cursor diferente si puede comenzar
+    // a mover la figura.
+    if (this.receptor.colisiona_con_un_punto(evento.x, evento.y))
+      document.body.style.cursor = "move";
+    else
+      document.body.style.cursor = "default";
+
+    if (this.debe_arrastrar === true) {
+      if (this.receptor.tiene_fisica()) {
+        this.receptor.posicion(evento.x, evento.y);
+      } else {
+        this.receptor.x = evento.x;
+        this.receptor.y = evento.y;
+      }
+
+    }
   }
 
   cuando_termina_de_arrastrar(evento) {
@@ -222,8 +240,20 @@ class Arrastrable extends Habilidad {
     this.termina_de_arrastrar();
   }
 
-  comienza_a_arrastrar() {}
-  termina_de_arrastrar() {}
+  comienza_a_arrastrar() {
+    if (this.receptor.tiene_fisica())
+      this.receptor.figura.cuerpo.SetType(0);
+
+    this.debe_arrastrar = true;
+  }
+
+  termina_de_arrastrar() {
+    if (this.receptor.tiene_fisica())
+      this.receptor.figura.cuerpo.SetType(2);
+
+    this.debe_arrastrar = false;
+  }
+
 }
 
 

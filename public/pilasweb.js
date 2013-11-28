@@ -155,6 +155,10 @@ var Actor = (function (_super) {
         this.z = 0;
         pilas.escena_actual().agregar_actor(this);
     }
+    Actor.prototype.tiene_fisica = function () {
+        return (this.figura !== undefined);
+    };
+
     Actor.prototype.crear_sprite = function () {
         this.sprite = this._imagen.instanciar();
     };
@@ -600,7 +604,7 @@ var Manzana = (function (_super) {
 var Maton = (function (_super) {
     __extends(Maton, _super);
     function Maton(x, y) {
-        var imagen = pilas.imagenes.cargar_grilla("rpg/maton.png", 3, 4);
+        var imagen = pilas.imagenes.cargar_grilla("rpg/maton.png", 3 * 4, 1);
         _super.call(this, imagen, x, y);
         this.centro_x = 36;
         this.centro_y = 31;
@@ -798,6 +802,7 @@ var Pelota = (function (_super) {
     }
     Pelota.prototype.empujar = function (dx, dy) {
         this.figura.empujar(dx * 100, -dy * 100);
+        return "empujando hacia (" + dx + ", " + dy + ") ...";
     };
 
     Pelota.prototype.posicion = function (x, y) {
@@ -1413,6 +1418,7 @@ var Control = (function () {
 var DepuradorDeshabilitado = (function () {
     function DepuradorDeshabilitado() {
         this.modos = [];
+        this.diccionario_modos = {};
     }
     DepuradorDeshabilitado.prototype.actualizar = function () {
         for (var i = 0; i < this.modos.length; i++) {
@@ -1436,6 +1442,8 @@ var DepuradorDeshabilitado = (function () {
 
         if (modos.fisica)
             this.modos.push(new ModoFisica());
+
+        this.diccionario_modos = modos;
     };
 
     DepuradorDeshabilitado.prototype.eliminar_todos_los_modos = function () {
@@ -1443,6 +1451,10 @@ var DepuradorDeshabilitado = (function () {
             this.modos[i].eliminar();
 
         this.modos = [];
+    };
+
+    DepuradorDeshabilitado.prototype.obtener_modos = function () {
+        return this.diccionario_modos;
     };
     return DepuradorDeshabilitado;
 })();
@@ -2188,6 +2200,8 @@ var Arrastrable = (function (_super) {
     function Arrastrable(receptor) {
         _super.call(this, receptor);
         pilas.escena_actual().click_de_mouse.conectar(this);
+        pilas.escena_actual().mueve_mouse.conectar(this);
+        this.debe_arrastrar = false;
     }
     Arrastrable.prototype.recibir = function (evento, tipo) {
         if (tipo == pilas.escena_actual().click_de_mouse) {
@@ -2205,15 +2219,25 @@ var Arrastrable = (function (_super) {
         if (evento.boton == 1) {
             if (this.receptor.colisiona_con_un_punto(evento.x, evento.y)) {
                 pilas.escena_actual().cuando_termina_click.conectar(this);
-                pilas.escena_actual().mueve_mouse.conectar(this);
                 this.comienza_a_arrastrar();
             }
         }
     };
 
     Arrastrable.prototype.cuando_arrastra = function (evento) {
-        this.receptor.x = evento.x;
-        this.receptor.y = evento.y;
+        if (this.receptor.colisiona_con_un_punto(evento.x, evento.y))
+            document.body.style.cursor = "move";
+else
+            document.body.style.cursor = "default";
+
+        if (this.debe_arrastrar === true) {
+            if (this.receptor.tiene_fisica()) {
+                this.receptor.posicion(evento.x, evento.y);
+            } else {
+                this.receptor.x = evento.x;
+                this.receptor.y = evento.y;
+            }
+        }
     };
 
     Arrastrable.prototype.cuando_termina_de_arrastrar = function (evento) {
@@ -2223,8 +2247,17 @@ var Arrastrable = (function (_super) {
     };
 
     Arrastrable.prototype.comienza_a_arrastrar = function () {
+        if (this.receptor.tiene_fisica())
+            this.receptor.figura.cuerpo.SetType(0);
+
+        this.debe_arrastrar = true;
     };
+
     Arrastrable.prototype.termina_de_arrastrar = function () {
+        if (this.receptor.tiene_fisica())
+            this.receptor.figura.cuerpo.SetType(2);
+
+        this.debe_arrastrar = false;
     };
     return Arrastrable;
 })(Habilidad);
@@ -2527,6 +2560,10 @@ var Mundo = (function () {
     Mundo.prototype.definir_modos = function (modos) {
         this.depurador.definir_modos(modos);
     };
+
+    Mundo.prototype.obtener_modos = function () {
+        return this.depurador.obtener_modos();
+    };
     return Mundo;
 })();
 /// <reference path="actores.ts />
@@ -2758,13 +2795,31 @@ var Pilas = (function () {
     };
 
     Pilas.prototype.mostrar_posiciones = function () {
-        this.definir_modos({ puntos_de_control: true });
+        var modos = this.mundo.obtener_modos();
+        modos.puntos_de_control = true;
+        this.definir_modos(modos);
         return "Mostrando posiciones";
     };
 
     Pilas.prototype.ocultar_posiciones = function () {
-        this.definir_modos({ puntos_de_control: false });
+        var modos = this.mundo.obtener_modos();
+        modos.puntos_de_control = false;
+        this.definir_modos(modos);
         return "Ocultando posiciones";
+    };
+
+    Pilas.prototype.mostrar_fisica = function () {
+        var modos = this.mundo.obtener_modos();
+        modos.fisica = true;
+        this.definir_modos(modos);
+        return "Mostrando fisica";
+    };
+
+    Pilas.prototype.ocultar_fisica = function () {
+        var modos = this.mundo.obtener_modos();
+        modos.fisica = false;
+        this.definir_modos(modos);
+        return "Ocultando fisica";
     };
     return Pilas;
 })();

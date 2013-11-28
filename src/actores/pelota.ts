@@ -16,6 +16,7 @@ class Pelota extends Actor {
 
   empujar(dx, dy) {
     this.figura.empujar(dx * 100, -dy * 100);
+    return "empujando hacia (" + dx + ", " + dy + ") ...";
   }
 
   posicion(x, y) {

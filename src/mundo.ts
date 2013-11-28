@@ -18,4 +18,8 @@ class Mundo {
   definir_modos(modos) {
     this.depurador.definir_modos(modos);
   }
+
+  obtener_modos() {
+    return this.depurador.obtener_modos();
+  }
 }

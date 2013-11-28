@@ -1,8 +1,10 @@
 class DepuradorDeshabilitado {
   modos;
+  diccionario_modos;
 
   constructor() {
     this.modos = [];
+    this.diccionario_modos = {};
   }
 
   actualizar() {
@@ -28,6 +30,7 @@ class DepuradorDeshabilitado {
     if (modos.fisica)
       this.modos.push(new ModoFisica());
 
+    this.diccionario_modos = modos;
   }
 
   eliminar_todos_los_modos() {
@@ -37,6 +40,9 @@ class DepuradorDeshabilitado {
     this.modos = [];
   }
 
+  obtener_modos() {
+    return this.diccionario_modos;
+  }
 }
 
 

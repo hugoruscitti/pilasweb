@@ -87,6 +87,10 @@ class Actor extends Estudiante {
     pilas.escena_actual().agregar_actor(this);
   }
 
+  public tiene_fisica() {
+    return (this.figura !== undefined);
+  }
+
   public crear_sprite() {
     this.sprite = this._imagen.instanciar();
   }

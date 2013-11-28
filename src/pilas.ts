@@ -245,14 +245,34 @@ class Pilas {
   }
 
   mostrar_posiciones() {
-    this.definir_modos({puntos_de_control: true});
+    var modos = this.mundo.obtener_modos();
+    modos.puntos_de_control = true;
+    this.definir_modos(modos);
     return "Mostrando posiciones";
   }
-  
+
   ocultar_posiciones() {
-    this.definir_modos({puntos_de_control: false});
+    var modos = this.mundo.obtener_modos();
+    modos.puntos_de_control = false;
+    this.definir_modos(modos);
     return "Ocultando posiciones";
   }
+
+  mostrar_fisica() {
+    var modos = this.mundo.obtener_modos();
+    modos.fisica = true;
+    this.definir_modos(modos);
+    return "Mostrando fisica";
+  }
+
+  ocultar_fisica() {
+    var modos = this.mundo.obtener_modos();
+    modos.fisica = false;
+    this.definir_modos(modos);
+    return "Ocultando fisica";
+  }
+
+
 }
 
 pilas = new Pilas();

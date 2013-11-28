@@ -10,7 +10,7 @@ class Maton extends Actor {
   teclado_habilitado;
 
   constructor(x, y) {
-    var imagen = pilas.imagenes.cargar_grilla("rpg/maton.png", 3, 4);
+    var imagen = pilas.imagenes.cargar_grilla("rpg/maton.png", 3*4, 1);
     super(imagen, x, y);
     this.centro_x = 36;
     this.centro_y = 31;
