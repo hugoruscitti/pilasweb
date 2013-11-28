@@ -26,10 +26,12 @@ class Figura {
   cuerpo;
   camara;
   fisica;
+  id;
 
   constructor(fisica) {
     this.fisica = fisica;
     this.camara = fisica.camara;
+    this.id = pilas.utils.obtener_uuid();
   }
 
   obtener_posicion() {
