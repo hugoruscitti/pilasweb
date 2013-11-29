@@ -134,6 +134,7 @@ var Actor = (function (_super) {
         atributos = atributos || {};
         this.vivo = true;
         this.radio_de_colision = 10;
+        this.id = pilas.utils.obtener_uuid();
 
         if (this === pilas.actores)
             throw Error("Lo siento, tienes que anteponer 'new' para crear actores en esta versión.");
@@ -1168,9 +1169,9 @@ var Orbitar = (function (_super) {
     };
 
     Orbitar.prototype.mover_astro = function () {
-        this.receptor.x = this.punto_de_orbita_x + (Math.cos((this.angulo * (180 / Math.PI))) * this.radio);
+        this.receptor.x = this.punto_de_orbita_x + (Math.cos(pilas.utils.convertir_a_grados(this.angulo)) * this.radio);
 
-        this.receptor.y = this.punto_de_orbita_y - (Math.sin((this.angulo * (180 / Math.PI))) * this.radio);
+        this.receptor.y = this.punto_de_orbita_y - (Math.sin(pilas.utils.convertir_a_grados(this.angulo)) * this.radio);
     };
     return Orbitar;
 })(Comportamiento);
@@ -1697,6 +1698,7 @@ var Figura = (function () {
     function Figura(fisica) {
         this.fisica = fisica;
         this.camara = fisica.camara;
+        this.id = pilas.utils.obtener_uuid();
     }
     Figura.prototype.obtener_posicion = function () {
         var posicion = this.cuerpo.GetPosition();
@@ -2034,6 +2036,24 @@ var Habilidad = (function () {
     return Habilidad;
 })();
 
+var Imitar = (function (_super) {
+    __extends(Imitar, _super);
+    function Imitar(receptor, objeto_a_imitar) {
+        _super.call(this, receptor);
+
+        console.log(objeto_a_imitar);
+        this.objeto_a_imitar = objeto_a_imitar;
+        receptor.id = objeto_a_imitar.id;
+
+        receptor.figura = objeto_a_imitar;
+    }
+    Imitar.prototype.actualizar = function () {
+        this.receptor.x = this.objeto_a_imitar.x;
+        this.receptor.y = this.objeto_a_imitar.y;
+    };
+    return Imitar;
+})(Habilidad);
+
 /**
 * @class PuedeExplotar
 *
@@ -2366,6 +2386,7 @@ var Habilidades = (function () {
         this.Disparar = Disparar;
         this.RebotarComoPelota = RebotarComoPelota;
         this.RebotarComoCaja = RebotarComoCaja;
+        this.Imitar = Imitar;
     }
     return Habilidades;
 })();
@@ -2859,6 +2880,10 @@ var Utils = (function () {
 
     Utils.prototype.distancia_entre_dos_puntos = function (x1, y1, x2, y2) {
         return Math.sqrt(Math.pow(this.distancia(x1, x2), 2) + Math.pow(this.distancia(y1, y2), 2));
+    };
+
+    Utils.prototype.obtener_uuid = function () {
+        return Math.uuid();
     };
 
     Utils.prototype.distancia = function (a, b) {

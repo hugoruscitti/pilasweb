@@ -1,3 +1,5 @@
+declare var Math;
+
 class Utils {
   
   convertir_a_grados(angulo_en_radianes) {
@@ -20,7 +22,12 @@ class Utils {
     return Math.sqrt(Math.pow(this.distancia(x1, x2), 2) + Math.pow(this.distancia(y1, y2), 2));
   }
 
+  obtener_uuid() {
+    return Math.uuid();
+  }
+
   distancia(a, b) {
     return Math.abs(b - a);
   }
+
 }
