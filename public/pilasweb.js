@@ -411,7 +411,7 @@ else
     };
 
     Actor.prototype.imitar = function (actor_o_figura) {
-        this.aprender(pilas.habilidades.Imitar, actor_o_figura);
+        this.aprender(pilas.habilidades.Imitar, { objeto_a_imitar: actor_o_figura });
     };
 
     Actor.prototype.pre_actualizar = function () {

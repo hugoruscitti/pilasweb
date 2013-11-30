@@ -244,7 +244,7 @@ class Actor extends Estudiante {
   }
 
   imitar(actor_o_figura) {
-    this.aprender(pilas.habilidades.Imitar, actor_o_figura);
+    this.aprender(pilas.habilidades.Imitar, {objeto_a_imitar:actor_o_figura});
   }
 
   pre_actualizar() {
