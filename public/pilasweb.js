@@ -2412,17 +2412,9 @@ var RebotarComoPelota = (function (_super) {
     __extends(RebotarComoPelota, _super);
     function RebotarComoPelota(receptor) {
         _super.call(this, receptor);
-        pilas.escena_actual().actualiza.conectar(this);
-        receptor.figura = pilas.escena_actual().fisica.crear_circulo(receptor.x, receptor.y, receptor.radio_de_colision, {});
+        var circulo = pilas.escena_actual().fisica.crear_circulo(receptor.x, receptor.y, receptor.radio_de_colision, {});
+        receptor.imitar(circulo);
     }
-    RebotarComoPelota.prototype.recibir = function (evento, tipo) {
-        if (tipo == pilas.escena_actual().actualiza) {
-            var posicion = this.receptor.figura.obtener_posicion();
-            this.receptor.x = posicion.x;
-            this.receptor.y = posicion.y;
-            this.receptor.rotacion = this.receptor.figura.obtener_rotacion();
-        }
-    };
     return RebotarComoPelota;
 })(Habilidad);
 
@@ -2430,19 +2422,9 @@ var RebotarComoCaja = (function (_super) {
     __extends(RebotarComoCaja, _super);
     function RebotarComoCaja(receptor) {
         _super.call(this, receptor);
-        pilas.escena_actual().actualiza.conectar(this);
-        receptor.figura = pilas.escena_actual().fisica.crear_rectangulo(receptor.x, receptor.y, receptor.radio_de_colision, receptor.radio_de_colision, {});
+        var rectangulo = pilas.escena_actual().fisica.crear_rectangulo(receptor.x, receptor.y, receptor.radio_de_colision, receptor.radio_de_colision, {});
+        receptor.imitar(rectangulo);
     }
-    // TODO: identico a RebotarComoPelota.recibir (ver si hago que tengan la misma superclase las dos.
-    //       (o mejor, hacer la habilidad imitar).
-    RebotarComoCaja.prototype.recibir = function (evento, tipo) {
-        if (tipo == pilas.escena_actual().actualiza) {
-            var posicion = this.receptor.figura.obtener_posicion();
-            this.receptor.x = posicion.x;
-            this.receptor.y = posicion.y;
-            this.receptor.rotacion = this.receptor.figura.obtener_rotacion();
-        }
-    };
     return RebotarComoCaja;
 })(Habilidad);
 

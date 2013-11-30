@@ -28,16 +28,17 @@ class Imitar extends Habilidad {
     super(receptor,argumentos);
     this.objeto_a_imitar = this.argumentos.objeto_a_imitar;
     this.con_rotacion = this.argumentos.con_rotacion || true;
-    receptor.id = this.argumentos.objeto_a_imitar.id;
 
+    receptor.id = this.argumentos.objeto_a_imitar.id;
+    receptor.figura = this.argumentos.objeto_a_imitar;
   }
 
   actualizar() {
-    this.receptor.x = this.objeto_a_imitar.x;
-    this.receptor.y = this.objeto_a_imitar.y;
-    if(this.con_rotacion==true) {
-      this.receptor.rotacion = this.objeto_a_imitar.rotacion;
-    }
+      this.receptor.x = this.objeto_a_imitar.x;
+      this.receptor.y = this.objeto_a_imitar.y;
+      if(this.con_rotacion==true) {
+        this.receptor.rotacion = this.objeto_a_imitar.rotacion;
+      }
   }
 
 }
@@ -313,17 +314,8 @@ class RebotarComoPelota extends Habilidad {
 
   constructor(receptor) {
     super(receptor);
-    pilas.escena_actual().actualiza.conectar(this);
-    receptor.figura = pilas.escena_actual().fisica.crear_circulo(receptor.x, receptor.y, receptor.radio_de_colision, {});
-  }
-
-  recibir(evento, tipo) {
-    if (tipo == pilas.escena_actual().actualiza) {
-      var posicion = this.receptor.figura.obtener_posicion();
-      this.receptor.x = posicion.x;
-      this.receptor.y = posicion.y;
-      this.receptor.rotacion = this.receptor.figura.obtener_rotacion();
-    }
+    var circulo = pilas.escena_actual().fisica.crear_circulo(receptor.x, receptor.y, receptor.radio_de_colision, {});
+    receptor.imitar(circulo);
   }
 
 }
@@ -332,19 +324,8 @@ class RebotarComoCaja extends Habilidad {
 
   constructor(receptor) {
     super(receptor);
-    pilas.escena_actual().actualiza.conectar(this);
-    receptor.figura = pilas.escena_actual().fisica.crear_rectangulo(receptor.x, receptor.y, receptor.radio_de_colision, receptor.radio_de_colision, {});
-  }
-
-  // TODO: identico a RebotarComoPelota.recibir (ver si hago que tengan la misma superclase las dos.
-  //       (o mejor, hacer la habilidad imitar).
-  recibir(evento, tipo) {
-    if (tipo == pilas.escena_actual().actualiza) {
-      var posicion = this.receptor.figura.obtener_posicion();
-      this.receptor.x = posicion.x;
-      this.receptor.y = posicion.y;
-      this.receptor.rotacion = this.receptor.figura.obtener_rotacion();
-    }
+    var rectangulo = pilas.escena_actual().fisica.crear_rectangulo(receptor.x, receptor.y, receptor.radio_de_colision, receptor.radio_de_colision, {});
+    receptor.imitar(rectangulo);
   }
 
 }
