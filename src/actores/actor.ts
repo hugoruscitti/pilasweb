@@ -243,6 +243,15 @@ class Actor extends Estudiante {
     var globo = new pilas.actores.Globo(this.x, this.y, mensaje);
   }
 
+  imitar(actor_o_figura) {
+    this.aprender(pilas.habilidades.Imitar, {objeto_a_imitar:actor_o_figura});
+  }
+
+  pre_actualizar() {
+    this.actualizar_comportamientos();
+    this.actualizar_habilidades();
+  }
+
   actualizar() {
   }
 

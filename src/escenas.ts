@@ -54,8 +54,8 @@ class Normal extends Base {
     this.fisica.actualizar();
 
     for (var i=0; i<this.actores.length; i++) {
+      this.actores[i].pre_actualizar();
       this.actores[i].actualizar();
-      this.actores[i].actualizar_comportamientos(); // TODO: implementar dentro del actualizar del actor.
     }
 
     this.ordenar_actores_por_valor_z();
