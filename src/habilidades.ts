@@ -249,7 +249,7 @@ class Arrastrable extends Habilidad {
 
     if (this.debe_arrastrar === true) {
       if (this.receptor.tiene_fisica()) {
-        this.receptor.posicion(evento.x, evento.y);
+        this.receptor.figura.definir_posicion(evento.x, evento.y);
       } else {
         this.receptor.x = evento.x;
         this.receptor.y = evento.y;
