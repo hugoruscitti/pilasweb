@@ -1610,6 +1610,7 @@ var ModoFisica = (function () {
     ModoFisica.prototype.actualizar = function () {
         var escena = pilas.escena_actual();
         this.shape.graphics.clear();
+        this.shape.graphics.setStrokeStyle(3);
         escena.fisica.dibujar_figuras_sobre_lienzo(this.shape.graphics);
     };
     return ModoFisica;

@@ -147,7 +147,7 @@ class ModoFisica {
     this.text_modo = new createjs.Text("F11 ModoFisica habilitado", "12px Arial", "white");
     this.container.addChild(this.text_modo);
 
-    pilas.escena_actual().stage.addChild(this.container)
+    pilas.escena_actual().stage.addChild(this.container);
   }
 
   eliminar() {
@@ -157,6 +157,7 @@ class ModoFisica {
   actualizar() {
     var escena = pilas.escena_actual();
     this.shape.graphics.clear();
+    this.shape.graphics.setStrokeStyle(3);
     escena.fisica.dibujar_figuras_sobre_lienzo(this.shape.graphics);
   }
 }
