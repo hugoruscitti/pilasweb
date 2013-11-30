@@ -410,6 +410,10 @@ else
         var globo = new pilas.actores.Globo(this.x, this.y, mensaje);
     };
 
+    Actor.prototype.imitar = function (actor_o_figura) {
+        this.aprender(pilas.habilidades.Imitar, actor_o_figura);
+    };
+
     Actor.prototype.pre_actualizar = function () {
         this.actualizar_comportamientos();
         this.actualizar_habilidades();
