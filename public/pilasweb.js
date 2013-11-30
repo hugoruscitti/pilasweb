@@ -1757,6 +1757,42 @@ var Figura = (function () {
         this.camara = fisica.camara;
         this.id = pilas.utils.obtener_uuid();
     }
+    Object.defineProperty(Figura.prototype, "x", {
+        get: function () {
+            return this.obtener_posicion().x;
+        },
+        set: function (_x) {
+            this.definir_posicion(_x, this.cuerpo.GetPosition().y);
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+
+    Object.defineProperty(Figura.prototype, "y", {
+        get: function () {
+            return this.obtener_posicion().y;
+        },
+        set: function (_y) {
+            this.definir_posicion(this.cuerpo.GetPosition().x, _y);
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+
+    Object.defineProperty(Figura.prototype, "rotacion", {
+        get: function () {
+            return this.obtener_rotacion();
+        },
+        set: function (angulo) {
+            this.definir_rotacion(angulo);
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+
     Figura.prototype.obtener_posicion = function () {
         var posicion = this.cuerpo.GetPosition();
         var x = convertir_a_pixels(posicion.x);
@@ -1781,6 +1817,10 @@ var Figura = (function () {
 
     Figura.prototype.obtener_rotacion = function () {
         return (this.cuerpo.GetAngle() * 180) / Math.PI;
+    };
+
+    Figura.prototype.definir_rotacion = function (angulo) {
+        this.cuerpo.SetAngle(pilas.utils.convertir_a_radianes(angulo));
     };
 
     Figura.prototype.empujar = function (dx, dy) {
@@ -2101,7 +2141,9 @@ var Imitar = (function (_super) {
         _super.call(this, receptor, argumentos);
         this.objeto_a_imitar = this.argumentos.objeto_a_imitar;
         this.con_rotacion = this.argumentos.con_rotacion || true;
+
         receptor.id = this.argumentos.objeto_a_imitar.id;
+        receptor.figura = this.argumentos.objeto_a_imitar;
     }
     Imitar.prototype.actualizar = function () {
         this.receptor.x = this.objeto_a_imitar.x;
