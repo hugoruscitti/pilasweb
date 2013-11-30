@@ -44,19 +44,30 @@ var Estudiante = (function () {
         this.habilidades = [];
         this.comportamiento = undefined;
     }
-    Estudiante.prototype.aprender = function (clase_de_habilidad) {
-        this.agregar_habilidad(clase_de_habilidad);
+    Estudiante.prototype.aprender = function (clase_de_habilidad, argumentos) {
+        if (typeof argumentos === "undefined") { argumentos = null; }
+        this.agregar_habilidad(clase_de_habilidad, argumentos);
         return "Enseñando una habilidad ...";
     };
 
-    Estudiante.prototype.agregar_habilidad = function (clase_de_habilidad) {
-        // TODO chequear si la clase de habilidad ya se ha agregado y eliminarla.
-        var habilidad = new clase_de_habilidad(this);
+    Estudiante.prototype.agregar_habilidad = function (clase_de_habilidad, argumentos) {
+        if (argumentos == null) {
+            var habilidad = new clase_de_habilidad(this);
+        } else {
+            var habilidad = new clase_de_habilidad(this, argumentos);
+        }
 
         // TODO permitir que se puedan enviar habiliades ya instanciadas.
         this.habilidades.push(habilidad);
     };
 
+    Estudiante.prototype.actualizar_habilidades = function () {
+        for (var i = 0; i < this.habilidades.length; i++) {
+            this.habilidades[i].actualizar();
+        }
+    };
+
+    /////////////////////////////////////////////////////////
     Estudiante.prototype.hacer = function (comportamiento, argumentos) {
         this.comportamiento = new comportamiento(argumentos);
         this.comportamiento.iniciar(this);
@@ -397,6 +408,11 @@ else
 
     Actor.prototype.decir = function (mensaje) {
         var globo = new pilas.actores.Globo(this.x, this.y, mensaje);
+    };
+
+    Actor.prototype.pre_actualizar = function () {
+        this.actualizar_comportamientos();
+        this.actualizar_habilidades();
     };
 
     Actor.prototype.actualizar = function () {
@@ -1637,8 +1653,8 @@ var Normal = (function (_super) {
         this.fisica.actualizar();
 
         for (var i = 0; i < this.actores.length; i++) {
+            this.actores[i].pre_actualizar();
             this.actores[i].actualizar();
-            this.actores[i].actualizar_comportamientos();
         }
 
         this.ordenar_actores_por_valor_z();
@@ -2062,8 +2078,10 @@ var GestorDeEscenas = (function () {
 * Representa una habilidad que un actor puede aprender.
 */
 var Habilidad = (function () {
-    function Habilidad(receptor) {
+    function Habilidad(receptor, argumentos) {
+        if (typeof argumentos === "undefined") { argumentos = null; }
         this.receptor = receptor;
+        this.argumentos = argumentos;
     }
     Habilidad.prototype.actualizar = function () {
     };
@@ -2072,6 +2090,24 @@ var Habilidad = (function () {
     };
     return Habilidad;
 })();
+
+var Imitar = (function (_super) {
+    __extends(Imitar, _super);
+    function Imitar(receptor, argumentos) {
+        _super.call(this, receptor, argumentos);
+        this.objeto_a_imitar = this.argumentos.objeto_a_imitar;
+        this.con_rotacion = this.argumentos.con_rotacion || true;
+        receptor.id = this.argumentos.objeto_a_imitar.id;
+    }
+    Imitar.prototype.actualizar = function () {
+        this.receptor.x = this.objeto_a_imitar.x;
+        this.receptor.y = this.objeto_a_imitar.y;
+        if (this.con_rotacion == true) {
+            this.receptor.rotacion = this.objeto_a_imitar.rotacion;
+        }
+    };
+    return Imitar;
+})(Habilidad);
 
 /**
 * @class PuedeExplotar
@@ -2405,6 +2441,7 @@ var Habilidades = (function () {
         this.Disparar = Disparar;
         this.RebotarComoPelota = RebotarComoPelota;
         this.RebotarComoCaja = RebotarComoCaja;
+        this.Imitar = Imitar;
     }
     return Habilidades;
 })();

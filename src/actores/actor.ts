@@ -243,6 +243,11 @@ class Actor extends Estudiante {
     var globo = new pilas.actores.Globo(this.x, this.y, mensaje);
   }
 
+  pre_actualizar() {
+    this.actualizar_comportamientos();
+    this.actualizar_habilidades();
+  }
+
   actualizar() {
   }
 

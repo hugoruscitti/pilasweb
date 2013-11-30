@@ -5,15 +5,39 @@
  */
 class Habilidad {
   receptor;
+  argumentos;
 
-  constructor(receptor) {
+  constructor(receptor, argumentos=null) {
     this.receptor = receptor;
+    this.argumentos = argumentos
   }
 
   actualizar() {
   }
 
   eliminar() {
+  }
+
+}
+
+class Imitar extends Habilidad {
+  objeto_a_imitar;
+  con_rotacion;
+
+  constructor(receptor, argumentos) {
+    super(receptor,argumentos);
+    this.objeto_a_imitar = this.argumentos.objeto_a_imitar;
+    this.con_rotacion = this.argumentos.con_rotacion || true;
+    receptor.id = this.argumentos.objeto_a_imitar.id;
+
+  }
+
+  actualizar() {
+    this.receptor.x = this.objeto_a_imitar.x;
+    this.receptor.y = this.objeto_a_imitar.y;
+    if(this.con_rotacion==true) {
+      this.receptor.rotacion = this.objeto_a_imitar.rotacion;
+    }
   }
 
 }
@@ -372,6 +396,7 @@ class Habilidades {
   Disparar;
   RebotarComoPelota;
   RebotarComoCaja;
+  Imitar;
 
   constructor() {
     this.Arrastrable = Arrastrable;
@@ -384,5 +409,6 @@ class Habilidades {
     this.Disparar = Disparar;
     this.RebotarComoPelota = RebotarComoPelota;
     this.RebotarComoCaja = RebotarComoCaja;
+    this.Imitar = Imitar;
   }
 }

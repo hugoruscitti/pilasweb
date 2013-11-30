@@ -7,25 +7,37 @@ class Estudiante {
     this.comportamiento = undefined;
   }
 
-  public aprender(clase_de_habilidad) {
-    this.agregar_habilidad(clase_de_habilidad);
+  public aprender(clase_de_habilidad, argumentos=null) {
+    this.agregar_habilidad(clase_de_habilidad, argumentos);
     return "Enseñando una habilidad ...";
   }
 
-  public agregar_habilidad(clase_de_habilidad) {
+  public agregar_habilidad(clase_de_habilidad, argumentos) {
     // TODO chequear si la clase de habilidad ya se ha agregado y eliminarla.
-    var habilidad = new clase_de_habilidad(this);
+    if(argumentos==null) {
+      var habilidad = new clase_de_habilidad(this);
+    }
+    else {
+      var habilidad = new clase_de_habilidad(this, argumentos);
+    }
 
     // TODO permitir que se puedan enviar habiliades ya instanciadas.
     this.habilidades.push(habilidad);
   }
+
+  actualizar_habilidades() {
+    for (var i=0;i<this.habilidades.length;i++) {
+      this.habilidades[i].actualizar()
+    }
+  }
+  /////////////////////////////////////////////////////////
 
   hacer(comportamiento, argumentos) {
     this.comportamiento = new comportamiento(argumentos);
     this.comportamiento.iniciar(this);
   }
 
-  public actualizar_comportamientos() {
+  actualizar_comportamientos() {
     if (this.comportamiento !== undefined) {
       var termina = this.comportamiento.actualizar();
 
