@@ -8,10 +8,8 @@ class Caja extends Actor {
     this.centro_x = 24;
     this.centro_y = 24;
     this.radio_de_colision = 45;
-  }
 
-  iniciar() {
-    this.aprender(pilas.habilidades.RebotarComoPelota);
+    this.aprender(pilas.habilidades.RebotarComoCaja);
   }
 
 }

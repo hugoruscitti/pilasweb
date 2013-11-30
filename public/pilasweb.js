@@ -488,10 +488,9 @@ var Caja = (function (_super) {
         this.centro_x = 24;
         this.centro_y = 24;
         this.radio_de_colision = 45;
+
+        this.aprender(pilas.habilidades.RebotarComoCaja);
     }
-    Caja.prototype.iniciar = function () {
-        this.aprender(pilas.habilidades.RebotarComoPelota);
-    };
     return Caja;
 })(Actor);
 /// <reference path="actor.ts"/>
