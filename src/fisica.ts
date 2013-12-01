@@ -34,6 +34,30 @@ class Figura {
     this.id = pilas.utils.obtener_uuid();
   }
 
+  get x() {
+    return this.obtener_posicion().x;
+  }
+
+  set x(_x) {
+    this.definir_posicion(_x,this.cuerpo.GetPosition().y)
+  }
+
+  get y() {
+    return this.obtener_posicion().y;
+  }
+
+  set y(_y) {
+    this.definir_posicion(this.cuerpo.GetPosition().x, _y);
+  }
+
+  get rotacion() {
+    return this.obtener_rotacion();
+  }
+
+  set rotacion(angulo) {
+    this.definir_rotacion(angulo);
+  }
+
   obtener_posicion() {
     var posicion = this.cuerpo.GetPosition();
     var x = convertir_a_pixels(posicion.x);
@@ -58,6 +82,10 @@ class Figura {
 
   obtener_rotacion() {
     return (this.cuerpo.GetAngle() * 180) / Math.PI;
+  }
+
+  definir_rotacion(angulo) {
+    this.cuerpo.SetAngle(pilas.utils.convertir_a_radianes(angulo));
   }
 
   empujar(dx, dy) {
