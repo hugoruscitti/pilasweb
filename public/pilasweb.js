@@ -1201,42 +1201,6 @@ var Saltar = (function (_super) {
     return Saltar;
 })(Comportamiento);
 
-var OrbitarSobreActor = (function (_super) {
-    __extends(OrbitarSobreActor, _super);
-    function OrbitarSobreActor() {
-        _super.apply(this, arguments);
-    }
-    OrbitarSobreActor.prototype.iniciar = function (receptor) {
-        this.receptor = receptor;
-        this.punto_de_orbita_x = this.argumentos.actor.x;
-        this.punto_de_orbita_y = this.argumentos.actor.y;
-        this.radio = this.argumentos.radio || 10;
-        this.velocidad = this.argumentos.velocidad || .0001;
-        this.direccion = this.argumentos.direccion || "derecha";
-        this.angulo = 0;
-
-        if (this.direccion == "izquierda") {
-            this.velocidad = -this.velocidad;
-        } else if (this.direccion == "derecha") {
-            this.velocidad;
-        }
-    };
-
-    OrbitarSobreActor.prototype.actualizar = function () {
-        this.angulo += this.velocidad;
-        this.punto_de_orbita_x = this.argumentos.actor.x;
-        this.punto_de_orbita_y = this.argumentos.actor.y;
-        this.mover_astro();
-    };
-
-    OrbitarSobreActor.prototype.mover_astro = function () {
-        this.receptor.x = this.punto_de_orbita_x + (Math.cos(pilas.utils.convertir_a_grados(this.angulo)) * this.radio);
-
-        this.receptor.y = this.punto_de_orbita_y - (Math.sin(pilas.utils.convertir_a_grados(this.angulo)) * this.radio);
-    };
-    return OrbitarSobreActor;
-})(Comportamiento);
-
 var Orbitar = (function (_super) {
     __extends(Orbitar, _super);
     function Orbitar() {
@@ -1270,6 +1234,25 @@ var Orbitar = (function (_super) {
     };
     return Orbitar;
 })(Comportamiento);
+
+var OrbitarSobreActor = (function (_super) {
+    __extends(OrbitarSobreActor, _super);
+    function OrbitarSobreActor() {
+        _super.apply(this, arguments);
+    }
+    OrbitarSobreActor.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.punto_de_orbita_x = this.argumentos.actor.x;
+        this.punto_de_orbita_y = this.argumentos.actor.y;
+    };
+
+    OrbitarSobreActor.prototype.actualizar = function () {
+        this.punto_de_orbita_x = this.argumentos.actor.x;
+        this.punto_de_orbita_y = this.argumentos.actor.y;
+        _super.prototype.actualizar.call(this);
+    };
+    return OrbitarSobreActor;
+})(Orbitar);
 
 var CaminarBase = (function (_super) {
     __extends(CaminarBase, _super);
