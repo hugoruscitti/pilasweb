@@ -8,6 +8,7 @@
 /// <reference path="actores/caja.ts />
 /// <reference path="actores/cesto.ts />
 /// <reference path="actores/pelota.ts />
+/// <reference path="actores/zanahoria.ts />
 /**
 * @class Actores
 *
@@ -36,6 +37,7 @@ var Actores = (function () {
         this.Caja = Caja;
         this.Cesto = Cesto;
         this.Pelota = Pelota;
+        this.Zanahoria = Zanahoria;
     }
     return Actores;
 })();
@@ -338,6 +340,12 @@ else
                 this._imagen = pilas.imagenes.cargar(_i);
 else
                 this._imagen = _i;
+
+            if (this.sprite !== undefined) {
+                this.sprite.image = this._imagen.instanciar().image;
+                this.centro_x = this.ancho / 2;
+                this.centro_y = this.alto / 2;
+            }
         },
         enumerable: true,
         configurable: true
@@ -1002,6 +1010,34 @@ var Texto = (function (_super) {
     };
     return Texto;
 })(Actor);
+/// <reference path="actor.ts"/>
+var Zanahoria = (function (_super) {
+    __extends(Zanahoria, _super);
+    function Zanahoria(x, y) {
+        this.cuadro_normal = "zanahoria_normal.png";
+        this.cuadro_sonrie = "zanahoria_sonrie.png";
+        _super.call(this, this.cuadro_normal, x, y);
+        this.radio_de_colision = 25;
+    }
+    Zanahoria.prototype.normal = function () {
+        this.imagen = this.cuadro_normal;
+    };
+
+    Zanahoria.prototype.sonreir = function () {
+        this.imagen = this.cuadro_sonrie;
+    };
+
+    Zanahoria.prototype.saltar = function () {
+        this.sonreir();
+        this.hacer(pilas.comportamientos.Saltar, { cuando_termina: this.normal });
+    };
+
+    Zanahoria.prototype.decir = function () {
+        this.sonreir();
+        _super.prototype.decir.call(this, "hola");
+    };
+    return Zanahoria;
+})(Actor);
 /**
 * @class Camara
 *
@@ -1142,6 +1178,7 @@ var Saltar = (function (_super) {
         this.velocidad_inicial = this.argumentos.velocidad_inicial || 10;
         this.velocidad = this.velocidad_inicial;
         this.velocidad_aux = this.velocidad_inicial;
+        this.cuando_termina = this.argumentos.cuando_termina || null;
     };
 
     Saltar.prototype.actualizar = function () {
@@ -1154,6 +1191,9 @@ var Saltar = (function (_super) {
 
             if (this.velocidad_aux <= 1) {
                 this.receptor.y = this.suelo;
+                if (this.cuando_termina) {
+                    this.cuando_termina.call(this.receptor);
+                }
                 return true;
             }
         }
@@ -2526,6 +2566,8 @@ var Imagenes = (function () {
         this.cargar_recurso('llave.png');
         this.cargar_recurso('cesto.png');
         this.cargar_recurso('pelota.png');
+        this.cargar_recurso('zanahoria_normal.png');
+        this.cargar_recurso('zanahoria_sonrie.png');
 
         this.cargar_recurso('fondos/tarde.jpg');
         //this.cargar_recurso('cooperativista/alerta.png');
@@ -2547,7 +2589,7 @@ var Imagenes = (function () {
         if (nombre in this.recursos)
             return new Imagen(this.recursos[nombre]);
 else
-            throw "No se puede encontrar la imagen: " + nombre;
+            throw "No se puede encontrar la imagen: " + nombre + " ¿ha sido pre-cargada en el archivo imagenes.ts?";
     };
 
     Imagenes.prototype.cargar_grilla = function (nombre, columnas, filas) {
