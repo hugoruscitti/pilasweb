@@ -187,6 +187,15 @@ class Actor extends Estudiante {
       this._imagen = pilas.imagenes.cargar(_i)
     else
       this._imagen = _i;
+
+    /* Si el actor ya tenía imagen, entonces se encarga de reemplazar
+       la imagen actual, y vuelve a definir el punto de control en el
+       centro. */
+    if (this.sprite !== undefined) {
+      this.sprite.image = this._imagen.instanciar().image;
+      this.centro_x = this.ancho / 2;
+      this.centro_y = this.alto / 2;
+    }
   }
 	
 	/* TODO: hacer que se puedan interpolar

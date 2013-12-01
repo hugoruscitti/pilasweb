@@ -82,7 +82,7 @@ class Imagenes {
     if (nombre in this.recursos)
       return new Imagen(this.recursos[nombre]);
     else
-      throw "No se puede encontrar la imagen: " + nombre;
+      throw "No se puede encontrar la imagen: " + nombre + " ¿ha sido pre-cargada en el archivo imagenes.ts?";
   }
 
   cargar_grilla(nombre, columnas=1, filas=1) {
