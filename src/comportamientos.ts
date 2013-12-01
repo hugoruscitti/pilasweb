@@ -23,6 +23,7 @@ class Comportamiento {
 }
 
 class Saltar extends Comportamiento {
+  cuando_termina;
   suelo;
   velocidad_inicial;
   velocidad;
@@ -34,6 +35,7 @@ class Saltar extends Comportamiento {
     this.velocidad_inicial = this.argumentos.velocidad_inicial || 10;
     this.velocidad = this.velocidad_inicial;
     this.velocidad_aux = this.velocidad_inicial;
+    this.cuando_termina = this.argumentos.cuando_termina || null;
   }
 
   actualizar() {
@@ -46,6 +48,9 @@ class Saltar extends Comportamiento {
 
       if(this.velocidad_aux <= 1) {
         this.receptor.y = this.suelo;
+        if (this.cuando_termina) {
+          this.cuando_termina.call(this.receptor);
+        }
         return true;
       }
     }
