@@ -57,49 +57,6 @@ class Saltar extends Comportamiento {
   }
 }
 
-class OrbitarSobreActor extends Comportamiento {
-  actor;
-  punto_de_orbita_x;
-  punto_de_orbita_y;
-  radio;
-  velocidad;
-  direccion;
-  angulo;
-
-  iniciar(receptor) {
-    this.receptor = receptor;
-    this.punto_de_orbita_x = this.argumentos.actor.x;
-    this.punto_de_orbita_y = this.argumentos.actor.y;
-    this.radio = this.argumentos.radio || 10;
-    this.velocidad = this.argumentos.velocidad || .0001;
-    this.direccion = this.argumentos.direccion || "derecha";
-    this.angulo = 0;
-
-    if(this.direccion == "izquierda") {
-      this.velocidad = -this.velocidad
-    }
-
-    else if(this.direccion == "derecha") {
-      this.velocidad;
-    }
-  }
-
-  actualizar() {
-    this.angulo += this.velocidad;
-    this.punto_de_orbita_x = this.argumentos.actor.x;
-    this.punto_de_orbita_y = this.argumentos.actor.y;
-    this.mover_astro();
-  }
-
-  mover_astro() {
-    this.receptor.x = this.punto_de_orbita_x + 
-    (Math.cos(pilas.utils.convertir_a_grados(this.angulo)) * this.radio);
-
-    this.receptor.y = this.punto_de_orbita_y - 
-    (Math.sin(pilas.utils.convertir_a_grados(this.angulo)) * this.radio);
-  }
-
-}
 
 class Orbitar extends Comportamiento {
   punto_de_orbita_x;
@@ -138,6 +95,23 @@ class Orbitar extends Comportamiento {
 
     this.receptor.y = this.punto_de_orbita_y - 
     (Math.sin(pilas.utils.convertir_a_grados(this.angulo)) * this.radio);
+  }
+
+}
+
+class OrbitarSobreActor extends Orbitar {
+  actor;
+
+  iniciar(receptor) {
+    super.iniciar(receptor);
+    this.punto_de_orbita_x = this.argumentos.actor.x;
+    this.punto_de_orbita_y = this.argumentos.actor.y;
+  }
+
+  actualizar() {
+    this.punto_de_orbita_x = this.argumentos.actor.x;
+    this.punto_de_orbita_y = this.argumentos.actor.y;
+    super.actualizar();
   }
 
 }
