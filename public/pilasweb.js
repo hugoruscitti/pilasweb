@@ -285,9 +285,19 @@ else
             return this.escala_x;
         },
         set: function (valor) {
+            if (valor instanceof Array) {
+                var nuevo_radio_de_colision = [];
+                for (var i = 0; i < valor.length; i++) {
+                    nuevo_radio_de_colision.push((this.radio_de_colision * valor[i]) / this.escala);
+                }
+                pilas.interpolar(this, 'radio_de_colision', nuevo_radio_de_colision, 1000);
+                this.radio_de_colision = nuevo_radio_de_colision[0];
+            } else {
+                this.radio_de_colision = (this.radio_de_colision * valor) / this.escala;
+            }
+
             this.escala_x = valor;
             this.escala_y = valor;
-            this.definir_radio(this.radio_de_colision * valor);
         },
         enumerable: true,
         configurable: true
@@ -431,17 +441,6 @@ else
 
     Actor.prototype.colisiona_con = function (otro_actor) {
         return pilas.utils.colisionan(this, otro_actor);
-    };
-
-    Actor.prototype.definir_radio = function (radio) {
-        if (this.figura !== undefined) {
-            this.figura.definir_radio(radio);
-        }
-        //this.radio_de_colision = radio;
-    };
-
-    Actor.prototype.obtener_radio = function (radio) {
-        return this.radio_de_colision;
     };
     return Actor;
 })(Estudiante);
@@ -3014,6 +3013,8 @@ var Utils = (function () {
             var nuevo = new clase(x, y);
             objetos_creados.push(nuevo);
         }
+
+        return objetos_creados;
     };
     return Utils;
 })();
