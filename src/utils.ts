@@ -30,4 +30,24 @@ class Utils {
     return Math.abs(b - a);
   }
 
+
+  fabricar(clase, cantidad=1, posiciones_al_azar=true) { //Mover a ../actores/utils.ts
+
+    var objetos_creados = [];
+
+    for (var i=0;i<cantidad;i++) {
+      if (posiciones_al_azar) {
+        var x = Math.floor(Math.random() * (100 - (-100 + 1)))  - 100;
+        var y = Math.floor(Math.random() * (100 - (-100 + 1)))  - 100;
+      }
+      else {
+        var x = 0;
+        var y = 0;
+      }
+
+      var nuevo = new clase(x, y);
+      objetos_creados.push(nuevo);
+    }
+    
+  }
 }

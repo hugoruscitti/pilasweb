@@ -69,7 +69,6 @@ var Estudiante = (function () {
         }
     };
 
-    /////////////////////////////////////////////////////////
     Estudiante.prototype.hacer = function (comportamiento, argumentos) {
         this.comportamiento = new comportamiento(argumentos);
         this.comportamiento.iniciar(this);
@@ -2996,6 +2995,25 @@ var Utils = (function () {
 
     Utils.prototype.distancia = function (a, b) {
         return Math.abs(b - a);
+    };
+
+    Utils.prototype.fabricar = function (clase, cantidad, posiciones_al_azar) {
+        if (typeof cantidad === "undefined") { cantidad = 1; }
+        if (typeof posiciones_al_azar === "undefined") { posiciones_al_azar = true; }
+        var objetos_creados = [];
+
+        for (var i = 0; i < cantidad; i++) {
+            if (posiciones_al_azar) {
+                var x = Math.floor(Math.random() * (100 - (-100 + 1))) - 100;
+                var y = Math.floor(Math.random() * (100 - (-100 + 1))) - 100;
+            } else {
+                var x = 0;
+                var y = 0;
+            }
+
+            var nuevo = new clase(x, y);
+            objetos_creados.push(nuevo);
+        }
     };
     return Utils;
 })();
