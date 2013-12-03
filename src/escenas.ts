@@ -67,10 +67,10 @@ class Normal extends Base {
   ordenar_actores_por_valor_z() {
     var sortFunction = function(item1, item2, options) {
       if (item1.z < item2.z)
-        return 1; 
+        return -1; 
 
       if (item1.z > item2.z)
-        return -1; 
+        return 1; 
 
       return 0;
     }
