@@ -70,6 +70,7 @@ var Estudiante = (function () {
     };
 
     Estudiante.prototype.hacer = function (comportamiento, argumentos) {
+        if (typeof argumentos === "undefined") { argumentos = {}; }
         this.comportamiento = new comportamiento(argumentos);
         this.comportamiento.iniciar(this);
     };
@@ -1691,10 +1692,10 @@ var Normal = (function (_super) {
     Normal.prototype.ordenar_actores_por_valor_z = function () {
         var sortFunction = function (item1, item2, options) {
             if (item1.z < item2.z)
-                return -1;
+                return 1;
 
             if (item1.z > item2.z)
-                return 1;
+                return -1;
 
             return 0;
         };
@@ -2136,6 +2137,98 @@ var GestorDeEscenas = (function () {
         return this.escena;
     };
     return GestorDeEscenas;
+})();
+//modulo grupo
+var grupo = (function () {
+    function grupo() {
+        this.Grupo = Grupo;
+    }
+    return grupo;
+})();
+
+var Grupo = (function () {
+    function Grupo(lista) {
+        this.lista = lista;
+    }
+    Object.defineProperty(Grupo.prototype, "x", {
+        get: function () {
+            return this.__getattr__("x");
+        },
+        set: function (x) {
+            this.__setattr__("x", x);
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+
+    Object.defineProperty(Grupo.prototype, "y", {
+        get: function () {
+            return this.__getattr__("y");
+        },
+        set: function (y) {
+            this.__setattr__("y", y);
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+
+    Object.defineProperty(Grupo.prototype, "escala", {
+        get: function () {
+            return this.__getattr__("escala");
+        },
+        set: function (escala) {
+            this.__setattr__("escala", escala);
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+
+    Object.defineProperty(Grupo.prototype, "rotacion", {
+        get: function () {
+            return this.__getattr__("rotacion");
+        },
+        set: function (rotacion) {
+            this.__setattr__("rotacion", rotacion);
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+
+    Grupo.prototype.aprender = function (args, args2) {
+        if (typeof args2 === "undefined") { args2 = {}; }
+        this.__execfunct__("aprender", args, args2);
+    };
+
+    Grupo.prototype.hacer = function (args, args2) {
+        if (typeof args2 === "undefined") { args2 = {}; }
+        this.__execfunct__("hacer", args, args2);
+    };
+
+    Grupo.prototype.__execfunct__ = function (id, args, args2) {
+        for (var i = 0; i < this.lista.length; i++) {
+            this.lista[i][id](args, args2);
+        }
+    };
+
+    Grupo.prototype.__getattr__ = function (attr) {
+        var valores = [];
+        for (var i = 0; i < this.lista.length; i++) {
+            valores.push(this.lista[i][attr]);
+        }
+
+        return valores;
+    };
+
+    Grupo.prototype.__setattr__ = function (attr, valor) {
+        for (var i = 0; i < this.lista.length; i++) {
+            this.lista[i][attr] = valor;
+        }
+    };
+    return Grupo;
 })();
 /**
 * @class Habilidad
@@ -2696,6 +2789,7 @@ var Mundo = (function () {
 })();
 /// <reference path="actores.ts />
 /// <reference path="utils.ts />
+/// <reference path="grupo.ts />
 /// <reference path="fondos.ts />
 /// <reference path="imagenes.ts />
 /// <reference path="mundo.ts />
@@ -2753,6 +2847,7 @@ var Pilas = (function () {
         this.mundo = new Mundo();
         this.interpolaciones = new Interpolaciones();
         this.utils = new Utils();
+        this.grupo = new grupo();
         this.colisiones = new Colisiones();
 
         this.mundo.gestor_escenas.cambiar_escena(new Normal());
@@ -3014,7 +3109,7 @@ var Utils = (function () {
             objetos_creados.push(nuevo);
         }
 
-        return objetos_creados;
+        return new pilas.grupo.Grupo(objetos_creados);
     };
     return Utils;
 })();
