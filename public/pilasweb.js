@@ -47,13 +47,13 @@ var Estudiante = (function () {
         this.comportamiento = undefined;
     }
     Estudiante.prototype.aprender = function (clase_de_habilidad, argumentos) {
-        if (typeof argumentos === "undefined") { argumentos = null; }
+        if (typeof argumentos === "undefined") { argumentos = undefined; }
         this.agregar_habilidad(clase_de_habilidad, argumentos);
         return "Enseñando una habilidad ...";
     };
 
     Estudiante.prototype.agregar_habilidad = function (clase_de_habilidad, argumentos) {
-        if (argumentos == null) {
+        if (argumentos == undefined) {
             var habilidad = new clase_de_habilidad(this);
         } else {
             var habilidad = new clase_de_habilidad(this, argumentos);
@@ -2208,7 +2208,17 @@ var Grupo = (function () {
         this.__execfunct__("hacer", args, args2);
     };
 
+    Grupo.prototype.decir = function (args) {
+        this.__execfunct__("decir", args);
+    };
+
+    Grupo.prototype.eliminar = function () {
+        this.__execfunct__("eliminar");
+    };
+
     Grupo.prototype.__execfunct__ = function (id, args, args2) {
+        if (typeof args === "undefined") { args = undefined; }
+        if (typeof args2 === "undefined") { args2 = undefined; }
         for (var i = 0; i < this.lista.length; i++) {
             this.lista[i][id](args, args2);
         }
