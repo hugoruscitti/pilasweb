@@ -1,4 +1,4 @@
-declare var Math;
+declare var Math; 
 
 class Utils {
   
@@ -30,7 +30,6 @@ class Utils {
     return Math.abs(b - a);
   }
 
-
   fabricar(clase, cantidad=1, posiciones_al_azar=true) { //Mover a ../actores/utils.ts
 
     var objetos_creados = [];
@@ -49,5 +48,6 @@ class Utils {
       objetos_creados.push(nuevo);
     }
     
+    return new pilas.grupo.Grupo(objetos_creados);
   }
 }

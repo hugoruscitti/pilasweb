@@ -4,6 +4,7 @@ declare var createjs;
 
 /// <reference path="actores.ts />
 /// <reference path="utils.ts />
+/// <reference path="grupo.ts />
 /// <reference path="fondos.ts />
 /// <reference path="imagenes.ts />
 /// <reference path="mundo.ts />
@@ -42,6 +43,7 @@ class Pilas {
   habilidades;      // acceso a módulo.
   comportamientos;  // acceso a módulo.
   utils;            // acceso a módulo.
+  grupo;            // acceso a módulo.
 
   interpolaciones;  // acceso al módulo.
   colisiones;       // acceso al módulo.
@@ -75,6 +77,7 @@ class Pilas {
     this.mundo = new Mundo();
     this.interpolaciones = new Interpolaciones();
     this.utils = new Utils();
+    this.grupo = new grupo();
     this.colisiones = new Colisiones();
 
     this.mundo.gestor_escenas.cambiar_escena(new Normal());

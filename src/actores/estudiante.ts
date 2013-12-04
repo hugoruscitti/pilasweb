@@ -30,9 +30,8 @@ class Estudiante {
       this.habilidades[i].actualizar()
     }
   }
-  /////////////////////////////////////////////////////////
 
-  hacer(comportamiento, argumentos) {
+  hacer(comportamiento, argumentos={}) {
     this.comportamiento = new comportamiento(argumentos);
     this.comportamiento.iniciar(this);
   }
