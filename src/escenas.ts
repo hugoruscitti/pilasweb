@@ -44,21 +44,24 @@ class Base {
  */
 class Normal extends Base {
   actores;
+  tareas;
 
   constructor() {
     super();
     this.actores = [];
+    this.tareas = new pilas.tareas.Tareas();
   }
 
   actualizar() {
     this.fisica.actualizar();
+    this.tareas.actualizar();
 
     for (var i=0; i<this.actores.length; i++) {
       this.actores[i].pre_actualizar();
       this.actores[i].actualizar();
     }
 
-    this.ordenar_actores_por_valor_z();
+    //this.ordenar_actores_por_valor_z();
     this.stage.update();
     this.actualiza.emitir();
     pilas.colisiones.verificar_colisiones();
@@ -67,10 +70,10 @@ class Normal extends Base {
   ordenar_actores_por_valor_z() {
     var sortFunction = function(item1, item2, options) {
       if (item1.z < item2.z)
-        return -1; 
+        return 1; 
 
       if (item1.z > item2.z)
-        return 1; 
+        return -1; 
 
       return 0;
     }

@@ -22,4 +22,12 @@ class Mundo {
   obtener_modos() {
     return this.depurador.obtener_modos();
   }
+
+  agregar_tarea_una_vez(tiempo, funcion) {
+    pilas.escena_actual().tareas.una_vez(tiempo, funcion);
+  }
+
+  agregar_tarea_siempre(tiempo, funcion) {
+    pilas.escena_actual().tareas.siempre(tiempo, funcion);
+  }
 }

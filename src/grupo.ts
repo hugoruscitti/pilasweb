@@ -47,7 +47,7 @@ class Grupo {
 		this.__setattr__("rotacion",rotacion);
 	}
 
-	aprender(args, args2={}) {
+	aprender(args, args2={}) {	
 		this.__execfunct__("aprender", args, args2);
 	}
 
@@ -55,7 +55,15 @@ class Grupo {
 		this.__execfunct__("hacer", args, args2);
 	}
 
-	__execfunct__(id,args, args2) {
+	decir(args) {
+		this.__execfunct__("decir",args);
+	}
+
+	eliminar() {
+		this.__execfunct__("eliminar");
+	}
+
+	__execfunct__(id,args=undefined, args2=undefined) {
 		for(var i=0;i<this.lista.length;i++) {
 			this.lista[i][id](args, args2);
 		}
