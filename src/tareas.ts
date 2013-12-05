@@ -52,7 +52,6 @@ class Tareas {
 				this.tareas_planificadas[i]["ejecutar"]();
 
 				if (this.tareas_planificadas[i]["una_vez"]) {
-					console.log("tarea de una vez");
 					this.tareas_planificadas.splice(i,1);
 				}
 
