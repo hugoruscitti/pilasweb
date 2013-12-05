@@ -1674,9 +1674,11 @@ var Normal = (function (_super) {
     function Normal() {
         _super.call(this);
         this.actores = [];
+        this.tareas = new pilas.tareas.Tareas();
     }
     Normal.prototype.actualizar = function () {
         this.fisica.actualizar();
+        this.tareas.actualizar();
 
         for (var i = 0; i < this.actores.length; i++) {
             this.actores[i].pre_actualizar();
@@ -2795,6 +2797,14 @@ var Mundo = (function () {
     Mundo.prototype.obtener_modos = function () {
         return this.depurador.obtener_modos();
     };
+
+    Mundo.prototype.agregar_tarea_una_vez = function (tiempo, funcion) {
+        pilas.escena_actual().tareas.una_vez(tiempo, funcion);
+    };
+
+    Mundo.prototype.agregar_tarea_siempre = function (tiempo, funcion) {
+        pilas.escena_actual().tareas.siempre(tiempo, funcion);
+    };
     return Mundo;
 })();
 /// <reference path="actores.ts />
@@ -2808,6 +2818,7 @@ var Mundo = (function () {
 /// <reference path="habilidades.ts />
 /// <reference path="comportamientos.ts />
 /// <reference path="colisiones.ts />
+/// <reference path="tareas.ts />
 /**
 * @class Pilas
 * @singleton
@@ -2859,6 +2870,8 @@ var Pilas = (function () {
         this.utils = new Utils();
         this.grupo = new grupo();
         this.colisiones = new Colisiones();
+
+        this.tareas = new tareas();
 
         this.mundo.gestor_escenas.cambiar_escena(new Normal());
     };
@@ -3070,6 +3083,62 @@ var simbolos = {
     D: 68,
     J: 74
 };
+var tareas = (function () {
+    function tareas() {
+        this.Tareas = Tareas;
+    }
+    return tareas;
+})();
+
+var Tarea = (function () {
+    function Tarea(tiempo, funcion, una_vez) {
+        if (typeof una_vez === "undefined") { una_vez = false; }
+        this.tiempo = tiempo;
+        this.funcion = funcion;
+        this.una_vez = una_vez;
+    }
+    Tarea.prototype.ejecutar = function () {
+        this.funcion();
+    };
+    return Tarea;
+})();
+
+var Tareas = (function () {
+    function Tareas() {
+        this.tareas_planificadas = [];
+        this.contador_de_tiempo = 0;
+    }
+    Tareas.prototype._agregar_tarea = function (tarea) {
+        this.tareas_planificadas.push(tarea);
+    };
+
+    Tareas.prototype.siempre = function (tiempo, funcion) {
+        var tarea = new Tarea(tiempo, funcion);
+        this._agregar_tarea(tarea);
+    };
+
+    Tareas.prototype.una_vez = function (tiempo, funcion) {
+        var tarea = new Tarea(tiempo, funcion, true);
+        this._agregar_tarea(tarea);
+    };
+
+    Tareas.prototype.actualizar = function () {
+        this.contador_de_tiempo += (1 / 60);
+        for (var i = 0; i < this.tareas_planificadas.length; i++) {
+            if (this.contador_de_tiempo > this.tareas_planificadas[i]["tiempo"]) {
+                this.tareas_planificadas[i]["ejecutar"]();
+
+                if (this.tareas_planificadas[i]["una_vez"]) {
+                    console.log("tarea de una vez");
+                    this.tareas_planificadas.splice(i, 1);
+                } else {
+                    this.tareas_planificadas[i]["tiempo"] += (0, 032 - ((this.contador_de_tiempo - this.tareas_planificadas[i]["tiempo"]) - 0, 016));
+                }
+            }
+        }
+    };
+    return Tareas;
+})();
 var Utils = (function () {
     function Utils() {
     }
