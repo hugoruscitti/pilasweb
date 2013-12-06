@@ -9,15 +9,19 @@ class Tarea {
 	tiempo;
 	funcion;
 	una_vez;
+	parametros;
+	parent;
 
-	constructor(tiempo, funcion,una_vez=false) {
+	constructor(tiempo, funcion, una_vez, parametros, parent) {
 		this.tiempo = tiempo;
 		this.funcion = funcion;
 		this.una_vez = una_vez;
+		this.parametros = parametros;
+		this.parent = parent;
 	}
 
 	ejecutar() {
-		this.funcion();
+		this.funcion.call(this.parent, this.parametros);
 	}
 }
 
@@ -34,13 +38,13 @@ class Tareas {
 		this.tareas_planificadas.push(tarea);
 	}
 
-	siempre(tiempo, funcion) {
-		var tarea = new Tarea(tiempo, funcion);
+	siempre(tiempo, funcion, parametros, parent) {
+		var tarea = new Tarea(tiempo, funcion, false, parametros, parent);
 		this._agregar_tarea(tarea);
 	}
 
-	una_vez(tiempo, funcion) {
-		var tarea = new Tarea(tiempo, funcion, true);
+	una_vez(tiempo, funcion, parametros, parent) {
+		var tarea = new Tarea(tiempo, funcion, true, parametros, parent);
 		this._agregar_tarea(tarea);
 	}
 

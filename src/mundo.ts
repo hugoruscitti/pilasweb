@@ -23,11 +23,11 @@ class Mundo {
     return this.depurador.obtener_modos();
   }
 
-  agregar_tarea_una_vez(tiempo, funcion) {
-    pilas.escena_actual().tareas.una_vez(tiempo, funcion);
+  agregar_tarea_una_vez(tiempo, funcion, parametros, parent=undefined) {
+    pilas.escena_actual().tareas.una_vez(tiempo, funcion, parametros, parent);
   }
 
-  agregar_tarea_siempre(tiempo, funcion) {
-    pilas.escena_actual().tareas.siempre(tiempo, funcion);
+  agregar_tarea_siempre(tiempo, funcion, parametros, parent=undefined) {
+    pilas.escena_actual().tareas.siempre(tiempo, funcion, parametros, parent);
   }
 }
