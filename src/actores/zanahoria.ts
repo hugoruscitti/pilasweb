@@ -27,5 +27,6 @@ class Zanahoria extends Actor {
 	decir() {
 		this.sonreir();
 		super.decir("hola");
+		pilas.mundo.agregar_tarea_una_vez(1, this.normal, {}, this);
 	}
 }
