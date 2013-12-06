@@ -56,7 +56,8 @@ class Pasto extends Fondo {
     var s = new createjs.Shape();
 
     s.graphics.beginBitmapFill(img, 'repeat');
-    s.graphics.drawRect(-160, -120, 320, 240); // TODO: detectar el area visible de pantalla.
+    s.graphics.drawRect(-pilas.opciones.ancho/2, -pilas.opciones.alto/2, 
+      pilas.opciones.ancho, pilas.opciones.alto); 
     this.sprite = s;
   }
 
