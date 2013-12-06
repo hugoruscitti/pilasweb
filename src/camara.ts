@@ -16,8 +16,8 @@ class Camara {
   constructor() {
     this.x = 0;
     this.y = 0;
-    this.centro_x = 320 / 2;
-    this.centro_y = 240 / 2;
+    this.centro_x = pilas.opciones.ancho / 2;
+    this.centro_y = pilas.opciones.alto / 2;
   }
 
   /**
