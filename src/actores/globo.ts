@@ -10,13 +10,9 @@ class Globo extends Actor {
     this.centro_x = 85;
     this.centro_y = 80;
     this.mensaje = mensaje;
-    this.actor_texto = new pilas.actores.Texto(x, y, mensaje);
+    this.actor_texto = new pilas.actores.Texto(x-25, y+50, mensaje);
 
-    // TODO: Reemplazar por tareas, como hace pilas-python.
-    var _this = this;
-    setTimeout(function() {
-      _this.eliminar();
-    }, 3000);
+    pilas.mundo.agregar_tarea_una_vez(3, this.eliminar, {}, this);
   }
 
   eliminar() {
