@@ -50,21 +50,29 @@ class Avanzar extends Comportamiento {
       this.receptor.x += this.dx * avance;
       this.receptor.y += this.dy * avance;
     }
+    else {
+      return true;
+    }
   }
 }
 
 class Girar extends Comportamiento {
   angulo;
   tiempo;
+  angulo_aux;
 
   iniciar(receptor) {
     super.iniciar(receptor);
     this.angulo = this.argumentos.angulo || 360;
     this.tiempo = this.argumentos.tiempo || 1;
+    this.angulo_aux = this.receptor.rotacion + this.angulo;
   }
 
   actualizar() {
     pilas.interpolar(this.receptor,"rotacion",[this.angulo], this.tiempo);
+    if (this.angulo_aux == this.receptor.rotacion) {
+      return true;
+    }
   }
 }
 
