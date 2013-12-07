@@ -1,7 +1,7 @@
 class Interpolaciones {
 
   interpolar(objeto, atributo, valor_o_valores, tiempo) {
-    var tiempo = tiempo || 1000;
+    var tiempo = tiempo*1000 || 1000;
     var step = tiempo / valor_o_valores.length;
     var tween = createjs.Tween.get(objeto);
       
