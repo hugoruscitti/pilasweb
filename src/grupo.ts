@@ -55,6 +55,10 @@ class Grupo {
 		this.__execfunct__("hacer", args, args2);
 	}
 
+	hacer_luego(args, args2={}) {
+		this.__execfunct__("hacer_luego", args, args2);
+	}
+
 	decir(args) {
 		this.__execfunct__("decir",args);
 	}
