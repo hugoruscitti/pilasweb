@@ -1,20 +1,21 @@
 class Estudiante {
   habilidades;
-  comportamiento; // TODO: convertir en una lista como las habilidades.
+  comportamientos; // TODO: convertir en una lista como las habilidades.
+  comportamiento_actual;
 
   constructor() {
     this.habilidades = [];
-    this.comportamiento = undefined;
+    this.comportamientos = [];
   }
 
-  public aprender(clase_de_habilidad, argumentos=null) {
+  public aprender(clase_de_habilidad, argumentos=undefined) {
     this.agregar_habilidad(clase_de_habilidad, argumentos);
     return "Enseñando una habilidad ...";
   }
 
   public agregar_habilidad(clase_de_habilidad, argumentos) {
     // TODO chequear si la clase de habilidad ya se ha agregado y eliminarla.
-    if(argumentos==null) {
+    if(argumentos==undefined) {
       var habilidad = new clase_de_habilidad(this);
     }
     else {
@@ -32,16 +33,37 @@ class Estudiante {
   }
 
   hacer(comportamiento, argumentos={}) {
-    this.comportamiento = new comportamiento(argumentos);
-    this.comportamiento.iniciar(this);
+    var _comportamiento = new comportamiento(argumentos);
+    this.comportamientos.splice(0, 0, _comportamiento);
+    this._adoptar_el_siguiente_comportamiento();
+  }
+
+  hacer_luego(comportamiento, argumentos={}) {
+    var _comportamiento = new comportamiento(argumentos);
+    this.comportamientos.push(_comportamiento);
   }
 
   actualizar_comportamientos() {
-    if (this.comportamiento !== undefined) {
-      var termina = this.comportamiento.actualizar();
+    if(this.comportamiento_actual) {
+      var termina = this.comportamiento_actual[0]["actualizar"]();
 
-      if (termina)
-        this.comportamiento = undefined;
+      if (termina) {
+        this._adoptar_el_siguiente_comportamiento();
+      }
+    }
+    else {
+      this._adoptar_el_siguiente_comportamiento();
+    }
+  }
+
+  _adoptar_el_siguiente_comportamiento() {
+    if (this.comportamientos[0]) {
+      this.comportamiento_actual = this.comportamientos.splice(0,1);
+      console.log(this.comportamiento_actual);
+      this.comportamiento_actual[0]["iniciar"](this);
+    }
+    else {
+      this.comportamiento_actual = undefined;
     }
   }
 }
