@@ -118,7 +118,7 @@ class Actor extends Estudiante {
   set x(_x) {
 
     if (_x instanceof Array)
-      pilas.interpolar(this, 'x', _x, 1000);
+      pilas.interpolar(this, 'x', _x, 1);
     else {
       var pos = pilas.escena_actual().obtener_posicion_pantalla(_x, 0);
       this.sprite.x = pos.x;
@@ -132,7 +132,7 @@ class Actor extends Estudiante {
 
   set y(_y) {
     if (_y instanceof Array)
-      pilas.interpolar(this, 'y', _y, 1000);
+      pilas.interpolar(this, 'y', _y, 1);
     else {
       var pos = pilas.escena_actual().obtener_posicion_pantalla(0, _y);
       this.sprite.y = pos.y;
@@ -148,7 +148,7 @@ class Actor extends Estudiante {
   get escala_x() {return this.sprite.scaleX}
   set escala_x(valor) {
     if (valor instanceof Array)
-      pilas.interpolar(this.sprite, 'scaleX', valor, 1000);
+      pilas.interpolar(this.sprite, 'scaleX', valor, 1);
     else
       this.sprite.scaleX = valor;
   }
@@ -156,7 +156,7 @@ class Actor extends Estudiante {
   get escala_y() {return this.sprite.scaleY}
   set escala_y(valor) {
     if (valor instanceof Array)
-      pilas.interpolar(this.sprite, 'scaleY', valor, 1000);
+      pilas.interpolar(this.sprite, 'scaleY', valor, 1);
     else
       this.sprite.scaleY = valor;
   }
@@ -169,7 +169,7 @@ class Actor extends Estudiante {
       for (var i=0; i<valor.length; i++) {
         nuevo_radio_de_colision.push((this.radio_de_colision * valor[i]) / this.escala);
       }
-      pilas.interpolar(this, 'radio_de_colision', nuevo_radio_de_colision, 1000);
+      pilas.interpolar(this, 'radio_de_colision', nuevo_radio_de_colision, 1);
       this.radio_de_colision = nuevo_radio_de_colision[0];
     }
     else {
@@ -183,7 +183,7 @@ class Actor extends Estudiante {
   get rotacion() {return this.sprite.rotation}
   set rotacion(valor) {
     if (valor instanceof Array)
-      pilas.interpolar(this.sprite, 'rotation', valor, 1000);
+      pilas.interpolar(this.sprite, 'rotation', valor, 1);
     else
       this.sprite.rotation = valor;
   }
