@@ -18,6 +18,7 @@ class DepuradorDeshabilitado {
     modos.puntos_de_control = modos.puntos_de_control || false;
     modos.radios_de_colision = modos.radios_de_colision || false;
     modos.fisica = modos.fisica || false;
+    modos.area = modos.area || false;
 
     this.eliminar_todos_los_modos();
 
@@ -29,6 +30,9 @@ class DepuradorDeshabilitado {
 
     if (modos.fisica)
       this.modos.push(new ModoFisica());
+
+    if (modos.area)
+      this.modos.push(new ModoArea());
 
     this.diccionario_modos = modos;
   }
@@ -44,6 +48,7 @@ class DepuradorDeshabilitado {
     return this.diccionario_modos;
   }
 }
+
 
 
 class ModoRadiosDeColision {
@@ -81,6 +86,42 @@ class ModoRadiosDeColision {
   }
 }
 
+class ModoArea {
+  shape;
+  container;
+  text_modo;
+
+  constructor() {
+    this.container = new createjs.Container();
+
+    this.shape = new createjs.Shape();
+    this.container.addChild(this.shape);
+
+    this.text_modo = new createjs.Text("F10 ModoArea habilitado", "12px Arial", "white");
+    this.text_modo.y = 15; // TODO: Buscar la forma de posicion este texto solo, uno arriba de otro.
+    this.container.addChild(this.text_modo);
+
+    pilas.escena_actual().stage.addChild(this.container);
+  }
+
+  eliminar() {
+    pilas.escena_actual().stage.removeChild(this.container);
+  }
+
+  actualizar() {
+    var escena = pilas.escena_actual();
+    this.shape.graphics.clear();
+
+    for(var i=0;i<escena.actores.length;i++) {
+      var actor = escena.actores[i];
+      var posicion = escena.obtener_posicion_pantalla(actor.x, actor.y);
+
+      this.shape.graphics.beginStroke("#FFF").drawRect(posicion.x-actor.ancho/2, 
+        posicion.y-actor.alto/2, actor.ancho, actor.alto).endStroke();
+    }
+  }
+}
+
 class ModoPuntosDeControl {
   shape;
   container;
@@ -95,12 +136,12 @@ class ModoPuntosDeControl {
     this.container.addChild(this.shape);
 
     this.text_modo = new createjs.Text("F12 ModoPosición habilitado", "12px Arial", "white");
-    this.text_modo.y = 15; // TODO: Buscar la forma de posicion este texto solo, uno arriba de otro.
+    this.text_modo.y = 45; // TODO: Buscar la forma de posicion este texto solo, uno arriba de otro.
     this.container.addChild(this.text_modo);
 
     this.text_coordenada = new createjs.Text("Posición del mouse: x=12 y=33", "12px Arial", "white");
-    this.text_coordenada.y = 220;
-    this.text_coordenada.x = 120;
+    this.text_coordenada.y = 920/2; //TODO: Tamaño decanvas 640*480 
+    this.text_coordenada.x = 900/2;
     this.container.addChild(this.text_coordenada);
     this.eje = new pilas.actores.Eje();
 
@@ -145,6 +186,7 @@ class ModoFisica {
     this.container.addChild(this.shape);
 
     this.text_modo = new createjs.Text("F11 ModoFisica habilitado", "12px Arial", "white");
+    this.text_modo.y = 30; // TODO: Buscar la forma de posicion este texto solo, uno arriba de otro.
     this.container.addChild(this.text_modo);
 
     pilas.escena_actual().stage.addChild(this.container);
