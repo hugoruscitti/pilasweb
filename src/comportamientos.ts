@@ -22,6 +22,52 @@ class Comportamiento {
   }
 }
 
+class Avanzar extends Comportamiento {
+  pasos;
+  velocidad;
+  dx;
+  dy;
+
+  iniciar(receptor) {
+    super.iniciar(receptor);
+    this.pasos = Math.abs(this.argumentos.pasos);
+    this.velocidad = this.argumentos.velocidad || 5;   
+    var rotacion_en_radianes = pilas.utils.convertir_a_radianes(-this.receptor.rotacion);
+    this.dx = Math.cos(rotacion_en_radianes);
+    this.dy = Math.sin(rotacion_en_radianes);
+  }
+
+  actualizar() {
+    if(this.pasos > 0) {
+      if(this.pasos - this.velocidad < 0) {
+        var avance = this.pasos;
+      }
+      else {
+        var avance = this.velocidad;
+      }
+
+      this.pasos -= avance;
+      this.receptor.x += this.dx * avance;
+      this.receptor.y += this.dy * avance;
+    }
+  }
+}
+
+class Girar extends Comportamiento {
+  angulo;
+  tiempo;
+
+  iniciar(receptor) {
+    super.iniciar(receptor);
+    this.angulo = this.argumentos.angulo || 360;
+    this.tiempo = this.argumentos.tiempo || 1;
+  }
+
+  actualizar() {
+    pilas.interpolar(this.receptor,"rotacion",[this.angulo], this.tiempo);
+  }
+}
+
 class Saltar extends Comportamiento {
   cuando_termina;
   suelo;
@@ -180,6 +226,8 @@ class Comportamientos {
   Orbitar;
   OrbitarSobreActor
   Saltar;
+  Girar;
+  Avanzar;
 
   constructor() {
     this.CaminarBase = CaminarBase;
@@ -190,5 +238,7 @@ class Comportamientos {
     this.Orbitar = Orbitar;
     this.OrbitarSobreActor = OrbitarSobreActor;
     this.Saltar = Saltar;
+    this.Girar = Girar;
+    this.Avanzar = Avanzar;
   }
 }
