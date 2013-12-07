@@ -69,7 +69,7 @@ class Girar extends Comportamiento {
   }
 
   actualizar() {
-    pilas.interpolar(this.receptor,"rotacion",[this.angulo], this.tiempo);
+    pilas.interpolar(this.receptor,"rotacion",[this.angulo_aux], this.tiempo);
     if (this.angulo_aux == this.receptor.rotacion) {
       return true;
     }
