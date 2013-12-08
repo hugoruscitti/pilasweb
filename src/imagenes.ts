@@ -60,9 +60,18 @@ class Imagenes {
     this.cargar_recurso('pelota.png');
     this.cargar_recurso('zanahoria_normal.png');
     this.cargar_recurso('zanahoria_sonrie.png');
+    this.cargar_recurso('boton/boton_normal.png');
+    this.cargar_recurso('boton/boton_over.png');
+    this.cargar_recurso('boton/boton_press.png');
 
     this.cargar_recurso('fondos/tarde.jpg');
-    
+
+    /*Recursos cargados para el demo Vaca Voladora*/
+    this.cargar_recurso('vaca.png');
+    this.cargar_recurso('nube1.png');
+    this.cargar_recurso('nube2.png');
+    this.cargar_recurso('fondos/nubes.png');
+
     //this.cargar_recurso('cooperativista/alerta.png');
     //this.cargar_recurso('cooperativista/camina.png');
     //this.cargar_recurso('cooperativista/camina_sujeta.png');
