@@ -201,10 +201,10 @@ class Fisica {
     this.timeStep = this.velocidad/120.0;
 
     // Bordes del escenario
-    this.crear_rectangulo(0, -118, 320, 5, {dinamico: false}); // abajo
-    this.crear_rectangulo(0, 118, 320, 5,  {dinamico: false}); // arriba
-    this.crear_rectangulo(-158, 0, 5, 240, {dinamico: false}); // izquierda
-    this.crear_rectangulo( 158, 0, 5, 240, {dinamico: false}); // derecha
+    this.crear_rectangulo(0, -pilas.opciones.alto/2, pilas.opciones.ancho, 5, {dinamico: false}); // abajo
+    this.crear_rectangulo(0, pilas.opciones.alto/2, pilas.opciones.ancho, 5,  {dinamico: false}); // arriba
+    this.crear_rectangulo(-pilas.opciones.ancho/2, 0, 5, pilas.opciones.alto, {dinamico: false}); // izquierda
+    this.crear_rectangulo( pilas.opciones.ancho/2, 0, 5, pilas.opciones.alto, {dinamico: false}); // derecha
   }
 
   actualizar() {
