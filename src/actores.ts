@@ -38,6 +38,7 @@ class Actores {
   Cesto;
   Pelota;
   Zanahoria;
+  Boton;
 
   constructor() {
     this.Aceituna = Aceituna;
@@ -59,5 +60,6 @@ class Actores {
     this.Cesto = Cesto;
     this.Pelota = Pelota;
     this.Zanahoria = Zanahoria;
+    this.Boton = Boton;
   }
 }
