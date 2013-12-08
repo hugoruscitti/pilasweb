@@ -52,6 +52,48 @@ class Boton extends Actor {
  		this.funciones_over.push(temp);
  	}
 
+ 	desconectar_normal_todo() {
+ 		this.funciones_normal = [];
+ 	}
+
+ 	desconectar_presionado_todo() {
+ 		this.funciones_press = [];
+ 	}
+
+ 	desconectar_sobre_todo() {
+ 		this.funciones_over = [];
+ 	}
+
+ 	desconectar_normal(funcion, args) {
+        for (var i=0;i<this.funciones_normal.length;i++) {
+        	if(this.funciones_normal[i][0] == funcion) {
+            	if(this.funciones_normal[i][1] == args) {
+              		this.funciones_normal.splice(i,1);
+            	}
+          	}
+    	} 		
+ 	}
+
+ 	desconectar_presionado(funcion, args) {
+        for (var i=0;i<this.funciones_press.length;i++) {
+          	if(this.funciones_press[i][0] == funcion) {
+            	if(this.funciones_press[i][1] == args) {
+              		this.funciones_press.splice(i,1);
+            	}
+          	}
+    	} 		
+ 	}
+
+ 	desconectar_sobre(funcion, args) {
+        for (var i=0;i<this.funciones_over.length;i++) {
+          	if(this.funciones_over[i][0] == funcion) {
+            	if(this.funciones_over[i][1] == args) {
+              		this.funciones_over.splice(i,1);
+            	}
+          	}
+    	} 		
+ 	}
+
  	ejecutar_funciones_normal() {
 	 	if (this.estado) {
 	 		for(var i=0;i<this.funciones_normal.length;i++) {

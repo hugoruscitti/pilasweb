@@ -53,6 +53,8 @@ class Actor extends Estudiante {
   radio_de_colision;
   id;
   figura;
+  callbacks_cuando_hace_click;
+  callbacks_cuando_mueve_mouse;
 
   constructor(imagen, x, y, atributos = {}) {
     super();
@@ -87,6 +89,13 @@ class Actor extends Estudiante {
 
     this.z = 0;
     pilas.escena_actual().agregar_actor(this);
+
+    //eventos
+    pilas.escena_actual().click_de_mouse.conectar(this);
+    pilas.escena_actual().mueve_mouse.conectar(this);
+
+    this.callbacks_cuando_hace_click = [];
+    this.callbacks_cuando_mueve_mouse = [];
   }
 
   public tiene_fisica() {
@@ -242,7 +251,52 @@ class Actor extends Estudiante {
 	set abajo(y) {
 		this.arriba = y + (this.alto * this.escala);
 	}
-	
+
+  ejecutar_callbacks_clicks() {
+    for(var i=0; i<this.callbacks_cuando_hace_click.length; i++) {
+      this.callbacks_cuando_hace_click[i]();
+    }
+  }
+
+  ejecutar_callbacks_over() {
+    for(var i=0; i<this.callbacks_cuando_mueve_mouse.length; i++) {
+      this.callbacks_cuando_mueve_mouse[i]();
+    }
+  }
+
+  get cuando_hace_click() {return this.callbacks_cuando_hace_click;}
+  set cuando_hace_click(funcion) {
+    //Esta funcion no admite parametros
+    this.callbacks_cuando_hace_click.push(funcion);
+  }
+
+  get cuando_mueve_mouse() {return this.callbacks_cuando_mueve_mouse;}
+  set cuando_mueve_mouse(funcion) {
+    //Esta funcion no admite parametros
+    this.callbacks_cuando_mueve_mouse.push(funcion);    
+  }
+
+  //metodo recibir() para gestionar los eventos
+  recibir(evento, tipo) {
+    if (tipo == pilas.escena_actual().click_de_mouse) {
+      this._cuando_hace_click(evento);
+    }
+    if (tipo == pilas.escena_actual().mueve_mouse) {
+      this._cuando_mueve_mouse(evento);
+    }
+  }
+
+  _cuando_hace_click(click) {
+    if (this.colisiona_con_un_punto(click.x, click.y)) {
+      this.ejecutar_callbacks_clicks();
+    }
+  }
+
+  _cuando_mueve_mouse(evento) {
+    if (this.colisiona_con_un_punto(evento.x, evento.y)) {
+      this.ejecutar_callbacks_over();
+    }
+  }
 
   /**
    * @method colisiona_con_un_punto
