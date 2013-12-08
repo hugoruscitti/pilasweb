@@ -340,22 +340,17 @@ class SeMantieneEnPantalla extends Habilidad {
 
   recibir(evento, tipo) {
     if (tipo == pilas.escena_actual().actualiza) {
-			/* TODO: obtener el area del escenario desde
-			         algun atributo de la escena o 
-							 pilas.mundo.obtener_area() como hace
-							 pilas en python.
-		    */
-			if (this.receptor.izquierda > 160)
-				this.receptor.derecha = -160;
+			if (this.receptor.izquierda > pilas.opciones.ancho/2)
+				this.receptor.derecha = -pilas.opciones.ancho/2;
 			
-			if (this.receptor.derecha < -160)
-				this.receptor.izquierda = 160;
+			if (this.receptor.derecha < -pilas.opciones.ancho/2)
+				this.receptor.izquierda = pilas.opciones.ancho/2;
 			
-			if (this.receptor.abajo > 120)
-				this.receptor.arriba = -120;
+			if (this.receptor.abajo > pilas.opciones.alto/2)
+				this.receptor.arriba = -pilas.opciones.alto/2;
 			
-			if (this.receptor.arriba < -120)
-				this.receptor.abajo = 120;
+			if (this.receptor.arriba < -pilas.opciones.alto/2)
+				this.receptor.abajo = pilas.opciones.alto/2;
 			
     }
   }
