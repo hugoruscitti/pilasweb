@@ -10,9 +10,18 @@ class Grupo {
 	//TODO: encontrar una forma de llamar implicitamente a las funciones y propiedades de los actores
 	//		parecido a __getattr__ y __setattr__ de Python
 	lista;
-
-	constructor(lista) {
+	constructor(lista=[]) {
 		this.lista = lista;
+	}
+
+	agregar_grupo(grupo) {
+		for(var i=0;i<grupo.lista.length;i++) {
+			this.lista.push(grupo.lista[i]);
+		}
+	}
+
+	agregar_elemento(elemento) {
+		this.lista.push(elemento);
 	}
 
 	get x() {
@@ -65,6 +74,7 @@ class Grupo {
 
 	eliminar() {
 		this.__execfunct__("eliminar");
+		this.lista.splice(0,this.lista.length);		
 	}
 
 	__execfunct__(id,args=undefined, args2=undefined) {
@@ -88,5 +98,4 @@ class Grupo {
 			this.lista[i][attr] = valor;
 		}
 	}
-
 }
