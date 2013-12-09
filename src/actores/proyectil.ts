@@ -24,8 +24,8 @@ class Proyectil extends Actor {
   }
   
   analizar_colisiones() {
-    for (var i=0; i<this.enemigos.length; i++) {
-      var enemigo = this.enemigos[i];
+    for (var i=0; i<this.enemigos.lista.length; i++) {
+      var enemigo = this.enemigos.lista[i];
 
       if (enemigo.vivo && enemigo.colisiona_con_un_punto(this.x, this.y)) {
         enemigo.eliminar();
