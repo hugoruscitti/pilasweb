@@ -11,7 +11,7 @@ class Proyectil extends Actor {
     super(imagen, x, y, atributos);
 
     this.paso = 0;
-    this.enemigos = [];
+    this.enemigos = undefined;
   }
 
   actualizar() {
@@ -24,12 +24,14 @@ class Proyectil extends Actor {
   }
   
   analizar_colisiones() {
-    for (var i=0; i<this.enemigos.lista.length; i++) {
-      var enemigo = this.enemigos.lista[i];
+    if (this.enemigos.lista) {
+      for (var i=0; i<this.enemigos.lista.length; i++) {
+        var enemigo = this.enemigos.lista[i];
 
-      if (enemigo.vivo && enemigo.colisiona_con_un_punto(this.x, this.y)) {
-        enemigo.eliminar();
-        this.eliminar();
+        if (enemigo.vivo && enemigo.colisiona_con_un_punto(this.x, this.y)) {
+          enemigo.eliminar();
+          this.eliminar();
+        }
       }
     }
   }
