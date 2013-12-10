@@ -41,7 +41,8 @@ class Tareas {
 	}
 
 	siempre(tiempo, funcion, parametros, parent) {
-		var tarea = new Tarea(tiempo, funcion, false, parametros, parent);
+		var tarea = new Tarea(this.contador_de_tiempo + tiempo, funcion, false, parametros, parent);
+		tarea.tiempo_aux = tiempo;
 		this._agregar_tarea(tarea);
 	}
 
@@ -51,9 +52,10 @@ class Tareas {
 	}
 
 	actualizar() {
-		this.contador_de_tiempo += (1/60);		
+		this.contador_de_tiempo += (1/60);
 		for(var i=0; i<this.tareas_planificadas.length; i++) {
-			if (this.contador_de_tiempo > this.tareas_planificadas[i].tiempo) {				
+			if (this.contador_de_tiempo > this.tareas_planificadas[i].tiempo) {		
+				console.log("este es el tiempo: "+this.contador_de_tiempo+" tiempo tarea: "+this.tareas_planificadas[i].tiempo);	
 				this.tareas_planificadas[i].ejecutar();
 
 				if (this.tareas_planificadas[i].una_vez) {
