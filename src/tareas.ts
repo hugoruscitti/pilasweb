@@ -7,6 +7,7 @@ class tareas {
 
 class Tarea {
 	tiempo;
+	tiempo_aux;	
 	funcion;
 	una_vez;
 	parametros;
@@ -14,6 +15,7 @@ class Tarea {
 
 	constructor(tiempo, funcion, una_vez, parametros, parent) {
 		this.tiempo = tiempo;
+		this.tiempo_aux = tiempo;
 		this.funcion = funcion;
 		this.una_vez = una_vez;
 		this.parametros = parametros;
@@ -51,17 +53,16 @@ class Tareas {
 	actualizar() {
 		this.contador_de_tiempo += (1/60);
 		for(var i=0; i<this.tareas_planificadas.length; i++) {
-			if (this.contador_de_tiempo > this.tareas_planificadas[i]["tiempo"]) {
+			if (this.contador_de_tiempo > this.tareas_planificadas[i].tiempo) {
 
-				this.tareas_planificadas[i]["ejecutar"]();
+				this.tareas_planificadas[i].ejecutar();
 
-				if (this.tareas_planificadas[i]["una_vez"]) {
+				if (this.tareas_planificadas[i].una_vez) {
 					this.tareas_planificadas.splice(i,1);
 				}
 
 				else {
-					this.tareas_planificadas[i]["tiempo"] += (0,032 - 
-						((this.contador_de_tiempo-this.tareas_planificadas[i]["tiempo"])-0,016));
+					this.tareas_planificadas[i].tiempo += this.tareas_planificadas[i].tiempo_aux; 
 				}
 			}
 		}
