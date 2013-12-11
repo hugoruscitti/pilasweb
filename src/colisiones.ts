@@ -5,7 +5,7 @@ class Colisiones {
     this.colisiones = [];
   }
 
-  agregar(grupo_a, grupo_b, funcion_a_llamar) {
+  agregar(grupo_a, grupo_b, funcion_a_llamar, parent=undefined) {
 
     if (grupo_a.length === undefined)
       grupo_a = [grupo_a];
@@ -13,7 +13,7 @@ class Colisiones {
     if (grupo_b.length === undefined)
       grupo_b = [grupo_b];
 
-    this.colisiones.push({grupo_a: grupo_a, grupo_b: grupo_b, callback: funcion_a_llamar});
+    this.colisiones.push({grupo_a: grupo_a, grupo_b: grupo_b, callback: funcion_a_llamar, parent:parent});
   }
 
   verificar_colisiones() {
@@ -30,7 +30,7 @@ class Colisiones {
         var actor_b = tupla.grupo_b[j];
 
         if (actor_a.vivo && actor_b.vivo && actor_a.colisiona_con(actor_b)) {
-          tupla.callback.call(this, actor_a, actor_b);
+          tupla.callback.call(tupla.parent, actor_a, actor_b);
 
           // TODO: implementar alguna forma para quitar a los actores del
           //       grupo si es que ya no están vivos.
