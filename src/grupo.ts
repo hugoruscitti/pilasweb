@@ -34,8 +34,8 @@ class Grupo extends HGrupo {
 		}
 	}
 
-	agregar_elemento(elemento) {
-		this.push(elemento);
+	agregar_actor(actor) {
+		this.push(actor);
 	}
 
 	get x() {
