@@ -22,6 +22,25 @@ class Comportamiento {
   }
 }
 
+class AvanzarComoProyectil extends Comportamiento {
+  velocidad;
+  dx;
+  dy;
+
+  iniciar(receptor) {
+    super.iniciar(receptor);
+    this.velocidad = this.argumentos.velocidad || 2;
+    var rotacion_en_radianes = pilas.utils.convertir_a_radianes(-this.receptor.rotacion);
+    this.dx = Math.cos(rotacion_en_radianes);
+    this.dy = Math.sin(rotacion_en_radianes);
+  }
+
+  actualizar() {
+    this.receptor.x += this.dx * this.velocidad;
+    this.receptor.y += this.dy * this.velocidad;
+  }
+}
+
 class Avanzar extends Comportamiento {
   pasos;
   velocidad;
@@ -236,6 +255,7 @@ class Comportamientos {
   Saltar;
   Girar;
   Avanzar;
+  AvanzarComoProyectil;
 
   constructor() {
     this.CaminarBase = CaminarBase;
@@ -248,5 +268,6 @@ class Comportamientos {
     this.Saltar = Saltar;
     this.Girar = Girar;
     this.Avanzar = Avanzar;
+    this.AvanzarComoProyectil = AvanzarComoProyectil;
   }
 }

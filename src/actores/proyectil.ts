@@ -9,7 +9,7 @@ class Proyectil extends Actor {
     atributos['centro_x'] = 20;
     atributos['centro_y'] = 8;
     super(imagen, x, y, atributos);
-
+    this.hacer(pilas.comportamientos.AvanzarComoProyectil);
     this.paso = 0;
     this.enemigos = [];
   }
@@ -18,8 +18,6 @@ class Proyectil extends Actor {
     this.paso += 0.1;
     this._imagen.definir_cuadro(parseInt(this.paso) % 2)
     
-    // TODO: Convertir en una habilidad.
-    this.avanzar_respecto_del_angulo();
     this.analizar_colisiones();
   }
   
@@ -32,20 +30,5 @@ class Proyectil extends Actor {
           this.eliminar();
         }
       }
-  }
-
-  avanzar_respecto_del_angulo() {
-    var velocidad = 2;
-    var rotacion_en_radianes;
-    var dx;
-    var dy;
-    
-    var rotacion_en_radianes = pilas.utils.convertir_a_radianes(-this.rotacion + 90 - 90);
-    
-    dx = Math.cos(rotacion_en_radianes) * velocidad;
-    dy = Math.sin(rotacion_en_radianes) * velocidad;
-    
-    this.x += dx;
-    this.y += dy;
   }
 }
