@@ -45,7 +45,7 @@ class Utils {
       }
 
       var nuevo = new clase(x, y);
-      grupo.agregar_elemento(nuevo);
+      grupo.agregar_actor(nuevo);
     }
     
     return grupo;
