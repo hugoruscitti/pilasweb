@@ -11,7 +11,7 @@ class Proyectil extends Actor {
     super(imagen, x, y, atributos);
 
     this.paso = 0;
-    this.enemigos = undefined;
+    this.enemigos = [];
   }
 
   actualizar() {
@@ -24,16 +24,14 @@ class Proyectil extends Actor {
   }
   
   analizar_colisiones() {
-    if (this.enemigos.lista) {
-      for (var i=0; i<this.enemigos.lista.length; i++) {
-        var enemigo = this.enemigos.lista[i];
+      for (var i=0; i<this.enemigos.length; i++) {
+        var enemigo = this.enemigos[i];
 
         if (enemigo.vivo && enemigo.colisiona_con_un_punto(this.x, this.y)) {
           enemigo.eliminar();
           this.eliminar();
         }
       }
-    }
   }
 
   avanzar_respecto_del_angulo() {
