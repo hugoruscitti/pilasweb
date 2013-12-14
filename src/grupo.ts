@@ -6,22 +6,36 @@ class grupo {
 	}
 }
 
-class Grupo {
-	//TODO: encontrar una forma de llamar implicitamente a las funciones y propiedades de los actores
-	//		parecido a __getattr__ y __setattr__ de Python
-	lista;
-	constructor(lista=[]) {
-		this.lista = lista;
+
+class HGrupo {
+	/*Se utiliza para que la clase Grupo pueda extender de ella y por ende
+	extender propiedades y metodos de la clase Array */
+	constructor() {
+		Array.apply(this, arguments);
+		return new Array();	
+	} 
+
+	pop(): any {return "";}
+	push(val): number {return 0;}
+	length: number;
+	/*TODO: Añadir métodos faltantes*/
+}
+
+HGrupo["prototype"] = new Array();
+
+class Grupo extends HGrupo {
+	constructor() {
+		super();
 	}
 
 	agregar_grupo(grupo) {
-		for(var i=0;i<grupo.lista.length;i++) {
-			this.lista.push(grupo.lista[i]);
+		for(var i=0;i<grupo.length;i++) {
+			this.agregar_elemento(grupo[i]);
 		}
 	}
 
 	agregar_elemento(elemento) {
-		this.lista.push(elemento);
+		this.push(elemento);
 	}
 
 	get x() {
@@ -29,7 +43,7 @@ class Grupo {
 	}
 
 	set x(x) {
-		this.__setattr__("x",x);
+		this.__setattr__("x", x);
 	}
 
 	get y() {
@@ -56,46 +70,43 @@ class Grupo {
 		this.__setattr__("rotacion",rotacion);
 	}
 
-	aprender(args, args2={}) {	
-		this.__execfunct__("aprender", args, args2);
+	aprender(habilidad, argumentos=undefined) {
+		this.ejecutar_funcion("aprender", habilidad, argumentos);
 	}
 
-	hacer(args, args2={}) {
-		this.__execfunct__("hacer", args, args2);
+	hacer(comporamiento, argumentos=undefined) {
+		this.ejecutar_funcion("hacer", comporamiento, argumentos);
 	}
 
-	hacer_luego(args, args2={}) {
-		this.__execfunct__("hacer_luego", args, args2);
+	hacer_luego(comporamiento, argumentos=undefined) {
+		this.ejecutar_funcion("hacer_luego", comporamiento, argumentos);
 	}
 
-	decir(args) {
-		this.__execfunct__("decir",args);
+	decir(mensaje) {
+		this.ejecutar_funcion("decir",mensaje);
 	}
 
 	eliminar() {
-		this.__execfunct__("eliminar");
-		this.lista.splice(0,this.lista.length);		
-	}
-
-	__execfunct__(id,args=undefined, args2=undefined) {
-		for(var i=0;i<this.lista.length;i++) {
-			this.lista[i][id](args, args2);
-		}
+		this.ejecutar_funcion("eliminar");
 	}
 
 	__getattr__(attr) {
-	
-		var valores = []
-		for(var i=0;i<this.lista.length;i++) {
-			valores.push(this.lista[i][attr]);
+		var valores = [];
+		for(var i=0;i<this.length;i++) {
+			valores.push(this[i][attr]);
 		}
-
 		return valores;
 	}
 
 	__setattr__(attr, valor) {
-		for(var i=0;i<this.lista.length;i++) {
-			this.lista[i][attr] = valor;
+		for(var i=0; i<this.length; i++) {
+			this[i][attr] = valor;
+		}
+	}
+
+	ejecutar_funcion(id, argumentos1=undefined, argumentos2=undefined) {
+		for(var i=0; i<this.length; i++) {
+			this[i][id](argumentos1, argumentos2);
 		}
 	}
 }
