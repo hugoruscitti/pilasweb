@@ -30,7 +30,7 @@ class Grupo extends HGrupo {
 
 	agregar_grupo(grupo) {
 		for(var i=0;i<grupo.length;i++) {
-			this.agregar_elemento(grupo[i]);
+			this.agregar_actor(grupo[i]);
 		}
 	}
 
