@@ -69,4 +69,17 @@ class Camara {
             y: + centro.y - y}
   }
 
+
+  /*
+  * Obtiene el area visible de la pantalla.
+  * return: object
+  */
+  obtener_area_visible() {
+    var ancho = pilas.opciones.ancho;
+    var alto = pilas.opciones.alto;
+
+    return {izquierda:this.x - ancho/2, derecha:this.x + 
+      ancho/2, arriba:this.y + alto/2, abajo: this.y - alto/2};
+  }
+
 }
