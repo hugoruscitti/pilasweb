@@ -334,4 +334,13 @@ class Actor extends Estudiante {
     return pilas.utils.colisionan(this, otro_actor);
   }
 
+  /*
+  * Comprueba si el actor se encuentra dentro del area visible de la pantalla
+  */
+  esta_fuera_de_la_pantalla() {
+    var area_visible = pilas.escena_actual().camara.obtener_area_visible();
+    return this.derecha < area_visible.izquierda || this.izquierda > area_visible.derecha ||
+      this.abajo > area_visible.arriba || this.arriba < area_visible.abajo;
+  }
+
 }
