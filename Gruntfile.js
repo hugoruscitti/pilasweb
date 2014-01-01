@@ -2,7 +2,31 @@ var shell = require('shelljs');
 
 module.exports = function(grunt) {
 
-	grunt.initConfig({
+	grunt.initConfig({	
+    nodewebkit: {
+                  options: {
+                            version: '0.8.3',
+                            build_dir: './webkitbuilds',
+                            mac: true, // We want to build it for mac
+                            win: true, // We want to build it for win
+                            linux32: true, // We don't need linux32
+                            linux64: true // We don't need linux64
+                },
+                src: [
+                  './ide/**/*',
+                  './node_modules/**/*',
+                ]
+            },
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		typescript: {
 			base: {
 				src: ['src/**/*.ts'],
@@ -53,6 +77,7 @@ module.exports = function(grunt) {
     shell.exec('jsduck public/pilasweb.js --title="pilas-engine web" --images=docs/images/ -o docs/html');
   });
 
+  grunt.loadNpmTasks('grunt-node-webkit-builder');
   grunt.registerTask('docs', ['typescript', 'make_docs']);
   grunt.registerTask('default', ['typescript']);
 };

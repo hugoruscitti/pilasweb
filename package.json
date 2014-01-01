@@ -1,7 +1,8 @@
 {
   "name": "pilasweb",
   "version": "0.0.1",
-	"author": "Hugo Ruscitti",
+  "author": "Hugo Ruscitti",
+  "repository": "http://github.com/hugoruscitti/pilasweb",
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-typescript": "*",

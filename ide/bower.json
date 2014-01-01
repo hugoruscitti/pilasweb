@@ -1,0 +1,22 @@
+{
+  "name": "pilas-engine",
+  "version": "0.0.1",
+  "authors": [
+    "Hugo Ruscitti <hugoruscitti@gmail.com>"
+  ],
+  "description": "Un asistente y editor de pilas-engine",
+  "main": "index.html",
+  "license": "GPLv3",
+  "homepage": "http://www.pilas-engine.com.ar",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-route": "~1.2.6",
+    "angular-ui-codemirror": "~0.1.0"
+  }
+}

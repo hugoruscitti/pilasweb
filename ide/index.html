@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" ng-app='app'>
+	<head>
+		<title>pilas engine</title>
+		<meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/font-awesome.css" />
+		<link rel="stylesheet" href="css/unicorn.css" />
+		<link rel="stylesheet" href="css/custom.css"/>
+	</head>	
+  
+	<body data-color="grey" class="flat" ng-controller='MainCtrl'>
+		<div id="wrapper" style="
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+">
+			<div id="header">
+				<h1>&nbsp;</h1>
+        <span class="badge badge-danger" style="position: absolute; top: 13px; left: 176px;">beta</span>
+			</div>
+		
+			<div id="user-nav">
+        <div class='version'>versión 0.85</div>
+	    </div>
+	       
+			<div id="sidebar">
+				<ul>
+					<li ng-class="getClass('/index')"><a href="#/index"><i class="fa fa-home"></i></a></li>
+					<li ng-class="getClass('/interprete')"><a href="#/interprete"><i class="fa  fa-chevron-right"></i></a> </li>
+					<li ng-class="getClass('/tutoriales')"><a href="#/tutoriales"><i class="fa fa-gift"></i></a> </li>
+					<li ng-class="getClass('/ejemplos')"><a href="#/ejemplos"><i class="fa fa-th"></i></a> </li>
+					<li ng-class="getClass('/manual')"><a href="#/manual"><i class="fa fa-book"></i></a> </li>
+					<li class='separador'>&nbsp;</li>
+					<li ng-class="getClass('/foro')"><a href="#/foro"><i class="fa fa-comment"></i></a> </li>
+					<li ng-class="getClass('/acercade')"><a href="#/acercade"><i class="fa fa-flag"></i></a> </li>
+				</ul>
+			</div>
+			
+			<div id="content">
+        <ng-view></ng-view>
+      </div>
+        
+      <script type='text/ng-template' id='index.html'>
+      
+				<div id="content-header" class="mini">
+					<h1>Hola !</h1>
+          
+          <p>Bienvenido a pilas-engine, estas son las principales opciones.</p>
+				</div>
+      
+				<div class="container-fluid">
+          
+					<div class="row">
+						<div class="col-xs-12 center" style="text-align: center;">					
+							<ul class="quick-actions">
+								<li>
+									<a href="#/interprete">
+                    <i class="grande fa fa-chevron-right"></i> 
+                    El intérprete
+									</a>
+								</li>
+								<li>
+									<a href="#/tutoriales">
+										<i class="grande fa fa-gift"></i>
+                    Tutoriales
+									</a>
+								</li>
+								<li>
+									<a href="#/ejemplos">
+										<i class="grande fa fa-th"></i>
+                    Ejemplos
+									</a>
+								</li>
+								<li>
+									<a href="#/manual">
+										<i class="grande fa fa-book"></i>
+										Manual
+									</a>
+								</li>
+							</ul>
+						</div>	
+					</div>
+					
+				</div>
+      
+      </script>
+        
+      <script type='text/ng-template' id='interprete.html'>
+        <textarea id="" cols="30" rows="10"></textarea>
+        
+      </script>
+      
+      <script type='text/ng-template' id='tutoriales.html'>
+        
+        <div class="col-xs-12 center" style="text-align: center;">
+							<ul class="quick-actions">
+								<li>
+									<a href="#/tutoriales/caminos">
+                    <img src="imagenes/tutoriales/caminos.png" alt="">
+                    <br/>
+                    Caminos
+									</a>
+								</li>
+								<li>
+									<a href="#/tutoriales/nave">
+                    <img src="imagenes/tutoriales/nave.png" alt="">
+                    <br/>
+                    Nave
+									</a>
+								</li>
+								<li>
+									<a href="#/tutoriales/fisica">
+                    <img src="imagenes/tutoriales/fisica.png" alt="">
+                    <br/>
+                    Física
+									</a>
+								</li>
+							</ul>
+						</div>
+        
+      </script>
+      
+      <script type='text/ng-template' id='tutoriales/caminos.html'>
+        <div id="breadcrumb">
+          <a href="#/tutoriales"><i class="fa fa-gift"></i> Tutoriales</a>
+          <a href="#/tutoriales/caminos" class="current">Caminos</a>
+        </div>
+        
+        caminos
+      </script>
+      
+      <script type='text/ng-template' id='tutoriales/nave.html'>
+        <div id="breadcrumb">
+          <a href="#/tutoriales"><i class="fa fa-gift"></i> Tutoriales</a>
+          <a href="#/tutoriales/nave" class="current">Nave</a>
+        </div>
+      
+        nave
+      </script>
+      
+      <script type='text/ng-template' id='tutoriales/fisica.html'>
+        <div id="breadcrumb">
+          <a href="#/tutoriales"><i class="fa fa-gift"></i> Tutoriales</a>
+          <a href="#/tutoriales/fisica" class="current">Física</a>
+        </div>
+        
+        fisica
+      </script>
+      
+      <script type='text/ng-template' id='ejemplos.html'>
+      <h1>Ejemplos</h1>
+         <img src='imagenes/ejemplos/mapas/mapa_desde_archivo.png'> 
+         <img src='imagenes/ejemplos/mapas/mapa_personaje_martian.png'>
+         <img src='imagenes/ejemplos/mapas/mapa_plataformas.png'> 
+         
+      </script>
+      
+      <script type='text/ng-template' id='manual.html'>
+      	<div class='contenedor-iframe'>
+      		<iframe src='https://pilas.readthedocs.org/en/latest/'>
+      	</div>
+      </script>
+			
+      <script type='text/ng-template' id='foro.html'>
+      	<div class='contenedor-iframe'>
+      		<iframe src='http://foro-pilasengine.com.ar'>
+      	</div>
+      </script>
+      
+      <script type='text/ng-template' id='acercade.html'>
+      
+      
+					<div class='caja'>
+						<div class="widget-box">
+									<div class="widget-title">
+										<span class="icon">
+											<i class="fa fa-flag"></i>
+										</span>
+										<h5>Acerca de ...</h5>
+									</div>
+									<div class="widget-content">
+									
+         <h1>¿Que es pilas?</h1>
+				 
+				 
+        	<img class='logo-completo' src='imagenes/pilas-logo-completo.png'>
+        	
+        	
+        	<p>Pilas es una herramienta para construir videojuegos
+        	de manera sencilla y divertida.
+        	
+        	<p>Ideamos esta herramienta para que los jóvenes
+        	puedan descubrir y aprender a programar computadoras. 
+        	Creemos que aprender a programar es espectacular, 
+        	porque les permite tener el control de las 
+        	computadora, inventar y desarrollar cualquier tipo 
+        	de software.
+        
+        <h2>El equipo</h2>
+        
+        <p>En el desarrollo de <strong>pilas</strong> participamos 
+        varias personas, somos una comunidad abierta y colaborativa de
+        programadores, docentes y estudiates de distintas partes 
+        del mundo:
+        
+        <div class='equipo'>
+          <a popover data-nombre='Hugo Ruscitti' data-twitter='@hugoruscitti' data-origen='Buenos Aires (Argentina)' data-flag='arg' href=''><img src='imagenes/equipo/hugoruscitti.jpeg'></a>
+          <a popover href=''><img src='imagenes/equipo/quique.png'></a>
+          <a popover href=''><img src='imagenes/equipo/irving.jpeg'></a>
+					
+					<p>
+        	<p class='detalle'>(Podés hacer click sobre las fotos para más detalles)</p>
+        </div>
+				
+        <p>Te invitamos a participar del equipo, visitá nuestro
+        <a href='/#foro'><i class='fa fa-comment-o'></i> foro</a>
+        o bien nuestro proyecto en 
+        <a href='http://github.com/hugoruscitti/pilas'><i class="fa fa-github-alt"></i> github</a>
+        para obtener más información</p>
+        
+									</div>
+						</div>
+        	</div>
+        
+      </script>
+        
+		</div>
+
+      <script src="js/jquery.min.js"></script>
+      <script src="js/jquery-ui.custom.js"></script>
+      <script src="js/bootstrap.min.js"></script>
+      <script src="js/unicorn.js"></script>
+      <script src='app/bower_components/angular/angular.js'></script>
+      <script src='app/bower_components/angular-route/angular-route.js'></script>
+      <script src='js/app.js'></script>
+    
+	</body>
+</html>

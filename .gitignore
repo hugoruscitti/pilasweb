@@ -1,5 +1,8 @@
 .DS_Store
 
+webkitbuilds/
+ide/app/bower_components
+
 /build/
 /doc/
 
