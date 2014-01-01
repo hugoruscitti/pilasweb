@@ -1,9 +1,11 @@
-
+all:
+	@echo "watch     Observa los archivos y compila pilas si es necesario"
+	@echo "install   Actualiza dependencias"
 
 watch:
 	grunt watch
 
-crear_entorno:
+install:
 	npm install
 
 test:
