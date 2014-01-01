@@ -1,9 +1,14 @@
+N=\x1b[0m
+V=\x1b[32;01m
+
 all:
-	@echo "test_linux   Prueba la aplicacion usando nodewebkit en linux."
-	@echo "test_mac     Prueba la aplicacion usando nodewebkit en mac osx."
-	@echo "watch        Observa los archivos y compila pilas si es necesario"
-	@echo "install      Actualiza dependencias"
-	@echo "build        Genera las versiones compiladas."
+	@echo ""
+	@echo "$(V)test_linux$(N)   Prueba la aplicacion usando nodewebkit en linux."
+	@echo "$(V)test_mac$(N)     Prueba la aplicacion usando nodewebkit en mac osx."
+	@echo "$(V)watch$(N)        Observa los archivos y compila pilas si es necesario"
+	@echo "$(V)install$(N)      Actualiza dependencias"
+	@echo "$(V)build$(N)        Genera las versiones compiladas."
+	@echo ""
 
 test_linux:
 	./dist/node-webkit-v0.7.3-linux-ia32/nw ide
