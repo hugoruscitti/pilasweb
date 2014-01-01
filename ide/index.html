@@ -248,6 +248,19 @@
       <script src='app/bower_components/angular/angular.js'></script>
       <script src='app/bower_components/angular-route/angular-route.js'></script>
       <script src='js/app.js'></script>
+		
+		<script>
+      var config = require('./package.json');     
+      if (config.livereload) {
+        var Gaze = require('gaze').Gaze;
+        var gaze = new Gaze('**/*');
+       
+        gaze.on('all', function(event, filepath) {
+          if (location)
+            location.reload();
+        });
+      }
+    </script>
     
 	</body>
 </html>
