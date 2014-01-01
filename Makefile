@@ -3,11 +3,12 @@ V=\x1b[32;01m
 
 all:
 	@echo ""
-	@echo "$(V)test_linux$(N)   Prueba la aplicacion usando nodewebkit en linux."
-	@echo "$(V)test_mac$(N)     Prueba la aplicacion usando nodewebkit en mac osx."
-	@echo "$(V)watch$(N)        Observa los archivos y compila pilas si es necesario"
-	@echo "$(V)install$(N)      Actualiza dependencias"
-	@echo "$(V)build$(N)        Genera las versiones compiladas."
+	@echo " $(V)test_linux$(N)   Prueba la aplicacion usando nodewebkit en linux."
+	@echo " $(V)test_mac$(N)     Prueba la aplicacion usando nodewebkit en mac osx."
+	@echo " $(V)watch$(N)        Observa los archivos y compila pilas si es necesario."
+	@echo " $(V)install$(N)      Actualiza dependencias."
+	@echo " $(V)build$(N)        Genera las versiones compiladas."
+	@echo " $(V)test$(N)         Ejecuta todos los tests con mocha."
 	@echo ""
 
 test_linux:
@@ -26,6 +27,7 @@ watch:
 
 install:
 	npm install
+	cd ide; bower install
 
 test:
 	./node_modules/.bin/mocha-phantomjs test/init.html
