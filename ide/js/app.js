@@ -1,3 +1,5 @@
+var gui = require('nw.gui');
+
 app = angular.module('app', ['ngRoute']);
 
 
@@ -61,3 +63,13 @@ app.controller('MainCtrl', function($scope, $location) {
 app.controller('IndexCtrl', function($scope) {
   
 });
+
+
+
+window.abrir_github_en_el_navegador = function() {
+	gui.Shell.openExternal('http://github.com/hugoruscitti/pilas.git');
+}
+
+window.abrir_herramientas_desarrollo = function() {
+	gui.Window.get().showDevTools();
+}
