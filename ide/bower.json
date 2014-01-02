@@ -17,6 +17,8 @@
   ],
   "dependencies": {
     "angular-route": "~1.2.6",
-    "angular-ui-codemirror": "~0.1.0"
+    "angular-ui-codemirror": "~0.1.0",
+    "bootstrap": "~3.0.3",
+    "jquery": "~2.0.3"
   }
 }
