@@ -32,7 +32,7 @@ class Utils {
 
   fabricar(clase, cantidad=1, posiciones_al_azar=true) { //Mover a ../actores/utils.ts
 
-    var grupo = new pilas.grupo.Grupo();
+    var actores = []
 
     for (var i=0;i<cantidad;i++) {
       if (posiciones_al_azar) {
@@ -45,9 +45,9 @@ class Utils {
       }
 
       var nuevo = new clase(x, y);
-      grupo.agregar_actor(nuevo);
+      actores.push(nuevo);
     }
     
-    return grupo;
+    return new pilas.grupo.Grupo(actores);
   }
 }
