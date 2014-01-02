@@ -91,8 +91,15 @@
       </script>
         
       <script type='text/ng-template' id='interprete.html'>
-        <textarea id="" cols="30" rows="10"></textarea>
-        
+				<canvas id='canvasInterprete'></canvas>
+				
+				<div id="console" class="stretch">
+                <ul id="output"></ul>
+                <form>
+                  <textarea autofocus id="exec" spellcheck="false" autocapitalize="off" rows="1" autocorrect="off"></textarea>
+                </form>
+         </div>
+			
       </script>
       
       <script type='text/ng-template' id='tutoriales.html'>
@@ -241,9 +248,8 @@
         
 		</div>
 
-      <script src="js/jquery.min.js"></script>
-      <script src="js/jquery-ui.custom.js"></script>
-      <script src="js/bootstrap.min.js"></script>
+      <script src="app/bower_components/jquery/jquery.js"></script>
+      <script src="app/bower_components/bootstrap/dist/js/bootstrap.js"></script>
       <script src="js/unicorn.js"></script>
       <script src='app/bower_components/angular/angular.js'></script>
       <script src='app/bower_components/angular-route/angular-route.js'></script>
@@ -261,6 +267,29 @@
         });
       }
     </script>
+		
+    
+	<!-- BIBLIOTECAS PARA PILAS-ENGINE -->
+    
+	<script src='../public/libs/PxLoader.js'></script>
+  <script src='../public/libs/PxLoaderImage.js'></script>
+  <script src='../public/libs/Box2dWeb-2.1.a.3.js'></script>
+  <script src='../public/libs/easeljs-0.6.1.min.js'></script>
+  <script src='../public/libs/tweenjs-0.4.1.min.js'></script>
+  <script src='../public/libs/uuid.js'></script>
+
+  <script src='../public/pilasweb.js'></script>
+
+
+  <link rel="stylesheet" href="../public/console/style_console.css"/>
+  <script type="text/javascript" charset="utf-8" src="../public/console/console.js"></script>
+  <script type="text/javascript" charset="utf-8" src="../public/console/prettyprint.js"></script>
+
+
+    
+    
+    
+    
     
 	</body>
 </html>

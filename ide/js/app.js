@@ -20,7 +20,8 @@ app.config(['$routeProvider', function($routeProvider) { $routeProvider.
             templateUrl: 'index.html'
           }).
 					when('/interprete', {
-            templateUrl: 'interprete.html'
+            templateUrl: 'interprete.html',
+						controller: 'InterpreteCtrl'
           }).
 					when('/tutoriales', {
             templateUrl: 'tutoriales.html'
@@ -62,6 +63,18 @@ app.controller('MainCtrl', function($scope, $location) {
 
 app.controller('IndexCtrl', function($scope) {
   
+});
+
+
+app.controller('InterpreteCtrl', function($scope) {
+	pilas = new Pilas();
+	pilas.iniciar({canvas_id: 'canvasInterprete', ancho: 320, alto: 240, data_path: '../public/data'});
+	
+	pilas.onready = function() {
+		var fondo = new pilas.fondos.Plano();
+		window.bomba = new pilas.actores.Bomba();
+	}
+	pilas.ejecutar();
 });
 
 
