@@ -2,7 +2,10 @@
 //= require "../vendor/stacktrace"
 SHOW_ABOUT_ON_INIT = false
 
-var jsconsole = (function (window) {
+		
+		
+		
+var modulo_jsconsole = function (window) {
 
 function sortci(a, b) {
   return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
@@ -943,14 +946,21 @@ var jsconsole = {
 };
 
 return jsconsole;
+};
+								 
+								 
+								 
+								 
+								 
+								 
+iniciar_jsconsole = function() {
+	
+	var jsconsole = modulo_jsconsole(this);
+	var msgType = '';
 
-})(this);
-
-var msgType = '';
-
-jsconsole.init(document.getElementById('output'));
-jsconsole.queue = [];
-jsconsole.remote = {
+	jsconsole.init(document.getElementById('output'));
+	jsconsole.queue = [];
+	jsconsole.remote = {
   log: function () {
     // window.console.log('remote call');
     var cmd = 'console.log';
@@ -1030,9 +1040,9 @@ jsconsole.remote = {
   }
 };
 
-// just for extra support
-jsconsole.remote.debug = jsconsole.remote.dir = jsconsole.remote.log;
-jsconsole.remote.warn = jsconsole.remote.info;
+	// just for extra support
+	jsconsole.remote.debug = jsconsole.remote.dir = jsconsole.remote.log;
+	jsconsole.remote.warn = jsconsole.remote.info;
 
 // window.top._console = jsconsole.remote;
 
@@ -1088,4 +1098,5 @@ function upgradeConsolePanel(console) {
   // };
 
    //console.init();
+}
 }

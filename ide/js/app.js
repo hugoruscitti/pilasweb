@@ -67,6 +67,7 @@ app.controller('IndexCtrl', function($scope) {
 
 
 app.controller('InterpreteCtrl', function($scope) {
+	
 	pilas = new Pilas();
 	pilas.iniciar({canvas_id: 'canvasInterprete', ancho: 320, alto: 240, data_path: '../public/data'});
 	
@@ -75,6 +76,11 @@ app.controller('InterpreteCtrl', function($scope) {
 		window.bomba = new pilas.actores.Bomba();
 	}
 	pilas.ejecutar();
+	
+	
+	iniciar_jsconsole();
+	
+	
 });
 
 
