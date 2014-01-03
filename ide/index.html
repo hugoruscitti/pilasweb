@@ -92,14 +92,12 @@
         
       <script type='text/ng-template' id='interprete.html'>
 				<canvas id='canvasInterprete'></canvas>
-				
 				<div id="console" class="stretch">
                 <ul id="output"></ul>
                 <form>
                   <textarea autofocus id="exec" spellcheck="false" autocapitalize="off" rows="1" autocorrect="off"></textarea>
                 </form>
          </div>
-			
       </script>
       
       <script type='text/ng-template' id='tutoriales.html'>
@@ -137,8 +135,10 @@
           <a href="#/tutoriales"><i class="fa fa-gift"></i> Tutoriales</a>
           <a href="#/tutoriales/caminos" class="current">Caminos</a>
         </div>
-        
-        caminos
+				
+					<div class='tutorial'>
+						<iframe src='tutoriales/app_caminos/index.html'></iframe>
+					</div>
       </script>
       
       <script type='text/ng-template' id='tutoriales/nave.html'>

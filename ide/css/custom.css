@@ -26,6 +26,7 @@ p {
   color: gray;
   font-size: small;
   margin-top: 10px;
+	display: inline-block;
 }
 
 .grande {
@@ -96,4 +97,14 @@ img.logo-completo {
 	border-radius: 10px;
 	padding: 0.5em;
 	margin-left: 1em;
+}
+
+
+div.tutorial {
+	bottom: 10px;
+	position: absolute;
+	top: 42px;
+	right: 5px;
+	left: 13px;
+	border: 1px solid lightGrey;
 }
