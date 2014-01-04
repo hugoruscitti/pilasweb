@@ -1,0 +1,67 @@
+#editor {
+	position:absolute;
+	left:0;
+	width: 50%;
+	bottom:0;
+	top:0;
+	padding: 10px;
+	padding-right: 0;
+}
+	
+	#editor textarea {
+			width: 100%;
+			height: 100%;
+	}
+	
+	
+#panel-interprete {
+	position:absolute;
+	right:0;
+	width: 50%;
+	bottom:0;
+	top:0;
+	padding: 10px;
+}
+	
+	#contenedor-canvas {
+		width:100%;
+		background-color: rgba(0, 0, 0, 0.88);
+		text-align: center;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		border: 1px solid gray;
+	}
+	
+	.consola-interprete {
+		position:absolute;
+		bottom: 10px;
+		left: 10px;
+		right: 10px;
+		height: 135px !important;
+	}
+	
+	
+	#controles-canvas {
+		text-align: right;
+	}
+	
+		#controles-canvas ul {
+			list-style:none;
+			padding: 0;
+			margin: 0;
+		}
+	
+		#controles-canvas ul li {
+			display: inline;
+		}
+		
+
+.izquierda {
+	float: left;
+}
+
+#botones-editor {
+	position:absolute;
+	top:20px;
+	right:20px;
+}

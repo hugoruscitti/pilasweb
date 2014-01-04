@@ -1,7 +1,33 @@
-<canvas id='canvasInterprete'></canvas>
-<div id="console" class="stretch">
+<link rel="stylesheet" href="css/interprete.css">
+
+<div id='editor'>
+	<div id='botones-editor'>
+		<a class='btn btn-warning' href=''>Ejecutar</a>
+	</div>
+	<textarea></textarea>
+</div>
+
+<div id='panel-interprete'>
+	<div id='contenedor-canvas'>
+		<canvas id='canvasInterprete'></canvas>
+	</div>
+	<div id='controles-canvas'>
+		<ul class='izquierda'>
+			<li><a class='btn btn-success' href=''>Editor</a></li>
+		</ul>
+			
+		<ul>
+			<li><a class='btn btn-success' href=''>A</a></li>
+			<li><a class='btn btn-success' href=''>B</a></li>
+			<li><a class='btn btn-success' href=''>C</a></li>
+		</ul>
+		
+	</div>
+
+	<div id="console" class="stretch consola-interprete">
 			<ul id="output"></ul>
 			<form>
 				<textarea autofocus id="exec" spellcheck="false" autocapitalize="off" rows="1" autocorrect="off"></textarea>
 			</form>
+	</div>
 </div>
