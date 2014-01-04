@@ -17,36 +17,36 @@ app.directive('popover', function() {
 app.config(['$routeProvider', function($routeProvider) { $routeProvider.
           when('/index', {
             controller: 'IndexCtrl',
-            templateUrl: 'index.html'
+            templateUrl: 'partials/index.html'
           }).
 					when('/interprete', {
-            templateUrl: 'interprete.html',
+            templateUrl: 'partials/interprete.html',
 						controller: 'InterpreteCtrl'
           }).
 					when('/tutoriales', {
-            templateUrl: 'tutoriales.html'
+            templateUrl: 'partials/tutoriales.html'
           }).
             when('/tutoriales/caminos', {
-              templateUrl: 'tutoriales/caminos.html'
+              templateUrl: 'partials/tutoriales/caminos.html'
             }).
             when('/tutoriales/nave', {
-              templateUrl: 'tutoriales/nave.html'
+              templateUrl: 'partials/tutoriales/nave.html'
             }).
             when('/tutoriales/fisica', {
-              templateUrl: 'tutoriales/fisica.html'
+              templateUrl: 'partials/tutoriales/fisica.html'
             }).
 
 					when('/ejemplos', {
-            templateUrl: 'ejemplos.html'
+            templateUrl: 'partials/ejemplos.html'
           }).
 					when('/manual', {
-            templateUrl: 'manual.html'
+            templateUrl: 'partials/manual.html'
           }).
 					when('/foro', {
-            templateUrl: 'foro.html'
+            templateUrl: 'partials/foro.html'
           }).
 					when('/acercade', {
-            templateUrl: 'acercade.html'
+            templateUrl: 'partials/acercade.html'
           }).
 					otherwise({redirectTo:'/index'});
 }]);
