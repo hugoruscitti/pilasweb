@@ -53,9 +53,9 @@ un poco de código.</p>
 <p>A la derecha vas a ver un intérprete de programación.
 Comencemos con algo sencillo. Esta es la primera consigna:</p>
 
-<div class='alert'>Ingresá el texto <code>2 * 2</code> y luego pulsá la tecla Enter.</div>
+<div class='alert alert-info'>Ingresá el texto <code>2 * 2</code> y luego pulsá la tecla Enter.</div>
 
-<img src='images/flecha_al_interprete.png'>
+<img class='flecha_interprete' src='../imagenes/flecha_al_interprete.png'>
 </script>
     
 <script type="text/ng-template" id="partials/paso2.html">
@@ -86,7 +86,7 @@ a las cosas, en nuestro caso <code>zack</code> es una referencia
 al protagonista del juego.
 
 <div ng-repeat='c in consignas'>
-  <div ng-show='!c.completa' class='alert'><span class='icon-hand-right'></span> {{c.texto}}</div>
+  <div ng-show='!c.completa' class='alert alert-info'><span class='icon-hand-right'></span> {{c.texto}}</div>
   <div ng-show='c.completa' class='alert alert-success'><span class='icon-ok-circle'></span> {{c.texto}}</div>
 </div>
 
@@ -149,7 +149,7 @@ más mensajes que sabe interpretar el actor, para averiguarlos
 podés escribir "inspeccionar" y ver todos los métodos:
 
 <div ng-repeat='c in consignas'>
-  <div ng-show='!c.completa' class='alert'><span class='icon-hand-right'></span> {{c.texto}}</div>
+  <div ng-show='!c.completa' class='alert alert-info'><span class='icon-hand-right'></span> {{c.texto}}</div>
   <div ng-show='c.completa' class='alert alert-success'><span class='icon-ok-circle'></span> {{c.texto}}</div>
 </div>
 
@@ -163,7 +163,7 @@ podés escribir "inspeccionar" y ver todos los métodos:
 <p>Abrí los dos cofres para completar el tutorial.
 
 <div ng-repeat='c in consignas'>
-  <div ng-show='!c.completa' class='alert'><span class='icon-hand-right'></span> {{c.texto}}</div>
+  <div ng-show='!c.completa' class='alert alert-info'><span class='icon-hand-right'></span> {{c.texto}}</div>
   <div ng-show='c.completa' class='alert alert-success'><span class='icon-ok-circle'></span> {{c.texto}}</div>
 </div>
 

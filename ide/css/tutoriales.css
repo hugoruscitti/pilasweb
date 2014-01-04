@@ -12,3 +12,7 @@
 	display: inline-block;
 	width: 49%;
 }
+
+img.flecha_interprete {
+	float: right;
+}
