@@ -11,6 +11,8 @@
 	#editor textarea {
 			width: 100%;
 			height: 100%;
+			border: 1px solid #D6D6D6;
+			padding: 10px;
 	}
 	
 	
