@@ -89,6 +89,10 @@ window.abrir_github_en_el_navegador = function() {
 	gui.Shell.openExternal('http://github.com/hugoruscitti/pilas.git');
 }
 
+window.abrir_pilas_en_el_navegador = function() {
+	gui.Shell.openExternal('http://www.pilas-engine.com.ar');
+}
+
 window.abrir_herramientas_desarrollo = function() {
 	gui.Window.get().showDevTools();
 }
