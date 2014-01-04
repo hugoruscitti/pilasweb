@@ -246,7 +246,7 @@ app.directive('pilasInterprete', function() {
         scope.$apply();
       }, false);
       
-      iniciar_consola();
+			iniciar_jsconsole();
     },
     template: '<div id="consola" class="stretch console">' + 
        	'<div id="console" class="stretch">' +

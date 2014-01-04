@@ -1,8 +1,22 @@
 //= require "../vendor/prettyprint"
 //= require "../vendor/stacktrace"
 SHOW_ABOUT_ON_INIT = false
-
 		
+function traducir_mensaje_excepcion(mensaje) {
+    var traducciones = [
+        {de: "is not defined", a: "no está definido"},
+        {de: "Unexpected token ILLEGAL", a: "hay un elemento no reconocido en la sintaxis"},
+        {de: "Unexpected end of input", a: "la linea parece incompleta"},
+        {de: "Unexpected token", a: "El elemento que sigue no se esperaba:"},
+        {de: "Unexpected", a: "Este elemento no se esperaba:"},
+        {de: "Invalid left-hand side in assignment", a: "No se esperaba un elemento a la izquierda de la asignación"},
+    ];
+        
+    for (var i=0; i<traducciones.length; i++)
+        mensaje = mensaje.replace(traducciones[i].de, traducciones[i].a);
+    
+    return mensaje;
+}
 		
 		
 var modulo_jsconsole = function (window) {
@@ -116,16 +130,38 @@ function run(cmd) {
       className = 'response',
       internalCmd = internalCommand(cmd);
   
-  document.getElementById("cursor").innerHTML="";
+      var cursor = $("#cursor");
+      //document.getElementById("cursor").innerHTML="";
+      cursor.text("");
+      var consola = document.getElementById("consola") || document.getElementById('console');
+
+      consola.onclick = function() {
+        $("#exec").click();
+      }
 
   if (internalCmd) {
     return ['info', internalCmd];
   } else {
     try {
-      //rawoutput = sandboxframe.contentWindow.eval(cmd);
-      rawoutput = window.eval(cmd);
+          //rawoutput = sandboxframe.contentWindow.eval(cmd);
+          
+          /* Emite un evento alertando lo que el usuario quiere ejecutar */
+  		  var entrada = new Event('entrada');
+          entrada.texto = cmd;
+          consola.dispatchEvent(entrada);
+          
+          /* EJECUTA LO QUE EL USUARIO ESCRIBE */
+          rawoutput = window.eval(cmd);
+          
+          /* Emite un evento alertando lo que el usuario quiere ejecutar */
+  		  var salida = new Event('salida');
+          salida.texto = rawoutput;
+          consola.dispatchEvent(salida);
+          
+          //rawoutput = window.exec(cmd);
+			
     } catch (e) {
-      rawoutput = e.message;
+      rawoutput = traducir_mensaje_excepcion(e.message);
       className = 'error';
     }
     return [className, cleanse(stringify(rawoutput))];

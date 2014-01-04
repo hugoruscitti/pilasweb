@@ -2,6 +2,8 @@
 //= require "../vendor/stacktrace"
 SHOW_ABOUT_ON_INIT = false
 
+alert("Este archivo está en desuso, no se debería cargar!");
+
 
 function traducir_mensaje_excepcion(mensaje) {
     var traducciones = [
