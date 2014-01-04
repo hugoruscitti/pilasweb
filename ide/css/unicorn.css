@@ -15,7 +15,6 @@ body {
   overflow-x: hidden;
   overflow-y: auto;
   margin-top: -20px;
-  background: #000000 url('../img/pattern.png') repeat scroll top center;
 }
 
 
@@ -148,7 +147,6 @@ a:hover {
   background-repeat: no-repeat;
 }
 #header h1 {
-  background: url("../img/logo.png") no-repeat scroll 0 0 transparent;
   height: 31px;
   left: 15px;
   line-height: 600px;
