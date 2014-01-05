@@ -68,7 +68,7 @@ app.controller('IndexCtrl', function($scope) {
 
 app.controller('InterpreteCtrl', function($scope) {
 	$scope.codigo = [
-		'// codigo inicial',
+		'// codigo para ejecutar.',
 		'',
 		'',
 		'p1 = new pilas.actores.Pelota( 5, -100);',
@@ -123,7 +123,7 @@ window.abrir_herramientas_desarrollo = function() {
 
 
 $(function(){
-    var rx = /INPUT|SELECT|TEXTAREA/i;
+    var rx = /INPUT|SPAN|SELECT|TEXTAREA/i;
 
     $(document).bind("keydown keypress", function(e) {
         if (e.which == 8) {
