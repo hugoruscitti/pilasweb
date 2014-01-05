@@ -120,3 +120,16 @@ window.abrir_pilas_en_el_navegador = function() {
 window.abrir_herramientas_desarrollo = function() {
 	gui.Window.get().showDevTools();
 }
+
+
+$(function(){
+    var rx = /INPUT|SELECT|TEXTAREA/i;
+
+    $(document).bind("keydown keypress", function(e) {
+        if (e.which == 8) {
+            if (!rx.test(e.target.tagName) || e.target.disabled || e.target.readOnly) {
+                e.preventDefault();
+            }
+        }
+    });
+});
