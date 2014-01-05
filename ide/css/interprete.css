@@ -1,12 +1,19 @@
 #editor {
 	position:absolute;
 	left:0;
-	width: 50%;
+	width: 347px;
 	bottom:0;
 	top:0;
 	padding: 10px;
 	padding-right: 0;
+  -webkit-transition: left 0.25s ease-in-out;
 }
+
+	.editor-oculto {
+		left: -347px !important;
+	}
+
+
 	
 	#editor textarea {
 			width: 100%;
@@ -19,11 +26,16 @@
 #panel-interprete {
 	position:absolute;
 	right:0;
-	width: 50%;
+	left: 348px;
 	bottom:0;
 	top:0;
 	padding: 10px;
+  -webkit-transition: left 0.25s ease-in-out;
 }
+
+	.panel-interprete-expandido {
+		left: 5px !important;
+	}
 	
 	#contenedor-canvas {
 		width:100%;
