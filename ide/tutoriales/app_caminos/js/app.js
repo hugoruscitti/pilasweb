@@ -266,7 +266,7 @@ app.directive('pilasCanvas', function() {
     transclude: true,
     link: function (scope, elem, attrs) {
       pilas = new Pilas();
-	    pilas.iniciar({ancho: 320, alto: 240, data_path: '../../../public/data'});
+	    pilas.iniciar({ancho: 320, alto: 240, data_path: '../../public/data'});
       
       pilas.onready = function() {
         var fondo = new pilas.fondos.PastoCuadriculado();

@@ -20,3 +20,5 @@ docs/html/*
 *.swp
 
 npm-debug.log
+
+ide/public

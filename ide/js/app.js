@@ -80,7 +80,7 @@ app.controller('InterpreteCtrl', function($scope) {
 	].join('\n');
 		
 	pilas = new Pilas();
-	pilas.iniciar({canvas_id: 'canvasInterprete', ancho: 320, alto: 240, data_path: '../public/data'});
+	pilas.iniciar({canvas_id: 'canvasInterprete', ancho: 320, alto: 240, data_path: 'public/data'});
 	
 	pilas.onready = function() {
 		var fondo = new pilas.fondos.Plano();
