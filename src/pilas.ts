@@ -88,6 +88,15 @@ class Pilas {
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
   }
 
+	reiniciar() {
+		// TODO: hacer que el fondo sea un atributo de la escena y que
+		// siempre se inicialice ahí, y no en la función onload del lado del
+		// usuario como hace ahora...
+		
+    this.mundo.gestor_escenas.cambiar_escena(new Normal());
+		var fondo = new pilas.fondos.Plano();
+	}
+
   /**
    * @method escena_actual
    * Retorna la escena en curso.
