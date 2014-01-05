@@ -1,19 +1,20 @@
 <link rel="stylesheet" href="css/interprete.css">
 
-<div id='editor'>
+<div id='editor' class='editor-oculto'>
 	<div id='botones-editor'>
-		<a class='btn btn-warning' href=''>Ejecutar</a>
+		<a ng-click='ejecutar()' class='btn btn-warning' href=''>Ejecutar</a>
 	</div>
-	<textarea></textarea>
+	<textarea>
+	</textarea>
 </div>
 
-<div id='panel-interprete'>
+<div id='panel-interprete' class='panel-interprete-expandido'>
 	<div id='contenedor-canvas'>
 		<canvas id='canvasInterprete'></canvas>
 	</div>
 	<div id='controles-canvas'>
 		<ul class='izquierda'>
-			<li><a class='btn btn-success' href=''>Editor</a></li>
+			<li><a ng-click='alternar_editor()' class='btn btn-success' href=''>Editor</a></li>
 		</ul>
 			
 		<ul>

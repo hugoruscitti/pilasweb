@@ -67,7 +67,18 @@ app.controller('IndexCtrl', function($scope) {
 
 
 app.controller('InterpreteCtrl', function($scope) {
-	
+	$scope.codigo = [
+		'// codigo inicial',
+		'',
+		'',
+		'p1 = new pilas.actores.Pelota( 5, -100);',
+		'p2 = new pilas.actores.Pelota(-50, 100);',
+		'p3 = new pilas.actores.Pelota();',
+		'aceituna = new pilas.actores.Aceituna();',
+		'aceituna.x = [100]',
+		
+	].join('\n');
+		
 	pilas = new Pilas();
 	pilas.iniciar({canvas_id: 'canvasInterprete', ancho: 320, alto: 240, data_path: '../public/data'});
 	
@@ -76,6 +87,19 @@ app.controller('InterpreteCtrl', function($scope) {
 		window.bomba = new pilas.actores.Bomba();
 	}
 	pilas.ejecutar();
+	
+	$scope.ejecutar = function() {
+		pilas.reiniciar();
+		eval($scope.codigo);
+	}
+	
+	$scope.alternar_editor = function() {
+		var editor = document.getElementById('editor');
+		var panelInterprete = document.getElementById('panel-interprete');
+		
+		editor.classList.toggle('editor-oculto');
+		panelInterprete.classList.toggle('panel-interprete-expandido');
+	}
 	
 	
 	iniciar_jsconsole();
