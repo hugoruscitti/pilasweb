@@ -12,13 +12,7 @@
 	</head>	
   
 	<body data-color="grey" class="flat" ng-controller='MainCtrl'>
-		<div id="wrapper" style="
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-">
+		<div id="wrapper" class='fijo'>
 			<div id="header">
 				<h1>&nbsp;</h1>
         <span class="badge badge-danger" style="position: absolute; top: 13px; left: 176px;">beta</span>
@@ -45,14 +39,6 @@
         <ng-view></ng-view>
       </div>
         
-      
-      
-      
-      
-			
-
-      
-        
 		</div>
 
       <script src="app/bower_components/jquery/jquery.js"></script>
@@ -65,7 +51,7 @@
       var config = require('./package.json');     
       if (config.livereload) {
         var Gaze = require('gaze').Gaze;
-        var gaze = new Gaze('**/*');
+        var gaze = new Gaze('index.html');
        
         gaze.on('all', function(event, filepath) {
           if (location)
@@ -90,12 +76,6 @@
   <link rel="stylesheet" href="../public/console/style_console.css"/>
   <script type="text/javascript" charset="utf-8" src="../public/console/console.js"></script>
   <script type="text/javascript" charset="utf-8" src="../public/console/prettyprint.js"></script>
-
-
-    
-    
-    
-    
-    
+   
 	</body>
 </html>

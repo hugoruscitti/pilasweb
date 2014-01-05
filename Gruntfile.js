@@ -18,15 +18,6 @@ module.exports = function(grunt) {
                 ]
             },
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		typescript: {
 			base: {
 				src: ['src/**/*.ts'],
