@@ -1,11 +1,13 @@
 <link rel="stylesheet" href="css/interprete.css">
 
-<div id='editor' class='editor-oculto'>
+<div id='editor' class='oculto'>
+	
 	<div id='botones-editor'>
 		<a ng-click='ejecutar()' class='btn btn-warning' href=''>Ejecutar</a>
 	</div>
-	<textarea ng-model='codigo'>
-	</textarea>
+	
+	<textarea ui-codemirror="editorOptions" ng-model='codigo'></textarea>
+	
 </div>
 
 <div id='panel-interprete' class='panel-interprete-expandido'>

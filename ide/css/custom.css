@@ -5,6 +5,16 @@
   src: local('Droid Sans'), local('DroidSans'), url('../fonts/droid_sans.ttf') format('truetype');
 }
 
+
+@font-face {
+  font-family: 'Droid Sans Mono';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Droid Sans Mono'), local('DroidSansMono'), url('../fonts/droid_sans_mono.ttf') format('truetype');
+}
+
+
+
 body {
 	font-family: 'Droid Sans';
 }

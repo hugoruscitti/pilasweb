@@ -1,6 +1,6 @@
 var gui = require('nw.gui');
 
-app = angular.module('app', ['ngRoute']);
+app = angular.module('app', ['ngRoute', 'ui.codemirror']);
 
 
 app.directive('popover', function() {
@@ -79,6 +79,14 @@ app.controller('InterpreteCtrl', function($scope) {
 		
 	].join('\n');
 		
+	$scope.editorOptions = {
+    lineNumbers: true,
+		theme: 'xq-light',
+  	mode: 'javascript',
+  };	
+		
+		
+		
 	pilas = new Pilas();
 	pilas.iniciar({canvas_id: 'canvasInterprete', ancho: 320, alto: 240, data_path: 'public/data'});
 	
@@ -97,7 +105,9 @@ app.controller('InterpreteCtrl', function($scope) {
 		var editor = document.getElementById('editor');
 		var panelInterprete = document.getElementById('panel-interprete');
 		
-		editor.classList.toggle('editor-oculto');
+		
+		editor.classList.remove('oculto');
+		editor.classList.toggle('editor-visible');
 		panelInterprete.classList.toggle('panel-interprete-expandido');
 	}
 	
