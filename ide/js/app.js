@@ -66,7 +66,7 @@ app.controller('IndexCtrl', function($scope) {
 });
 
 
-app.controller('InterpreteCtrl', function($scope) {
+app.controller('InterpreteCtrl', function($scope, $http) {
 	$scope.codigo = [
 		'// codigo para ejecutar.',
 		'',
@@ -98,8 +98,21 @@ app.controller('InterpreteCtrl', function($scope) {
 	
 	$scope.ejecutar = function() {
 		pilas.reiniciar();
-		eval($scope.codigo);
+		
+		var code = $scope.codigo;
+    eval(code); 
 	}
+		
+		
+	$scope.publicar = function() {
+		var parametros = {codigo: $scope.codigo};
+		
+		$http.post('http://localhost:1337/publicar', parametros).
+				success(function(data, status) {
+				gui.Shell.openExternal('http://localhost:1337' + data.url);
+		});
+		
+		}
 	
 	$scope.alternar_editor = function() {
 		var editor = document.getElementById('editor');
