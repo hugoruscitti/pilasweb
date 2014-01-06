@@ -7,8 +7,8 @@
   -webkit-transition: left 0.25s ease-in-out;
 	width: 347px;
 	left: -347px;
-	bottom:0;
-	top:0;
+	bottom: 0;
+	top: 36px;
 	padding: 10px;
 	padding-right: 0;
 }
@@ -80,8 +80,8 @@
 
 #botones-editor {
 	position:absolute;
-	top:20px;
-	right:20px;
+	top: -30px;
+	right: 0;
 	z-index: 200;
 	opacity: 0.8;
 }
