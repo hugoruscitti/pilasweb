@@ -40,3 +40,15 @@ habilitar la compilación continua. Y si `grunt` no te funciona como
 comando podrías agregarlo al path de sistema así:
 
      export PATH=PATH:./node_modules/-cli/bin
+
+
+### Aplicación desktop
+
+Pilas incluye una versión experimental de aplicación desktop.
+
+Para instalarla hacen falta unas dependencias adicionales:
+
+    sudo npm install -g bower
+    cd ide
+    bower install
+    cd ..
