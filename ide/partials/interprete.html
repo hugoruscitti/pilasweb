@@ -7,7 +7,7 @@
 		<a ng-click='ejecutar()' class='btn btn-warning' href=''>Ejecutar</a>
 	</div>
 	
-	<textarea ui-codemirror="editorOptions" ng-model='codigo'></textarea>
+	<textarea ui-codemirror="{onLoad: codemirrorLoaded}" ui-codemirror="editorOptions" ng-model='codigo'></textarea>
 	
 </div>
 

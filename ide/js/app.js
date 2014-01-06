@@ -75,16 +75,33 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		'p2 = new pilas.actores.Pelota(-50, 100);',
 		'p3 = new pilas.actores.Pelota();',
 		'aceituna = new pilas.actores.Aceituna();',
-		'aceituna.x = [100]',
-		
+		'aceituna.x = [100];',
 	].join('\n');
 		
 	$scope.editorOptions = {
-    lineNumbers: true,
+    lineNumbers: false,
 		theme: 'xq-light',
   	mode: 'javascript',
   };	
 		
+	var codemirrorEditor = undefined;
+		
+	$scope.codemirrorLoaded = function(_editor){
+		codemirrorEditor = _editor;
+		
+    // Editor part
+    //var _doc = _editor.getDoc();
+    //_editor.focus();
+
+    // Options
+    //_editor.setOption('firstLineNumber', 10);
+    //_doc.markClean()
+
+    // Events
+    //_editor.on("beforeChange", function(){ ... });
+    //_editor.on("change", function(){ ... });
+  };
+	
 		
 		
 	pilas = new Pilas();
@@ -99,13 +116,13 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 	$scope.ejecutar = function() {
 		pilas.reiniciar();
 		
-		var code = $scope.codigo;
-    eval(code); 
+		var codigo = codemirrorEditor.getDoc().getValue();
+    eval(codigo); 
 	}
 		
 		
 	$scope.publicar = function() {
-		var parametros = {codigo: $scope.codigo};
+		var parametros = {codigo: codemirrorEditor.getDoc().getValue()};
 		var basepath = 'http://198.211.105.46:1337'; // RUTA en donde se aloja la
 		                                             // aplicacion web para publicar juegos
 																								 // ver: https://github.com/hugoruscitti/nube-experimental-pilas
