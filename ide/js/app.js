@@ -106,11 +106,16 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		
 	$scope.publicar = function() {
 		var parametros = {codigo: $scope.codigo};
+		var basepath = 'http://198.211.105.46:1337'; // RUTA en donde se aloja la
+		                                             // aplicacion web para publicar juegos
+																								 // ver: https://github.com/hugoruscitti/nube-experimental-pilas
 		
-		$http.post('http://localhost:1337/publicar', parametros).
+		$http.post(basepath + '/publicar', parametros).
 				success(function(data, status) {
-				gui.Shell.openExternal('http://localhost:1337' + data.url);
-		});
+					// cuando se hace un post a '/publicar' la aplicación web
+					// guarda el código y retorna la URL en donde se publica el juego.
+					gui.Shell.openExternal(basepath + data.url);
+				});
 		
 		}
 	
