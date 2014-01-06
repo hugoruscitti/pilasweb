@@ -23,7 +23,9 @@ test_mac:
 	open -a /Applications/node-webkit.app ide
 
 watch:
+	grunt clear
 	grunt typescript
+	grunt copy
 	grunt watch
 
 install:

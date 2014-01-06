@@ -7,10 +7,10 @@ module.exports = function(grunt) {
                   options: {
                             version: '0.8.3',
                             build_dir: './webkitbuilds',
-                            mac: true, // We want to build it for mac
-                            win: true, // We want to build it for win
-                            linux32: true, // We don't need linux32
-                            linux64: true // We don't need linux64
+                            mac: true,
+                            win: true,
+                            linux32: true,
+                            linux64: true
                 },
                 src: [
                   './ide/**/*',
@@ -33,10 +33,16 @@ module.exports = function(grunt) {
           }
         }
       },
+    copy: {
+      main: {
+        src: 'public/**',
+        dest: 'ide/',
+      },
+    },
 		watch: {
 			scripts: {
 				files: ['src/**', 'test/**'],
-				tasks: ['clear', 'typescript'],
+				tasks: ['clear', 'typescript', 'copy'],
       }
     },
     mocha_phantomjs: {
@@ -68,6 +74,7 @@ module.exports = function(grunt) {
     shell.exec('jsduck public/pilasweb.js --title="pilas-engine web" --images=docs/images/ -o docs/html');
   });
 
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-node-webkit-builder');
   grunt.registerTask('docs', ['typescript', 'make_docs']);
   grunt.registerTask('default', ['typescript']);
