@@ -22,3 +22,5 @@ docs/html/*
 npm-debug.log
 
 ide/public
+
+dist/
