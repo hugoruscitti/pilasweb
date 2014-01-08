@@ -14,6 +14,43 @@ app.directive('popover', function() {
 	}
 });
 
+
+app.directive('colaborador', function() {
+	return {
+		restrict: 'E',
+		transclude: true,
+		scope: {},
+		template: '<div class="integrante">' +
+						  '<a href="" ng-click="mostrar()">' +
+		          '<img src="imagenes/equipo/{{nick}}.png">' +
+		          '</a>' +
+							'<div class="detalle-integrante" ng-show="detalle_visible">' +
+								'{{nombre}}' +
+								'<br/>' +
+								'<br/>' +
+								'<i class="fa fa-flag"></i> {{de}}<br/>' +
+								'<i class="fa fa-github-alt"></i> <a href="" ng-click="abrir_github()">Perfil</a><br/>' +
+							'</div>' +
+							'</div>',
+		link: function(scope, element, attrs) {
+			scope.detalle_visible = false;
+			
+			scope.nick = attrs.nick;
+			scope.nombre = attrs.nombre;
+			scope.de = attrs.de;
+			scope.url = attrs.url;
+			
+			scope.mostrar = function() {
+				scope.detalle_visible = ! scope.detalle_visible;
+			}
+			
+			scope.abrir_github = function() {
+				window.abrir_url(scope.url);
+			}
+		}
+	}
+});
+
 app.config(['$routeProvider', function($routeProvider) { $routeProvider.
           when('/index', {
             controller: 'IndexCtrl',
@@ -65,9 +102,9 @@ app.controller('IndexCtrl', function($scope) {
   
 });
 
-
 app.controller('InterpreteCtrl', function($scope, $http) {
 	$scope.codigo = [
+		
 		'// codigo para ejecutar.',
 		'',
 		'',
@@ -152,8 +189,17 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 	
 });
 
+app.controller('EquipoCtrl', function($scope, $http) {
+	$scope.cuando_selecciona = function(un_colaborador) {
+		console.log("ha seleccionado", un_colaborador);
+	}
+});
 
-
+window.abrir_url = function(url) {
+	gui.Shell.openExternal(url);
+}
+		
+		
 window.abrir_github_en_el_navegador = function() {
 	gui.Shell.openExternal('http://github.com/hugoruscitti/pilas.git');
 }
