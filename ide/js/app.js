@@ -1,6 +1,6 @@
 var gui = require('nw.gui');
 
-app = angular.module('app', ['ngRoute', 'ui.codemirror']);
+app = angular.module('app', ['ngRoute', 'ui.codemirror', 'ngAnimate']);
 
 
 app.directive('popover', function() {

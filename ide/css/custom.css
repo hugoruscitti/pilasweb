@@ -146,3 +146,32 @@ div.tutorial {
 	border: 1px solid rgb(145, 145, 145);
 	z-index: 300;
 }
+
+
+
+.open.ng-enter, .open-ng-leave {
+  -webkit-transition:0.5s linear all;
+  transition:0.5s linear all;
+}
+
+.open.ng-enter {
+	opacity: 0;
+}
+
+.open.ng-enter-active {
+	opacity: 1;
+}
+
+.open.ng-leave {
+	opacity: 1;
+}
+
+.open.ng-leave-active {
+	opacity: 0;
+}
+
+.contenedor-vista {
+	position: absolute;
+	right: 15px;
+	left: 15px;
+}
