@@ -126,3 +126,23 @@ div.tutorial {
     left: 0 !important;
     right: 0 !important;
 }
+
+
+.integrante {
+	position: relative;
+	display: inline-block;
+	margin: 2px;
+}
+
+.detalle-integrante {
+	position: absolute;
+	width: 200px;
+	height: 130px;
+	background-color: white;
+	border-radius: 2px;
+	box-shadow: 3px 3px 3px rgba(153, 153, 153, 0.43);
+	padding: 4px;
+	margin: 3px;
+	border: 1px solid rgb(145, 145, 145);
+	z-index: 300;
+}
