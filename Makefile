@@ -38,6 +38,15 @@ upload: build
 	zip -r dist/pilas-engine_mac.zip webkitbuilds/releases/pilas-engine/mac
 	@echo ""
 	scp dist/* digitalocean:~/dev-losersjuegos.com.ar/pilas-engine
+	@echo " "
+	@echo " "
+	@echo "Pilas se podrá descargar desde estas URLs:"
+	@echo " "
+	@echo "   http://dev-losersjuegos.com.ar/pilas-engine/pilas-engine_mac.zip"
+	@echo "   http://dev-losersjuegos.com.ar/pilas-engine/pilas-engine_windows.zip"
+	@echo "   http://dev-losersjuegos.com.ar/pilas-engine/pilas-engine_linux32.zip"
+	@echo "   http://dev-losersjuegos.com.ar/pilas-engine/pilas-engine_linux64.zip"
+	@echo " "
 
 test_mac:
 	@echo "Cuidado - se está usando la version de nodewebkit del sistema."
