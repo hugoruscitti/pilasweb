@@ -2,10 +2,11 @@
     "name": "pilas-engine",
     "main": "index.html",
     "version": "0.1",
-    "livereload": false,
+    "livereload": true,
     "single-instance": true,
     "window": {
-      "toolbar": false,
+			"show": false,
+      "toolbar": true,
       "min_width": 750,
       "min_height": 500,
       "width": 750,
