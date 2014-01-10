@@ -5,7 +5,7 @@
     "livereload": true,
     "single-instance": true,
     "window": {
-			"show": false,
+			"show": true,
       "toolbar": true,
       "min_width": 750,
       "min_height": 500,
