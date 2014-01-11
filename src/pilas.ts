@@ -15,7 +15,6 @@ declare var createjs;
 /// <reference path="colisiones.ts />
 /// <reference path="colores.ts />
 /// <reference path="tareas.ts />
-/// <reference path="vaca_voladora.ts />
 
 /**
  * @class Pilas
@@ -51,7 +50,6 @@ class Pilas {
 
   interpolaciones;  // acceso al módulo.
   colisiones;       // acceso al módulo.
-  ejemplos;       // acceso al módulo.
   colores;       // acceso al módulo.
 
   /**
@@ -85,7 +83,6 @@ class Pilas {
     this.utils = new Utils();
     this.grupo = new grupo();
     this.colisiones = new Colisiones();
-    this.ejemplos = new ejemplos()
     this.colores = new colores()
 
     this.tareas = new tareas();
