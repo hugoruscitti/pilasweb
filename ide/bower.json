@@ -21,5 +21,8 @@
     "bootstrap": "~3.0.3",
     "jquery": "~2.0.3",
     "angular-animate": "~1.2.7"
+  },
+  "resolutions": {
+    "angular": "1.2.8-build.2095+sha.28fc80b"
   }
 }

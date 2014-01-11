@@ -1,35 +1,61 @@
-<div id='editor' class='oculto'>
-	
-	<div id='botones-editor'>
-		<a ng-click='publicar()' class='btn btn-success' href=''>Publicar</a>
-		<a ng-click='ejecutar()' class='btn btn-warning' href=''>Ejecutar</a>
-	</div>
-	
-	<textarea ui-codemirror="{onLoad: codemirrorLoaded}" ui-codemirror="editorOptions" ng-model='codigo'></textarea>
-	
-</div>
+	<div class='contenedor'>
 
-<div id='panel-interprete' class='panel-interprete-expandido'>
-	<div id='contenedor-canvas'>
-		<canvas id='canvasInterprete'></canvas>
-	</div>
-	<div id='controles-canvas'>
-		<ul class='izquierda'>
-			<li><a ng-click='alternar_editor()' class='btn btn-success' href=''>Editor</a></li>
-		</ul>
+		<!-- panel izquierdo plegable -->
+		<div class='editor' id='editor'>
 			
-		<ul>
-			<li><a class='btn btn-success' href=''>A</a></li>
-			<li><a class='btn btn-success' href=''>B</a></li>
-			<li><a class='btn btn-success' href=''>C</a></li>
-		</ul>
+			<div class='barra-botones'>
+				<a ng-click='publicar()' class='btn btn-success btn-sm' href=''>Publicar en la web</a>
+				<a ng-click='ejecutar()' class='btn btn-warning btn-sm' href=''>Ejecutar</a>
+			</div>
+			
+			<div class='expansor'>
+				<textarea ui-codemirror="{onLoad: codemirrorLoaded}" ui-codemirror="editorOptions" ng-model='codigo'></textarea>
+			</div>
+		</div>
+		
+		<!-- panel derecho con una separación horizontal -->
+		<div class='interprete'>
+			
+			
+			<div class='canvas'>
+				<canvas id='canvasInterprete'></canvas>
+			</div>
+			
+			<div class='controles-canvas'>
+				<ul class='izquierda'>
+					<li><a ng-click='alternar_editor()' class='btn btn-success btn-sm' href=''>Editor</a></li>
+				</ul>
+					
+				<ul>
+					<li><a class='btn btn-success btn-sm' href=''>A</a></li>
+					<li><a class='btn btn-success btn-sm' href=''>B</a></li>
+					<li><a class='btn btn-success btn-sm' href=''>C</a></li>
+				</ul>
+			</div>
+			
+			<div class='text'>
+		<div id="console" class="stretch consola-interprete">
+				<ul id="output"></ul>
+				<form>
+					<textarea autofocus id="exec" spellcheck="false" autocapitalize="off" rows="1" autocorrect="off"></textarea>
+				</form>
+		</div>
+			</div>
+			
+		</div>
 		
 	</div>
 
-	<div id="console" class="stretch consola-interprete">
-			<ul id="output"></ul>
-			<form>
-				<textarea autofocus id="exec" spellcheck="false" autocapitalize="off" rows="1" autocorrect="off"></textarea>
-			</form>
+
+
+<div style='display: none'>
+		
+	<div id='editor' class='oculto'>
+		
 	</div>
+	
+	<div id='panel-interprete' class='panel-interprete-expandido'>
+	
+	</div>
+	
 </div>

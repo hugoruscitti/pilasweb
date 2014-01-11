@@ -178,8 +178,8 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		var panelInterprete = document.getElementById('panel-interprete');
 		
 		
-		editor.classList.remove('oculto');
-		editor.classList.toggle('editor-visible');
+		//editor.classList.remove('oculto');
+		editor.classList.toggle('editor-invisible');
 		panelInterprete.classList.toggle('panel-interprete-expandido');
 	}
 	
