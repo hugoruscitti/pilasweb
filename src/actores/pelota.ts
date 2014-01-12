@@ -4,6 +4,10 @@ class Pelota extends Actor {
   figura;
 
   constructor(x, y) {
+		/* patch para permitir la instancia sin anteponer new */
+		if (!(this instanceof Pelota)) 
+			return new Pelota(x, y);
+	
     var imagen = "pelota.png";
     super(imagen, x, y);
     this.centro_x = 25;

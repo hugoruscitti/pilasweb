@@ -5,6 +5,10 @@ class Puntaje extends Texto {
 	valor;
 
 	constructor(x, y, puntaje, color) {
+		/* patch para permitir la instancia sin anteponer new */
+		if (!(this instanceof Puntaje)) 
+			return new Puntaje(x, y, puntaje, color);
+	
 		this.valor = puntaje || 0;
 		super(x, y, this.valor.toString(), color);
 	}

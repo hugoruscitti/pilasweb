@@ -5,6 +5,10 @@ class Cofre extends Actor {
   esta_abierto;
 
   constructor(x, y) {
+		/* patch para permitir la instancia sin anteponer new */
+		if (!(this instanceof Cofre)) 
+			return new Cofre(x, y);
+	
     var imagen = pilas.imagenes.cargar_grilla("cofre.png", 4);
     super(imagen, x, y);
     this.centro_x = 10;

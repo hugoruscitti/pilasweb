@@ -43,6 +43,7 @@ class Actores {
   Boton;
   Puntaje;
 
+
   constructor() {
     this.Aceituna = Aceituna;
     this.Actor = Actor;

@@ -5,6 +5,10 @@ class Zanahoria extends Actor {
 	cuadro_sonrie;
 
 	constructor(x, y) {
+		/* patch para permitir la instancia sin anteponer new */
+		if (!(this instanceof Zanahoria)) 
+			return new Zanahoria(x, y);
+	
 		this.cuadro_normal = "zanahoria_normal.png";
 		this.cuadro_sonrie = "zanahoria_sonrie.png";
 		super(this.cuadro_normal, x, y);

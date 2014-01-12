@@ -5,6 +5,10 @@ class Piedra extends Actor {
 	dy;
 
   constructor(x, y, tamano, dx, dy) {
+		/* patch para permitir la instancia sin anteponer new */
+		if (!(this instanceof Piedra)) 
+			return new Piedra(x, y, tamano, dx, dy);
+	
 		this.dx = dx || 0;
 		this.dy = dy || 0;
 

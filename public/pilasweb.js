@@ -9,6 +9,7 @@
 /// <reference path="actores/cesto.ts />
 /// <reference path="actores/pelota.ts />
 /// <reference path="actores/zanahoria.ts />
+/// <reference path="actores/puntaje.ts />
 /**
 * @class Actores
 *
@@ -38,13 +39,18 @@ var Actores = (function () {
         this.Cesto = Cesto;
         this.Pelota = Pelota;
         this.Zanahoria = Zanahoria;
+        this.Boton = Boton;
+        this.Puntaje = Puntaje;
     }
     return Actores;
 })();
 var Estudiante = (function () {
     function Estudiante() {
+        if (!(this instanceof Estudiante))
+            return new Estudiante();
+
         this.habilidades = [];
-        this.comportamiento = undefined;
+        this.comportamientos = [];
     }
     Estudiante.prototype.aprender = function (clase_de_habilidad, argumentos) {
         if (typeof argumentos === "undefined") { argumentos = undefined; }
@@ -71,16 +77,36 @@ var Estudiante = (function () {
 
     Estudiante.prototype.hacer = function (comportamiento, argumentos) {
         if (typeof argumentos === "undefined") { argumentos = {}; }
-        this.comportamiento = new comportamiento(argumentos);
-        this.comportamiento.iniciar(this);
+        var _comportamiento = new comportamiento(argumentos);
+        this.comportamientos.splice(0, 0, _comportamiento);
+        this._adoptar_el_siguiente_comportamiento();
+    };
+
+    Estudiante.prototype.hacer_luego = function (comportamiento, argumentos) {
+        if (typeof argumentos === "undefined") { argumentos = {}; }
+        var _comportamiento = new comportamiento(argumentos);
+        this.comportamientos.push(_comportamiento);
     };
 
     Estudiante.prototype.actualizar_comportamientos = function () {
-        if (this.comportamiento !== undefined) {
-            var termina = this.comportamiento.actualizar();
+        if (this.comportamiento_actual) {
+            var termina = this.comportamiento_actual[0]["actualizar"]();
 
-            if (termina)
-                this.comportamiento = undefined;
+            if (termina) {
+                this._adoptar_el_siguiente_comportamiento();
+            }
+        } else {
+            this._adoptar_el_siguiente_comportamiento();
+        }
+    };
+
+    Estudiante.prototype._adoptar_el_siguiente_comportamiento = function () {
+        if (this.comportamientos[0]) {
+            this.comportamiento_actual = this.comportamientos.splice(0, 1);
+            console.log(this.comportamiento_actual);
+            this.comportamiento_actual[0]["iniciar"](this);
+        } else {
+            this.comportamiento_actual = undefined;
         }
     };
     return Estudiante;
@@ -142,6 +168,9 @@ var Actor = (function (_super) {
     __extends(Actor, _super);
     function Actor(imagen, x, y, atributos) {
         if (typeof atributos === "undefined") { atributos = {}; }
+        if (!(this instanceof Actor))
+            return new Actor(imagen, x, y, atributos);
+
         _super.call(this);
         this.imagen = imagen || 'sin_imagen.png';
         atributos = atributos || {};
@@ -149,9 +178,11 @@ var Actor = (function (_super) {
         this.radio_de_colision = 10;
         this.id = pilas.utils.obtener_uuid();
 
-        if (this === pilas.actores)
-            throw Error("Lo siento, tienes que anteponer 'new' para crear actores en esta versión.");
-
+        /* Se ejecuta si el usuario intenta llamar al constructor sin usar 'new'
+        
+        Por ejemplo, si escribe "pilas.actores.Nave()" da un error. Si el usuario
+        escribe "new pilas.actores.Nave()" sale bien :)
+        */
         this.crear_sprite();
         this.x = x || 0;
         this.y = y || 0;
@@ -169,6 +200,13 @@ var Actor = (function (_super) {
 
         this.z = 0;
         pilas.escena_actual().agregar_actor(this);
+
+        //eventos
+        pilas.escena_actual().click_de_mouse.conectar(this);
+        pilas.escena_actual().mueve_mouse.conectar(this);
+
+        this.callbacks_cuando_hace_click = [];
+        this.callbacks_cuando_mueve_mouse = [];
     }
     Actor.prototype.tiene_fisica = function () {
         return (this.figura !== undefined);
@@ -202,7 +240,7 @@ var Actor = (function (_super) {
         },
         set: function (_x) {
             if (_x instanceof Array)
-                pilas.interpolar(this, 'x', _x, 1000);
+                pilas.interpolar(this, 'x', _x, 1);
 else {
                 var pos = pilas.escena_actual().obtener_posicion_pantalla(_x, 0);
                 this.sprite.x = pos.x;
@@ -220,7 +258,7 @@ else {
         },
         set: function (_y) {
             if (_y instanceof Array)
-                pilas.interpolar(this, 'y', _y, 1000);
+                pilas.interpolar(this, 'y', _y, 1);
 else {
                 var pos = pilas.escena_actual().obtener_posicion_pantalla(0, _y);
                 this.sprite.y = pos.y;
@@ -259,7 +297,7 @@ else {
         },
         set: function (valor) {
             if (valor instanceof Array)
-                pilas.interpolar(this.sprite, 'scaleX', valor, 1000);
+                pilas.interpolar(this.sprite, 'scaleX', valor, 1);
 else
                 this.sprite.scaleX = valor;
         },
@@ -273,7 +311,7 @@ else
         },
         set: function (valor) {
             if (valor instanceof Array)
-                pilas.interpolar(this.sprite, 'scaleY', valor, 1000);
+                pilas.interpolar(this.sprite, 'scaleY', valor, 1);
 else
                 this.sprite.scaleY = valor;
         },
@@ -291,7 +329,7 @@ else
                 for (var i = 0; i < valor.length; i++) {
                     nuevo_radio_de_colision.push((this.radio_de_colision * valor[i]) / this.escala);
                 }
-                pilas.interpolar(this, 'radio_de_colision', nuevo_radio_de_colision, 1000);
+                pilas.interpolar(this, 'radio_de_colision', nuevo_radio_de_colision, 1);
                 this.radio_de_colision = nuevo_radio_de_colision[0];
             } else {
                 this.radio_de_colision = (this.radio_de_colision * valor) / this.escala;
@@ -310,7 +348,7 @@ else
         },
         set: function (valor) {
             if (valor instanceof Array)
-                pilas.interpolar(this.sprite, 'rotation', valor, 1000);
+                pilas.interpolar(this.sprite, 'rotation', valor, 1);
 else
                 this.sprite.rotation = valor;
         },
@@ -410,6 +448,64 @@ else
     });
 
 
+    Actor.prototype.ejecutar_callbacks_clicks = function () {
+        for (var i = 0; i < this.callbacks_cuando_hace_click.length; i++) {
+            this.callbacks_cuando_hace_click[i]();
+        }
+    };
+
+    Actor.prototype.ejecutar_callbacks_over = function () {
+        for (var i = 0; i < this.callbacks_cuando_mueve_mouse.length; i++) {
+            this.callbacks_cuando_mueve_mouse[i]();
+        }
+    };
+
+    Object.defineProperty(Actor.prototype, "cuando_hace_click", {
+        get: function () {
+            return this.callbacks_cuando_hace_click;
+        },
+        set: function (funcion) {
+            //Esta funcion no admite parametros
+            this.callbacks_cuando_hace_click.push(funcion);
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    Object.defineProperty(Actor.prototype, "cuando_mueve_mouse", {
+        get: function () {
+            return this.callbacks_cuando_mueve_mouse;
+        },
+        set: function (funcion) {
+            //Esta funcion no admite parametros
+            this.callbacks_cuando_mueve_mouse.push(funcion);
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    //metodo recibir() para gestionar los eventos
+    Actor.prototype.recibir = function (evento, tipo) {
+        if (tipo == pilas.escena_actual().click_de_mouse) {
+            this._cuando_hace_click(evento);
+        }
+        if (tipo == pilas.escena_actual().mueve_mouse) {
+            this._cuando_mueve_mouse(evento);
+        }
+    };
+
+    Actor.prototype._cuando_hace_click = function (click) {
+        if (this.colisiona_con_un_punto(click.x, click.y)) {
+            this.ejecutar_callbacks_clicks();
+        }
+    };
+
+    Actor.prototype._cuando_mueve_mouse = function (evento) {
+        if (this.colisiona_con_un_punto(evento.x, evento.y)) {
+            this.ejecutar_callbacks_over();
+        }
+    };
+
     /**
     * @method colisiona_con_un_punto
     *
@@ -443,24 +539,61 @@ else
     Actor.prototype.colisiona_con = function (otro_actor) {
         return pilas.utils.colisionan(this, otro_actor);
     };
+
+    /*
+    * Comprueba si el actor se encuentra dentro del area visible de la pantalla
+    */
+    Actor.prototype.esta_fuera_de_la_pantalla = function () {
+        var area_visible = pilas.escena_actual().camara.obtener_area_visible();
+        return this.derecha < area_visible.izquierda || this.izquierda > area_visible.derecha || this.abajo > area_visible.arriba || this.arriba < area_visible.abajo;
+    };
     return Actor;
 })(Estudiante);
 /// <reference path="actor.ts"/>
 var Aceituna = (function (_super) {
     __extends(Aceituna, _super);
     function Aceituna(x, y) {
-        var imagen = "aceituna.png";
-        _super.call(this, imagen, x, y);
+        if (!(this instanceof Aceituna))
+            return new Aceituna(x, y);
+
+        this.cuadro_normal = 'aceituna.png';
+        this.cuadro_reir = 'aceituna_risa.png';
+        this.cuadro_burlar = 'aceituna_burla.png';
+        this.cuadro_gritar = 'aceituna_grita.png';
+
+        _super.call(this, this.cuadro_normal, x, y);
         this.centro_x = 18;
         this.centro_y = 18;
         this.radio_de_colision = 20;
     }
+    Aceituna.prototype.normal = function () {
+        this.imagen = this.cuadro_normal;
+    };
+
+    Aceituna.prototype.reir = function () {
+        this.imagen = this.cuadro_reir;
+    };
+
+    Aceituna.prototype.gritar = function () {
+        this.imagen = this.cuadro_gritar;
+    };
+
+    Aceituna.prototype.burlarse = function () {
+        this.imagen = this.cuadro_burlar;
+    };
+
+    Aceituna.prototype.saltar = function () {
+        this.hacer(pilas.comportamientos.Saltar);
+    };
     return Aceituna;
 })(Actor);
 /// <reference path="actor.ts"/>
 var Bloque = (function (_super) {
     __extends(Bloque, _super);
     function Bloque(x, y, nombre_imagen) {
+        if (!(this instanceof Bloque))
+            return new Bloque(x, y, nombre_imagen);
+
         var imagen = nombre_imagen || "bloque.png";
         _super.call(this, imagen, x, y);
         this.centro_x = 13;
@@ -473,6 +606,9 @@ var Bloque = (function (_super) {
 var Bomba = (function (_super) {
     __extends(Bomba, _super);
     function Bomba(x, y) {
+        if (!(this instanceof Bomba))
+            return new Bomba(x, y);
+
         var imagen = pilas.imagenes.cargar_grilla("bomba.png", 2);
         _super.call(this, imagen, x, y);
         this.centro_x = 36;
@@ -486,10 +622,177 @@ var Bomba = (function (_super) {
     };
     return Bomba;
 })(Actor);
+var Boton = (function (_super) {
+    __extends(Boton, _super);
+    function Boton(x, y, ruta_normal, ruta_press, ruta_over) {
+        if (typeof ruta_normal === "undefined") { ruta_normal = 'boton/boton_normal.png'; }
+        if (typeof ruta_press === "undefined") { ruta_press = 'boton/boton_press.png'; }
+        if (typeof ruta_over === "undefined") { ruta_over = 'boton/boton_over.png'; }
+        if (!(this instanceof Boton))
+            return new Boton(x, y, ruta_normal, ruta_press, ruta_over);
+
+        this.ruta_normal = ruta_normal;
+        this.ruta_press = ruta_press;
+        this.ruta_over = ruta_over;
+
+        this.funciones_normal = [];
+        this.funciones_press = [];
+        this.funciones_over = [];
+
+        this.estado = true;
+
+        _super.call(this, ruta_normal, x, y);
+
+        pilas.escena_actual().click_de_mouse.conectar(this);
+        pilas.escena_actual().mueve_mouse.conectar(this);
+    }
+    Boton.prototype.recibir = function (evento, tipo) {
+        if (tipo == pilas.escena_actual().click_de_mouse) {
+            this.detectar_clic(evento);
+        }
+        if (tipo == pilas.escena_actual().mueve_mouse) {
+            this.detectar_movimiento(evento);
+        }
+    };
+
+    Boton.prototype.conectar_normal = function (funcion, args) {
+        if (typeof args === "undefined") { args = undefined; }
+        var temp = [funcion, args];
+        this.funciones_normal.push(temp);
+    };
+
+    Boton.prototype.conectar_presionado = function (funcion, args) {
+        if (typeof args === "undefined") { args = undefined; }
+        var temp = [funcion, args];
+        this.funciones_press.push(temp);
+    };
+
+    Boton.prototype.conectar_sobre = function (funcion, args) {
+        if (typeof args === "undefined") { args = undefined; }
+        var temp = [funcion, args];
+        this.funciones_over.push(temp);
+    };
+
+    Boton.prototype.desconectar_normal_todo = function () {
+        this.funciones_normal = [];
+    };
+
+    Boton.prototype.desconectar_presionado_todo = function () {
+        this.funciones_press = [];
+    };
+
+    Boton.prototype.desconectar_sobre_todo = function () {
+        this.funciones_over = [];
+    };
+
+    Boton.prototype.desconectar_normal = function (funcion, args) {
+        for (var i = 0; i < this.funciones_normal.length; i++) {
+            if (this.funciones_normal[i][0] == funcion) {
+                if (this.funciones_normal[i][1] == args) {
+                    this.funciones_normal.splice(i, 1);
+                }
+            }
+        }
+    };
+
+    Boton.prototype.desconectar_presionado = function (funcion, args) {
+        for (var i = 0; i < this.funciones_press.length; i++) {
+            if (this.funciones_press[i][0] == funcion) {
+                if (this.funciones_press[i][1] == args) {
+                    this.funciones_press.splice(i, 1);
+                }
+            }
+        }
+    };
+
+    Boton.prototype.desconectar_sobre = function (funcion, args) {
+        for (var i = 0; i < this.funciones_over.length; i++) {
+            if (this.funciones_over[i][0] == funcion) {
+                if (this.funciones_over[i][1] == args) {
+                    this.funciones_over.splice(i, 1);
+                }
+            }
+        }
+    };
+
+    Boton.prototype.ejecutar_funciones_normal = function () {
+        if (this.estado) {
+            for (var i = 0; i < this.funciones_normal.length; i++) {
+                if (this.funciones_normal[i][1] == undefined) {
+                    this.funciones_normal[i][0]();
+                } else {
+                    this.funciones_press[i][0](this.funciones_normal[i][1]);
+                }
+            }
+        }
+    };
+
+    Boton.prototype.ejecutar_funciones_press = function () {
+        if (this.estado) {
+            for (var i = 0; i < this.funciones_press.length; i++) {
+                if (this.funciones_press[i][1] == undefined) {
+                    this.funciones_press[i][0]();
+                } else {
+                    this.funciones_press[i][0](this.funciones_press[i][1]);
+                }
+            }
+        }
+    };
+
+    Boton.prototype.ejecutar_funciones_over = function () {
+        if (this.estado) {
+            for (var i = 0; i < this.funciones_over.length; i++) {
+                if (this.funciones_over[i][1] == undefined) {
+                    this.funciones_over[i][0]();
+                } else {
+                    this.funciones_over[i][0](this.funciones_over[i][1]);
+                }
+            }
+        }
+    };
+
+    Boton.prototype.activar = function () {
+        this.estado = true;
+    };
+
+    Boton.prototype.desactivar = function () {
+        this.estado = false;
+    };
+
+    Boton.prototype.pintar_normal = function () {
+        this.imagen = this.ruta_normal;
+    };
+
+    Boton.prototype.pintar_presionado = function () {
+        this.imagen = this.ruta_press;
+    };
+
+    Boton.prototype.pintar_sobre = function () {
+        this.imagen = this.ruta_over;
+    };
+
+    Boton.prototype.detectar_clic = function (click) {
+        if (this.colisiona_con_un_punto(click.x, click.y)) {
+            this.ejecutar_funciones_press();
+        }
+    };
+
+    Boton.prototype.detectar_movimiento = function (evento) {
+        if (this.colisiona_con_un_punto(evento.x, evento.y)) {
+            this.ejecutar_funciones_over();
+        } else {
+            this.ejecutar_funciones_normal();
+        }
+    };
+    return Boton;
+})(Actor);
 /// <reference path="actor.ts"/>
 var Caja = (function (_super) {
     __extends(Caja, _super);
     function Caja(x, y) {
+        if (!(this instanceof Caja))
+            return new Caja(x, y);
+
         var imagen = "caja.png";
         _super.call(this, imagen, x, y);
         this.centro_x = 24;
@@ -506,6 +809,9 @@ var Cesto = (function (_super) {
     function Cesto(x, y) {
         if (typeof x === "undefined") { x = 120; }
         if (typeof y === "undefined") { y = 0; }
+        if (!(this instanceof Cesto))
+            return new Cesto(x, y);
+
         var ancho = 40;
         var imagen = "cesto.png";
         _super.call(this, imagen, x, y);
@@ -525,6 +831,9 @@ var Cesto = (function (_super) {
 var Cofre = (function (_super) {
     __extends(Cofre, _super);
     function Cofre(x, y) {
+        if (!(this instanceof Cofre))
+            return new Cofre(x, y);
+
         var imagen = pilas.imagenes.cargar_grilla("cofre.png", 4);
         _super.call(this, imagen, x, y);
         this.centro_x = 10;
@@ -554,6 +863,9 @@ var Cofre = (function (_super) {
 var Eje = (function (_super) {
     __extends(Eje, _super);
     function Eje(x, y) {
+        if (!(this instanceof Eje))
+            return new Eje(x, y);
+
         var imagen = "ejes.png";
         _super.call(this, imagen, x, y);
         this.centro_x = 256;
@@ -565,6 +877,9 @@ var Eje = (function (_super) {
 var Explosion = (function (_super) {
     __extends(Explosion, _super);
     function Explosion(x, y) {
+        if (!(this instanceof Explosion))
+            return new Explosion(x, y);
+
         var imagen = pilas.imagenes.cargar_grilla("explosion.png", 7);
         _super.call(this, imagen, x, y);
         this.centro_x = 16;
@@ -586,18 +901,17 @@ var Explosion = (function (_super) {
 var Globo = (function (_super) {
     __extends(Globo, _super);
     function Globo(x, y, mensaje) {
+        if (!(this instanceof Globo))
+            return new Globo(x, y, mensaje);
+
         var imagen = "globo.png";
         _super.call(this, imagen, x, y);
         this.centro_x = 85;
         this.centro_y = 80;
         this.mensaje = mensaje;
-        this.actor_texto = new pilas.actores.Texto(x, y, mensaje);
+        this.actor_texto = new pilas.actores.Texto(x - 25, y + 50, mensaje);
 
-        // TODO: Reemplazar por tareas, como hace pilas-python.
-        var _this = this;
-        setTimeout(function () {
-            _this.eliminar();
-        }, 3000);
+        pilas.mundo.agregar_tarea_una_vez(3, this.eliminar, {}, this);
     }
     Globo.prototype.eliminar = function () {
         this.actor_texto.eliminar();
@@ -609,6 +923,9 @@ var Globo = (function (_super) {
 var Llave = (function (_super) {
     __extends(Llave, _super);
     function Llave(x, y) {
+        if (!(this instanceof Llave))
+            return new Llave(x, y);
+
         var imagen = "llave.png";
         _super.call(this, imagen, x, y);
         this.centro_x = 9;
@@ -621,6 +938,9 @@ var Llave = (function (_super) {
 var Manzana = (function (_super) {
     __extends(Manzana, _super);
     function Manzana(x, y) {
+        if (!(this instanceof Manzana))
+            return new Manzana(x, y);
+
         var imagen = "manzana_chica.png";
         _super.call(this, imagen, x, y);
         this.radio_de_colision = 11;
@@ -632,6 +952,9 @@ var Manzana = (function (_super) {
 var Maton = (function (_super) {
     __extends(Maton, _super);
     function Maton(x, y) {
+        if (!(this instanceof Maton))
+            return new Maton(x, y);
+
         var imagen = pilas.imagenes.cargar_grilla("rpg/maton.png", 3 * 4, 1);
         _super.call(this, imagen, x, y);
         this.centro_x = 36;
@@ -759,6 +1082,9 @@ var Maton = (function (_super) {
 var Nave = (function (_super) {
     __extends(Nave, _super);
     function Nave(x, y) {
+        if (!(this instanceof Nave))
+            return new Nave(x, y);
+
         var imagen = pilas.imagenes.cargar_grilla("nave.png", 2);
         _super.call(this, imagen, x, y);
         this.centro_x = 23;
@@ -819,6 +1145,9 @@ var Nave = (function (_super) {
 var Pelota = (function (_super) {
     __extends(Pelota, _super);
     function Pelota(x, y) {
+        if (!(this instanceof Pelota))
+            return new Pelota(x, y);
+
         var imagen = "pelota.png";
         _super.call(this, imagen, x, y);
         this.centro_x = 25;
@@ -847,6 +1176,9 @@ var Pelota = (function (_super) {
 var Piedra = (function (_super) {
     __extends(Piedra, _super);
     function Piedra(x, y, tamano, dx, dy) {
+        if (!(this instanceof Piedra))
+            return new Piedra(x, y, tamano, dx, dy);
+
         this.dx = dx || 0;
         this.dy = dy || 0;
 
@@ -931,11 +1263,14 @@ var Piedra = (function (_super) {
 var Proyectil = (function (_super) {
     __extends(Proyectil, _super);
     function Proyectil(x, y, atributos) {
+        if (!(this instanceof Proyectil))
+            return new Proyectil(x, y, atributos);
+
         var imagen = pilas.imagenes.cargar_grilla("disparos/misil.png", 3);
         atributos['centro_x'] = 20;
         atributos['centro_y'] = 8;
         _super.call(this, imagen, x, y, atributos);
-
+        this.hacer(pilas.comportamientos.AvanzarComoProyectil);
         this.paso = 0;
         this.enemigos = [];
     }
@@ -943,8 +1278,6 @@ var Proyectil = (function (_super) {
         this.paso += 0.1;
         this._imagen.definir_cuadro(parseInt(this.paso) % 2);
 
-        // TODO: Convertir en una habilidad.
-        this.avanzar_respecto_del_angulo();
         this.analizar_colisiones();
     };
 
@@ -958,43 +1291,29 @@ var Proyectil = (function (_super) {
             }
         }
     };
-
-    Proyectil.prototype.avanzar_respecto_del_angulo = function () {
-        var velocidad = 2;
-        var rotacion_en_radianes;
-        var dx;
-        var dy;
-
-        var rotacion_en_radianes = pilas.utils.convertir_a_radianes(-this.rotacion + 90 - 90);
-
-        dx = Math.cos(rotacion_en_radianes) * velocidad;
-        dy = Math.sin(rotacion_en_radianes) * velocidad;
-
-        this.x += dx;
-        this.y += dy;
-    };
     return Proyectil;
 })(Actor);
 /// <reference path="actor.ts"/>
 var Texto = (function (_super) {
     __extends(Texto, _super);
-    function Texto(x, y, texto) {
+    function Texto(x, y, texto, color) {
+        if (!(this instanceof Texto))
+            return new Texto(x, y, texto, color);
+
         var imagen = "invisible.png";
         _super.call(this, imagen, x, y);
-        this.centro_x = 18;
-        this.centro_y = 18;
         this.texto = texto || "Sin texto";
+        this.color = color || "black";
         this.crear_texto();
         this.transparencia = 100;
     }
     Texto.prototype.crear_texto = function () {
-        var s = new createjs.Text(this.texto, "12px Arial", "black");
+        var s = new createjs.Text(this.texto, "12px Arial", this.color);
         var pos = pilas.escena_actual().obtener_posicion_pantalla(this.x, this.y);
-        s.x = pos.x - 25;
-        s.y = pos.y - (35 + 15);
+        s.x = pos.x;
+        s.y = pos.y;
         s.textBaseline = "bottom";
         s.textAlign = "center";
-
         pilas.escena_actual().stage.addChild(s);
         this.sprite_texto = s;
     };
@@ -1007,12 +1326,98 @@ var Texto = (function (_super) {
         this.eliminar_texto();
         _super.prototype.eliminar.call(this);
     };
+
+    Object.defineProperty(Texto.prototype, "escala_x", {
+        get: //TODO: hacer que pueda utilizar los metodos propios de la clase padre Actor
+        function () {
+            return this.sprite_texto.scaleX;
+        },
+        set: function (valor) {
+            if (valor instanceof Array)
+                pilas.interpolar(this.sprite_texto, 'scaleX', valor, 1000);
+else
+                this.sprite_texto.scaleX = valor;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    Object.defineProperty(Texto.prototype, "escala_y", {
+        get: function () {
+            return this.sprite_texto.scaleY;
+        },
+        set: function (valor) {
+            if (valor instanceof Array)
+                pilas.interpolar(this.sprite_texto, 'scaleY', valor, 1000);
+else
+                this.sprite_texto.scaleY = valor;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    Object.defineProperty(Texto.prototype, "escala", {
+        get: function () {
+            return this.escala_x;
+        },
+        set: function (valor) {
+            if (valor instanceof Array) {
+                var nuevo_radio_de_colision = [];
+                for (var i = 0; i < valor.length; i++) {
+                    nuevo_radio_de_colision.push((this.radio_de_colision * valor[i]) / this.escala);
+                }
+                pilas.interpolar(this, 'radio_de_colision', nuevo_radio_de_colision, 1000);
+                this.radio_de_colision = nuevo_radio_de_colision[0];
+            } else {
+                this.radio_de_colision = (this.radio_de_colision * valor) / this.escala;
+            }
+
+            this.escala_x = valor;
+            this.escala_y = valor;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Texto;
 })(Actor);
+/// <reference path="actor.ts"/>
+/// <reference path="texto.ts"/>
+var Puntaje = (function (_super) {
+    __extends(Puntaje, _super);
+    function Puntaje(x, y, puntaje, color) {
+        if (!(this instanceof Puntaje))
+            return new Puntaje(x, y, puntaje, color);
+
+        this.valor = puntaje || 0;
+        _super.call(this, x, y, this.valor.toString(), color);
+    }
+    Puntaje.prototype.aumentar = function (aumento) {
+        this.valor += aumento;
+        this.texto = this.valor.toString();
+
+        //Conservar la escala y el radio de colisión
+        //TODO: es necesario mejorar el actor Texto
+        var escala = this.escala;
+        var radio_de_colision = this.radio_de_colision;
+
+        this.eliminar_texto();
+        this.crear_texto();
+        this.escala = escala;
+        this.radio_de_colision = radio_de_colision;
+    };
+
+    Puntaje.prototype.obtener = function () {
+        return this.valor;
+    };
+    return Puntaje;
+})(Texto);
 /// <reference path="actor.ts"/>
 var Zanahoria = (function (_super) {
     __extends(Zanahoria, _super);
     function Zanahoria(x, y) {
+        if (!(this instanceof Zanahoria))
+            return new Zanahoria(x, y);
+
         this.cuadro_normal = "zanahoria_normal.png";
         this.cuadro_sonrie = "zanahoria_sonrie.png";
         _super.call(this, this.cuadro_normal, x, y);
@@ -1034,6 +1439,7 @@ var Zanahoria = (function (_super) {
     Zanahoria.prototype.decir = function () {
         this.sonreir();
         _super.prototype.decir.call(this, "hola");
+        pilas.mundo.agregar_tarea_una_vez(1, this.normal, {}, this);
     };
     return Zanahoria;
 })(Actor);
@@ -1050,8 +1456,8 @@ var Camara = (function () {
     function Camara() {
         this.x = 0;
         this.y = 0;
-        this.centro_x = 320 / 2;
-        this.centro_y = 240 / 2;
+        this.centro_x = pilas.opciones.ancho / 2;
+        this.centro_y = pilas.opciones.alto / 2;
     }
     /**
     * @method obtener_posicion_pantalla
@@ -1107,20 +1513,37 @@ var Camara = (function () {
             y: +centro.y - y
         };
     };
+
+    /*
+    * Obtiene el area visible de la pantalla.
+    * return: object
+    */
+    Camara.prototype.obtener_area_visible = function () {
+        var ancho = pilas.opciones.ancho;
+        var alto = pilas.opciones.alto;
+
+        return {
+            izquierda: this.x - ancho / 2,
+            derecha: this.x + ancho / 2,
+            arriba: this.y + alto / 2,
+            abajo: this.y - alto / 2
+        };
+    };
     return Camara;
 })();
 var Colisiones = (function () {
     function Colisiones() {
         this.colisiones = [];
     }
-    Colisiones.prototype.agregar = function (grupo_a, grupo_b, funcion_a_llamar) {
+    Colisiones.prototype.agregar = function (grupo_a, grupo_b, funcion_a_llamar, parent) {
+        if (typeof parent === "undefined") { parent = undefined; }
         if (grupo_a.length === undefined)
             grupo_a = [grupo_a];
 
         if (grupo_b.length === undefined)
             grupo_b = [grupo_b];
 
-        this.colisiones.push({ grupo_a: grupo_a, grupo_b: grupo_b, callback: funcion_a_llamar });
+        this.colisiones.push({ grupo_a: grupo_a, grupo_b: grupo_b, callback: funcion_a_llamar, parent: parent });
     };
 
     Colisiones.prototype.verificar_colisiones = function () {
@@ -1136,7 +1559,7 @@ var Colisiones = (function () {
                 var actor_b = tupla.grupo_b[j];
 
                 if (actor_a.vivo && actor_b.vivo && actor_a.colisiona_con(actor_b)) {
-                    tupla.callback.call(this, actor_a, actor_b);
+                    tupla.callback.call(tupla.parent, actor_a, actor_b);
                     // TODO: implementar alguna forma para quitar a los actores del
                     //       grupo si es que ya no están vivos.
                 }
@@ -1165,6 +1588,79 @@ var Comportamiento = (function () {
     };
     return Comportamiento;
 })();
+
+var AvanzarComoProyectil = (function (_super) {
+    __extends(AvanzarComoProyectil, _super);
+    function AvanzarComoProyectil() {
+        _super.apply(this, arguments);
+    }
+    AvanzarComoProyectil.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.velocidad = this.argumentos.velocidad || 2;
+        var rotacion_en_radianes = pilas.utils.convertir_a_radianes(-this.receptor.rotacion);
+        this.dx = Math.cos(rotacion_en_radianes);
+        this.dy = Math.sin(rotacion_en_radianes);
+    };
+
+    AvanzarComoProyectil.prototype.actualizar = function () {
+        this.receptor.x += this.dx * this.velocidad;
+        this.receptor.y += this.dy * this.velocidad;
+    };
+    return AvanzarComoProyectil;
+})(Comportamiento);
+
+var Avanzar = (function (_super) {
+    __extends(Avanzar, _super);
+    function Avanzar() {
+        _super.apply(this, arguments);
+    }
+    Avanzar.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.pasos = Math.abs(this.argumentos.pasos);
+        this.velocidad = this.argumentos.velocidad || 5;
+        var rotacion_en_radianes = pilas.utils.convertir_a_radianes(-this.receptor.rotacion);
+        this.dx = Math.cos(rotacion_en_radianes);
+        this.dy = Math.sin(rotacion_en_radianes);
+    };
+
+    Avanzar.prototype.actualizar = function () {
+        if (this.pasos > 0) {
+            if (this.pasos - this.velocidad < 0) {
+                var avance = this.pasos;
+            } else {
+                var avance = this.velocidad;
+            }
+
+            this.pasos -= avance;
+            this.receptor.x += this.dx * avance;
+            this.receptor.y += this.dy * avance;
+        } else {
+            return true;
+        }
+    };
+    return Avanzar;
+})(Comportamiento);
+
+var Girar = (function (_super) {
+    __extends(Girar, _super);
+    function Girar() {
+        _super.apply(this, arguments);
+    }
+    Girar.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.angulo = this.argumentos.angulo || 360;
+        this.tiempo = this.argumentos.tiempo || 1;
+        this.angulo_aux = this.receptor.rotacion + this.angulo;
+    };
+
+    Girar.prototype.actualizar = function () {
+        pilas.interpolar(this.receptor, "rotacion", [this.angulo_aux], this.tiempo);
+        if (this.angulo_aux == this.receptor.rotacion) {
+            return true;
+        }
+    };
+    return Girar;
+})(Comportamiento);
 
 var Saltar = (function (_super) {
     __extends(Saltar, _super);
@@ -1338,6 +1834,9 @@ var Comportamientos = (function () {
         this.Orbitar = Orbitar;
         this.OrbitarSobreActor = OrbitarSobreActor;
         this.Saltar = Saltar;
+        this.Girar = Girar;
+        this.Avanzar = Avanzar;
+        this.AvanzarComoProyectil = AvanzarComoProyectil;
     }
     return Comportamientos;
 })();
@@ -1511,6 +2010,7 @@ var DepuradorDeshabilitado = (function () {
         modos.puntos_de_control = modos.puntos_de_control || false;
         modos.radios_de_colision = modos.radios_de_colision || false;
         modos.fisica = modos.fisica || false;
+        modos.area = modos.area || false;
 
         this.eliminar_todos_los_modos();
 
@@ -1522,6 +2022,9 @@ var DepuradorDeshabilitado = (function () {
 
         if (modos.fisica)
             this.modos.push(new ModoFisica());
+
+        if (modos.area)
+            this.modos.push(new ModoArea());
 
         this.diccionario_modos = modos;
     };
@@ -1569,6 +2072,37 @@ var ModoRadiosDeColision = (function () {
     return ModoRadiosDeColision;
 })();
 
+var ModoArea = (function () {
+    function ModoArea() {
+        this.container = new createjs.Container();
+
+        this.shape = new createjs.Shape();
+        this.container.addChild(this.shape);
+
+        this.text_modo = new createjs.Text("F10 ModoArea habilitado", "12px Arial", "white");
+        this.text_modo.y = 15;
+        this.container.addChild(this.text_modo);
+
+        pilas.escena_actual().stage.addChild(this.container);
+    }
+    ModoArea.prototype.eliminar = function () {
+        pilas.escena_actual().stage.removeChild(this.container);
+    };
+
+    ModoArea.prototype.actualizar = function () {
+        var escena = pilas.escena_actual();
+        this.shape.graphics.clear();
+
+        for (var i = 0; i < escena.actores.length; i++) {
+            var actor = escena.actores[i];
+            var posicion = escena.obtener_posicion_pantalla(actor.x, actor.y);
+
+            this.shape.graphics.beginStroke("#FFF").drawRect(posicion.x - actor.ancho / 2, posicion.y - actor.alto / 2, actor.ancho, actor.alto).endStroke();
+        }
+    };
+    return ModoArea;
+})();
+
 var ModoPuntosDeControl = (function () {
     function ModoPuntosDeControl() {
         this.container = new createjs.Container();
@@ -1577,12 +2111,12 @@ var ModoPuntosDeControl = (function () {
         this.container.addChild(this.shape);
 
         this.text_modo = new createjs.Text("F12 ModoPosición habilitado", "12px Arial", "white");
-        this.text_modo.y = 15;
+        this.text_modo.y = 45;
         this.container.addChild(this.text_modo);
 
         this.text_coordenada = new createjs.Text("Posición del mouse: x=12 y=33", "12px Arial", "white");
-        this.text_coordenada.y = 220;
-        this.text_coordenada.x = 120;
+        this.text_coordenada.y = 920 / 2;
+        this.text_coordenada.x = 900 / 2;
         this.container.addChild(this.text_coordenada);
         this.eje = new pilas.actores.Eje();
 
@@ -1621,6 +2155,7 @@ var ModoFisica = (function () {
         this.container.addChild(this.shape);
 
         this.text_modo = new createjs.Text("F11 ModoFisica habilitado", "12px Arial", "white");
+        this.text_modo.y = 30;
         this.container.addChild(this.text_modo);
 
         pilas.escena_actual().stage.addChild(this.container);
@@ -1954,10 +2489,10 @@ var Fisica = (function () {
         this.timeStep = this.velocidad / 120.0;
 
         // Bordes del escenario
-        this.crear_rectangulo(0, -118, 320, 5, { dinamico: false });
-        this.crear_rectangulo(0, 118, 320, 5, { dinamico: false });
-        this.crear_rectangulo(-158, 0, 5, 240, { dinamico: false });
-        this.crear_rectangulo(158, 0, 5, 240, { dinamico: false });
+        this.crear_rectangulo(0, -pilas.opciones.alto / 2, pilas.opciones.ancho, 5, { dinamico: false });
+        this.crear_rectangulo(0, pilas.opciones.alto / 2, pilas.opciones.ancho, 5, { dinamico: false });
+        this.crear_rectangulo(-pilas.opciones.ancho / 2, 0, 5, pilas.opciones.alto, { dinamico: false });
+        this.crear_rectangulo(pilas.opciones.ancho / 2, 0, 5, pilas.opciones.alto, { dinamico: false });
     }
     Fisica.prototype.actualizar = function () {
         this.mundo.Step(this.timeStep, 6, 3);
@@ -2072,7 +2607,7 @@ var Plano = (function (_super) {
         var s = new createjs.Shape();
 
         s.graphics.beginBitmapFill(img, 'repeat');
-        s.graphics.drawRect(-160, -120, 320, 240);
+        s.graphics.drawRect(-pilas.opciones.ancho / 2, -pilas.opciones.alto / 2, pilas.opciones.ancho, pilas.opciones.alto);
         this.sprite = s;
     };
 
@@ -2093,7 +2628,7 @@ var Pasto = (function (_super) {
         var s = new createjs.Shape();
 
         s.graphics.beginBitmapFill(img, 'repeat');
-        s.graphics.drawRect(-160, -120, 320, 240);
+        s.graphics.drawRect(-pilas.opciones.ancho / 2, -pilas.opciones.alto / 2, pilas.opciones.ancho, pilas.opciones.alto);
         this.sprite = s;
     };
 
@@ -2128,6 +2663,8 @@ var GestorDeEscenas = (function () {
     }
     GestorDeEscenas.prototype.cambiar_escena = function (nueva_escena) {
         this.escena = nueva_escena;
+        this.actualizar();
+        //       tomen su posición inicial.
     };
 
     GestorDeEscenas.prototype.actualizar = function () {
@@ -2148,10 +2685,39 @@ var grupo = (function () {
     return grupo;
 })();
 
-var Grupo = (function () {
-    function Grupo(lista) {
-        this.lista = lista;
+var HGrupo = (function () {
+    /*Se utiliza para que la clase Grupo pueda extender de ella y por ende
+    extender propiedades y metodos de la clase Array */
+    function HGrupo() {
+        Array.apply(this, arguments);
+        return new Array();
     }
+    HGrupo.prototype.pop = function () {
+        return "";
+    };
+    HGrupo.prototype.push = function (val) {
+        return 0;
+    };
+    return HGrupo;
+})();
+
+HGrupo["prototype"] = new Array();
+
+var Grupo = (function (_super) {
+    __extends(Grupo, _super);
+    function Grupo() {
+        _super.call(this);
+    }
+    Grupo.prototype.agregar_grupo = function (grupo) {
+        for (var i = 0; i < grupo.length; i++) {
+            this.agregar_actor(grupo[i]);
+        }
+    };
+
+    Grupo.prototype.agregar_actor = function (actor) {
+        this.push(actor);
+    };
+
     Object.defineProperty(Grupo.prototype, "x", {
         get: function () {
             return this.__getattr__("x");
@@ -2200,48 +2766,52 @@ var Grupo = (function () {
     });
 
 
-    Grupo.prototype.aprender = function (args, args2) {
-        if (typeof args2 === "undefined") { args2 = {}; }
-        this.__execfunct__("aprender", args, args2);
+    Grupo.prototype.aprender = function (habilidad, argumentos) {
+        if (typeof argumentos === "undefined") { argumentos = undefined; }
+        this.ejecutar_funcion("aprender", habilidad, argumentos);
     };
 
-    Grupo.prototype.hacer = function (args, args2) {
-        if (typeof args2 === "undefined") { args2 = {}; }
-        this.__execfunct__("hacer", args, args2);
+    Grupo.prototype.hacer = function (comporamiento, argumentos) {
+        if (typeof argumentos === "undefined") { argumentos = undefined; }
+        this.ejecutar_funcion("hacer", comporamiento, argumentos);
     };
 
-    Grupo.prototype.decir = function (args) {
-        this.__execfunct__("decir", args);
+    Grupo.prototype.hacer_luego = function (comporamiento, argumentos) {
+        if (typeof argumentos === "undefined") { argumentos = undefined; }
+        this.ejecutar_funcion("hacer_luego", comporamiento, argumentos);
+    };
+
+    Grupo.prototype.decir = function (mensaje) {
+        this.ejecutar_funcion("decir", mensaje);
     };
 
     Grupo.prototype.eliminar = function () {
-        this.__execfunct__("eliminar");
-    };
-
-    Grupo.prototype.__execfunct__ = function (id, args, args2) {
-        if (typeof args === "undefined") { args = undefined; }
-        if (typeof args2 === "undefined") { args2 = undefined; }
-        for (var i = 0; i < this.lista.length; i++) {
-            this.lista[i][id](args, args2);
-        }
+        this.ejecutar_funcion("eliminar");
     };
 
     Grupo.prototype.__getattr__ = function (attr) {
         var valores = [];
-        for (var i = 0; i < this.lista.length; i++) {
-            valores.push(this.lista[i][attr]);
+        for (var i = 0; i < this.length; i++) {
+            valores.push(this[i][attr]);
         }
-
         return valores;
     };
 
     Grupo.prototype.__setattr__ = function (attr, valor) {
-        for (var i = 0; i < this.lista.length; i++) {
-            this.lista[i][attr] = valor;
+        for (var i = 0; i < this.length; i++) {
+            this[i][attr] = valor;
+        }
+    };
+
+    Grupo.prototype.ejecutar_funcion = function (id, argumentos1, argumentos2) {
+        if (typeof argumentos1 === "undefined") { argumentos1 = undefined; }
+        if (typeof argumentos2 === "undefined") { argumentos2 = undefined; }
+        for (var i = 0; i < this.length; i++) {
+            this[i][id](argumentos1, argumentos2);
         }
     };
     return Grupo;
-})();
+})(HGrupo);
 /**
 * @class Habilidad
 *
@@ -2562,17 +3132,17 @@ var SeMantieneEnPantalla = (function (_super) {
     }
     SeMantieneEnPantalla.prototype.recibir = function (evento, tipo) {
         if (tipo == pilas.escena_actual().actualiza) {
-            if (this.receptor.izquierda > 160)
-                this.receptor.derecha = -160;
+            if (this.receptor.izquierda > pilas.opciones.ancho / 2)
+                this.receptor.derecha = -pilas.opciones.ancho / 2;
 
-            if (this.receptor.derecha < -160)
-                this.receptor.izquierda = 160;
+            if (this.receptor.derecha < -pilas.opciones.ancho / 2)
+                this.receptor.izquierda = pilas.opciones.ancho / 2;
 
-            if (this.receptor.abajo > 120)
-                this.receptor.arriba = -120;
+            if (this.receptor.abajo > pilas.opciones.alto / 2)
+                this.receptor.arriba = -pilas.opciones.alto / 2;
 
-            if (this.receptor.arriba < -120)
-                this.receptor.abajo = 120;
+            if (this.receptor.arriba < -pilas.opciones.alto / 2)
+                this.receptor.abajo = pilas.opciones.alto / 2;
         }
     };
     return SeMantieneEnPantalla;
@@ -2654,8 +3224,17 @@ var Imagenes = (function () {
         this.cargar_recurso('pelota.png');
         this.cargar_recurso('zanahoria_normal.png');
         this.cargar_recurso('zanahoria_sonrie.png');
+        this.cargar_recurso('boton/boton_normal.png');
+        this.cargar_recurso('boton/boton_over.png');
+        this.cargar_recurso('boton/boton_press.png');
 
         this.cargar_recurso('fondos/tarde.jpg');
+
+        /*Recursos cargados para el demo Vaca Voladora*/
+        this.cargar_recurso('vaca.png');
+        this.cargar_recurso('nube1.png');
+        this.cargar_recurso('nube2.png');
+        this.cargar_recurso('fondos/nubes.png');
         //this.cargar_recurso('cooperativista/alerta.png');
         //this.cargar_recurso('cooperativista/camina.png');
         //this.cargar_recurso('cooperativista/camina_sujeta.png');
@@ -2765,7 +3344,7 @@ var Interpolaciones = (function () {
     function Interpolaciones() {
     }
     Interpolaciones.prototype.interpolar = function (objeto, atributo, valor_o_valores, tiempo) {
-        var tiempo = tiempo || 1000;
+        var tiempo = tiempo * 1000 || 1000;
         var step = tiempo / valor_o_valores.length;
         var tween = createjs.Tween.get(objeto);
 
@@ -2798,12 +3377,14 @@ var Mundo = (function () {
         return this.depurador.obtener_modos();
     };
 
-    Mundo.prototype.agregar_tarea_una_vez = function (tiempo, funcion) {
-        pilas.escena_actual().tareas.una_vez(tiempo, funcion);
+    Mundo.prototype.agregar_tarea_una_vez = function (tiempo, funcion, parametros, parent) {
+        if (typeof parent === "undefined") { parent = undefined; }
+        pilas.escena_actual().tareas.una_vez(tiempo, funcion, parametros, parent);
     };
 
-    Mundo.prototype.agregar_tarea_siempre = function (tiempo, funcion) {
-        pilas.escena_actual().tareas.siempre(tiempo, funcion);
+    Mundo.prototype.agregar_tarea_siempre = function (tiempo, funcion, parametros, parent) {
+        if (typeof parent === "undefined") { parent = undefined; }
+        pilas.escena_actual().tareas.siempre(tiempo, funcion, parametros, parent);
     };
     return Mundo;
 })();
@@ -2874,6 +3455,14 @@ var Pilas = (function () {
         this.tareas = new tareas();
 
         this.mundo.gestor_escenas.cambiar_escena(new Normal());
+    };
+
+    Pilas.prototype.reiniciar = function () {
+        // TODO: hacer que el fondo sea un atributo de la escena y que
+        // siempre se inicialice ahí, y no en la función onload del lado del
+        // usuario como hace ahora...
+        this.mundo.gestor_escenas.cambiar_escena(new Normal());
+        var fondo = new pilas.fondos.Plano();
     };
 
     /**
@@ -3091,14 +3680,16 @@ var tareas = (function () {
 })();
 
 var Tarea = (function () {
-    function Tarea(tiempo, funcion, una_vez) {
-        if (typeof una_vez === "undefined") { una_vez = false; }
+    function Tarea(tiempo, funcion, una_vez, parametros, parent) {
         this.tiempo = tiempo;
+        this.tiempo_aux = tiempo;
         this.funcion = funcion;
         this.una_vez = una_vez;
+        this.parametros = parametros;
+        this.parent = parent;
     }
     Tarea.prototype.ejecutar = function () {
-        this.funcion();
+        this.funcion.call(this.parent, this.parametros);
     };
     return Tarea;
 })();
@@ -3112,27 +3703,27 @@ var Tareas = (function () {
         this.tareas_planificadas.push(tarea);
     };
 
-    Tareas.prototype.siempre = function (tiempo, funcion) {
-        var tarea = new Tarea(tiempo, funcion);
+    Tareas.prototype.siempre = function (tiempo, funcion, parametros, parent) {
+        var tarea = new Tarea(this.contador_de_tiempo + tiempo, funcion, false, parametros, parent);
+        tarea.tiempo_aux = tiempo;
         this._agregar_tarea(tarea);
     };
 
-    Tareas.prototype.una_vez = function (tiempo, funcion) {
-        var tarea = new Tarea(tiempo, funcion, true);
+    Tareas.prototype.una_vez = function (tiempo, funcion, parametros, parent) {
+        var tarea = new Tarea(this.contador_de_tiempo + tiempo, funcion, true, parametros, parent);
         this._agregar_tarea(tarea);
     };
 
     Tareas.prototype.actualizar = function () {
         this.contador_de_tiempo += (1 / 60);
         for (var i = 0; i < this.tareas_planificadas.length; i++) {
-            if (this.contador_de_tiempo > this.tareas_planificadas[i]["tiempo"]) {
-                this.tareas_planificadas[i]["ejecutar"]();
+            if (this.contador_de_tiempo > this.tareas_planificadas[i].tiempo) {
+                this.tareas_planificadas[i].ejecutar();
 
-                if (this.tareas_planificadas[i]["una_vez"]) {
-                    console.log("tarea de una vez");
+                if (this.tareas_planificadas[i].una_vez) {
                     this.tareas_planificadas.splice(i, 1);
                 } else {
-                    this.tareas_planificadas[i]["tiempo"] += (0, 032 - ((this.contador_de_tiempo - this.tareas_planificadas[i]["tiempo"]) - 0, 016));
+                    this.tareas_planificadas[i].tiempo += this.tareas_planificadas[i].tiempo_aux;
                 }
             }
         }
@@ -3173,22 +3764,22 @@ var Utils = (function () {
     Utils.prototype.fabricar = function (clase, cantidad, posiciones_al_azar) {
         if (typeof cantidad === "undefined") { cantidad = 1; }
         if (typeof posiciones_al_azar === "undefined") { posiciones_al_azar = true; }
-        var objetos_creados = [];
+        var grupo = new pilas.grupo.Grupo();
 
         for (var i = 0; i < cantidad; i++) {
             if (posiciones_al_azar) {
-                var x = Math.floor(Math.random() * (100 - (-100 + 1))) - 100;
-                var y = Math.floor(Math.random() * (100 - (-100 + 1))) - 100;
+                var x = Math.floor(Math.random() * (320 - (-320 + 1))) - 320;
+                var y = Math.floor(Math.random() * (240 - (-240 + 1))) - 240;
             } else {
                 var x = 0;
                 var y = 0;
             }
 
             var nuevo = new clase(x, y);
-            objetos_creados.push(nuevo);
+            grupo.agregar_actor(nuevo);
         }
 
-        return new pilas.grupo.Grupo(objetos_creados);
+        return grupo;
     };
     return Utils;
 })();

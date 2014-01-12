@@ -8,9 +8,14 @@ class Boton extends Actor {
 	estado;
 
 	constructor(x, y, 
-		ruta_normal='boton/boton_normal.png',
-        ruta_press='boton/boton_press.png',
+				ruta_normal='boton/boton_normal.png', 
+				ruta_press='boton/boton_press.png',
         ruta_over='boton/boton_over.png')  {
+	
+		/* patch para permitir la instancia sin anteponer new */
+		if (!(this instanceof Boton)) 
+			return new Boton(x, y, ruta_normal, ruta_press, ruta_over);
+	
 		
 		this.ruta_normal = ruta_normal;
 		this.ruta_press = ruta_press;

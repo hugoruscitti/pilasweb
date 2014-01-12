@@ -10,6 +10,10 @@ class Maton extends Actor {
   teclado_habilitado;
 
   constructor(x, y) {
+		/* patch para permitir la instancia sin anteponer new */
+		if (!(this instanceof Maton)) 
+			return new Maton(x, y);
+	
     var imagen = pilas.imagenes.cargar_grilla("rpg/maton.png", 3*4, 1);
     super(imagen, x, y);
     this.centro_x = 36;

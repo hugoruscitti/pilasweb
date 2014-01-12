@@ -6,6 +6,10 @@ class Cesto extends Actor {
   figura3;
 
   constructor(x=120, y=0) {
+		/* patch para permitir la instancia sin anteponer new */
+		if (!(this instanceof Cesto)) 
+			return new Cesto(x, y);
+	
     var ancho = 40;
     var imagen = "cesto.png";
     super(imagen, x, y);
