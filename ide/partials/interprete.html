@@ -23,13 +23,19 @@
 			
 			<div class='controles-canvas'>
 				<ul class='izquierda'>
-					<li><a ng-click='alternar_editor()' class='btn btn-success btn-sm' href=''>Editor</a></li>
+					<li><a ng-click='alternar_editor()' class='btn btn-success btn-sm' href=''>
+						<span ng-show='editor_visible'>Ocultar Editor</span>
+						<span ng-show='editor_visible === false'>Mostrar Editor</span>
+					</a></li>
 				</ul>
 					
 				<ul>
-					<li><a class='btn btn-success btn-sm' href=''>A</a></li>
-					<li><a class='btn btn-success btn-sm' href=''>B</a></li>
-					<li><a class='btn btn-success btn-sm' href=''>C</a></li>
+					<li><a class='btn btn-sm btn-icon' ng-class="{'btn-pulsado': depuracion_info}" ng-click='alternar_depuracion_info()' href=''><i class='fa fa-info-circle'></i></a></li>
+					<li><a class='btn btn-sm btn-icon' href=''><i class='fa fa-crosshairs'></i></a></li>
+					<li><a class='btn btn-sm btn-icon' ng-class="{'btn-pulsado': depuracion_radios_de_colision}" ng-click='alternar_depuracion_radios_de_colision()' href=''><i class='fa fa-circle-o'></i></a></li>
+					<li><a class='btn btn-sm btn-icon' href=''><i class='fa fa-expand'></i></a></li>
+					<li><a class='btn btn-sm btn-icon' ng-class="{'btn-pulsado': depuracion_fisica}" ng-click='alternar_depuracion_fisica()' href=''><i class='fa fa-globe'></i></a></li>
+					<li><a class='btn btn-sm btn-icon'  ng-class="{'btn-pulsado': depuracion_posiciones}" ng-click='alternar_depuracion_posiciones()' href=''><i class='fa fa-map-marker'></i></a></li>
 				</ul>
 			</div>
 			

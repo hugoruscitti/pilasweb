@@ -172,10 +172,13 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 				});
 		
 		}
+		
+		$scope.editor_visible = true;
 	
 	$scope.alternar_editor = function() {
 		var editor = document.getElementById('editor');
 		var panelInterprete = document.getElementById('panel-interprete');
+		$scope.editor_visible = !$scope.editor_visible;
 		
 		
 		//editor.classList.remove('oculto');
@@ -183,10 +186,46 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		panelInterprete.classList.toggle('panel-interprete-expandido');
 	}
 	
+	$scope.definir_modos = function() {
+		pilas.mundo.depurador.definir_modos({
+			info: $scope.depuracion_info,
+			fisica: $scope.depuracion_fisica,
+			posicion: $scope.depuracion_posiciones,
+			radios_de_colision: $scope.depuracion_radios_de_colision,
+		});
+	}
 	
+	
+	// modos depuracion.
+		
+	$scope.depuracion_info = false;
+	$scope.depuracion_fisica = false;
+	$scope.depuracion_posiciones = false;
+	$scope.depuracion_radios_de_colision = false;
+		
+	$scope.alternar_depuracion_info = function() {
+		$scope.depuracion_info = !$scope.depuracion_info;
+		$scope.definir_modos();
+	}
+		
+	$scope.alternar_depuracion_fisica = function() {
+		$scope.depuracion_fisica = !$scope.depuracion_fisica;
+		$scope.definir_modos();
+	}
+		
+	$scope.alternar_depuracion_posiciones = function() {
+		$scope.depuracion_posiciones = !$scope.depuracion_posiciones;
+		$scope.definir_modos();
+	}
+		
+	$scope.alternar_depuracion_radios_de_colision = function() {
+		$scope.depuracion_radios_de_colision = !$scope.depuracion_radios_de_colision;
+		$scope.definir_modos();
+	}
+	
+		
+	// bootstrap de la consola interactiva.
 	iniciar_jsconsole();
-	
-	
 });
 
 app.controller('EquipoCtrl', function($scope, $http) {

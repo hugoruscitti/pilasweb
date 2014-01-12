@@ -175,3 +175,12 @@ div.tutorial {
 	right: 15px;
 	left: 15px;
 }
+
+.btn-icon {
+	color: black;
+}
+
+.btn-pulsado {
+	color: blue !important;
+	background-color: white;
+}
