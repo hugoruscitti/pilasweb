@@ -24,8 +24,15 @@ class HGrupo {
 HGrupo["prototype"] = new Array();
 
 class Grupo extends HGrupo {
-	constructor() {
+	constructor(actor_o_array) {
 		super();
+		if (actor_o_array instanceof Array) {
+			this.agregar_grupo(actor_o_array)
+		}
+
+		else if (actor_o_array instanceof Object) {
+			this.agregar_actor(actor_o_array)
+		}
 	}
 
 	agregar_grupo(grupo) {
