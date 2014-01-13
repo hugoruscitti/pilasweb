@@ -190,3 +190,7 @@
 	left: 0;
 	right: 0;
 }
+
+.expandir {
+	height: 100% !important;
+}

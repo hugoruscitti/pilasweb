@@ -104,21 +104,19 @@ app.controller('IndexCtrl', function($scope) {
 
 app.controller('InterpreteCtrl', function($scope, $http) {
 	$scope.codigo = [
-		
-		'// codigo para ejecutar.',
+		'# codigo para ejecutar.',
 		'',
-		'',
-		'p1 = new pilas.actores.Pelota( 5, -100);',
-		'p2 = new pilas.actores.Pelota(-50, 100);',
-		'p3 = new pilas.actores.Pelota();',
-		'aceituna = new pilas.actores.Aceituna();',
-		'aceituna.x = [100];',
+		'p1 = pilas.actores.Pelota( 5, -100)',
+		'p2 = pilas.actores.Pelota(-50, 100)',
+		'p3 = pilas.actores.Pelota()',
+		'aceituna = pilas.actores.Aceituna()',
+		'aceituna.x = [100]',
 	].join('\n');
 		
 	$scope.editorOptions = {
     lineNumbers: false,
 		theme: 'xq-light',
-  	mode: 'javascript',
+  	mode: 'python',
   };	
 		
 	var codemirrorEditor = undefined;
