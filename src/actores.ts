@@ -10,6 +10,7 @@
 /// <reference path="actores/pelota.ts />
 /// <reference path="actores/zanahoria.ts />
 /// <reference path="actores/puntaje.ts />
+/// <reference path="actores/mono.ts />
 
 
 /**
@@ -42,6 +43,7 @@ class Actores {
   Zanahoria;
   Boton;
   Puntaje;
+  Mono;
 
   constructor() {
     this.Aceituna = Aceituna;
@@ -65,5 +67,6 @@ class Actores {
     this.Zanahoria = Zanahoria;
     this.Boton = Boton;
     this.Puntaje = Puntaje;
+    this.Mono = Mono;
   }
 }
