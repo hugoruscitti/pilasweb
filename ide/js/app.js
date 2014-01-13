@@ -172,17 +172,20 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		}
 		
 		$scope.editor_visible = true;
+		$scope.interprete_visible = true;
 	
 	$scope.alternar_editor = function() {
 		var editor = document.getElementById('editor');
-		var panelInterprete = document.getElementById('panel-interprete');
 		$scope.editor_visible = !$scope.editor_visible;
-		
-		
-		//editor.classList.remove('oculto');
 		editor.classList.toggle('editor-invisible');
-		panelInterprete.classList.toggle('panel-interprete-expandido');
 	}
+		
+	$scope.alternar_interprete = function() {
+		var panelInterprete = document.getElementById('panel-interprete');
+		$scope.interprete_visible = !$scope.interprete_visible;
+		panelInterprete.classList.toggle('interprete-invisible');
+	}
+		
 	
 	$scope.definir_modos = function() {
 		pilas.mundo.depurador.definir_modos({

@@ -2705,8 +2705,13 @@ HGrupo["prototype"] = new Array();
 
 var Grupo = (function (_super) {
     __extends(Grupo, _super);
-    function Grupo() {
+    function Grupo(actor_o_array) {
         _super.call(this);
+        if (actor_o_array instanceof Array) {
+            this.agregar_grupo(actor_o_array);
+        } else if (actor_o_array instanceof Object) {
+            this.agregar_actor(actor_o_array);
+        }
     }
     Grupo.prototype.agregar_grupo = function (grupo) {
         for (var i = 0; i < grupo.length; i++) {
@@ -3343,17 +3348,42 @@ var Grilla = (function (_super) {
 var Interpolaciones = (function () {
     function Interpolaciones() {
     }
-    Interpolaciones.prototype.interpolar = function (objeto, atributo, valor_o_valores, tiempo) {
+    Interpolaciones.prototype.interpolar = function (objeto, atributo, valor_o_valores, tiempo, tipo) {
         var tiempo = tiempo * 1000 || 1000;
         var step = tiempo / valor_o_valores.length;
+        var tipo = tipo || createjs.Ease.none;
         var tween = createjs.Tween.get(objeto);
 
         for (var i = 0; i < valor_o_valores.length; i++) {
             var attr = atributo.toString();
             var diccionario = {};
             diccionario[attr] = valor_o_valores[i];
-            tween = tween.to(diccionario, step);
+            tween = tween.to(diccionario, step, tipo);
         }
+    };
+
+    Interpolaciones.prototype.AceleracionGradual = function (objeto, atributo, valor_o_valores, tiempo) {
+        return this.interpolar(objeto, atributo, valor_o_valores, tiempo, createjs.Ease.cubicin);
+    };
+
+    Interpolaciones.prototype.DesaceleracionGradual = function (objeto, atributo, valor_o_valores, tiempo) {
+        return this.interpolar(objeto, atributo, valor_o_valores, tiempo, createjs.Ease.cubicOut);
+    };
+
+    Interpolaciones.prototype.ReboteInicial = function (objeto, atributo, valor_o_valores, tiempo) {
+        return this.interpolar(objeto, atributo, valor_o_valores, tiempo, createjs.Ease.bounceIn);
+    };
+
+    Interpolaciones.prototype.ReboteFinal = function (objeto, atributo, valor_o_valores, tiempo) {
+        return this.interpolar(objeto, atributo, valor_o_valores, tiempo, createjs.Ease.bounceOut);
+    };
+
+    Interpolaciones.prototype.ElasticoInicial = function (objeto, atributo, valor_o_valores, tiempo) {
+        return this.interpolar(objeto, atributo, valor_o_valores, tiempo, createjs.Ease.elasticIn);
+    };
+
+    Interpolaciones.prototype.ElasticoFinal = function (objeto, atributo, valor_o_valores, tiempo) {
+        return this.interpolar(objeto, atributo, valor_o_valores, tiempo, createjs.Ease.elasticOut);
     };
     return Interpolaciones;
 })();
@@ -3764,7 +3794,7 @@ var Utils = (function () {
     Utils.prototype.fabricar = function (clase, cantidad, posiciones_al_azar) {
         if (typeof cantidad === "undefined") { cantidad = 1; }
         if (typeof posiciones_al_azar === "undefined") { posiciones_al_azar = true; }
-        var grupo = new pilas.grupo.Grupo();
+        var actores = [];
 
         for (var i = 0; i < cantidad; i++) {
             if (posiciones_al_azar) {
@@ -3776,10 +3806,10 @@ var Utils = (function () {
             }
 
             var nuevo = new clase(x, y);
-            grupo.agregar_actor(nuevo);
+            actores.push(nuevo);
         }
 
-        return grupo;
+        return new pilas.grupo.Grupo(actores);
     };
     return Utils;
 })();

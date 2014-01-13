@@ -7,10 +7,10 @@
     "window": {
 			"show": true,
       "toolbar": true,
-      "min_width": 750,
-      "min_height": 500,
-      "width": 750,
-      "height": 500,
+      "min_width": 850,
+      "min_height": 550,
+      "width": 850,
+      "height": 550,
       "position": "center"
     }
 }
