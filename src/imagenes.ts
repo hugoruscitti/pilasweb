@@ -65,12 +65,9 @@ class Imagenes {
     this.cargar_recurso('boton/boton_press.png');
 
     this.cargar_recurso('fondos/tarde.jpg');
-
-    /*Recursos cargados para el demo Vaca Voladora*/
-    this.cargar_recurso('vaca.png');
-    this.cargar_recurso('nube1.png');
-    this.cargar_recurso('nube2.png');
-    this.cargar_recurso('fondos/nubes.png');
+    this.cargar_recurso('monkey_normal.png');
+    this.cargar_recurso('monkey_smile.png');
+    this.cargar_recurso('monkey_shout.png');
 
     //this.cargar_recurso('cooperativista/alerta.png');
     //this.cargar_recurso('cooperativista/camina.png');
