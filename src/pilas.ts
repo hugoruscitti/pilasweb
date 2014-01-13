@@ -13,7 +13,7 @@ declare var createjs;
 /// <reference path="habilidades.ts />
 /// <reference path="comportamientos.ts />
 /// <reference path="colisiones.ts />
-
+/// <reference path="colores.ts />
 /// <reference path="tareas.ts />
 
 /**
@@ -50,6 +50,7 @@ class Pilas {
 
   interpolaciones;  // acceso al módulo.
   colisiones;       // acceso al módulo.
+  colores;       // acceso al módulo.
 
   /**
    * @method iniciar 
@@ -82,6 +83,7 @@ class Pilas {
     this.utils = new Utils();
     this.grupo = new grupo();
     this.colisiones = new Colisiones();
+    this.colores = new colores()
 
     this.tareas = new tareas();
 
