@@ -24,8 +24,8 @@ class Sonidos {
 		this.cargar_recursos();
 	}
 	private cargar_recursos() {
-		this.cargar_recurso('smile.ogg'); // Ejemplo de sonido cargado para el actor Mono
-
+		this.cargar_recurso('smile.ogg');
+		this.cargar_recurso('shout.ogg');
 		this.preload.loadManifest(this.recursos);
 	}
 
