@@ -10,6 +10,7 @@
 /// <reference path="actores/pelota.ts />
 /// <reference path="actores/zanahoria.ts />
 /// <reference path="actores/puntaje.ts />
+/// <reference path="actores/mono.ts />
 /**
 * @class Actores
 *
@@ -41,6 +42,7 @@ var Actores = (function () {
         this.Zanahoria = Zanahoria;
         this.Boton = Boton;
         this.Puntaje = Puntaje;
+        this.Mono = Mono;
     }
     return Actores;
 })();
@@ -1079,6 +1081,42 @@ var Maton = (function (_super) {
     return Maton;
 })(Actor);
 /// <reference path="actor.ts"/>
+var Mono = (function (_super) {
+    __extends(Mono, _super);
+    function Mono(x, y) {
+        this.image_normal = 'monkey_normal.png';
+        this.image_smile = 'monkey_smile.png';
+        this.image_shout = 'monkey_shout.png';
+        _super.call(this, this.image_normal, x, y);
+
+        this.radio_de_colision = 50;
+    }
+    Mono.prototype.sonreir = function () {
+        this.imagen = this.image_smile;
+        pilas.mundo.agregar_tarea_una_vez(1, this.normal, {}, this);
+    };
+
+    Mono.prototype.gritar = function () {
+        this.imagen = this.image_shout;
+        pilas.mundo.agregar_tarea_una_vez(1, this.normal, {}, this);
+    };
+
+    Mono.prototype.normal = function () {
+        this.imagen = this.image_normal;
+    };
+
+    Mono.prototype.decir = function (mensaje) {
+        this.sonreir;
+        _super.prototype.decir.call(this, mensaje);
+    };
+
+    Mono.prototype.saltar = function () {
+        this.sonreir();
+        this.hacer(pilas.comportamientos.Saltar);
+    };
+    return Mono;
+})(Actor);
+/// <reference path="actor.ts"/>
 var Nave = (function (_super) {
     __extends(Nave, _super);
     function Nave(x, y) {
@@ -1567,6 +1605,39 @@ var Colisiones = (function () {
         }
     };
     return Colisiones;
+})();
+var colores = (function () {
+    function colores() {
+        //Colores principales.
+        this.negro = createjs.Graphics.getRGB(0, 0, 0);
+        this.blanco = createjs.Graphics.getRGB(255, 255, 255);
+        this.rojo = createjs.Graphics.getRGB(255, 0, 0);
+        this.verde = createjs.Graphics.getRGB(0, 255, 0);
+        this.azul = createjs.Graphics.getRGB(0, 0, 255);
+        this.gris = createjs.Graphics.getRGB(128, 128, 128);
+
+        //Colores secundarios
+        this.amarillo = createjs.Graphics.getRGB(255, 255, 0);
+        this.magenta = createjs.Graphics.getRGB(255, 0, 255);
+        this.cyan = createjs.Graphics.getRGB(0, 255, 255);
+        this.grisclaro = createjs.Graphics.getRGB(192, 192, 192);
+        this.grisoscuro = createjs.Graphics.getRGB(100, 100, 100);
+        this.verdeoscuro = createjs.Graphics.getRGB(0, 128, 0);
+        this.azuloscuro = createjs.Graphics.getRGB(0, 0, 128);
+        this.naranja = createjs.Graphics.getRGB(255, 200, 0);
+        this.rosa = createjs.Graphics.getRGB(255, 175, 175);
+        this.violeta = createjs.Graphics.getRGB(128, 0, 255);
+        this.marron = createjs.Graphics.getRGB(153, 102, 0);
+
+        //Colores transparentes
+        this.negro_transparente = createjs.Graphics.getRGB(0, 0, 0, 0.5);
+        this.blanco_transparente = createjs.Graphics.getRGB(255, 255, 255, 0.5);
+        this.rojo_transparente = createjs.Graphics.getRGB(255, 0, 0, 0.5);
+        this.verde_transparente = createjs.Graphics.getRGB(0, 255, 0, 0.5);
+        this.azul_transparente = createjs.Graphics.getRGB(0, 0, 255, 0.5);
+        this.gris_transparente = createjs.Graphics.getRGB(128, 128, 128, 0.5);
+    }
+    return colores;
 })();
 /**
 * @class Comportamiento
@@ -2705,8 +2776,13 @@ HGrupo["prototype"] = new Array();
 
 var Grupo = (function (_super) {
     __extends(Grupo, _super);
-    function Grupo() {
+    function Grupo(actor_o_array) {
         _super.call(this);
+        if (actor_o_array instanceof Array) {
+            this.agregar_grupo(actor_o_array);
+        } else if (actor_o_array instanceof Object) {
+            this.agregar_actor(actor_o_array);
+        }
     }
     Grupo.prototype.agregar_grupo = function (grupo) {
         for (var i = 0; i < grupo.length; i++) {
@@ -3229,12 +3305,9 @@ var Imagenes = (function () {
         this.cargar_recurso('boton/boton_press.png');
 
         this.cargar_recurso('fondos/tarde.jpg');
-
-        /*Recursos cargados para el demo Vaca Voladora*/
-        this.cargar_recurso('vaca.png');
-        this.cargar_recurso('nube1.png');
-        this.cargar_recurso('nube2.png');
-        this.cargar_recurso('fondos/nubes.png');
+        this.cargar_recurso('monkey_normal.png');
+        this.cargar_recurso('monkey_smile.png');
+        this.cargar_recurso('monkey_shout.png');
         //this.cargar_recurso('cooperativista/alerta.png');
         //this.cargar_recurso('cooperativista/camina.png');
         //this.cargar_recurso('cooperativista/camina_sujeta.png');
@@ -3343,17 +3416,42 @@ var Grilla = (function (_super) {
 var Interpolaciones = (function () {
     function Interpolaciones() {
     }
-    Interpolaciones.prototype.interpolar = function (objeto, atributo, valor_o_valores, tiempo) {
+    Interpolaciones.prototype.interpolar = function (objeto, atributo, valor_o_valores, tiempo, tipo) {
         var tiempo = tiempo * 1000 || 1000;
         var step = tiempo / valor_o_valores.length;
+        var tipo = tipo || createjs.Ease.none;
         var tween = createjs.Tween.get(objeto);
 
         for (var i = 0; i < valor_o_valores.length; i++) {
             var attr = atributo.toString();
             var diccionario = {};
             diccionario[attr] = valor_o_valores[i];
-            tween = tween.to(diccionario, step);
+            tween = tween.to(diccionario, step, tipo);
         }
+    };
+
+    Interpolaciones.prototype.AceleracionGradual = function (objeto, atributo, valor_o_valores, tiempo) {
+        return this.interpolar(objeto, atributo, valor_o_valores, tiempo, createjs.Ease.cubicin);
+    };
+
+    Interpolaciones.prototype.DesaceleracionGradual = function (objeto, atributo, valor_o_valores, tiempo) {
+        return this.interpolar(objeto, atributo, valor_o_valores, tiempo, createjs.Ease.cubicOut);
+    };
+
+    Interpolaciones.prototype.ReboteInicial = function (objeto, atributo, valor_o_valores, tiempo) {
+        return this.interpolar(objeto, atributo, valor_o_valores, tiempo, createjs.Ease.bounceIn);
+    };
+
+    Interpolaciones.prototype.ReboteFinal = function (objeto, atributo, valor_o_valores, tiempo) {
+        return this.interpolar(objeto, atributo, valor_o_valores, tiempo, createjs.Ease.bounceOut);
+    };
+
+    Interpolaciones.prototype.ElasticoInicial = function (objeto, atributo, valor_o_valores, tiempo) {
+        return this.interpolar(objeto, atributo, valor_o_valores, tiempo, createjs.Ease.elasticIn);
+    };
+
+    Interpolaciones.prototype.ElasticoFinal = function (objeto, atributo, valor_o_valores, tiempo) {
+        return this.interpolar(objeto, atributo, valor_o_valores, tiempo, createjs.Ease.elasticOut);
     };
     return Interpolaciones;
 })();
@@ -3399,6 +3497,7 @@ var Mundo = (function () {
 /// <reference path="habilidades.ts />
 /// <reference path="comportamientos.ts />
 /// <reference path="colisiones.ts />
+/// <reference path="colores.ts />
 /// <reference path="tareas.ts />
 /**
 * @class Pilas
@@ -3451,6 +3550,7 @@ var Pilas = (function () {
         this.utils = new Utils();
         this.grupo = new grupo();
         this.colisiones = new Colisiones();
+        this.colores = new colores();
 
         this.tareas = new tareas();
 
@@ -3764,7 +3864,7 @@ var Utils = (function () {
     Utils.prototype.fabricar = function (clase, cantidad, posiciones_al_azar) {
         if (typeof cantidad === "undefined") { cantidad = 1; }
         if (typeof posiciones_al_azar === "undefined") { posiciones_al_azar = true; }
-        var grupo = new pilas.grupo.Grupo();
+        var actores = [];
 
         for (var i = 0; i < cantidad; i++) {
             if (posiciones_al_azar) {
@@ -3776,10 +3876,10 @@ var Utils = (function () {
             }
 
             var nuevo = new clase(x, y);
-            grupo.agregar_actor(nuevo);
+            actores.push(nuevo);
         }
 
-        return grupo;
+        return new pilas.grupo.Grupo(actores);
     };
     return Utils;
 })();
