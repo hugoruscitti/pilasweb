@@ -15,6 +15,7 @@ declare var createjs;
 /// <reference path="colisiones.ts />
 /// <reference path="colores.ts />
 /// <reference path="tareas.ts />
+/// <reference path="sonidos.ts />
 
 /**
  * @class Pilas
@@ -46,11 +47,12 @@ class Pilas {
   utils;            // acceso a módulo.
   grupo;            // acceso a módulo.
 
-  tareas;            // acceso a módulo.
+  tareas;           // acceso a módulo.
 
   interpolaciones;  // acceso al módulo.
   colisiones;       // acceso al módulo.
-  colores;       // acceso al módulo.
+  colores;          // acceso al módulo.
+  sonidos;          // acceso al módulo.
 
   /**
    * @method iniciar 
@@ -83,7 +85,8 @@ class Pilas {
     this.utils = new Utils();
     this.grupo = new grupo();
     this.colisiones = new Colisiones();
-    this.colores = new colores()
+    this.colores = new colores();
+    this.sonidos = new Sonidos(this.opciones.data_path);
 
     this.tareas = new tareas();
 
