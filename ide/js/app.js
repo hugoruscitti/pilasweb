@@ -105,16 +105,29 @@ app.controller('IndexCtrl', function($scope) {
 app.controller('InterpreteCtrl', function($scope, $http) {
 	$scope.codigo = [
 		'# codigo para ejecutar.',
+		'		',
+		'class MiActor(pilas.actores.Bomba):',
+		'',
+		'  def __init__(self):',
+		'    self.escala = [2, 0.5]',
+		'    self.y = [100]',
+		'    ',
+		'  def actualizar(self):',
+		'    self.rotacion += 1',
+		'',
 		'',
 		'p1 = pilas.actores.Pelota( 5, -100)',
 		'p2 = pilas.actores.Pelota(-50, 100)',
 		'p3 = pilas.actores.Pelota()',
 		'aceituna = pilas.actores.Aceituna()',
 		'aceituna.x = [100]',
+		'',
+		'c = MiActor()',
+		'c.x =[100]',
 	].join('\n');
 		
 	$scope.editorOptions = {
-    lineNumbers: false,
+    lineNumbers: true,
 		theme: 'xq-light',
   	mode: 'python',
   };	
@@ -147,29 +160,122 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		window.bomba = new pilas.actores.Bomba();
 	}
 	pilas.ejecutar();
+		
+		
+	  //RapydScript options
+    var rs_options = {
+    	"filename": "demo",
+      "toplevel": null,
+      "basedir": null,
+      "libdir": null
+    };
+    var output_opts = {
+    	"beautify": true,
+      "private_scope": false,
+      "omit_baselib": true
+    };
+	
+	
+		/**
+		 * Repara el codigo obtenido en python para que no use submodulos
+		 * en las superclases.
+		 *
+		 * Esta función reemplaza código cómo:
+		 *
+		 *       class MiActor(pilas.actores.Actor):
+		 *
+		 *  por:
+		 *
+		 *       __super = pilas.actores.Actor
+		 *       class MiActor(__super):
+		 *
+		 * El resultado al final es el mismo, pero evita el error de
+		 * sintaxis que emite rapydscript.
+		 */
+		function reescribir_superclases(codigo_python) {
+			var expresion = /class\s+(\w+)\((.+)\):/g
+			
+			return codigo_python.replace(expresion, "__super=$2\nclass $1(__super):")
+		}
+
+
+		function ejecutar_codigo_python(codigo_python, success_callback, error_callback) {
+			
+			output = OutputStream(output_opts)
+			codigo_python += '\n';
+			
+			try {
+				codigo_python = reescribir_superclases(codigo_python);
+				TOPLEVEL = parse(codigo_python, rs_options);
+				TOPLEVEL.print(output);
+				
+				var codigo_js_generado = String(output) + '\n';
+				success_callback.call(this, codigo_js_generado);
+				
+			} catch(err) {
+					var mensaje_de_error = "ERROR: " + err.message + ". Line " + err.line + ", column " + err.col + ".";
+					error_callback.call(this, mensaje_de_error);
+		}
+	}
+		
+		
+		
+		
+		
 	
 	$scope.ejecutar = function() {
 		pilas.reiniciar();
 		
+
+	
 		var codigo = codemirrorEditor.getDoc().getValue();
-    eval(codigo); 
+			
+		ejecutar_codigo_python(codigo, 
+			function(codigo_js) {
+				eval(codigo_js);
+			}, 
+			function(mensaje_de_error) {
+				alert(mensaje_de_error);
+			}
+		);
+		
 	}
 		
 		
 	$scope.publicar = function() {
-		var parametros = {codigo: codemirrorEditor.getDoc().getValue()};
-		var basepath = 'http://198.211.105.46:1337'; // RUTA en donde se aloja la
-		                                             // aplicacion web para publicar juegos
-																								 // ver: https://github.com/hugoruscitti/nube-experimental-pilas
+		var codigo = codemirrorEditor.getDoc().getValue();
+				
+		function subir_codigo(parametros) {
+			var basepath = 'http://198.211.105.46:1337'; // RUTA en donde se aloja la
+																									 // aplicacion web para publicar juegos
+																									 // ver: https://github.com/hugoruscitti/nube-experimental-pilas
+			
+			$http.post(basepath + '/publicar', parametros).
+					success(function(data, status) {
+						// cuando se hace un post a '/publicar' la aplicación web
+						// guarda el código y retorna la URL en donde se publica el juego.
+						gui.Shell.openExternal(basepath + data.url);
+					});
+			}
 		
-		$http.post(basepath + '/publicar', parametros).
-				success(function(data, status) {
-					// cuando se hace un post a '/publicar' la aplicación web
-					// guarda el código y retorna la URL en donde se publica el juego.
-					gui.Shell.openExternal(basepath + data.url);
-				});
 		
-		}
+			ejecutar_codigo_python(codigo, 
+				function(codigo_js) {
+					parametros = {codigo: codigo_js};
+					subir_codigo(parametros);
+				}, 
+				function(mensaje_de_error) {
+					// incluso si el codigo tiene errores lo sube, para que los
+		      // chicos puedan consultar y resolver errores.
+					parametros = {codigo: codigo_js};
+					subir_codigo(parametros);
+		
+				}
+			);
+			
+			
+		
+	  }
 		
 		$scope.editor_visible = true;
 	
