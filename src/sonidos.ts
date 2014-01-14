@@ -45,7 +45,16 @@ class Sonido {
 		this.nombre = nombre;
 	}
 
-	reproducir() {
-		return createjs.Sound.play(this.nombre, createjs.Sound.INTERRUPT_ANY);
+	reproducir(repetir=false) {
+		if (repetir) {
+			return createjs.Sound.play(this.nombre, createjs.Sound.INTERRUPT_ANY, 0, 0, -1);
+		}
+		else {
+			return createjs.Sound.play(this.nombre, createjs.Sound.INTERRUPT_ANY);
+		}
+	}
+
+	detener() {
+		return createjs.Sound.stop(this.nombre);
 	}
 }
