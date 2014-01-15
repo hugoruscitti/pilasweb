@@ -46,6 +46,7 @@ class Actores {
   Mono;
   Banana;
 
+
   constructor() {
     this.Aceituna = Aceituna;
     this.Actor = Actor;

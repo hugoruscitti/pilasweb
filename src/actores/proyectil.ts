@@ -5,6 +5,10 @@ class Proyectil extends Actor {
   enemigos;
 
   constructor(x, y, atributos) {
+		/* patch para permitir la instancia sin anteponer new */
+		if (!(this instanceof Proyectil)) 
+			return new Proyectil(x, y, atributos);
+	
     var imagen = pilas.imagenes.cargar_grilla("disparos/misil.png", 3);
     atributos['centro_x'] = 20;
     atributos['centro_y'] = 8;

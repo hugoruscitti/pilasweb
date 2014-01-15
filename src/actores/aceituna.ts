@@ -7,6 +7,10 @@ class Aceituna extends Actor {
 	cuadro_gritar;
 
   constructor(x, y) {
+	  /* patch para permitir la instancia sin anteponer new */
+		if (!(this instanceof Aceituna)) 
+			return new Aceituna(x, y);
+	
     this.cuadro_normal = 'aceituna.png';
     this.cuadro_reir = 'aceituna_risa.png';
     this.cuadro_burlar = 'aceituna_burla.png';

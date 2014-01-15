@@ -4,6 +4,10 @@ class Explosion extends Actor {
   paso;
 
   constructor(x, y) {
+		/* patch para permitir la instancia sin anteponer new */
+		if (!(this instanceof Explosion)) 
+			return new Explosion(x, y);
+	
     var imagen = pilas.imagenes.cargar_grilla("explosion.png", 7);
     super(imagen, x, y);
     this.centro_x = 16;

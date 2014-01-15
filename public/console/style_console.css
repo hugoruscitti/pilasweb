@@ -1,8 +1,4 @@
-textarea {
-    border:1px solid red;
-}
-
-#console { margin-bottom: 0; border: 1px solid #D6D6D6; height: 250px;}
+#console { background-color: white; margin-bottom: 0; border: 1px solid #D6D6D6; height: 200px;}
 
 #output { list-style: none; margin: 0; padding: 0; }
 #output li { margin: 5px 0; padding: 5px; white-space: pre-wrap; padding-bottom: 0; }

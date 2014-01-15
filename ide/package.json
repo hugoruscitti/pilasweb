@@ -1,0 +1,16 @@
+{
+    "name": "pilas-engine",
+    "main": "index.html",
+    "version": "0.1",
+    "livereload": true,
+    "single-instance": true,
+    "window": {
+			"show": true,
+      "toolbar": true,
+      "min_width": 850,
+      "min_height": 550,
+      "width": 850,
+      "height": 550,
+      "position": "center"
+    }
+}

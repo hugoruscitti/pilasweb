@@ -1,6 +1,8 @@
 {
   "name": "pilasweb",
   "version": "0.0.1",
+  "author": "Hugo Ruscitti",
+  "repository": "http://github.com/hugoruscitti/pilasweb",
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-typescript": "*",
@@ -12,6 +14,15 @@
     "mocha-phantomjs": "~3.1.6",
     "process": "~0.5.1",
     "grunt-cli": "~0.1.9",
-    "phantomjs": "~1.9.2-4"
+    "phantomjs": "~1.9.2-4",
+    "grunt-node-webkit-builder": "~0.1.14",
+    "jsonfile": "~1.1.1",
+    "gaze": "~0.4.3",
+    "q": "~0.9.7",
+    "async": "~0.2.9",
+    "grunt-contrib-copy": "~0.5.0"
+  },
+  "dependencies": {
+    "bower": "~1.2.8"
   }
 }
