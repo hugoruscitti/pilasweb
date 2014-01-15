@@ -2,7 +2,22 @@ var shell = require('shelljs');
 
 module.exports = function(grunt) {
 
-	grunt.initConfig({
+	grunt.initConfig({	
+    nodewebkit: {
+                  options: {
+                            //version: '0.8.3',
+                            version: '0.7.5',
+                            build_dir: './webkitbuilds',
+                            mac: true,
+                            win: true,
+                            linux32: true,
+                            linux64: true
+                },
+                src: [
+                  './ide/**/*',
+                  './node_modules/**/*',
+                ]
+            },
 		typescript: {
 			base: {
 				src: ['src/**/*.ts'],
