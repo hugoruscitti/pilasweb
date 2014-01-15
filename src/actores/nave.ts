@@ -6,6 +6,10 @@ class Nave extends Actor {
   enemigos;
 
   constructor(x, y) {
+		/* patch para permitir la instancia sin anteponer new */
+		if (!(this instanceof Nave)) 
+			return new Nave(x, y);
+	
     var imagen = pilas.imagenes.cargar_grilla("nave.png", 2);
     super(imagen, x, y);
     this.centro_x = 23;

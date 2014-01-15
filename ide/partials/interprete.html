@@ -1,0 +1,74 @@
+	<div class='contenedor'>
+
+		<!-- panel izquierdo plegable -->
+		<div class='editor' id='editor'>
+			
+			<div class='barra-botones'>
+				<a ng-click='publicar()' class='btn btn-success btn-sm' href=''>Publicar en la web</a>
+				<a ng-click='ejecutar()' class='btn btn-warning btn-sm' href=''>Ejecutar</a>
+			</div>
+			
+			<div class='expansor'>
+				<textarea ui-codemirror="{onLoad: codemirrorLoaded}" ui-codemirror="editorOptions" ng-model='codigo'></textarea>
+			</div>
+		</div>
+		
+		<!-- panel derecho con una separación horizontal -->
+		<div class='interprete'>
+			
+			
+			<div class='canvas'>
+				<canvas id='canvasInterprete'></canvas>
+			</div>
+			
+			<div class='controles-canvas'>
+				<ul class='izquierda'>
+					<li>
+						<a ng-click='alternar_editor()' ng-class="{'btn-pulsado': editor_visible}" class='btn btn-icon btn-sm' href=''>
+							<span class='fa fa-file-o'></span> Editor
+						</a>
+					</li>
+					
+					<li>
+						<a ng-click='alternar_interprete()' ng-class="{'btn-pulsado': interprete_visible}"  class='btn btn-icon btn-sm' href=''>
+							<span class='fa fa-chevron-right'></span> Intérprete
+						</a>
+					</li>
+				</ul>
+					
+				<ul>
+					<li><a class='btn btn-sm btn-icon' ng-class="{'btn-pulsado': depuracion_info}" ng-click='alternar_depuracion_info()' href=''><i class='fa fa-info-circle'></i></a></li>
+					<li><a class='btn btn-sm btn-icon' href=''><i class='fa fa-crosshairs'></i></a></li>
+					<li><a class='btn btn-sm btn-icon' ng-class="{'btn-pulsado': depuracion_radios_de_colision}" ng-click='alternar_depuracion_radios_de_colision()' href=''><i class='fa fa-circle-o'></i></a></li>
+					<li><a class='btn btn-sm btn-icon' href=''><i class='fa fa-expand'></i></a></li>
+					<li><a class='btn btn-sm btn-icon' ng-class="{'btn-pulsado': depuracion_fisica}" ng-click='alternar_depuracion_fisica()' href=''><i class='fa fa-globe'></i></a></li>
+					<li><a class='btn btn-sm btn-icon'  ng-class="{'btn-pulsado': depuracion_posiciones}" ng-click='alternar_depuracion_posiciones()' href=''><i class='fa fa-map-marker'></i></a></li>
+				</ul>
+			</div>
+			
+			<div class='text' id='panel-interprete'>
+				<div id="console" class="stretch expandir consola-interprete">
+						<ul id="output"></ul>
+						<form>
+							<textarea autofocus id="exec" spellcheck="false" autocapitalize="off" rows="1" autocorrect="off"></textarea>
+						</form>
+				</div>
+			</div>
+			
+		</div>
+		
+	</div>
+
+
+
+<div style='display: none'>
+		
+	<div id='editor' class='oculto'>
+		
+	</div>
+	
+	<div id='panel-interprete' class='panel-interprete-expandido'>
+	
+	</div>
+	
+</div>

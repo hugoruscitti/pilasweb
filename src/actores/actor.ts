@@ -57,6 +57,10 @@ class Actor extends Estudiante {
   callbacks_cuando_mueve_mouse;
 
   constructor(imagen, x, y, atributos = {}) {
+		/* patch para permitir la instancia sin anteponer new */
+		if (!(this instanceof Actor)) 
+			return new Actor(imagen, x, y, atributos);
+		
     super();
     this.imagen = imagen || 'sin_imagen.png';
     atributos = atributos || {};
@@ -69,8 +73,6 @@ class Actor extends Estudiante {
 			 Por ejemplo, si escribe "pilas.actores.Nave()" da un error. Si el usuario
 			 escribe "new pilas.actores.Nave()" sale bien :)
 		*/
-		if (this === pilas.actores)
-			throw Error("Lo siento, tienes que anteponer 'new' para crear actores en esta versión.");
 		
     this.crear_sprite();
     this.x = x || 0;

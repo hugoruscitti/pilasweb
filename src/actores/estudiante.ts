@@ -1,9 +1,13 @@
 class Estudiante {
   habilidades;
-  comportamientos; // TODO: convertir en una lista como las habilidades.
+  comportamientos; 
   comportamiento_actual;
 
   constructor() {
+		/* patch para permitir la instancia sin anteponer new */
+		if (!(this instanceof Estudiante)) 
+			return new Estudiante();
+	
     this.habilidades = [];
     this.comportamientos = [];
   }
@@ -14,7 +18,13 @@ class Estudiante {
   }
 
   public agregar_habilidad(clase_de_habilidad, argumentos) {
-    // TODO chequear si la clase de habilidad ya se ha agregado y eliminarla.
+    for (var i=0; i<this.habilidades.length;i++) {
+      if (this.habilidades[i] instanceof clase_de_habilidad){
+        this.habilidades.splice(i, 1)
+        break;
+      }
+    }
+
     if(argumentos==undefined) {
       var habilidad = new clase_de_habilidad(this);
     }

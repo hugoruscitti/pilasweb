@@ -9,6 +9,8 @@ class GestorDeEscenas {
 
   cambiar_escena(nueva_escena) {
     this.escena = nueva_escena;
+		this.actualizar(); // NOTA: se ejecuta para que los actores
+		                   //       tomen su posición inicial.
   }
 
   actualizar() {

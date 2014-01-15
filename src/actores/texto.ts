@@ -8,6 +8,10 @@ class Texto extends Actor {
   sprite_texto;
 
   constructor(x, y, texto, color) {
+		/* patch para permitir la instancia sin anteponer new */
+		if (!(this instanceof Texto)) 
+			return new Texto(x, y, texto, color);
+	
     var imagen = "invisible.png";
     super(imagen, x, y);
     this.texto = texto || "Sin texto";

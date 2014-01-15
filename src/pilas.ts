@@ -13,8 +13,9 @@ declare var createjs;
 /// <reference path="habilidades.ts />
 /// <reference path="comportamientos.ts />
 /// <reference path="colisiones.ts />
-
+/// <reference path="colores.ts />
 /// <reference path="tareas.ts />
+/// <reference path="sonidos.ts />
 
 /**
  * @class Pilas
@@ -46,10 +47,12 @@ class Pilas {
   utils;            // acceso a módulo.
   grupo;            // acceso a módulo.
 
-  tareas;            // acceso a módulo.
+  tareas;           // acceso a módulo.
 
   interpolaciones;  // acceso al módulo.
   colisiones;       // acceso al módulo.
+  colores;          // acceso al módulo.
+  sonidos;          // acceso al módulo.
 
   /**
    * @method iniciar 
@@ -82,11 +85,22 @@ class Pilas {
     this.utils = new Utils();
     this.grupo = new grupo();
     this.colisiones = new Colisiones();
+    this.colores = new colores();
+    this.sonidos = new Sonidos(this.opciones.data_path);
 
     this.tareas = new tareas();
 
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
   }
+
+	reiniciar() {
+		// TODO: hacer que el fondo sea un atributo de la escena y que
+		// siempre se inicialice ahí, y no en la función onload del lado del
+		// usuario como hace ahora...
+		
+    this.mundo.gestor_escenas.cambiar_escena(new Normal());
+		var fondo = new pilas.fondos.Plano();
+	}
 
   /**
    * @method escena_actual

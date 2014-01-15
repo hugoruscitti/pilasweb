@@ -1,5 +1,8 @@
 .DS_Store
 
+webkitbuilds/
+ide/app/bower_components
+
 /build/
 /doc/
 
@@ -17,3 +20,7 @@ docs/html/*
 *.swp
 
 npm-debug.log
+
+ide/public
+
+dist/
