@@ -44,6 +44,7 @@ class Actores {
   Boton;
   Puntaje;
   Mono;
+  Banana;
 
   constructor() {
     this.Aceituna = Aceituna;
@@ -68,5 +69,6 @@ class Actores {
     this.Boton = Boton;
     this.Puntaje = Puntaje;
     this.Mono = Mono;
+    this.Banana = Banana;
   }
 }
