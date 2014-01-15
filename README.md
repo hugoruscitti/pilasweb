@@ -48,7 +48,19 @@ Pilas incluye una versión experimental de aplicación desktop.
 
 Para instalarla hacen falta unas dependencias adicionales:
 
+    npm install
     sudo npm install -g bower
     cd ide
     bower install
+    npm install
     cd ..
+
+    make test         # o 'make test_mac'
+
+Luego, si quieres generar las versiones compiladas para todas
+las plataformas tienes que ejecutar:
+
+    make build
+
+el comando 'make' sin argumentos te muestra varias opciones
+disponibles.
