@@ -6,7 +6,7 @@
     "single-instance": true,
     "window": {
 			"show": true,
-      "toolbar": true,
+      "toolbar": false,
       "min_width": 850,
       "min_height": 550,
       "width": 850,
