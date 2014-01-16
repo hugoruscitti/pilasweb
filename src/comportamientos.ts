@@ -101,6 +101,7 @@ class Saltar extends Comportamiento {
   velocidad_inicial;
   velocidad;
   velocidad_aux;
+  sonido_saltar;
 
   iniciar(receptor) {
     this.receptor = receptor;
@@ -109,6 +110,8 @@ class Saltar extends Comportamiento {
     this.velocidad = this.velocidad_inicial;
     this.velocidad_aux = this.velocidad_inicial;
     this.cuando_termina = this.argumentos.cuando_termina || null;
+    this.sonido_saltar = pilas.sonidos.cargar('saltar.wav');
+    this.sonido_saltar.reproducir();
   }
 
   actualizar() {
