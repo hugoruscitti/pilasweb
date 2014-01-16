@@ -26,6 +26,7 @@ class Sonidos {
 	private cargar_recursos() {
 		this.cargar_recurso('smile.ogg');
 		this.cargar_recurso('shout.ogg');
+		this.cargar_recurso('saltar.wav');
 		this.preload.loadManifest(this.recursos);
 	}
 
@@ -57,4 +58,5 @@ class Sonido {
 	detener() {
 		return createjs.Sound.stop(this.nombre);
 	}
+
 }
