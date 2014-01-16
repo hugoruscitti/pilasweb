@@ -43,6 +43,7 @@ var Actores = (function () {
         this.Boton = Boton;
         this.Puntaje = Puntaje;
         this.Mono = Mono;
+        this.Banana = Banana;
     }
     return Actores;
 })();
@@ -61,6 +62,13 @@ var Estudiante = (function () {
     };
 
     Estudiante.prototype.agregar_habilidad = function (clase_de_habilidad, argumentos) {
+        for (var i = 0; i < this.habilidades.length; i++) {
+            if (this.habilidades[i] instanceof clase_de_habilidad) {
+                this.habilidades.splice(i, 1);
+                break;
+            }
+        }
+
         if (argumentos == undefined) {
             var habilidad = new clase_de_habilidad(this);
         } else {
@@ -589,6 +597,24 @@ var Aceituna = (function (_super) {
     };
     return Aceituna;
 })(Actor);
+var Banana = (function (_super) {
+    __extends(Banana, _super);
+    function Banana(x, y) {
+        if (typeof x === "undefined") { x = 0; }
+        if (typeof y === "undefined") { y = 0; }
+        var imagen = pilas.imagenes.cargar_grilla('banana.png', 2);
+        _super.call(this, imagen, x, y);
+        this._imagen.definir_cuadro(0);
+    }
+    Banana.prototype.cerrar = function () {
+        this._imagen.definir_cuadro(0);
+    };
+
+    Banana.prototype.abrir = function () {
+        this._imagen.definir_cuadro(1);
+    };
+    return Banana;
+})(Actor);
 /// <reference path="actor.ts"/>
 var Bloque = (function (_super) {
     __extends(Bloque, _super);
@@ -1087,16 +1113,21 @@ var Mono = (function (_super) {
         this.image_normal = 'monkey_normal.png';
         this.image_smile = 'monkey_smile.png';
         this.image_shout = 'monkey_shout.png';
+
+        this.sound_smile = pilas.sonidos.cargar('smile.ogg');
+        this.sound_shout = pilas.sonidos.cargar('shout.ogg');
         _super.call(this, this.image_normal, x, y);
 
         this.radio_de_colision = 50;
     }
     Mono.prototype.sonreir = function () {
+        this.sound_smile.reproducir();
         this.imagen = this.image_smile;
         pilas.mundo.agregar_tarea_una_vez(1, this.normal, {}, this);
     };
 
     Mono.prototype.gritar = function () {
+        this.sound_shout.reproducir();
         this.imagen = this.image_shout;
         pilas.mundo.agregar_tarea_una_vez(1, this.normal, {}, this);
     };
@@ -1745,6 +1776,8 @@ var Saltar = (function (_super) {
         this.velocidad = this.velocidad_inicial;
         this.velocidad_aux = this.velocidad_inicial;
         this.cuando_termina = this.argumentos.cuando_termina || null;
+        this.sonido_saltar = pilas.sonidos.cargar('saltar.wav');
+        this.sonido_saltar.reproducir();
     };
 
     Saltar.prototype.actualizar = function () {
@@ -3499,6 +3532,7 @@ var Mundo = (function () {
 /// <reference path="colisiones.ts />
 /// <reference path="colores.ts />
 /// <reference path="tareas.ts />
+/// <reference path="sonidos.ts />
 /**
 * @class Pilas
 * @singleton
@@ -3551,6 +3585,7 @@ var Pilas = (function () {
         this.grupo = new grupo();
         this.colisiones = new Colisiones();
         this.colores = new colores();
+        this.sonidos = new Sonidos(this.opciones.data_path);
 
         this.tareas = new tareas();
 
@@ -3772,6 +3807,65 @@ var simbolos = {
     D: 68,
     J: 74
 };
+/*
+*	Modulo sonidos:
+*
+*	Hay una instancia de la clase sonidos al momento de iniciar pilas
+*	posteriormente para cargar y reproducir un sonido se debe de hacer lo siguiente:
+*
+*	1.- cargar el sonido en la función cargar_recursos() con ayuda de cargar_recurso(...)
+*		Por ejemplo: cargar_recurso("smile.ogg")
+*
+*	2.- Simulamos la carga del sonido lo más parecido a la versión Python, así que:
+*		cuando deseamos usar el sonido hacemos lo siguiente:
+*		var mi_sonido = pilas.sonidos.cargar("smile.ogg")
+*
+*	3.- Por ultima para reproducir el sonido:
+*		mi_sonido.reproducir()
+*/
+var Sonidos = (function () {
+    function Sonidos(data_path) {
+        this.recursos = [];
+        this.preload = new createjs.LoadQueue(true, data_path + "/");
+        this.preload.installPlugin(createjs.Sound);
+        this.cargar_recursos();
+    }
+    Sonidos.prototype.cargar_recursos = function () {
+        this.cargar_recurso('smile.ogg');
+        this.cargar_recurso('shout.ogg');
+        this.cargar_recurso('saltar.wav');
+        this.preload.loadManifest(this.recursos);
+    };
+
+    Sonidos.prototype.cargar_recurso = function (nombre) {
+        this.recursos.push({ id: nombre, src: nombre });
+        console.log("cargando " + nombre);
+    };
+
+    Sonidos.prototype.cargar = function (nombre) {
+        return new Sonido(nombre);
+    };
+    return Sonidos;
+})();
+
+var Sonido = (function () {
+    function Sonido(nombre) {
+        this.nombre = nombre;
+    }
+    Sonido.prototype.reproducir = function (repetir) {
+        if (typeof repetir === "undefined") { repetir = false; }
+        if (repetir) {
+            return createjs.Sound.play(this.nombre, createjs.Sound.INTERRUPT_ANY, 0, 0, -1);
+        } else {
+            return createjs.Sound.play(this.nombre, createjs.Sound.INTERRUPT_ANY);
+        }
+    };
+
+    Sonido.prototype.detener = function () {
+        return createjs.Sound.stop(this.nombre);
+    };
+    return Sonido;
+})();
 var tareas = (function () {
     function tareas() {
         this.Tareas = Tareas;
