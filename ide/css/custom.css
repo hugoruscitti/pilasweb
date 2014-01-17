@@ -46,6 +46,7 @@ p {
 
 div.equipo {
 	margin: 1em;
+	margin-left: 3em;
 }
 
 .equipo img {
@@ -183,4 +184,11 @@ div.tutorial {
 .btn-pulsado {
 	color: blue !important;
 	background-color: white;
+}
+
+.popover {
+	width: 170px;
+	max-width: 170px;
+	margin-top: -25px !important;
+	text-align: center;
 }

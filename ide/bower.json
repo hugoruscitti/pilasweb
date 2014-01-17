@@ -20,7 +20,8 @@
     "angular-ui-codemirror": "~0.1.0",
     "bootstrap": "~3.0.3",
     "jquery": "~2.0.3",
-    "angular-animate": "~1.2.7"
+    "angular-animate": "~1.2.7",
+    "angular-ui-bootstrap-bower": "~0.10.0"
   },
   "resolutions": {
     "angular": "1.2.8-build.2095+sha.28fc80b"

@@ -23,6 +23,9 @@
     "grunt-contrib-copy": "~0.5.0"
   },
   "dependencies": {
-    "bower": "~1.2.8"
+    "bower": "~1.2.8",
+    "grunt": "~0.4.2",
+    "copy": "0.0.1",
+    "grunt-copy": "~0.1.0"
   }
 }

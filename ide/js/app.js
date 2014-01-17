@@ -1,7 +1,6 @@
 var gui = require('nw.gui');
 
-app = angular.module('app', ['ngRoute', 'ui.codemirror', 'ngAnimate']);
-
+app = angular.module('app', ['ngRoute', 'ui.codemirror', 'ngAnimate', 'ui.bootstrap']);
 
 app.directive('popover', function() {
 	return {
@@ -21,30 +20,18 @@ app.directive('colaborador', function() {
 		transclude: true,
 		scope: {},
 		template: '<div class="integrante">' +
-						  '<a href="" ng-click="mostrar()">' +
+						  '<a popover="{{nombre}}" popover-trigger="mouseenter" href="" ng-click="abrir_sitio()">' +
 		          '<img src="imagenes/equipo/{{nick}}.png">' +
 		          '</a>' +
-							'<div class="detalle-integrante" ng-show="detalle_visible">' +
-								'{{nombre}}' +
-								'<br/>' +
-								'<br/>' +
-								'<i class="fa fa-flag"></i> {{de}}<br/>' +
-								'<i class="fa fa-github-alt"></i> <a href="" ng-click="abrir_github()">Perfil</a><br/>' +
-							'</div>' +
 							'</div>',
 		link: function(scope, element, attrs) {
-			scope.detalle_visible = false;
 			
 			scope.nick = attrs.nick;
 			scope.nombre = attrs.nombre;
 			scope.de = attrs.de;
 			scope.url = attrs.url;
 			
-			scope.mostrar = function() {
-				scope.detalle_visible = ! scope.detalle_visible;
-			}
-			
-			scope.abrir_github = function() {
+			scope.abrir_sitio = function() {
 				window.abrir_url(scope.url);
 			}
 		}
