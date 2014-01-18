@@ -13752,6 +13752,7 @@ var DepuradorDeshabilitado = (function () {
         modos.radios_de_colision = modos.radios_de_colision || false;
         modos.fisica = modos.fisica || false;
         modos.area = modos.area || false;
+        modos.posiciones = modos.posiciones || false;
 
         this.eliminar_todos_los_modos();
 
@@ -13766,6 +13767,9 @@ var DepuradorDeshabilitado = (function () {
 
         if (modos.area)
             this.modos.push(new ModoArea());
+
+        if (modos.posiciones)
+            this.modos.push(new ModoPosicion());
 
         this.diccionario_modos = modos;
     };
@@ -13851,21 +13855,14 @@ var ModoPuntosDeControl = (function () {
         this.shape = new createjs.Shape();
         this.container.addChild(this.shape);
 
-        this.text_modo = new createjs.Text("F12 ModoPosición habilitado", "12px Arial", "white");
+        this.text_modo = new createjs.Text("F8 ModoPuntosDeControl habilitado", "12px Arial", "white");
         this.text_modo.y = 45;
         this.container.addChild(this.text_modo);
-
-        this.text_coordenada = new createjs.Text("Posición del mouse: x=12 y=33", "12px Arial", "white");
-        this.text_coordenada.y = 920 / 2;
-        this.text_coordenada.x = 900 / 2;
-        this.container.addChild(this.text_coordenada);
-        this.eje = new pilas.actores.Eje();
 
         pilas.escena_actual().stage.addChild(this.container);
     }
     ModoPuntosDeControl.prototype.eliminar = function () {
         pilas.escena_actual().stage.removeChild(this.container);
-        this.eje.eliminar();
     };
 
     ModoPuntosDeControl.prototype.actualizar = function () {
@@ -13881,11 +13878,75 @@ var ModoPuntosDeControl = (function () {
             this.shape.graphics.beginStroke("#ffffff").moveTo(posicion.x - size, posicion.y - size).lineTo(posicion.x + size, posicion.y + size).endStroke();
             this.shape.graphics.beginStroke("#ffffff").moveTo(posicion.x - size, posicion.y + size).lineTo(posicion.x + size, posicion.y - size).endStroke();
         }
+    };
+    return ModoPuntosDeControl;
+})();
+
+var ModoPosicion = (function () {
+    function ModoPosicion() {
+        this.container = new createjs.Container();
+
+        this.shape = new createjs.Shape();
+        this.container.addChild(this.shape);
+
+        this.text_modo = new createjs.Text("12 ModoPosicion habilitado", "12px Arial", "white");
+        this.text_modo.y = 45;
+        this.container.addChild(this.text_modo);
+
+        this.text_coordenada = new createjs.Text("Posición del mouse: x=12 y=33", "12px Arial", "white");
+        this.text_coordenada.y = 920 / 2;
+        this.text_coordenada.x = 900 / 2;
+        this.container.addChild(this.text_coordenada);
+        this.eje = new pilas.actores.Eje();
+        this.sobre_escribir_dibujado();
+
+        pilas.escena_actual().stage.addChild(this.container);
+    }
+    ModoPosicion.prototype.sobre_escribir_dibujado = function () {
+        var anterior_draw = this.shape.graphics.draw;
+        var g = this.shape.graphics;
+        this.shape.graphics.actores = [];
+
+        this.shape.graphics.draw = function (a) {
+            a.fillStyle = "white";
+
+            for (var i = 0; i < this.actores.length; i++) {
+                var actor = this.escena.actores[i];
+                var posicion = this.escena.obtener_posicion_pantalla(actor.x, actor.y);
+
+                a.fillText(" (" + Math.floor(actor.x) + ", " + Math.floor(actor.y) + ")", posicion.x + 10, posicion.y + 10);
+            }
+
+            anterior_draw.call(g, a);
+        };
+    };
+
+    ModoPosicion.prototype.eliminar = function () {
+        pilas.escena_actual().stage.removeChild(this.container);
+        this.eje.eliminar();
+    };
+
+    ModoPosicion.prototype.actualizar = function () {
+        var escena = pilas.escena_actual();
+        this.shape.graphics.clear();
+
+        this.shape.graphics.actores = escena.actores;
+        this.shape.graphics.escena = escena;
+
+        for (var i = 0; i < escena.actores.length; i++) {
+            var actor = escena.actores[i];
+            var posicion = escena.obtener_posicion_pantalla(actor.x, actor.y);
+            var size = 3;
+
+            // Dibuja una cruz
+            this.shape.graphics.beginStroke("#ffffff").moveTo(posicion.x - size, posicion.y - size).lineTo(posicion.x + size, posicion.y + size).endStroke();
+            this.shape.graphics.beginStroke("#ffffff").moveTo(posicion.x - size, posicion.y + size).lineTo(posicion.x + size, posicion.y - size).endStroke();
+        }
 
         var pos = escena.obtener_posicion_escenario(escena.stage.mouseX, escena.stage.mouseY);
         this.text_coordenada.text = "Posición del mouse: x=" + Math.floor(pos.x) + " y=" + Math.floor(pos.y);
     };
-    return ModoPuntosDeControl;
+    return ModoPosicion;
 })();
 
 var ModoFisica = (function () {

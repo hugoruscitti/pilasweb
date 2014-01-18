@@ -19,6 +19,7 @@ class DepuradorDeshabilitado {
     modos.radios_de_colision = modos.radios_de_colision || false;
     modos.fisica = modos.fisica || false;
     modos.area = modos.area || false;
+    modos.posiciones = modos.posiciones || false;
 
     this.eliminar_todos_los_modos();
 
@@ -33,6 +34,9 @@ class DepuradorDeshabilitado {
 
     if (modos.area)
       this.modos.push(new ModoArea());
+		
+    if (modos.posiciones)
+      this.modos.push(new ModoPosicion());
 
     this.diccionario_modos = modos;
   }
@@ -126,6 +130,46 @@ class ModoPuntosDeControl {
   shape;
   container;
   text_modo;
+
+  constructor() {
+    this.container = new createjs.Container();
+
+    this.shape = new createjs.Shape();
+    this.container.addChild(this.shape);
+
+    this.text_modo = new createjs.Text("F8 ModoPuntosDeControl habilitado", "12px Arial", "white");
+    this.text_modo.y = 45; // TODO: Buscar la forma de posicion este texto solo, uno arriba de otro.
+    this.container.addChild(this.text_modo);
+
+    pilas.escena_actual().stage.addChild(this.container);
+  }
+
+  eliminar() {
+    pilas.escena_actual().stage.removeChild(this.container);
+  }
+
+  actualizar() {
+    var escena = pilas.escena_actual();
+    this.shape.graphics.clear();
+
+    for (var i=0; i<escena.actores.length; i++) {
+      var actor = escena.actores[i];
+      var posicion = escena.obtener_posicion_pantalla(actor.x, actor.y);
+      var size = 3;
+
+      // Dibuja una cruz
+      this.shape.graphics.beginStroke("#ffffff").moveTo(posicion.x - size, posicion.y - size).lineTo(posicion.x + size, posicion.y + size).endStroke();
+      this.shape.graphics.beginStroke("#ffffff").moveTo(posicion.x - size, posicion.y + size).lineTo(posicion.x + size, posicion.y - size).endStroke();
+    }
+  }
+
+}
+
+
+class ModoPosicion {
+  shape;
+  container;
+  text_modo;
   text_coordenada;
   eje;
 
@@ -135,7 +179,7 @@ class ModoPuntosDeControl {
     this.shape = new createjs.Shape();
     this.container.addChild(this.shape);
 
-    this.text_modo = new createjs.Text("F12 ModoPosición habilitado", "12px Arial", "white");
+    this.text_modo = new createjs.Text("12 ModoPosicion habilitado", "12px Arial", "white");
     this.text_modo.y = 45; // TODO: Buscar la forma de posicion este texto solo, uno arriba de otro.
     this.container.addChild(this.text_modo);
 
@@ -144,9 +188,33 @@ class ModoPuntosDeControl {
     this.text_coordenada.x = 900/2;
     this.container.addChild(this.text_coordenada);
     this.eje = new pilas.actores.Eje();
+		this.sobre_escribir_dibujado();
+
 
     pilas.escena_actual().stage.addChild(this.container);
   }
+
+	private sobre_escribir_dibujado() {
+		
+		var anterior_draw = this.shape.graphics.draw;
+		var g = this.shape.graphics;
+		this.shape.graphics.actores = [];
+	
+		this.shape.graphics.draw = function(a) {
+	
+			a.fillStyle = "white";
+	
+			for (var i=0; i<this.actores.length; i++) {
+				var actor = this.escena.actores[i];
+				var posicion = this.escena.obtener_posicion_pantalla(actor.x, actor.y);
+	
+				a.fillText(" (" + Math.floor(actor.x) + ", " + Math.floor(actor.y) + ")", posicion.x + 10, posicion.y + 10);
+			}
+		
+			anterior_draw.call(g, a);
+		}
+	
+	}
 
   eliminar() {
     pilas.escena_actual().stage.removeChild(this.container);
@@ -156,6 +224,9 @@ class ModoPuntosDeControl {
   actualizar() {
     var escena = pilas.escena_actual();
     this.shape.graphics.clear();
+		
+		this.shape.graphics.actores = escena.actores;
+		this.shape.graphics.escena = escena;
 
     for (var i=0; i<escena.actores.length; i++) {
       var actor = escena.actores[i];
