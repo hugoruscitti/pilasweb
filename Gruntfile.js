@@ -18,6 +18,25 @@ module.exports = function(grunt) {
                   './node_modules/**/*',
                 ]
             },
+		concat: {
+    	options: {
+      	separator: ';',
+    	},
+    	dist: {
+      	src: [
+						'public/libs/PxLoader.js',
+  					'public/libs/PxLoaderImage.js',
+						'public/libs/Box2dWeb-2.1.a.3.js',
+						'public/libs/preloadjs-0.4.1.min.js',
+						'public/libs/soundjs-0.5.2.min.js',
+						'public/libs/easeljs-0.6.1.min.js',
+						'public/libs/tweenjs-0.4.1.min.js',
+						'public/libs/uuid.js',
+						'public/pilasweb.js',
+				],
+      	dest: 'public/pilasweb.js',
+    	},
+  	},
 		typescript: {
 			base: {
 				src: ['src/**/*.ts'],
@@ -42,7 +61,7 @@ module.exports = function(grunt) {
 		watch: {
 			scripts: {
 				files: ['src/**', 'test/**'],
-				tasks: ['clear', 'typescript', 'copy'],
+				tasks: ['clear', 'typescript', 'concat', 'copy'],
       }
     },
     mocha_phantomjs: {
@@ -74,9 +93,10 @@ module.exports = function(grunt) {
     shell.exec('jsduck public/pilasweb.js --title="pilas-engine web" --images=docs/images/ -o docs/html');
   });
 
+	grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-node-webkit-builder');
-  grunt.registerTask('docs', ['typescript', 'make_docs']);
-  grunt.registerTask('default', ['typescript']);
+  grunt.registerTask('docs', ['typescript', 'concat', 'make_docs']);
+  grunt.registerTask('default', ['typescript', 'concat']);
 };
 

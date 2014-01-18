@@ -20,7 +20,8 @@
     "gaze": "~0.4.3",
     "q": "~0.9.7",
     "async": "~0.2.9",
-    "grunt-contrib-copy": "~0.5.0"
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-concat": "~0.3.0"
   },
   "dependencies": {
     "bower": "~1.2.8",
