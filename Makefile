@@ -24,6 +24,7 @@ test_linux:
 build:
 	grunt clear
 	grunt typescript
+	grunt concat
 	grunt copy
 	@echo "Borrando archivos de releases anteriores."
 	rm -f -r webkitbuilds/releases/
