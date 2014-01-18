@@ -97,6 +97,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-node-webkit-builder');
   grunt.registerTask('docs', ['typescript', 'concat', 'make_docs']);
-  grunt.registerTask('default', ['typescript', 'concat']);
+  grunt.registerTask('default', ['typescript', 'concat', 'copy']);
 };
 
