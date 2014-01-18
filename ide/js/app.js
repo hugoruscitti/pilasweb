@@ -77,12 +77,25 @@ app.config(['$routeProvider', function($routeProvider) { $routeProvider.
 
 app.controller('MainCtrl', function($scope, $location) {
   
+	/* Helper para mostrar activa la opción seleccionada del menú izquierdo. */
   $scope.getClass = function(path) {
     if ($location.path().substr(0, path.length) == path)
       return "active";
     else
       return "";
 	}
+	
+		
+	/* Botón en la barra superior para recargar toda la aplicación. */
+	$scope.actualizar = function() {
+		document.location.reload();
+	}
+	
+	/* Botón en la barra superior para mostrar las herramientas de desarrollo. */
+	$scope.mostrar_herramientas_de_desarrollo = function() {
+		gui.Window.get().showDevTools();
+	}
+	
 });
 
 app.controller('IndexCtrl', function($scope) {
@@ -316,7 +329,6 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		$scope.depuracion_radios_de_colision = !$scope.depuracion_radios_de_colision;
 		$scope.definir_modos();
 	}
-	
 		
 	// bootstrap de la consola interactiva.
 	iniciar_jsconsole();
