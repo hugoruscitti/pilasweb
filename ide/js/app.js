@@ -229,6 +229,7 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 
 	
 		var codigo = codemirrorEditor.getDoc().getValue();
+		$scope.definir_modos();
 			
 		ejecutar_codigo_python(codigo, 
 			function(codigo_js) {
@@ -296,9 +297,11 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 	$scope.definir_modos = function() {
 		pilas.mundo.depurador.definir_modos({
 			info: $scope.depuracion_info,
-			fisica: $scope.depuracion_fisica,
-			posicion: $scope.depuracion_posiciones,
+			puntos_de_control: $scope.depuracion_puntos_de_control,
 			radios_de_colision: $scope.depuracion_radios_de_colision,
+			area: $scope.depuracion_area,
+			fisica: $scope.depuracion_fisica,
+			posiciones: $scope.depuracion_posiciones,
 		});
 	}
 	
@@ -306,12 +309,29 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 	// modos depuracion.
 		
 	$scope.depuracion_info = false;
+	$scope.depuracion_puntos_de_control = false;
+	$scope.depuracion_radios_de_colision = false;
+	$scope.depuracion_area = false;
 	$scope.depuracion_fisica = false;
 	$scope.depuracion_posiciones = false;
-	$scope.depuracion_radios_de_colision = false;
 		
 	$scope.alternar_depuracion_info = function() {
 		$scope.depuracion_info = !$scope.depuracion_info;
+		$scope.definir_modos();
+	}
+		
+	$scope.alternar_depuracion_puntos_de_control = function() {
+		$scope.depuracion_puntos_de_control = !$scope.depuracion_puntos_de_control;
+		$scope.definir_modos();
+	}
+		
+	$scope.alternar_depuracion_radios_de_colision = function() {
+		$scope.depuracion_radios_de_colision = !$scope.depuracion_radios_de_colision;
+		$scope.definir_modos();
+	}
+		
+	$scope.alternar_depuracion_area = function() {
+		$scope.depuracion_area = !$scope.depuracion_area;
 		$scope.definir_modos();
 	}
 		
@@ -325,10 +345,6 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		$scope.definir_modos();
 	}
 		
-	$scope.alternar_depuracion_radios_de_colision = function() {
-		$scope.depuracion_radios_de_colision = !$scope.depuracion_radios_de_colision;
-		$scope.definir_modos();
-	}
 		
 	// bootstrap de la consola interactiva.
 	iniciar_jsconsole();

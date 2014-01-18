@@ -13938,9 +13938,8 @@ var ModoPosicion = (function () {
             var posicion = escena.obtener_posicion_pantalla(actor.x, actor.y);
             var size = 3;
 
-            // Dibuja una cruz
-            this.shape.graphics.beginStroke("#ffffff").moveTo(posicion.x - size, posicion.y - size).lineTo(posicion.x + size, posicion.y + size).endStroke();
-            this.shape.graphics.beginStroke("#ffffff").moveTo(posicion.x - size, posicion.y + size).lineTo(posicion.x + size, posicion.y - size).endStroke();
+            // Dibuja un punto
+            this.shape.graphics.beginFill("#ffffff").drawCircle(posicion.x, posicion.y, 2);
         }
 
         var pos = escena.obtener_posicion_escenario(escena.stage.mouseX, escena.stage.mouseY);
