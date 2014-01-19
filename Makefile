@@ -1,6 +1,7 @@
 N=\x1b[0m
 V=\x1b[32;01m
-VERSION=`git name-rev --name-only --tags HEAD | sed 's/\^.*//'`
+#VERSION=`git name-rev --name-only --tags HEAD | sed 's/\^.*//'`
+VERSION=`git describe --abbrev=0 --tags`
 
 all:
 	@echo ""
