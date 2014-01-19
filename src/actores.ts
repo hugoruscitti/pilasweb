@@ -45,6 +45,8 @@ class Actores {
   Puntaje;
   Mono;
   Banana;
+  Tortuga;
+  Pizarra;
 
 
   constructor() {
@@ -71,5 +73,7 @@ class Actores {
     this.Puntaje = Puntaje;
     this.Mono = Mono;
     this.Banana = Banana;
+    this.Tortuga = Tortuga;
+    this.Pizarra = Pizarra;
   }
 }
