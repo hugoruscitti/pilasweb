@@ -68,6 +68,7 @@ class Imagenes {
     this.cargar_recurso('monkey_normal.png');
     this.cargar_recurso('monkey_smile.png');
     this.cargar_recurso('monkey_shout.png');
+    this.cargar_recurso('tortuga.png');
 
     //this.cargar_recurso('cooperativista/alerta.png');
     //this.cargar_recurso('cooperativista/camina.png');
