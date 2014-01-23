@@ -151,10 +151,13 @@ function run(cmd) {
           consola.dispatchEvent(entrada);
           
           /* EJECUTA LO QUE EL USUARIO ESCRIBE */
-          rawoutput = window.eval(cmd);
+					if (ejecutar_codigo_python)
+						rawoutput = ejecutar_codigo_python_sync(cmd);
+					else
+          	rawoutput = window.eval(cmd);
           
           /* Emite un evento alertando lo que el usuario quiere ejecutar */
-  		  var salida = new Event('salida');
+  		  	var salida = new Event('salida');
           salida.texto = rawoutput;
           consola.dispatchEvent(salida);
           
@@ -996,6 +999,8 @@ iniciar_jsconsole = function() {
 
 	jsconsole.init(document.getElementById('output'));
 	jsconsole.queue = [];
+	/*
+	
 	jsconsole.remote = {
   log: function () {
     // window.console.log('remote call');
@@ -1075,13 +1080,15 @@ iniciar_jsconsole = function() {
     }
   }
 };
+*/
 
 	// just for extra support
-	jsconsole.remote.debug = jsconsole.remote.dir = jsconsole.remote.log;
-	jsconsole.remote.warn = jsconsole.remote.info;
+	//jsconsole.remote.debug = jsconsole.remote.dir = jsconsole.remote.log;
+	//jsconsole.remote.warn = jsconsole.remote.info;
 
 // window.top._console = jsconsole.remote;
 
+	/*
 function upgradeConsolePanel(console) {
   // console.init = function () {
     console.$el.click(function () {
@@ -1135,4 +1142,7 @@ function upgradeConsolePanel(console) {
 
    //console.init();
 }
+	
+	*/
+	return jsconsole;
 }

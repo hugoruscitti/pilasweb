@@ -14,6 +14,70 @@ app.directive('popover', function() {
 });
 
 
+	  //RapydScript options
+    var rs_options = {
+    	"filename": "demo",
+      "toplevel": null,
+      "basedir": null,
+      "libdir": null
+    };
+    var output_opts = {
+    	"beautify": true,
+      "private_scope": false,
+      "omit_baselib": true
+    };
+	
+
+		function ejecutar_codigo_python(codigo_python, success_callback, error_callback) {
+			
+			output = OutputStream(output_opts)
+			codigo_python += '\n';
+			
+			try {
+				codigo_python = reescribir_superclases(codigo_python);
+				TOPLEVEL = parse(codigo_python, rs_options);
+				TOPLEVEL.print(output);
+				
+				var codigo_js_generado = String(output) + '\n';
+				success_callback.call(this, codigo_js_generado);
+				
+			} catch(err) {
+					var mensaje_de_error = "ERROR: " + err.message + ". Line " + err.line + ", column " + err.col + ".";
+					error_callback.call(this, mensaje_de_error);
+		}
+		
+		
+	}
+
+
+  /* Ejecuta una porcion de código python pero de manera
+	 * sincrónica, muy utilizado para la consola interactiva, que muestra
+	 * el cursor luego de cada comando.
+	 *
+	 * Si el código enviado a este método falla, se emite una exception.
+	 */
+	function ejecutar_codigo_python_sync(codigo_python) {
+		output = OutputStream(output_opts)
+		codigo_python += '\n';
+		
+		try {
+			TOPLEVEL = parse(codigo_python, rs_options);
+			TOPLEVEL.print(output);
+				
+			var codigo_js_generado = String(output) + '\n';
+			return window.eval(codigo_js_generado);
+		} catch(err) {
+			throw new Error(err.message);
+		}
+	}
+
+
+
+
+
+
+
+
 app.directive('colaborador', function() {
 	return {
 		restrict: 'E',
@@ -161,20 +225,6 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 	}
 	pilas.ejecutar();
 		
-		
-	  //RapydScript options
-    var rs_options = {
-    	"filename": "demo",
-      "toplevel": null,
-      "basedir": null,
-      "libdir": null
-    };
-    var output_opts = {
-    	"beautify": true,
-      "private_scope": false,
-      "omit_baselib": true
-    };
-	
 	
 		/**
 		 * Repara el codigo obtenido en python para que no use submodulos
@@ -198,25 +248,7 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 			return codigo_python.replace(expresion, "__super=$2\nclass $1(__super):")
 		}
 
-
-		function ejecutar_codigo_python(codigo_python, success_callback, error_callback) {
-			
-			output = OutputStream(output_opts)
-			codigo_python += '\n';
-			
-			try {
-				codigo_python = reescribir_superclases(codigo_python);
-				TOPLEVEL = parse(codigo_python, rs_options);
-				TOPLEVEL.print(output);
-				
-				var codigo_js_generado = String(output) + '\n';
-				success_callback.call(this, codigo_js_generado);
-				
-			} catch(err) {
-					var mensaje_de_error = "ERROR: " + err.message + ". Line " + err.line + ", column " + err.col + ".";
-					error_callback.call(this, mensaje_de_error);
-		}
-	}
+		
 		
 		
 		
@@ -347,7 +379,7 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		
 		
 	// bootstrap de la consola interactiva.
-	iniciar_jsconsole();
+	window.js_console = iniciar_jsconsole();
 });
 
 app.controller('EquipoCtrl', function($scope, $http) {
