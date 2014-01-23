@@ -1,17 +1,19 @@
 class Pizarra extends Actor {
 	container;
 	lienzo;
-	constructor(x=0,y=0, ancho=null, alto=null) {
+	_ancho;
+	_alto
+
+	constructor(x=0,y=0) {
 		var imagen = 'invisible.png';
 		super(imagen, x, y);
 
-		if (ancho == null && alto == null) {
-			ancho, alto = pilas.opciones.ancho, pilas.opciones.alto;
-		}
+		this._ancho = pilas.opciones.ancho;
+		this._alto = pilas.opciones.alto;
 
 		//crear lienzo
 		this.container = new createjs.Container();
-		this.lienzo = new createjs.Shape(this.x,this.y,ancho, alto);
+		this.lienzo = new createjs.Shape(this.x, this.y); // TODO: Permitir que acepte ancho y alto de la pizarra
 		this.container.addChild(this.lienzo);
 		pilas.escena_actual().stage.addChild(this.container)
 
@@ -36,12 +38,10 @@ class Pizarra extends Actor {
 	}
 
 	rectangulo(x, y, ancho, alto, color=pilas.colores.negro, relleno=false, grosor=1) {
-		if (!relleno) {
+		if (!relleno)
 			var color_relleno = createjs.Graphics.getRGB(255, 255, 255,0);
-		}
-		else {
+		else
 			var color_relleno = relleno;
-		}
 
 		var pos = pilas.escena_actual().obtener_posicion_pantalla(x, y);
 
@@ -59,5 +59,9 @@ class Pizarra extends Actor {
 
 	limpiar() {
 		this.lienzo.graphics.clear();
+	}
+
+	pintar(color) {
+		this.rectangulo(this.x-320, this.y+240, this._ancho, this._alto, color, color,1);
 	}
 }
