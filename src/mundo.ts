@@ -1,6 +1,3 @@
-/// <reference path="gestor_escenas.ts />
-/// <reference path="depurador.ts />
-
 class Mundo {
   gestor_escenas;
   depurador;

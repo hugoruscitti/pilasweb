@@ -37,7 +37,7 @@ class Pizarra extends Actor {
         this.lienzo.graphics.lineTo(pos2.x, pos2.y).endStroke();	
 	}
 
-	rectangulo(x, y, ancho, alto, color=pilas.colores.negro, relleno=false, grosor=1) {
+	rectangulo(x, y, ancho, alto, color=pilas.colores.negro, relleno:any=false, grosor=1) {
 		if (!relleno)
 			var color_relleno = createjs.Graphics.getRGB(255, 255, 255,0);
 		else

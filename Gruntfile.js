@@ -15,6 +15,7 @@ module.exports = function(grunt) {
                 },
                 src: [
                   './ide/**/*',
+                  './src/**/*',
                   './node_modules/**/*',
                 ]
             },

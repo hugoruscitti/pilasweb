@@ -1,16 +1,3 @@
-/// <reference path="actores/aceituna.ts />
-/// <reference path="actores/bomba.ts />
-/// <reference path="actores/explosion.ts />
-/// <reference path="actores/nave.ts />
-/// <reference path="actores/piedra.ts />
-/// <reference path="actores/eje.ts />
-/// <reference path="actores/maton.ts />
-/// <reference path="actores/caja.ts />
-/// <reference path="actores/cesto.ts />
-/// <reference path="actores/pelota.ts />
-/// <reference path="actores/zanahoria.ts />
-/// <reference path="actores/puntaje.ts />
-/// <reference path="actores/mono.ts />
 
 
 /**

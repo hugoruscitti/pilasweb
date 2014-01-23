@@ -1,6 +1,3 @@
-/// <reference path="camara.ts />
-/// <reference path="evento.ts />
-/// <reference path="control.ts />
 
 class Base {
   click_de_mouse;

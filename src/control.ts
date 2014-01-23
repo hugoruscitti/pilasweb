@@ -1,4 +1,3 @@
-/// <reference path="simbolos.ts />
 
 /**
  * @class Control

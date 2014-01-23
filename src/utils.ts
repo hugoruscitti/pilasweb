@@ -1,4 +1,4 @@
-declare var Math; 
+declare var Math:Math;
 
 class Utils {
   
@@ -23,7 +23,8 @@ class Utils {
   }
 
   obtener_uuid() {
-    return Math.uuid();
+    var uuid = Math['uuid'];
+    return uuid();
   }
 
   distancia(a, b) {
