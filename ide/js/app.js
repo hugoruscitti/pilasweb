@@ -26,8 +26,30 @@ app.directive('popover', function() {
       "private_scope": false,
       "omit_baselib": true
     };
-	
 
+		/**
+		 * Repara el codigo obtenido en python para que no use submodulos
+		 * en las superclases.
+		 *
+		 * Esta función reemplaza código cómo:
+		 *
+		 *       class MiActor(pilas.actores.Actor):
+		 *
+		 *  por:
+		 *
+		 *       __super = pilas.actores.Actor
+		 *       class MiActor(__super):
+		 *
+		 * El resultado al final es el mismo, pero evita el error de
+		 * sintaxis que emite rapydscript.
+		 */
+		function reescribir_superclases(codigo_python) {
+			var expresion = /class\s+(\w+)\((.+)\):/g
+			
+			return codigo_python.replace(expresion, "__super=$2\nclass $1(__super):")
+		}
+
+		
 		function ejecutar_codigo_python(codigo_python, success_callback, error_callback) {
 			
 			output = OutputStream(output_opts)
@@ -223,37 +245,7 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		var fondo = new pilas.fondos.Plano();
 		window.bomba = new pilas.actores.Bomba();
 	}
-	pilas.ejecutar();
-		
-	
-		/**
-		 * Repara el codigo obtenido en python para que no use submodulos
-		 * en las superclases.
-		 *
-		 * Esta función reemplaza código cómo:
-		 *
-		 *       class MiActor(pilas.actores.Actor):
-		 *
-		 *  por:
-		 *
-		 *       __super = pilas.actores.Actor
-		 *       class MiActor(__super):
-		 *
-		 * El resultado al final es el mismo, pero evita el error de
-		 * sintaxis que emite rapydscript.
-		 */
-		function reescribir_superclases(codigo_python) {
-			var expresion = /class\s+(\w+)\((.+)\):/g
-			
-			return codigo_python.replace(expresion, "__super=$2\nclass $1(__super):")
-		}
-
-		
-		
-		
-		
-		
-		
+	pilas.ejecutar();	
 	
 	$scope.ejecutar = function() {
 		pilas.reiniciar();
