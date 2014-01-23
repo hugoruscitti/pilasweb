@@ -156,6 +156,11 @@ function run(cmd) {
           entrada.texto = cmd;
           consola.dispatchEvent(entrada);
 			
+					if (cmd == 'clear' || cmd == 'limpiar') {
+						js_console.clear();
+						return;
+					}
+			
           /* EJECUTA LO QUE EL USUARIO ESCRIBE */
 					if (ejecutar_codigo_python)
 						rawoutput = ejecutar_codigo_python_sync(cmd);
