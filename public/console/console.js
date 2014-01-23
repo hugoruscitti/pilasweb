@@ -1,6 +1,12 @@
+/*
+ *
+ * IMPORTANTE: basado en el código de 'JS Bin Console' del
+ * sitio http://jsconsole.com
+ *
+ */
+
 //= require "../vendor/prettyprint"
 //= require "../vendor/stacktrace"
-SHOW_ABOUT_ON_INIT = false
 		
 function traducir_mensaje_excepcion(mensaje) {
     var traducciones = [
@@ -146,10 +152,10 @@ function run(cmd) {
           //rawoutput = sandboxframe.contentWindow.eval(cmd);
           
           /* Emite un evento alertando lo que el usuario quiere ejecutar */
-  		  var entrada = new Event('entrada');
+					var entrada = new Event('entrada');
           entrada.texto = cmd;
           consola.dispatchEvent(entrada);
-          
+			
           /* EJECUTA LO QUE EL USUARIO ESCRIBE */
 					if (ejecutar_codigo_python)
 						rawoutput = ejecutar_codigo_python_sync(cmd);
@@ -178,12 +184,6 @@ function post(cmd, blind, response /* passed in when echoing from remote console
     history.push(cmd);
     setHistory(history);
   } 
-
-  if ((cmd.match(commandPresent) || []).length > 1) {
-    // split the command up in to blocks and internal commands and run sequentially
-  } else {
-
-  }
 
   echo(cmd);
 
@@ -264,10 +264,7 @@ function echo(cmd) {
   li.innerHTML = '<span class="gutter"></span><div>' + cleanse(cmd) + '</div>';
 
   logAfter = null;
-
-  // logAfter = $(output).find('li.echo:first')[0] || null;
-
-  // logAfter = output.querySelector('li.echo') || null;
+	
   appendLog(li, true);
 }
 
@@ -277,8 +274,6 @@ window.info = function(cmd) {
   li.className = 'info';
   li.innerHTML = '<span class="gutter"></span><div>' + cleanse(cmd) + '</div>';
 
-  // logAfter = output.querySelector('li.echo') || null;
-  // appendLog(li, true);
   appendLog(li);
 };
 
@@ -312,78 +307,7 @@ function internalCommand(cmd) {
   }
 }
 
-function noop() {}
-
-function showhelp() {
-  var commands = [
-    ':reset - destroy state and start afresh',
-    ':history - list current session history',
-    ':load &lt;url&gt; - to inject new DOM',
-    ':load &lt;script_url&gt; - to inject external library',
-    '      load also supports following shortcuts: <br />      jquery, underscore, prototype, mootools, dojo, rightjs, coffeescript, yui.<br />      eg. :load jquery',
-    ':clear - to clear contents of the console',
-    ':about jsconsole'
-  ];
-  return commands.join('\n');
-}
-
-function load(url) {
-  if (navigator.onLine) {
-    if (arguments.length > 1 || libraries[url] || url.indexOf('.js') !== -1) {
-      return loadScript.apply(this, arguments);
-    } else {
-      return loadDOM(url);
-    }
-  } else {
-    return "You need to be online to use :load";
-  }
-}
-
-function loadScript() {
-  var doc = sandboxframe.contentDocument || sandboxframe.contentWindow.document;
-  for (var i = 0; i < arguments.length; i++) {
-    (function (url) {
-      var script = document.createElement('script');
-      script.src = url;
-      script.onload = function () {
-        window.top.info('Loaded ' + url, 'http://' + window.location.hostname);
-        if (url == libraries.coffeescript) window.top.info('Now you can type CoffeeScript instead of plain old JS!');
-      };
-      script.onerror = function () {
-        log('Failed to load ' + url, 'error');
-      };
-      doc.body.appendChild(script);
-    })(libraries[arguments[i]] || arguments[i]);
-  }
-  return "Loading script...";
-}
-
-function loadDOM(url) {
-  var doc = sandboxframe.contentWindow.document,
-      script = document.createElement('script'),
-      cb = 'loadDOM' + +new Date;
-      
-  script.src = 'http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22' + encodeURIComponent(url) + '%22&format=xml&callback=' + cb;
-  
-  window[cb] = function (yql) {
-    if (yql.results.length) {
-      var html = yql.results[0].replace(/type="text\/javascript"/ig,'type="x"').replace(/<body.*?>/, '').replace(/<\/body>/, '');
-
-      doc.body.innerHTML = html;
-      window.top.info('DOM load complete');
-    } else {
-      log('Failed to load DOM', 'error');
-    }
-    try {
-      window[cb] = null;
-      delete window[cb];
-    } catch (e) {}
-
-  };
- 
-  document.body.appendChild(script);
-  
-  return "Loading url into DOM...";
+function noop() {
 }
 
 function trim(s) {
@@ -422,10 +346,6 @@ window._console = {
   }
 };
 
-function about() {
-  return 'Based on the JS Bin Console from <a target="_new" href="http://jsconsole.com">jsconsole.com</a>';
-}
-
 function setHistory(history) {
   if (typeof JSON == 'undefined') return;
   
@@ -461,30 +381,10 @@ var exec = document.getElementById('exec'),
     history = getHistory(),
     codeCompleteTimer = null,
     fakeConsole = 'window.top._console',
-    libraries = {
-        jquery: 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js',
-        prototype: 'http://ajax.googleapis.com/ajax/libs/prototype/1/prototype.js',
-        dojo: 'http://ajax.googleapis.com/ajax/libs/dojo/1/dojo/dojo.xd.js',
-        mootools: 'http://ajax.googleapis.com/ajax/libs/mootools/1/mootools-yui-compressed.js',
-        underscore: 'http://documentcloud.github.com/underscore/underscore-min.js',
-        rightjs: 'http://rightjs.org/hotlink/right.js',
-        coffeescript: 'http://jashkenas.github.com/coffee-script/extras/coffee-script.js',
-        yui: 'http://yui.yahooapis.com/3.8.1/build/yui/yui-min.js'
-    },
     body = document.getElementsByTagName('body')[0],
     logAfter = null,
     lastCmd = null,
-    wait = false,
-    commandPresent = /:((?:help|about|load|clear|reset|wait|history)(?:.*))\n/gi,
     commands = {
-      history: showHistory,
-      help: showhelp, 
-      about: about,
-      load: load,
-      wait: function () {
-        wait = true;
-        return '';
-      },
       clear: function (on_clear) {
         setTimeout(function () { output.innerHTML = ''; if(on_clear) {on_clear();} }, 10);
         return 'clearing...';
@@ -543,22 +443,8 @@ function setCursorTo(str) {
     exec.setAttribute('rows', rows !== null ? rows.length + 1 : 1);
   }
   cursor.focus();
-  // window.scrollTo(0,0);
 }
 
-// output.ontouchstart = output.onclick = function (event) {
-//   event = event || window.event;
-//   if (event.target.nodeName == 'A' && event.target.className == 'permalink') {
-//     var command = decodeURIComponent(event.target.search.substr(1));
-//     setCursorTo(command);
-    
-//     if (liveHistory) {
-//       window.history.pushState(command, command, event.target.href);
-//     }
-    
-//     return false;
-//   }
-// };
 
 exec.ontouchstart = function () {
   window.scrollTo(0,0);
@@ -909,15 +795,8 @@ var jsconsole = {
     sandboxframe = newSandbox;
 
     sandbox = sandboxframe.contentDocument || sandboxframe.contentWindow.document;
-    // sandbox.open();
-    // stupid jumping through hoops if Firebug is open, since overwriting console throws error
-    // sandbox.write('<script>(function () { var fakeConsole = ' + fakeConsole + '; if (window.console != undefined) { for (var k in fakeConsole) { console[k] = fakeConsole[k]; } } else { console = fakeConsole; } })();</script>');
-    // sandbox.write('<script>window.print=function(){};window.alert=function(){};window.prompt=function(){};window.confirm=function(){};</script>');
-    // sandbox.open();
-    // sandbox.write(getPreparedCode(true));
+		
     sandboxframe.contentWindow.eval('(function () { var fakeConsole = ' + fakeConsole + '; if (window.console != undefined) { for (var k in fakeConsole) { console[k] = fakeConsole[k]; } } else { console = fakeConsole; } })();');
-
-    // sandbox.close();
 
     this.sandboxframe = sandboxframe;
 
@@ -952,23 +831,6 @@ var jsconsole = {
   },
   init: function (outputElement, nohelp) {
     output = outputElement;
-
-    // closure scope
-    //sandboxframe = document.getElementById('un_iframe');
-
-    // var oldsandbox = document.getElementById('jsconsole-sandbox');
-    // if (oldsandbox) {
-    //   body.removeChild(oldsandbox);
-    // }
-
-    // body.appendChild(sandboxframe);
-    // sandboxframe.setAttribute('id', 'jsconsole-sandbox');
-    //if (sandboxframe) this.setSandbox(sandboxframe);
-
-    if (SHOW_ABOUT_ON_INIT) {
-      if (nohelp === undefined) 
-        post(':about', true);
-    }
   },
   rawMessage: function (data) {
     if (data.type && data.type == 'error') {
@@ -999,150 +861,6 @@ iniciar_jsconsole = function() {
 
 	jsconsole.init(document.getElementById('output'));
 	jsconsole.queue = [];
-	/*
 	
-	jsconsole.remote = {
-  log: function () {
-    // window.console.log('remote call');
-    var cmd = 'console.log';
-    try {
-      throw new Error();
-    } catch (e) {
-      // var trace = printStackTrace({ error: e }),
-      //     code = jsbin.panels.panels.javascript.getCode().split('\n'),
-      //     allcode = getPreparedCode().split('\n'),
-      //     parts = [],
-      //     line,
-      //     n;
-
-      // for (var i = 0; i < trace.length; i++) {
-      //   if (trace[i].indexOf(window.location.toString()) !== -1) {
-      //     parts = trace[i].split(':');
-      //     n = parts.pop();
-      //     if (isNaN(parseInt(n, 10))) {
-      //       n = parts.pop();
-      //     }
-      //     line = n - 2;
-      //     if (code[line] && code[line].indexOf('console.') !== -1) {
-      //       cmd = $.trim(code[line]);
-      //       console.log(cmd);
-      //       break;
-      //     }
-      //   }
-      // }
-    }
-
-    var argsObj = jsconsole.stringify(arguments.length == 1 ? arguments[0] : [].slice.call(arguments, 0));
-    var response = [];
-    [].forEach.call(arguments, function (args) {
-      response.push(jsconsole.stringify(args, true));
-    });
-
-    var msg = { response: response, cmd: cmd, type: msgType };
-
-    if (jsconsole.ready) {
-      jsconsole.rawMessage(msg);
-    } else {
-      jsconsole.queue.push(msg);
-    }
-
-    msgType = '';
-  },
-  info: function () {
-    msgType = 'info';
-    remote.log.apply(this, arguments);
-  },
-  echo: function () {
-    var args = [].slice.call(arguments, 0),
-        plain = args.pop(),
-        cmd = args.pop(),
-        response = args;
-
-    var argsObj = jsconsole.stringify(response, plain),
-        msg = { response: argsObj, cmd: cmd };
-    if (jsconsole.ready) {
-      jsconsole.rawMessage(msg);
-    } else {
-      jsconsole.queue.push(msg);
-    }
-  },
-  error: function (error, cmd) {
-    var msg = { response: error.message, cmd: cmd, type: 'error' };
-    if (jsconsole.ready) {
-      jsconsole.rawMessage(msg);
-    } else {
-      jsconsole.queue.push(msg);
-    }
-  },
-  flush: function () {
-    for (var i = 0; i < jsconsole.queue.length; i++) {
-      jsconsole.rawMessage(jsconsole.queue[i]);
-    }
-  }
-};
-*/
-
-	// just for extra support
-	//jsconsole.remote.debug = jsconsole.remote.dir = jsconsole.remote.log;
-	//jsconsole.remote.warn = jsconsole.remote.info;
-
-// window.top._console = jsconsole.remote;
-
-	/*
-function upgradeConsolePanel(console) {
-  // console.init = function () {
-    console.$el.click(function () {
-      jsconsole.focus();
-    });
-    console.reset = function () {
-      jsconsole.reset();
-    };
-    console.settings.render = function (withAlerts) {
-      var html = editors.html.render().trim();
-      if (html === "") {
-        var code = editors.javascript.render().trim();
-        jsconsole.run(code);
-      } else {
-        renderLivePreview(withAlerts || false);
-      }
-    };
-    console.settings.show = function () {
-      jsconsole.clear();
-      // renderLivePreview(true);
-      // setTimeout because the renderLivePreview creates the iframe after a timeout
-      setTimeout(function () {
-        // jsconsole.setSandbox($live.find('iframe')[0]);
-        if (editors.console.ready) jsconsole.focus();
-      }, 0);
-    };
-    console.settings.hide = function () {
-      // Removal code is commented out so that the
-      // output iframe is never removed
-      if (!editors.live.visible) {
-        // $live.find('iframe').remove();
-      }
-    };
-    // jsconsole.ready = true;
-    jsconsole.remote.flush();
-
-    $document.one('jsbinReady', function () {
-      var hidebutton = function () {
-        $('#runconsole')[this.visible ? 'hide' : 'show']();
-      };
-
-      jsbin.panels.panels.live.on('show', hidebutton).on('hide', hidebutton);
-
-      if (jsbin.panels.panels.live.visible) {
-        $('#runconsole').hide();
-      }
-
-    });
-    // editors.console.fakeConsole = window._console
-  // };
-
-   //console.init();
-}
-	
-	*/
 	return jsconsole;
 }
