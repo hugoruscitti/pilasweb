@@ -162,7 +162,7 @@ function run(cmd) {
 					}
 			
           /* EJECUTA LO QUE EL USUARIO ESCRIBE */
-					if (ejecutar_codigo_python)
+					if (window.ejecutar_codigo_python !== undefined)
 						rawoutput = ejecutar_codigo_python_sync(cmd);
 					else
           	rawoutput = window.eval(cmd);
@@ -171,8 +171,6 @@ function run(cmd) {
   		  	var salida = new Event('salida');
           salida.texto = rawoutput;
           consola.dispatchEvent(salida);
-          
-          //rawoutput = window.exec(cmd);
 			
     } catch (e) {
       rawoutput = traducir_mensaje_excepcion(e.message);
