@@ -75,6 +75,17 @@ app.config(['$routeProvider', function($routeProvider) { $routeProvider.
 					otherwise({redirectTo:'/index'});
 }]);
 
+
+/* Botón en la barra superior para recargar toda la aplicación. */
+window.actualizar = function() {
+	document.location.reload();
+}
+	
+	/* Botón en la barra superior para mostrar las herramientas de desarrollo. */
+window.mostrar_herramientas_de_desarrollo = function() {
+	gui.Window.get().showDevTools();
+}
+
 app.controller('MainCtrl', function($scope, $location) {
   
 	/* Helper para mostrar activa la opción seleccionada del menú izquierdo. */
@@ -83,18 +94,7 @@ app.controller('MainCtrl', function($scope, $location) {
       return "active";
     else
       return "";
-	}
-	
-		
-	/* Botón en la barra superior para recargar toda la aplicación. */
-	$scope.actualizar = function() {
-		document.location.reload();
-	}
-	
-	/* Botón en la barra superior para mostrar las herramientas de desarrollo. */
-	$scope.mostrar_herramientas_de_desarrollo = function() {
-		gui.Window.get().showDevTools();
-	}
+	}	
 	
 });
 
