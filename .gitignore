@@ -24,3 +24,4 @@ npm-debug.log
 ide/public
 
 dist/
+ide/docs/docs/build/html

@@ -58,6 +58,10 @@ module.exports = function(grunt) {
         src: 'public/**',
         dest: 'ide/',
       },
+			documentacion_html: {
+				src: 'docs/build/html/**',
+				dest: 'ide/docs/',
+			},
     },
 		watch: {
 			scripts: {
