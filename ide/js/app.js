@@ -236,6 +236,64 @@ app.controller('InterpreteCtrl', function($scope, $http) {
     //_editor.on("change", function(){ ... });
   };
 	
+	splitterVertical = {
+			lastX: 0,
+			leftEl: null,
+			rightEl: null,
+			containerEl: null,
+	 
+			init: function(handler, leftEl, rightEl, containerEl) {
+					var self = this;
+	 
+					this.leftEl = leftEl;
+					this.rightEl = rightEl;
+					this.containerEl = containerEl;
+	 
+					handler.addEventListener('mousedown', function(evt) {
+							evt.preventDefault();    /* prevent text selection */
+	 
+							self.lastX = evt.clientX;
+	 
+							window.addEventListener('mousemove', self.drag);
+							window.addEventListener('mouseup', self.endDrag);
+					});
+			},
+	 
+			drag: function(evt) {
+					var splitter = splitterVertical;
+					var wL, wR, wDiff = evt.clientX - splitter.lastX;
+	 
+					wL = document.defaultView.getComputedStyle(splitter.leftEl, '').getPropertyValue('-webkit-flex-grow');
+					wR = document.defaultView.getComputedStyle(splitter.rightEl, '').getPropertyValue('-webkit-flex-grow');
+				 
+					var ancho = splitter.containerEl.clientWidth + parseInt(document.defaultView.getComputedStyle(splitter.containerEl, '').getPropertyValue('left'), 10);
+			
+					splitter.rightEl.style.webkitFlexGrow = (ancho - evt.clientX) / (splitter.containerEl.clientWidth/2);
+					splitter.leftEl.style.webkitFlexGrow = 2 - splitter.rightEl.style.webkitFlexGrow;
+					
+					splitter.lastX = evt.clientX;
+			},
+	 
+			endDrag: function() {
+					var splitter = splitterVertical;
+					window.removeEventListener('mousemove', splitter.drag);
+					window.removeEventListener('mouseup', splitter.endDrag);
+			}
+	};
+	 
+	splitterVertical.init(
+			document.getElementById('splitter-vertical'),
+			document.getElementById('editor'),
+			document.getElementById('panel-lateral-interprete'),
+			document.getElementById('content') 
+	);
+		
+		
+		
+		
+		
+		
+		
 		
 		
 	pilas = new Pilas();

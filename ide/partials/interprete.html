@@ -1,4 +1,4 @@
-	<div class='contenedor'>
+	<div class='contenedor' id='contenedor-interprete'>
 
 		<!-- panel izquierdo plegable -->
 		<div class='editor' id='editor'>
@@ -11,10 +11,13 @@
 			<div class='expansor'>
 				<textarea ui-codemirror="{onLoad: codemirrorLoaded}" ui-codemirror="editorOptions" ng-model='codigo'></textarea>
 			</div>
+			
 		</div>
 		
+			<div id='splitter-vertical' class='spliter-vertical'>&nbsp; &nbsp;</div>
+		
 		<!-- panel derecho con una separación horizontal -->
-		<div class='interprete'>
+		<div id='panel-lateral-interprete' class='interprete'>
 			
 			
 			<div class='canvas'>

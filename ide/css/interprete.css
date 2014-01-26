@@ -160,6 +160,7 @@
 			outline: 1px solid blue;
 			
 			padding: 10px;
+			padding-left: 0;
 			/* También es contenedor */
 			display: -webkit-flex;
   		display: flex;
@@ -197,4 +198,14 @@
 
 .expandir {
 	height: 100% !important;
+}
+
+
+
+.spliter-vertical {
+	cursor: col-resize;
+}
+
+.spliter-vertical:hover {
+	background-color: white;
 }
