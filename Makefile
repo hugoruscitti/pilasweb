@@ -25,6 +25,7 @@ test_linux:
 build:
 	grunt clear
 	grunt typescript
+	grunt generar_docs
 	grunt concat
 	grunt copy
 	@echo "Borrando archivos de releases anteriores."
@@ -47,7 +48,7 @@ upload: build
 	@echo "Empaquetando para mac ..."
 	zip -r dist/pilas-engine_$(VERSION)_mac.zip webkitbuilds/releases/pilas-engine/mac
 	@echo ""
-	scp dist/* digitalocean:~/dev-losersjuegos.com.ar/pilas-engine
+	scp dist/* digitalocean:~/dev-losersjuegos.com.ar/descargas/pilas-engine
 	@echo " "
 	@echo " "
 	@echo "Pilas se podrá descargar desde estas URLs:"

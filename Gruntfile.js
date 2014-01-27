@@ -94,6 +94,10 @@ module.exports = function(grunt) {
     shell.exec('clear');
   });
 
+	grunt.registerTask('generar_docs', "create documentation files", function() {
+    shell.exec('cd docs; make');
+  });
+	
   grunt.registerTask('make_docs', "create documentation files", function() {
     shell.exec('jsduck public/pilasweb.js --title="pilas-engine web" --images=docs/images/ -o docs/html');
   });
