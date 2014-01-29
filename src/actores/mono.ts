@@ -7,6 +7,9 @@ class Mono extends Actor {
 	sound_smile;
 	sound_shout;
 	constructor(x, y) {
+		if (!(this instanceof Mono)) 
+			return new Mono(x, y);
+		
 		this.image_normal = 'monkey_normal.png';
 		this.image_smile = 'monkey_smile.png';
 		this.image_shout = 'monkey_shout.png';

@@ -12755,6 +12755,9 @@ var Maton = (function (_super) {
 var Mono = (function (_super) {
     __extends(Mono, _super);
     function Mono(x, y) {
+        if (!(this instanceof Mono))
+            return new Mono(x, y);
+
         this.image_normal = 'monkey_normal.png';
         this.image_smile = 'monkey_smile.png';
         this.image_shout = 'monkey_shout.png';
