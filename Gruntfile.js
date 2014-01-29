@@ -95,7 +95,8 @@ module.exports = function(grunt) {
   });
 
 	grunt.registerTask('generar_docs', "create documentation files", function() {
-    shell.exec('cd docs; make');
+    shell.exec('git submodule update --init');
+    shell.exec('cd docs; make actualizar_docs_pilasweb');
   });
 	
   grunt.registerTask('make_docs', "create documentation files", function() {

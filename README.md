@@ -46,6 +46,9 @@ comando podrías agregarlo al path de sistema así:
 
 Pilas incluye una versión experimental de aplicación desktop.
 
+![](imagenes/preview.png)
+
+
 Para instalarla hacen falta unas dependencias adicionales:
 
     npm install
