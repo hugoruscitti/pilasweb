@@ -204,3 +204,7 @@ div.tutorial {
 	margin-top: -25px !important;
 	text-align: center;
 }
+
+.btn-sm {
+    font-size: 13px !important;
+}
