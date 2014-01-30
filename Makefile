@@ -43,7 +43,7 @@ upload: build
 	zip -r dist/pilas-engine_$(VERSION)_linux32.zip webkitbuilds/releases/pilas-engine/linux32/pilas-engine
 	@echo ""
 	@echo "Empaquetando para linux (64 bits)..."
-	zip -r dist/pilas-engine_$(VERSION)_linux64.zip webkitbuilds/releases/pilas-engine/linux32/pilas-engine
+	zip -r dist/pilas-engine_$(VERSION)_linux64.zip webkitbuilds/releases/pilas-engine/linux64/pilas-engine
 	@echo ""
 	@echo "Empaquetando para mac ..."
 	zip -r dist/pilas-engine_$(VERSION)_mac.zip webkitbuilds/releases/pilas-engine/mac
