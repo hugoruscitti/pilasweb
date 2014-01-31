@@ -56,6 +56,30 @@
 							<textarea autofocus id="exec" spellcheck="false" autocapitalize="off" rows="1" autocorrect="off"></textarea>
 						</form>
 				</div>
+				<style>
+					.autocompletado {
+						position: absolute;
+						background-color: yellow;
+						z-index: 200;
+						bottom:10px;
+					}
+				
+				
+				</style>
+				
+				<div id='sugerencias' class='sugerencias'>
+					
+				  //ng-show='data.sugerencias'>
+					Hola!!!
+					{{data}}
+					
+					<input type="text" ng-model='data.textoIngresado'>
+					
+					<ul>
+						<li ng-repeat='s in data.sugerencias'>{{s}}</li>
+					</ul>
+				</div>
+				
 			</div>
 			
 		</div>

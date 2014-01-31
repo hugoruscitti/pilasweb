@@ -218,6 +218,42 @@ app.controller('InterpreteCtrl', function($scope, $http) {
   	mode: 'python',
   };	
 		
+		
+	$scope.data = {
+		textoIngresado: 'pi',
+		sugerencias: [],
+		todasLasSugerencias: ['pilas', 'mono', 'pilas.actores'],
+	};
+	
+	
+	$scope.$watch('data.textoIngresado', function() {
+		//console.log($scope.data.textoIngresado);
+		
+		//if ($scope.data.sugerencias.indexOf($scope.data.textoIngresado) === -1)
+	  // $scope.data.sugerencias.push($scope.data.textoIngresado);
+		$scope.data.sugerencias = [];
+		
+		if (! $scope.data.textoIngresado) return;
+		
+		for (var i=0; i<$scope.data.todasLasSugerencias.length; i++) {
+			var posibleSugerencia = $scope.data.todasLasSugerencias[i];
+			//var posicion = $('#input').textareaHelper('caretPos');
+			//var origen = $('textarea').position();
+			
+			//var sugerencias  = $('#sugerencias');
+			//sugerencias.css('position', 'absolute');
+			//sugerencias.css('left', origen.left + posicion.left + "px");
+			//sugerencias.css('top', origen.top + 20 + posicion.top + "px");
+			
+			
+			
+			if (RegExp($scope.data.textoIngresado).test(posibleSugerencia))
+				$scope.data.sugerencias.push(posibleSugerencia);
+		}
+		
+	});
+	
+		
 	var codemirrorEditor = undefined;
 		
 	$scope.codemirrorLoaded = function(_editor){
