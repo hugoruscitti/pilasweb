@@ -19,7 +19,6 @@
 		<!-- panel derecho con una separación horizontal -->
 		<div id='panel-lateral-interprete' class='interprete'>
 			
-			
 			<div class='canvas'>
 				<canvas id='canvasInterprete'></canvas>
 			</div>
@@ -57,24 +56,30 @@
 						</form>
 				</div>
 				<style>
-					.autocompletado {
-						position: absolute;
-						background-color: yellow;
+					.sugerencias {
+						position: fixed;
+						background-color: white;
 						z-index: 200;
-						bottom:10px;
+						border: 1px solid gray;
+						transition: left 0.25s ease ;
+						box-shadow: 0px 0px 7px rgba(150, 150, 150, 0.76);
+						border-radius: 0px;
 					}
+					
+						.sugerencias ul {
+							list-style: none;
+							padding: 0;
+							margin-bottom: 0;
+						}
+						
+						.sugerencias ul li {
+							padding: 5px;
+						}
 				
 				
 				</style>
 				
-				<div id='sugerencias' class='sugerencias'>
-					
-				  //ng-show='data.sugerencias'>
-					Hola!!!
-					{{data}}
-					
-					<input type="text" ng-model='data.textoIngresado'>
-					
+				<div id='sugerencias' class='sugerencias' ng-show='data.sugerencias'>
 					<ul>
 						<li ng-repeat='s in data.sugerencias'>{{s}}</li>
 					</ul>

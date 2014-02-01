@@ -218,13 +218,11 @@ app.controller('InterpreteCtrl', function($scope, $http) {
   	mode: 'python',
   };	
 		
-		
 	$scope.data = {
-		textoIngresado: 'pi',
+		textoIngresado: '',
 		sugerencias: [],
 		todasLasSugerencias: ['pilas', 'mono', 'pilas.actores'],
 	};
-	
 	
 	$scope.$watch('data.textoIngresado', function() {
 		//console.log($scope.data.textoIngresado);
@@ -466,6 +464,19 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		
 	// bootstrap de la consola interactiva.
 	window.js_console = iniciar_jsconsole();
+	
+	
+		$('#exec').on('keyup', function() {
+			var el_cursor = document.getElementById('cursor');
+			var el_sugerencias = document.getElementById('sugerencias');
+			
+			$scope.data.textoIngresado = $('#exec').text();
+			el_sugerencias.style.left = cursor.getClientRects()[0].right + 'px';
+			el_sugerencias.style.top = cursor.getClientRects()[0].bottom + 'px';
+			$scope.$apply();
+		});
+	
+	
 });
 
 app.controller('EquipoCtrl', function($scope, $http) {
