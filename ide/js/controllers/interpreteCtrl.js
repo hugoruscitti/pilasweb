@@ -1,5 +1,84 @@
 var app = angular.module('app');
 
+	  //RapydScript options
+    var rs_options = {
+    	"filename": "demo",
+      "toplevel": null,
+      "basedir": null,
+      "libdir": null
+    };
+    var output_opts = {
+    	"beautify": true,
+      "private_scope": false,
+      "omit_baselib": true
+    };
+
+		/**
+		 * Repara el codigo obtenido en python para que no use submodulos
+		 * en las superclases.
+		 *
+		 * Esta función reemplaza código cómo:
+		 *
+		 *       class MiActor(pilas.actores.Actor):
+		 *
+		 *  por:
+		 *
+		 *       __super = pilas.actores.Actor
+		 *       class MiActor(__super):
+		 *
+		 * El resultado al final es el mismo, pero evita el error de
+		 * sintaxis que emite rapydscript.
+		 */
+		function reescribir_superclases(codigo_python) {
+			var expresion = /class\s+(\w+)\((.+)\):/g
+			
+			return codigo_python.replace(expresion, "__super=$2\nclass $1(__super):")
+		}
+
+		
+		function ejecutar_codigo_python(codigo_python, success_callback, error_callback) {
+			
+			output = OutputStream(output_opts)
+			codigo_python += '\n';
+			
+			try {
+				codigo_python = reescribir_superclases(codigo_python);
+				TOPLEVEL = parse(codigo_python, rs_options);
+				TOPLEVEL.print(output);
+				
+				var codigo_js_generado = String(output) + '\n';
+				success_callback.call(this, codigo_js_generado);
+				
+			} catch(err) {
+					var mensaje_de_error = "ERROR: " + err.message + ". Line " + err.line + ", column " + err.col + ".";
+					error_callback.call(this, mensaje_de_error);
+		}
+		
+		
+	}
+
+
+  /* Ejecuta una porcion de código python pero de manera
+	 * sincrónica, muy utilizado para la consola interactiva, que muestra
+	 * el cursor luego de cada comando.
+	 *
+	 * Si el código enviado a este método falla, se emite una exception.
+	 */
+	function ejecutar_codigo_python_sync(codigo_python) {
+		output = OutputStream(output_opts)
+		codigo_python += '\n';
+		
+		try {
+			TOPLEVEL = parse(codigo_python, rs_options);
+			TOPLEVEL.print(output);
+				
+			var codigo_js_generado = String(output) + '\n';
+			return window.eval(codigo_js_generado);
+		} catch(err) {
+			throw new Error(err.message);
+		}
+	}
+
 app.controller('InterpreteCtrl', function($scope, $http) {
 	$scope.codigo = [
 		'# codigo para ejecutar.',
@@ -33,8 +112,41 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 	$scope.data = {
 		textoIngresado: '',
 		sugerencias: [],
-		todasLasSugerencias: ['pilas', 'mono', 'pilas.actores'],
+		indice_sugerido: 0,
+		todasLasSugerencias: ['pilas', 'mono', 'pilas.actores', 'pinpinela', 'pipita'],
 	};
+	
+	console.log(exec);
+	
+	document.body.onkeydown = function(event){
+		event = event || window.event;
+    var keycode = event.charCode || event.keyCode;
+		
+    if (keycode === 13) { // Tecla Enter
+			event.stopPropagation();
+			event.preventDefault();
+			$scope.$apply();
+			return false;
+		}
+		
+		if (keycode === 38 || keycode === 37) { // Tecla Arriba e Izquierda.
+			event.stopPropagation();
+			event.preventDefault();
+			$scope.data.indice_sugerido = Math.max($scope.data.indice_sugerido - 1, 0);
+			$scope.$apply();
+			return false;
+		}
+		
+		if (keycode === 40 || keycode == 39) { // Tecla Abajo y Derecha
+			event.stopPropagation();
+			event.preventDefault();
+			$scope.data.indice_sugerido = Math.min($scope.data.indice_sugerido + 1, $scope.data.sugerencias.length - 1);
+			$scope.$apply();
+			return false;
+		}
+		
+		
+	}
 	
 	$scope.$watch('data.textoIngresado', function() {
 		//console.log($scope.data.textoIngresado);
@@ -54,8 +166,6 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 			//sugerencias.css('position', 'absolute');
 			//sugerencias.css('left', origen.left + posicion.left + "px");
 			//sugerencias.css('top', origen.top + 20 + posicion.top + "px");
-			
-			
 			
 			if (RegExp($scope.data.textoIngresado).test(posibleSugerencia))
 				$scope.data.sugerencias.push(posibleSugerencia);

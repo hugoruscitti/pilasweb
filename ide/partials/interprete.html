@@ -75,13 +75,17 @@
 						.sugerencias ul li {
 							padding: 5px;
 						}
+					
+						.sugerencias ul li.sugerida {
+							background-color: rgb(168, 223, 236)
+						}
 				
 				
 				</style>
 				
 				<div id='sugerencias' class='sugerencias' ng-show='data.sugerencias'>
 					<ul>
-						<li ng-repeat='s in data.sugerencias'>{{s}}</li>
+						<li ng-repeat='s in data.sugerencias' ng-class="{sugerida: $index===data.indice_sugerido}">{{s}}</li>
 					</ul>
 				</div>
 				
