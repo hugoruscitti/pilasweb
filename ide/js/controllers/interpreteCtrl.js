@@ -116,60 +116,20 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		todasLasSugerencias: ['pilas', 'mono', 'pilas.actores', 'pinpinela', 'pipita'],
 	};
 	
-	console.log(exec);
-	
-	document.body.onkeydown = function(event){
-		event = event || window.event;
-    var keycode = event.charCode || event.keyCode;
-		
-    if (keycode === 13) { // Tecla Enter
-			event.stopPropagation();
-			event.preventDefault();
-			$scope.$apply();
-			return false;
-		}
-		
-		if (keycode === 38 || keycode === 37) { // Tecla Arriba e Izquierda.
-			event.stopPropagation();
-			event.preventDefault();
-			$scope.data.indice_sugerido = Math.max($scope.data.indice_sugerido - 1, 0);
-			$scope.$apply();
-			return false;
-		}
-		
-		if (keycode === 40 || keycode == 39) { // Tecla Abajo y Derecha
-			event.stopPropagation();
-			event.preventDefault();
-			$scope.data.indice_sugerido = Math.min($scope.data.indice_sugerido + 1, $scope.data.sugerencias.length - 1);
-			$scope.$apply();
-			return false;
-		}
-		
-		
-	}
 	
 	$scope.$watch('data.textoIngresado', function() {
-		//console.log($scope.data.textoIngresado);
-		
-		//if ($scope.data.sugerencias.indexOf($scope.data.textoIngresado) === -1)
-	  // $scope.data.sugerencias.push($scope.data.textoIngresado);
 		$scope.data.sugerencias = [];
 		
 		if (! $scope.data.textoIngresado) return;
 		
 		for (var i=0; i<$scope.data.todasLasSugerencias.length; i++) {
 			var posibleSugerencia = $scope.data.todasLasSugerencias[i];
-			//var posicion = $('#input').textareaHelper('caretPos');
-			//var origen = $('textarea').position();
 			
-			//var sugerencias  = $('#sugerencias');
-			//sugerencias.css('position', 'absolute');
-			//sugerencias.css('left', origen.left + posicion.left + "px");
-			//sugerencias.css('top', origen.top + 20 + posicion.top + "px");
-			
-			if (RegExp($scope.data.textoIngresado).test(posibleSugerencia))
+			if (RegExp("^" + $scope.data.textoIngresado).test(posibleSugerencia))
 				$scope.data.sugerencias.push(posibleSugerencia);
 		}
+		
+		$scope.data.indice_sugerido = 0;
 		
 	});
 	
@@ -244,14 +204,6 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 			document.getElementById('content') 
 	);
 		
-		
-		
-		
-		
-		
-		
-		
-		
 	pilas = new Pilas();
 	pilas.iniciar({canvas_id: 'canvasInterprete', ancho: 320, alto: 240, data_path: 'public/data'});
 	
@@ -264,8 +216,6 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 	$scope.ejecutar = function() {
 		pilas.reiniciar();
 		
-
-	
 		var codigo = codemirrorEditor.getDoc().getValue();
 		$scope.definir_modos();
 			
@@ -279,7 +229,6 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		);
 		
 	}
-		
 		
 	$scope.publicar = function() {
 		var codigo = codemirrorEditor.getDoc().getValue();
@@ -316,8 +265,8 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		
 	  }
 		
-		$scope.editor_visible = true;
-		$scope.interprete_visible = true;
+	$scope.editor_visible = true;
+	$scope.interprete_visible = true;
 	
 	$scope.alternar_editor = function() {
 		var editor = document.getElementById('editor');
@@ -388,15 +337,78 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 	window.js_console = iniciar_jsconsole();
 	
 	
-		$('#exec').on('keyup', function() {
-			var el_cursor = document.getElementById('cursor');
-			var el_sugerencias = document.getElementById('sugerencias');
-			
-			$scope.data.textoIngresado = $('#exec').text();
-			el_sugerencias.style.left = cursor.getClientRects()[0].right + 'px';
-			el_sugerencias.style.top = cursor.getClientRects()[0].bottom + 'px';
-			$scope.$apply();
-		});
 	
+	
+	function procesar_keydown_sobre_autocompletado(event) {
+		event = event || window.event;
+    var keycode = event.charCode || event.keyCode;
+		
+    if (keycode === 13) { // Tecla Enter
+			event.stopPropagation();
+			event.preventDefault();
+			
+			console.log("Agregar esto en el interprete:", $scope.data.sugerencias[$scope.data.indice_sugerido])
+			
+			$scope.$apply();
+			return false;
+		}
+		
+		if (keycode === 38 || keycode === 37) { // Tecla Arriba e Izquierda.
+			event.stopPropagation();
+			event.preventDefault();
+			$scope.data.indice_sugerido = Math.max($scope.data.indice_sugerido - 1, 0);
+			$scope.$apply();
+			return false;
+		}
+		
+		if (keycode === 40 || keycode == 39) { // Tecla Abajo y Derecha
+			event.stopPropagation();
+			event.preventDefault();
+			$scope.data.indice_sugerido = Math.min($scope.data.indice_sugerido + 1, $scope.data.sugerencias.length - 1);
+			$scope.$apply();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	
+	
+	
+	
+	// Intercepta la pulsación de teclas sobre el interprete
+	// para que se pueda navegar el menú de autocompletado.
+	//
+	// Si esta función retorna false, se absorve el evento y
+	// y la pulsación de teclas no llegará al intérprete. En cambio, si
+	// retorna true, el evento sigue su curso hacia el intérprete.
+	var el_exec = document.getElementById('exec');
+	var funcion_estandar_de_consolejs = el_exec.onkeydown;
+	
+	el_exec.onkeydown = function(event) {
+		// Si hay texto sugerido en el popup de autocompletado
+		// intenta capturar el teclado y absorver el evento.
+		if ($scope.data.sugerencias.length > 0) {
+			var continuar_evento = procesar_keydown_sobre_autocompletado(event);	
+			
+			if (!continuar_evento)
+				return false;
+		}
+			
+		funcion_estandar_de_consolejs.call(this, event);
+	}
+
+	
+	$('#exec').on('keyup', function() {
+		var el_cursor = document.getElementById('cursor');
+		var el_sugerencias = document.getElementById('sugerencias');
+		
+		$scope.data.textoIngresado = $('#exec').text();
+		el_sugerencias.style.left = cursor.getClientRects()[0].right + 'px';
+		el_sugerencias.style.top = cursor.getClientRects()[0].bottom + 'px';
+		
+		$scope.$apply();
+	});
+
 	
 });
