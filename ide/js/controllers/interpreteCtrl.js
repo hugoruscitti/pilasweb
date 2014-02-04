@@ -116,24 +116,6 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		todasLasSugerencias: ['pilas', 'mono', 'pilas.actores', 'pinpinela', 'pipita'],
 	};
 	
-	
-	$scope.$watch('data.textoIngresado', function() {
-		$scope.data.sugerencias = [];
-		
-		if (! $scope.data.textoIngresado) return;
-		
-		for (var i=0; i<$scope.data.todasLasSugerencias.length; i++) {
-			var posibleSugerencia = $scope.data.todasLasSugerencias[i];
-			
-			if (RegExp("^" + $scope.data.textoIngresado).test(posibleSugerencia))
-				$scope.data.sugerencias.push(posibleSugerencia);
-		}
-		
-		$scope.data.indice_sugerido = 0;
-		
-	});
-	
-		
 	var codemirrorEditor = undefined;
 		
 	$scope.codemirrorLoaded = function(_editor){
@@ -211,6 +193,7 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		var fondo = new pilas.fondos.Plano();
 		window.bomba = new pilas.actores.Bomba();
 	}
+	
 	pilas.ejecutar();	
 	
 	$scope.ejecutar = function() {
@@ -409,6 +392,51 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		
 		$scope.$apply();
 	});
+	
+	
+	function obtener_sugerencias_para(un_texto) {
+		var sugerencias = [];
+		
+		// Tiene puntos
+		if (un_texto.indexOf('.') > 0) {
+			var palabras = un_texto.split('.');
+			var base = palabras[0];
+			var palabra = palabras[1];
+			var posibles_sugerencias = [];
+			
+			eval('for (item in ' + base + ') {posibles_sugerencias.push(item)}');
+			
+			if (posibles_sugerencias) {
+				for (var i=0; i<posibles_sugerencias.length; i++) {
+					if (RegExp("^" + palabra).test(posibles_sugerencias[i]))
+						sugerencias.push(posibles_sugerencias[i]);
+				}
+			}
+			
+			return sugerencias;
+		}
+		
+		
+		// Es una palabra simple
+		
+		for (var i=0; i<$scope.data.todasLasSugerencias.length; i++) {
+			var posibleSugerencia = $scope.data.todasLasSugerencias[i];
+			
+			if (RegExp("^" + un_texto).test(posibleSugerencia))
+				sugerencias.push(posibleSugerencia);
+		}
+		
+		return sugerencias;
+	}
 
+	$scope.$watch('data.textoIngresado', function() {
+		$scope.data.sugerencias = [];
+		
+		if (! $scope.data.textoIngresado) return;
+		
+		$scope.data.sugerencias = obtener_sugerencias_para($scope.data.textoIngresado);
+		$scope.data.indice_sugerido = 0;		
+	});
+	
 	
 });

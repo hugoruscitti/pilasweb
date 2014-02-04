@@ -55,33 +55,6 @@
 							<textarea autofocus id="exec" spellcheck="false" autocapitalize="off" rows="1" autocorrect="off"></textarea>
 						</form>
 				</div>
-				<style>
-					.sugerencias {
-						position: fixed;
-						background-color: white;
-						z-index: 200;
-						border: 1px solid gray;
-						transition: left 0.25s ease ;
-						box-shadow: 0px 0px 7px rgba(150, 150, 150, 0.76);
-						border-radius: 0px;
-					}
-					
-						.sugerencias ul {
-							list-style: none;
-							padding: 0;
-							margin-bottom: 0;
-						}
-						
-						.sugerencias ul li {
-							padding: 5px;
-						}
-					
-						.sugerencias ul li.sugerida {
-							background-color: rgb(168, 223, 236)
-						}
-				
-				
-				</style>
 				
 				<div id='sugerencias' class='sugerencias' ng-show='data.sugerencias'>
 					<ul>
