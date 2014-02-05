@@ -320,8 +320,6 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 	window.js_console = iniciar_jsconsole();
 	
 	
-	
-	
 	function procesar_keydown_sobre_autocompletado(event) {
 		event = event || window.event;
     var keycode = event.charCode || event.keyCode;
@@ -330,13 +328,21 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 			event.stopPropagation();
 			event.preventDefault();
 			
-			console.log("Agregar esto en el interprete:", $scope.data.sugerencias[$scope.data.indice_sugerido])
+			// Sustituye el texto del intérprete por el texto sugerido.
+			var texto_sugerido = $scope.data.sugerencias[$scope.data.indice_sugerido];
+			var ultima_palabra = $scope.data.textoIngresado.split(' ').pop();
+			var ultima_parte = ultima_palabra.split('.').pop();
+			
+			// reemplaza solo la parte no ingresada por el usuario.
+			texto_sugerido = texto_sugerido.replace(ultima_parte, '');
+			document.execCommand('insertHTML', false, texto_sugerido);
 			
 			$scope.$apply();
 			return false;
 		}
 		
-		if (keycode === 38 || keycode === 37) { // Tecla Arriba e Izquierda.
+		// Tecla Arriba
+		if (keycode === 38) {
 			event.stopPropagation();
 			event.preventDefault();
 			$scope.data.indice_sugerido = Math.max($scope.data.indice_sugerido - 1, 0);
@@ -344,7 +350,8 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 			return false;
 		}
 		
-		if (keycode === 40 || keycode == 39) { // Tecla Abajo y Derecha
+		// Tecla Abajo
+		if (keycode === 40) { 
 			event.stopPropagation();
 			event.preventDefault();
 			$scope.data.indice_sugerido = Math.min($scope.data.indice_sugerido + 1, $scope.data.sugerencias.length - 1);
@@ -354,9 +361,6 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		
 		return true;
 	}
-	
-	
-	
 	
 	
 	// Intercepta la pulsación de teclas sobre el interprete
@@ -400,15 +404,17 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		// Tiene puntos
 		if (un_texto.indexOf('.') > 0) {
 			var palabras = un_texto.split('.');
-			var base = palabras[0];
-			var palabra = palabras[1];
+			var ultima_palabra = palabras.pop();
+			var base = palabras.join('.');
 			var posibles_sugerencias = [];
+			
+			console.log({base: base, ultima_palabra: ultima_palabra});
 			
 			eval('for (item in ' + base + ') {posibles_sugerencias.push(item)}');
 			
 			if (posibles_sugerencias) {
 				for (var i=0; i<posibles_sugerencias.length; i++) {
-					if (RegExp("^" + palabra).test(posibles_sugerencias[i]))
+					if (RegExp("^" + ultima_palabra).test(posibles_sugerencias[i]))
 						sugerencias.push(posibles_sugerencias[i]);
 				}
 			}
@@ -431,10 +437,11 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 
 	$scope.$watch('data.textoIngresado', function() {
 		$scope.data.sugerencias = [];
+		var ultima_palabra = $scope.data.textoIngresado.split(' ').pop();
 		
-		if (! $scope.data.textoIngresado) return;
+		if (! ultima_palabra) return;
 		
-		$scope.data.sugerencias = obtener_sugerencias_para($scope.data.textoIngresado);
+		$scope.data.sugerencias = obtener_sugerencias_para(ultima_palabra);
 		$scope.data.indice_sugerido = 0;		
 	});
 	
