@@ -58,16 +58,12 @@ class DepuradorDeshabilitado {
 class ModoRadiosDeColision {
   shape;
   container;
-  text_modo;
 
   constructor() {
     this.container = new createjs.Container();
 
     this.shape = new createjs.Shape();
     this.container.addChild(this.shape);
-
-    this.text_modo = new createjs.Text("F9 ModoRadiosDeColision habilitado", "12px Arial", "white");
-    this.container.addChild(this.text_modo);
 
     pilas.escena_actual().stage.addChild(this.container)
   }
@@ -93,17 +89,12 @@ class ModoRadiosDeColision {
 class ModoArea {
   shape;
   container;
-  text_modo;
 
   constructor() {
     this.container = new createjs.Container();
 
     this.shape = new createjs.Shape();
     this.container.addChild(this.shape);
-
-    this.text_modo = new createjs.Text("F10 ModoArea habilitado", "12px Arial", "white");
-    this.text_modo.y = 15; // TODO: Buscar la forma de posicion este texto solo, uno arriba de otro.
-    this.container.addChild(this.text_modo);
 
     pilas.escena_actual().stage.addChild(this.container);
   }
@@ -129,17 +120,12 @@ class ModoArea {
 class ModoPuntosDeControl {
   shape;
   container;
-  text_modo;
 
   constructor() {
     this.container = new createjs.Container();
 
     this.shape = new createjs.Shape();
     this.container.addChild(this.shape);
-
-    this.text_modo = new createjs.Text("F8 ModoPuntosDeControl habilitado", "12px Arial", "white");
-    this.text_modo.y = 45; // TODO: Buscar la forma de posicion este texto solo, uno arriba de otro.
-    this.container.addChild(this.text_modo);
 
     pilas.escena_actual().stage.addChild(this.container);
   }
@@ -169,7 +155,6 @@ class ModoPuntosDeControl {
 class ModoPosicion {
   shape;
   container;
-  text_modo;
   text_coordenada;
   eje;
 
@@ -178,10 +163,6 @@ class ModoPosicion {
 
     this.shape = new createjs.Shape();
     this.container.addChild(this.shape);
-
-    this.text_modo = new createjs.Text("12 ModoPosicion habilitado", "12px Arial", "white");
-    this.text_modo.y = 45; // TODO: Buscar la forma de posicion este texto solo, uno arriba de otro.
-    this.container.addChild(this.text_modo);
 
     this.text_coordenada = new createjs.Text("Posición del mouse: x=12 y=33", "12px Arial", "white");
     this.text_coordenada.y = 920/2; //TODO: Tamaño decanvas 640*480 
@@ -247,17 +228,12 @@ class ModoPosicion {
 class ModoFisica {
   shape;
   container;
-  text_modo;
 
   constructor() {
     this.container = new createjs.Container();
 
     this.shape = new createjs.Shape();
     this.container.addChild(this.shape);
-
-    this.text_modo = new createjs.Text("F11 ModoFisica habilitado", "12px Arial", "white");
-    this.text_modo.y = 30; // TODO: Buscar la forma de posicion este texto solo, uno arriba de otro.
-    this.container.addChild(this.text_modo);
 
     pilas.escena_actual().stage.addChild(this.container);
   }

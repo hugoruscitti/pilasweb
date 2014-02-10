@@ -11656,7 +11656,7 @@ var Actores = (function () {
         this.Maton = Maton;
         this.Globo = Globo;
         this.Texto = Texto;
-        this.Bloque = Bloque; // TODO: eliminar, es solo para implementar tutorial.
+        this.Bloque = Bloque;
         this.Manzana = Manzana;
         this.Cofre = Cofre;
         this.Llave = Llave;
@@ -11675,7 +11675,6 @@ var Actores = (function () {
 })();
 var Estudiante = (function () {
     function Estudiante() {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Estudiante))
             return new Estudiante();
 
@@ -11805,7 +11804,6 @@ var Actor = (function (_super) {
     __extends(Actor, _super);
     function Actor(imagen, x, y, atributos) {
         if (typeof atributos === "undefined") { atributos = {}; }
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Actor))
             return new Actor(imagen, x, y, atributos);
 
@@ -11879,7 +11877,7 @@ var Actor = (function (_super) {
         set: function (_x) {
             if (_x instanceof Array)
                 pilas.interpolar(this, 'x', _x, 1);
-            else {
+else {
                 var pos = pilas.escena_actual().obtener_posicion_pantalla(_x, 0);
                 this.sprite.x = pos.x;
             }
@@ -11897,7 +11895,7 @@ var Actor = (function (_super) {
         set: function (_y) {
             if (_y instanceof Array)
                 pilas.interpolar(this, 'y', _y, 1);
-            else {
+else {
                 var pos = pilas.escena_actual().obtener_posicion_pantalla(0, _y);
                 this.sprite.y = pos.y;
             }
@@ -11936,7 +11934,7 @@ var Actor = (function (_super) {
         set: function (valor) {
             if (valor instanceof Array)
                 pilas.interpolar(this.sprite, 'scaleX', valor, 1);
-            else
+else
                 this.sprite.scaleX = valor;
         },
         enumerable: true,
@@ -11950,7 +11948,7 @@ var Actor = (function (_super) {
         set: function (valor) {
             if (valor instanceof Array)
                 pilas.interpolar(this.sprite, 'scaleY', valor, 1);
-            else
+else
                 this.sprite.scaleY = valor;
         },
         enumerable: true,
@@ -11987,7 +11985,7 @@ var Actor = (function (_super) {
         set: function (valor) {
             if (valor instanceof Array)
                 pilas.interpolar(this.sprite, 'rotation', valor, 1);
-            else
+else
                 this.sprite.rotation = valor;
         },
         enumerable: true,
@@ -12024,12 +12022,9 @@ var Actor = (function (_super) {
         set: function (_i) {
             if (_i.substring)
                 this._imagen = pilas.imagenes.cargar(_i);
-            else
+else
                 this._imagen = _i;
 
-            /* Si el actor ya tenía imagen, entonces se encarga de reemplazar
-            la imagen actual, y vuelve a definir el punto de control en el
-            centro. */
             if (this.sprite !== undefined) {
                 this.sprite.image = this._imagen.instanciar().image;
                 this.centro_x = this.ancho / 2;
@@ -12041,10 +12036,10 @@ var Actor = (function (_super) {
     });
 
     Object.defineProperty(Actor.prototype, "izquierda", {
-        /* TODO: hacer que se puedan interpolar
+        get: /* TODO: hacer que se puedan interpolar
         las propiedades: izquierda, derecha, arriba, abajo.
         */
-        get: function () {
+        function () {
             return this.x - (this.centro_x * this.escala);
         },
         set: function (x) {
@@ -12194,7 +12189,6 @@ var Actor = (function (_super) {
 var Aceituna = (function (_super) {
     __extends(Aceituna, _super);
     function Aceituna(x, y) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Aceituna))
             return new Aceituna(x, y);
 
@@ -12234,6 +12228,9 @@ var Banana = (function (_super) {
     function Banana(x, y) {
         if (typeof x === "undefined") { x = 0; }
         if (typeof y === "undefined") { y = 0; }
+        if (!(this instanceof Banana))
+            return new Banana(x, y);
+
         var imagen = pilas.imagenes.cargar_grilla('banana.png', 2);
         _super.call(this, imagen, x, y);
         this._imagen.definir_cuadro(0);
@@ -12251,7 +12248,6 @@ var Banana = (function (_super) {
 var Bloque = (function (_super) {
     __extends(Bloque, _super);
     function Bloque(x, y, nombre_imagen) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Bloque))
             return new Bloque(x, y, nombre_imagen);
 
@@ -12267,7 +12263,6 @@ var Bloque = (function (_super) {
 var Bomba = (function (_super) {
     __extends(Bomba, _super);
     function Bomba(x, y) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Bomba))
             return new Bomba(x, y);
 
@@ -12290,7 +12285,6 @@ var Boton = (function (_super) {
         if (typeof ruta_normal === "undefined") { ruta_normal = 'boton/boton_normal.png'; }
         if (typeof ruta_press === "undefined") { ruta_press = 'boton/boton_press.png'; }
         if (typeof ruta_over === "undefined") { ruta_over = 'boton/boton_over.png'; }
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Boton))
             return new Boton(x, y, ruta_normal, ruta_press, ruta_over);
 
@@ -12453,7 +12447,6 @@ var Boton = (function (_super) {
 var Caja = (function (_super) {
     __extends(Caja, _super);
     function Caja(x, y) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Caja))
             return new Caja(x, y);
 
@@ -12473,7 +12466,6 @@ var Cesto = (function (_super) {
     function Cesto(x, y) {
         if (typeof x === "undefined") { x = 120; }
         if (typeof y === "undefined") { y = 0; }
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Cesto))
             return new Cesto(x, y);
 
@@ -12496,7 +12488,6 @@ var Cesto = (function (_super) {
 var Cofre = (function (_super) {
     __extends(Cofre, _super);
     function Cofre(x, y) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Cofre))
             return new Cofre(x, y);
 
@@ -12514,7 +12505,6 @@ var Cofre = (function (_super) {
     };
 
     Cofre.prototype.actualizar = function () {
-        // TODO: temporal para el tutorial
         if (this.esta_abierto) {
             this.paso += 0.1;
 
@@ -12530,7 +12520,6 @@ var Cofre = (function (_super) {
 var Eje = (function (_super) {
     __extends(Eje, _super);
     function Eje(x, y) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Eje))
             return new Eje(x, y);
 
@@ -12545,7 +12534,6 @@ var Eje = (function (_super) {
 var Explosion = (function (_super) {
     __extends(Explosion, _super);
     function Explosion(x, y) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Explosion))
             return new Explosion(x, y);
 
@@ -12570,7 +12558,6 @@ var Explosion = (function (_super) {
 var Globo = (function (_super) {
     __extends(Globo, _super);
     function Globo(x, y, mensaje) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Globo))
             return new Globo(x, y, mensaje);
 
@@ -12593,7 +12580,6 @@ var Globo = (function (_super) {
 var Llave = (function (_super) {
     __extends(Llave, _super);
     function Llave(x, y) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Llave))
             return new Llave(x, y);
 
@@ -12609,7 +12595,6 @@ var Llave = (function (_super) {
 var Manzana = (function (_super) {
     __extends(Manzana, _super);
     function Manzana(x, y) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Manzana))
             return new Manzana(x, y);
 
@@ -12624,7 +12609,6 @@ var Manzana = (function (_super) {
 var Maton = (function (_super) {
     __extends(Maton, _super);
     function Maton(x, y) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Maton))
             return new Maton(x, y);
 
@@ -12696,7 +12680,7 @@ var Maton = (function (_super) {
         if (this.puede_moverse_a(this.x, this.y + y * this.velocidad))
             this.y += y * this.velocidad;
 
-        this.avanzar_animacion(); // TODO:
+        this.avanzar_animacion();
         this.z = this.y;
     };
 
@@ -12799,7 +12783,6 @@ var Mono = (function (_super) {
 var Nave = (function (_super) {
     __extends(Nave, _super);
     function Nave(x, y) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Nave))
             return new Nave(x, y);
 
@@ -12863,7 +12846,6 @@ var Nave = (function (_super) {
 var Pelota = (function (_super) {
     __extends(Pelota, _super);
     function Pelota(x, y) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Pelota))
             return new Pelota(x, y);
 
@@ -12895,7 +12877,6 @@ var Pelota = (function (_super) {
 var Piedra = (function (_super) {
     __extends(Piedra, _super);
     function Piedra(x, y, tamano, dx, dy) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Piedra))
             return new Piedra(x, y, tamano, dx, dy);
 
@@ -12992,7 +12973,7 @@ var Pizarra = (function (_super) {
 
         //crear lienzo
         this.container = new createjs.Container();
-        this.lienzo = new createjs.Shape(this.x, this.y); // TODO: Permitir que acepte ancho y alto de la pizarra
+        this.lienzo = new createjs.Shape(this.x, this.y);
         this.container.addChild(this.lienzo);
         pilas.escena_actual().stage.addChild(this.container);
     }
@@ -13023,7 +13004,7 @@ var Pizarra = (function (_super) {
         if (typeof grosor === "undefined") { grosor = 1; }
         if (!relleno)
             var color_relleno = createjs.Graphics.getRGB(255, 255, 255, 0);
-        else
+else
             var color_relleno = relleno;
 
         var pos = pilas.escena_actual().obtener_posicion_pantalla(x, y);
@@ -13055,7 +13036,6 @@ var Pizarra = (function (_super) {
 var Proyectil = (function (_super) {
     __extends(Proyectil, _super);
     function Proyectil(x, y, atributos) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Proyectil))
             return new Proyectil(x, y, atributos);
 
@@ -13090,7 +13070,6 @@ var Proyectil = (function (_super) {
 var Texto = (function (_super) {
     __extends(Texto, _super);
     function Texto(x, y, texto, color) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Texto))
             return new Texto(x, y, texto, color);
 
@@ -13122,14 +13101,14 @@ var Texto = (function (_super) {
     };
 
     Object.defineProperty(Texto.prototype, "escala_x", {
-        //TODO: hacer que pueda utilizar los metodos propios de la clase padre Actor
-        get: function () {
+        get: //TODO: hacer que pueda utilizar los metodos propios de la clase padre Actor
+        function () {
             return this.sprite_texto.scaleX;
         },
         set: function (valor) {
             if (valor instanceof Array)
                 pilas.interpolar(this.sprite_texto, 'scaleX', valor, 1000);
-            else
+else
                 this.sprite_texto.scaleX = valor;
         },
         enumerable: true,
@@ -13143,7 +13122,7 @@ var Texto = (function (_super) {
         set: function (valor) {
             if (valor instanceof Array)
                 pilas.interpolar(this.sprite_texto, 'scaleY', valor, 1000);
-            else
+else
                 this.sprite_texto.scaleY = valor;
         },
         enumerable: true,
@@ -13179,7 +13158,6 @@ var Texto = (function (_super) {
 var Puntaje = (function (_super) {
     __extends(Puntaje, _super);
     function Puntaje(x, y, puntaje, color) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Puntaje))
             return new Puntaje(x, y, puntaje, color);
 
@@ -13264,7 +13242,7 @@ var Tortuga = (function (_super) {
             this.avanzar(escala);
             if (sentido == 1)
                 this.girarderecha(rotacion);
-            else
+else
                 this.girarizquierda(rotacion);
         }
     };
@@ -13275,7 +13253,7 @@ var Tortuga = (function (_super) {
             this.avanzar(radio);
             if (sentido == 1)
                 this.girarderecha(10);
-            else
+else
                 this.girarizquierda(10);
         }
     };
@@ -13297,7 +13275,6 @@ var Tortuga = (function (_super) {
 var Zanahoria = (function (_super) {
     __extends(Zanahoria, _super);
     function Zanahoria(x, y) {
-        /* patch para permitir la instancia sin anteponer new */
         if (!(this instanceof Zanahoria))
             return new Zanahoria(x, y);
 
@@ -13369,7 +13346,8 @@ var Camara = (function () {
     Camara.prototype.obtener_posicion = function () {
         return {
             x: this.centro_x - this.x,
-            y: this.centro_y + this.y };
+            y: this.centro_y + this.y
+        };
     };
 
     /*
@@ -13380,7 +13358,8 @@ var Camara = (function () {
         var centro = this.obtener_posicion();
         return {
             x: centro.x + x,
-            y: centro.y - y };
+            y: centro.y - y
+        };
     };
 
     /*
@@ -13391,7 +13370,8 @@ var Camara = (function () {
         var centro = this.obtener_posicion();
         return {
             x: -centro.x + x,
-            y: +centro.y - y };
+            y: +centro.y - y
+        };
     };
 
     /*
@@ -13403,7 +13383,11 @@ var Camara = (function () {
         var alto = pilas.opciones.alto;
 
         return {
-            izquierda: this.x - ancho / 2, derecha: this.x + ancho / 2, arriba: this.y + alto / 2, abajo: this.y - alto / 2 };
+            izquierda: this.x - ancho / 2,
+            derecha: this.x + ancho / 2,
+            arriba: this.y + alto / 2,
+            abajo: this.y - alto / 2
+        };
     };
     return Camara;
 })();
@@ -13963,9 +13947,6 @@ var ModoRadiosDeColision = (function () {
         this.shape = new createjs.Shape();
         this.container.addChild(this.shape);
 
-        this.text_modo = new createjs.Text("F9 ModoRadiosDeColision habilitado", "12px Arial", "white");
-        this.container.addChild(this.text_modo);
-
         pilas.escena_actual().stage.addChild(this.container);
     }
     ModoRadiosDeColision.prototype.eliminar = function () {
@@ -13993,10 +13974,6 @@ var ModoArea = (function () {
         this.shape = new createjs.Shape();
         this.container.addChild(this.shape);
 
-        this.text_modo = new createjs.Text("F10 ModoArea habilitado", "12px Arial", "white");
-        this.text_modo.y = 15; // TODO: Buscar la forma de posicion este texto solo, uno arriba de otro.
-        this.container.addChild(this.text_modo);
-
         pilas.escena_actual().stage.addChild(this.container);
     }
     ModoArea.prototype.eliminar = function () {
@@ -14023,10 +14000,6 @@ var ModoPuntosDeControl = (function () {
 
         this.shape = new createjs.Shape();
         this.container.addChild(this.shape);
-
-        this.text_modo = new createjs.Text("F8 ModoPuntosDeControl habilitado", "12px Arial", "white");
-        this.text_modo.y = 45; // TODO: Buscar la forma de posicion este texto solo, uno arriba de otro.
-        this.container.addChild(this.text_modo);
 
         pilas.escena_actual().stage.addChild(this.container);
     }
@@ -14058,12 +14031,8 @@ var ModoPosicion = (function () {
         this.shape = new createjs.Shape();
         this.container.addChild(this.shape);
 
-        this.text_modo = new createjs.Text("12 ModoPosicion habilitado", "12px Arial", "white");
-        this.text_modo.y = 45; // TODO: Buscar la forma de posicion este texto solo, uno arriba de otro.
-        this.container.addChild(this.text_modo);
-
         this.text_coordenada = new createjs.Text("Posición del mouse: x=12 y=33", "12px Arial", "white");
-        this.text_coordenada.y = 920 / 2; //TODO: Tamaño decanvas 640*480
+        this.text_coordenada.y = 920 / 2;
         this.text_coordenada.x = 900 / 2;
         this.container.addChild(this.text_coordenada);
         this.eje = new pilas.actores.Eje();
@@ -14124,10 +14093,6 @@ var ModoFisica = (function () {
         this.shape = new createjs.Shape();
         this.container.addChild(this.shape);
 
-        this.text_modo = new createjs.Text("F11 ModoFisica habilitado", "12px Arial", "white");
-        this.text_modo.y = 30; // TODO: Buscar la forma de posicion este texto solo, uno arriba de otro.
-        this.container.addChild(this.text_modo);
-
         pilas.escena_actual().stage.addChild(this.container);
     }
     ModoFisica.prototype.eliminar = function () {
@@ -14144,12 +14109,12 @@ var ModoFisica = (function () {
 })();
 var Base = (function () {
     function Base() {
-        this.click_de_mouse = new Evento('click_de_mouse'); // ['boton', 'x', 'y']
-        this.cuando_termina_click = new Evento('cuando_termina_click'); // ['boton', 'x', 'y']
-        this.mueve_mouse = new Evento('mueve_mouse'); // ['x', 'y', 'dx', 'dy']
-        this.pulsa_tecla = new Evento('pulsa_tecla'); // ['codigo', 'texto']
-        this.suelta_tecla = new Evento('suelta_tecla'); // ['codigo', 'texto']
-        this.actualiza = new Evento('actualiza'); // []
+        this.click_de_mouse = new Evento('click_de_mouse');
+        this.cuando_termina_click = new Evento('cuando_termina_click');
+        this.mueve_mouse = new Evento('mueve_mouse');
+        this.pulsa_tecla = new Evento('pulsa_tecla');
+        this.suelta_tecla = new Evento('suelta_tecla');
+        this.actualiza = new Evento('actualiza');
         this.stage = new createjs.Stage(pilas.canvas);
         this.camara = new Camara();
         this.fisica = new Fisica(this.camara);
@@ -14384,21 +14349,21 @@ var Rectangulo = (function (_super) {
         if (opciones.dinamico === undefined)
             opciones.dinamico = true;
 
-        var bodyDef = new box2d.b2BodyDef;
+        var bodyDef = new box2d.b2BodyDef();
 
         if (opciones.dinamico)
             bodyDef.type = box2d.b2Body.b2_dynamicBody;
-        else
+else
             bodyDef.type = box2d.b2Body.b2_staticBody;
 
         var pos = this.fisica.camara.convertir_de_posicion_relativa_a_fisica(x, y);
         bodyDef.position.Set(convertir_a_metros(pos.x), convertir_a_metros(pos.y));
 
         //bodyDef.userData=data;
-        var polygonShape = new box2d.b2PolygonShape;
+        var polygonShape = new box2d.b2PolygonShape();
         polygonShape.SetAsBox(convertir_a_metros(ancho / 2), convertir_a_metros(alto / 2));
 
-        var fixtureDef = new box2d.b2FixtureDef;
+        var fixtureDef = new box2d.b2FixtureDef();
         fixtureDef.density = 1.0;
         fixtureDef.friction = 0.5;
         fixtureDef.restitution = 0.5;
@@ -14417,7 +14382,7 @@ var Circulo = (function (_super) {
     function Circulo(fisica, x, y, radio, opciones) {
         _super.call(this, fisica);
         opciones.dinamico = opciones.dinamico || true;
-        var fixDef = new Box2D.Dynamics.b2FixtureDef;
+        var fixDef = new Box2D.Dynamics.b2FixtureDef();
 
         fixDef.density = opciones.densidad || 1.0;
         fixDef.friction = opciones.friccion || 0.5;
@@ -14426,7 +14391,7 @@ var Circulo = (function (_super) {
         fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(convertir_a_metros(radio));
 
         // crear el body dinamico
-        var bodyDef = new Box2D.Dynamics.b2BodyDef;
+        var bodyDef = new Box2D.Dynamics.b2BodyDef();
 
         var posicion = this.camara.convertir_de_posicion_relativa_a_fisica(x, y);
         posicion.x = convertir_a_metros(posicion.x);
@@ -14437,7 +14402,7 @@ var Circulo = (function (_super) {
 
         if (opciones.dinamico)
             bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
-        else
+else
             bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
 
         this.cuerpo = this.fisica.mundo.CreateBody(bodyDef);
@@ -14450,16 +14415,16 @@ var Fisica = (function () {
     function Fisica(camara) {
         this.camara = camara;
         this.mundo = new box2d.b2World(new box2d.b2Vec2(0, 10), false);
-        this.Rectangulo = Rectangulo; // TODO: separar fisica como Motor y Módulo, dos clases separadas.
-        this.Circulo = Circulo; // TODO: separar fisica como Motor y Módulo, dos clases separadas.
+        this.Rectangulo = Rectangulo;
+        this.Circulo = Circulo;
         this.velocidad = 1.0;
         this.timeStep = this.velocidad / 120.0;
 
         // Bordes del escenario
-        this.crear_rectangulo(0, -pilas.opciones.alto / 2, pilas.opciones.ancho, 5, { dinamico: false }); // abajo
-        this.crear_rectangulo(0, pilas.opciones.alto / 2, pilas.opciones.ancho, 5, { dinamico: false }); // arriba
-        this.crear_rectangulo(-pilas.opciones.ancho / 2, 0, 5, pilas.opciones.alto, { dinamico: false }); // izquierda
-        this.crear_rectangulo(pilas.opciones.ancho / 2, 0, 5, pilas.opciones.alto, { dinamico: false }); // derecha
+        this.crear_rectangulo(0, -pilas.opciones.alto / 2, pilas.opciones.ancho, 5, { dinamico: false });
+        this.crear_rectangulo(0, pilas.opciones.alto / 2, pilas.opciones.ancho, 5, { dinamico: false });
+        this.crear_rectangulo(-pilas.opciones.ancho / 2, 0, 5, pilas.opciones.alto, { dinamico: false });
+        this.crear_rectangulo(pilas.opciones.ancho / 2, 0, 5, pilas.opciones.alto, { dinamico: false });
     }
     Fisica.prototype.actualizar = function () {
         this.mundo.Step(this.timeStep, 6, 3);
@@ -14479,14 +14444,6 @@ var Fisica = (function () {
                 var y = b.GetPosition().y * PPM;
                 var shape = fixture.GetShape();
 
-                // dibuja un circulo en el centro de la figura.
-                //graphics.beginStroke("#FFF").
-                //    drawCircle(
-                //      x,
-                //      y,
-                //      5
-                //    ).
-                //endStroke();
                 if (shape.GetRadius !== undefined) {
                     var radio = shape.GetRadius();
                     graphics.beginStroke("#FFF").drawCircle(x, y, convertir_a_pixels(radio)).endStroke();
@@ -14518,19 +14475,20 @@ var Fisica = (function () {
         var vector_salida = cuerpo.GetWorldVector(v);
         return {
             x: vector_salida.x * PPM + x,
-            y: vector_salida.y * PPM + y };
+            y: vector_salida.y * PPM + y
+        };
     };
 
     Fisica.prototype.createBox = function (width, height, pX, pY, type, data) {
-        var bodyDef = new box2d.b2BodyDef;
+        var bodyDef = new box2d.b2BodyDef();
         bodyDef.type = type;
         bodyDef.position.Set(pX / PPM, pY / PPM);
 
         //bodyDef.userData=data;
-        var polygonShape = new box2d.b2PolygonShape;
+        var polygonShape = new box2d.b2PolygonShape();
         polygonShape.SetAsBox(width / 2 / PPM, height / 2 / PPM);
 
-        var fixtureDef = new box2d.b2FixtureDef;
+        var fixtureDef = new box2d.b2FixtureDef();
         fixtureDef.density = 1.0;
         fixtureDef.friction = 0.5;
         fixtureDef.restitution = 0.5;
@@ -14564,7 +14522,7 @@ var Tarde = (function (_super) {
     function Tarde() {
         _super.call(this, "fondos/tarde.jpg", 0, 0);
         this.z = 1000;
-        this.y = 120; // TODO: temporal solo para tutorial.
+        this.y = 120;
     }
     return Tarde;
 })(Fondo);
@@ -14637,7 +14595,7 @@ var GestorDeEscenas = (function () {
     }
     GestorDeEscenas.prototype.cambiar_escena = function (nueva_escena) {
         this.escena = nueva_escena;
-        this.actualizar(); // NOTA: se ejecuta para que los actores
+        this.actualizar();
         //       tomen su posición inicial.
     };
 
@@ -15022,11 +14980,9 @@ var Arrastrable = (function (_super) {
     };
 
     Arrastrable.prototype.cuando_arrastra = function (evento) {
-        // Muestra un cursor diferente si puede comenzar
-        // a mover la figura.
         if (this.receptor.colisiona_con_un_punto(evento.x, evento.y))
             document.body.style.cursor = "move";
-        else
+else
             document.body.style.cursor = "default";
 
         if (this.debe_arrastrar === true) {
@@ -15232,7 +15188,7 @@ var Imagenes = (function () {
     Imagenes.prototype.cargar = function (nombre) {
         if (nombre in this.recursos)
             return new Imagen(this.recursos[nombre]);
-        else
+else
             throw "No se puede encontrar la imagen: " + nombre + " ¿ha sido pre-cargada en el archivo imagenes.ts?";
     };
 
