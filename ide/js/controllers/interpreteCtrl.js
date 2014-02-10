@@ -52,9 +52,8 @@ var app = angular.module('app');
 			} catch(err) {
 					var mensaje_de_error = "ERROR: " + err.message + ". Line " + err.line + ", column " + err.col + ".";
 					error_callback.call(this, mensaje_de_error);
-		}
-		
-		
+			}
+			
 	}
 
 
@@ -207,6 +206,8 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 				eval(codigo_js);
 			}, 
 			function(mensaje_de_error) {
+				console.log(mensaje_de_error);
+				
 				alert(mensaje_de_error);
 			}
 		);
@@ -439,7 +440,11 @@ app.controller('InterpreteCtrl', function($scope, $http) {
 		$scope.data.sugerencias = [];
 		var ultima_palabra = $scope.data.textoIngresado.split(' ').pop();
 		
-		if (! ultima_palabra) return;
+		if (ultima_palabra.indexOf('(') > 0 || ultima_palabra.indexOf(')') > 0)
+			return;
+		
+		if (! ultima_palabra)
+			return;
 		
 		$scope.data.sugerencias = obtener_sugerencias_para(ultima_palabra);
 		$scope.data.indice_sugerido = 0;		
