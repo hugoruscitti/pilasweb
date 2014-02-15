@@ -1,69 +1,69 @@
 <!DOCTYPE html>
 <html lang="en" ng-app='app'>
-	<head>
-		<title>pilas engine</title>
-		<meta charset="UTF-8" />
+  <head>
+    <title>pilas engine</title>
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		
-		<link rel="stylesheet" href="css/bootstrap.min.css" />
-		<link rel="stylesheet" href="css/font-awesome.css" />
-		<link rel="stylesheet" href="css/unicorn.css" />
-		<link rel="stylesheet" href="css/custom.css"/>
-		
-		<link rel="stylesheet" href="css/interprete.css">
-	</head>	
+    
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/font-awesome.css" />
+    <link rel="stylesheet" href="css/unicorn.css" />
+    <link rel="stylesheet" href="css/custom.css"/>
+    
+    <link rel="stylesheet" href="css/interprete.css">
+  </head>	
   
-	<body data-color="grey" class="flat" ng-controller='MainCtrl'>
-		<div id="wrapper" class='fijo'>
-			<div id="header">
-				<h1>&nbsp;</h1>
+  <body data-color="grey" class="flat" ng-controller='MainCtrl'>
+    <div id="wrapper" class='fijo'>
+      <div id="header">
+        <h1>&nbsp;</h1>
         <span class="badge badge-danger" style="position: absolute; top: 13px; left: 176px;">beta</span>
-			</div>
-		
-			<div id="user-nav">
+      </div>
+    
+      <div id="user-nav">
         <div class='acciones-header'>
-					<i class='mini-icono fa fa-gear' onclick="mostrar_herramientas_de_desarrollo()"></i>
-					<i class='mini-icono fa fa-refresh' onclick="actualizar()"></i>
-				</div>
-	    </div>
-	       
-			<div id="sidebar">
-				<ul>
-					<li ng-class="getClass('/index')"><a href="#/index"><i class="fa fa-home"></i></a></li>
-					<li ng-class="getClass('/interprete')"><a href="#/interprete"><i class="fa  fa-chevron-right"></i></a> </li>
-					<li ng-class="getClass('/tutoriales')"><a href="#/tutoriales"><i class="fa fa-gift"></i></a> </li>
-					<li ng-class="getClass('/ejemplos')"><a href="#/ejemplos"><i class="fa fa-th"></i></a> </li>
-					<li ng-class="getClass('/manual')"><a href="#/manual"><i class="fa fa-book"></i></a> </li>
-					<li class='separador'>&nbsp;</li>
-					<li ng-class="getClass('/foro')"><a href="#/foro"><i class="fa fa-comment"></i></a> </li>
-					<li ng-class="getClass('/acercade')"><a href="#/acercade"><i class="fa fa-flag"></i></a> </li>
-				</ul>
-			</div>
-			
-			<div id="content">
+          <i class='mini-icono fa fa-gear' onclick="mostrar_herramientas_de_desarrollo()"></i>
+          <i class='mini-icono fa fa-refresh' onclick="actualizar()"></i>
+        </div>
+      </div>
+         
+      <div id="sidebar">
+        <ul>
+          <li ng-class="getClass('/index')"><a href="#/index"><i class="fa fa-home"></i></a></li>
+          <li ng-class="getClass('/interprete')"><a href="#/interprete"><i class="fa  fa-chevron-right"></i></a> </li>
+          <li ng-class="getClass('/tutoriales')"><a href="#/tutoriales"><i class="fa fa-gift"></i></a> </li>
+          <li ng-class="getClass('/ejemplos')"><a href="#/ejemplos"><i class="fa fa-th"></i></a> </li>
+          <li ng-class="getClass('/manual')"><a href="#/manual"><i class="fa fa-book"></i></a> </li>
+          <li class='separador'>&nbsp;</li>
+          <li ng-class="getClass('/foro')"><a href="#/foro"><i class="fa fa-comment"></i></a> </li>
+          <li ng-class="getClass('/acercade')"><a href="#/acercade"><i class="fa fa-flag"></i></a> </li>
+        </ul>
+      </div>
+      
+      <div id="content">
         <ng-view class='open'></ng-view>
       </div>
         
-		</div>
+    </div>
 
       <script src="app/bower_components/jquery/jquery.js"></script>
       <script src="app/bower_components/bootstrap/dist/js/bootstrap.js"></script>
       <script src='app/bower_components/angular/angular.js'></script>
       <script src='app/bower_components/angular-route/angular-route.js'></script>
       <script src='app/bower_components/angular-animate/angular-animate.js'></script>
-		
-			<!-- BIBLIOTECAS PARA CODEMIRROR -->
-			<link rel="stylesheet" type="text/css" href="app/bower_components/codemirror/lib/codemirror.css">
-			<link rel="stylesheet" type="text/css" href="app/bower_components/codemirror/theme/xq-light.css">
-			<script type="text/javascript" src="app/bower_components/codemirror/lib/codemirror.js"></script>
-			<script type="text/javascript" src="app/bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
-			<!-- <script type="text/javascript" src="app/bower_components/codemirror/mode/javascript/javascript.js"></script> -->
-			<script type="text/javascript" src="app/bower_components/codemirror/mode/python/python.js"></script>
-		
+    
+      <!-- BIBLIOTECAS PARA CODEMIRROR -->
+      <link rel="stylesheet" type="text/css" href="app/bower_components/codemirror/lib/codemirror.css">
+      <link rel="stylesheet" type="text/css" href="app/bower_components/codemirror/theme/xq-light.css">
+      <script type="text/javascript" src="app/bower_components/codemirror/lib/codemirror.js"></script>
+      <script type="text/javascript" src="app/bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
+      <!-- <script type="text/javascript" src="app/bower_components/codemirror/mode/javascript/javascript.js"></script> -->
+      <script type="text/javascript" src="app/bower_components/codemirror/mode/python/python.js"></script>
+    
       
       
-			<!-- BIBLIOTECAS DE ANGULAR-UI -->
-		  <script src='app/bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js'></script>
+      <!-- BIBLIOTECAS DE ANGULAR-UI -->
+      <script src='app/bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js'></script>
       
       
       
@@ -71,15 +71,13 @@
       <script src='js/app.js'></script>
       <script src='js/directivas.js'></script>
       <script src='js/config.js'></script>
-		
+    
       <script src='js/controllers/equipoCtrl.js'></script>
       <script src='js/controllers/indexCtrl.js'></script>
       <script src='js/controllers/interpreteCtrl.js'></script>
       <script src='js/controllers/mainCtrl.js'></script>
-		
-		
-		
-		<script>
+      
+    <script>
       var config = require('./package.json');     
       if (config.livereload) {
         var Gaze = require('gaze').Gaze;
@@ -91,14 +89,14 @@
         });
       }
     </script>
-		
     
-	<!-- BIBLIOTECAS PARA PILAS-ENGINE -->
+    
+  <!-- BIBLIOTECAS PARA PILAS-ENGINE -->
     
   <script src='public/pilasweb.js'></script>
-		
-		
-	<!-- RAPIDSCRIPT -->
+    
+    
+  <!-- RAPIDSCRIPT -->
     
   <script type="text/javascript" src="js/rapydscript/utils.js"></script>
   <script type="text/javascript" src="js/rapydscript/ast.js"></script>
@@ -106,16 +104,16 @@
   <script type="text/javascript" src="js/rapydscript/output.js"></script>
   <script type="text/javascript" src="js/rapydscript/parse.js"></script>
   <script type="text/javascript" src="js/rapydscript/importer.js"></script>
-		
-		
-		
+    
+    
+    
 
   <link rel="stylesheet" href="public/console/style_console.css"/>
   <script type="text/javascript" charset="utf-8" src="public/console/console.js"></script>
   <script type="text/javascript" charset="utf-8" src="public/console/prettyprint.js"></script>
    
-		
-		
-		
-	</body>
+    
+    
+    
+  </body>
 </html>

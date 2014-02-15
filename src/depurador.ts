@@ -225,6 +225,7 @@ class ModoPosicion {
 }
 
 
+
 class ModoFisica {
   shape;
   container;

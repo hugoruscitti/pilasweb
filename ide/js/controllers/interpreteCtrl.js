@@ -78,7 +78,52 @@ var app = angular.module('app');
     }
   }
 
-app.controller('InterpreteCtrl', function($scope, $http) {
+var ModalExportarCtrl = function($scope, $modalInstance, $http, codigo) {
+    $scope.mensaje = "";
+    
+    function cargar_preview() {
+        //var imagen = document.getElementById('imagen');
+        var canvas = document.getElementById('canvasInterprete');
+        $scope.imagen_src = canvas.toDataURL();
+    }
+    
+    cargar_preview();
+    
+    $scope.subir = function () {
+        
+        function subir_codigo(parametros) {
+            var basepath = 'http://198.211.105.46:1337'; // RUTA en donde se aloja la
+                                                         // aplicacion web para publicar juegos
+                                                         // ver: https://github.com/hugoruscitti/nube-experimental-pilas
+      
+            $http.post(basepath + '/publicar', parametros).
+                  success(function(data, status) {
+                    // cuando se hace un post a '/publicar' la aplicación web
+                    // guarda el código y retorna la URL en donde se publica el juego.
+                    gui.Shell.openExternal(basepath + data.url);
+                  });
+            
+            $modalInstance.close();
+        }
+
+    
+        ejecutar_codigo_python(codigo, 
+                               function(codigo_js) {
+                                   parametros = {codigo: codigo_js};
+                                   subir_codigo(parametros);
+                               }, 
+                               function(mensaje_de_error) {
+                                   alert(mensaje_de_error);
+                               }
+                              );
+    }
+
+    $scope.cancelar = function () {
+        $modalInstance.dismiss('cancel');
+    };
+}
+
+app.controller('InterpreteCtrl', function($scope, $http, $modal) {
   $scope.codigo = [
     '# codigo para ejecutar.',
     '		',
@@ -215,40 +260,19 @@ app.controller('InterpreteCtrl', function($scope, $http) {
   }
     
   $scope.publicar = function() {
-    var codigo = codemirrorEditor.getDoc().getValue();
-        
-    function subir_codigo(parametros) {
-      var basepath = 'http://198.211.105.46:1337'; // RUTA en donde se aloja la
-                                                   // aplicacion web para publicar juegos
-                                                   // ver: https://github.com/hugoruscitti/nube-experimental-pilas
       
-      $http.post(basepath + '/publicar', parametros).
-          success(function(data, status) {
-            // cuando se hace un post a '/publicar' la aplicación web
-            // guarda el código y retorna la URL en donde se publica el juego.
-            gui.Shell.openExternal(basepath + data.url);
-          });
-      }
+      var modalInstance = $modal.open({
+          templateUrl: 'partials/modal_exportar.html',
+          controller: ModalExportarCtrl,
+          resolve: {
+              codigo: function () {
+                  return codemirrorEditor.getDoc().getValue();
+              }
+          }
+      });
+  }
     
-    
-      ejecutar_codigo_python(codigo, 
-        function(codigo_js) {
-          parametros = {codigo: codigo_js};
-          subir_codigo(parametros);
-        }, 
-        function(mensaje_de_error) {
-          // incluso si el codigo tiene errores lo sube, para que los
-          // chicos puedan consultar y resolver errores.
-          parametros = {codigo: codigo_js};
-          subir_codigo(parametros);
-    
-        }
-      );
-      
-      
-    
-    }
-    
+
   $scope.editor_visible = true;
   $scope.interprete_visible = true;
   
@@ -264,7 +288,6 @@ app.controller('InterpreteCtrl', function($scope, $http) {
     panelInterprete.classList.toggle('interprete-invisible');
   }
     
-  
   $scope.definir_modos = function() {
     pilas.mundo.depurador.definir_modos({
       info: $scope.depuracion_info,
@@ -275,7 +298,6 @@ app.controller('InterpreteCtrl', function($scope, $http) {
       posiciones: $scope.depuracion_posiciones,
     });
   }
-  
   
   // modos depuracion.
     
@@ -316,10 +338,8 @@ app.controller('InterpreteCtrl', function($scope, $http) {
     $scope.definir_modos();
   }
     
-    
   // bootstrap de la consola interactiva.
   window.js_console = iniciar_jsconsole();
-  
   
   function procesar_keydown_sobre_autocompletado(event) {
     event = event || window.event;
@@ -363,7 +383,6 @@ app.controller('InterpreteCtrl', function($scope, $http) {
     return true;
   }
   
-  
   // Intercepta la pulsación de teclas sobre el interprete
   // para que se pueda navegar el menú de autocompletado.
   //
@@ -385,7 +404,6 @@ app.controller('InterpreteCtrl', function($scope, $http) {
       
     funcion_estandar_de_consolejs.call(this, event);
   }
-
   
   $('#exec').on('keyup', function() {
     var el_cursor = document.getElementById('cursor');
@@ -397,7 +415,6 @@ app.controller('InterpreteCtrl', function($scope, $http) {
     
     $scope.$apply();
   });
-  
   
   function obtener_sugerencias_para(un_texto) {
     var sugerencias = [];
@@ -449,6 +466,5 @@ app.controller('InterpreteCtrl', function($scope, $http) {
     $scope.data.sugerencias = obtener_sugerencias_para(ultima_palabra);
     $scope.data.indice_sugerido = 0;		
   });
-  
   
 });
