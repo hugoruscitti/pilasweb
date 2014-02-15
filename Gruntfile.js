@@ -2,7 +2,7 @@ var shell = require('shelljs');
 
 module.exports = function(grunt) {
 
-	grunt.initConfig({	
+  grunt.initConfig({	
     nodewebkit: {
                   options: {
                             //version: '0.8.3',
@@ -19,36 +19,36 @@ module.exports = function(grunt) {
                   './node_modules/**/*',
                 ]
             },
-		concat: {
-    	options: {
-      	separator: ';',
-    	},
-    	dist: {
-      	src: [
-						'public/libs/PxLoader.js',
-  					'public/libs/PxLoaderImage.js',
-						'public/libs/Box2dWeb-2.1.a.3.js',
-						'public/libs/preloadjs-0.4.1.min.js',
-						'public/libs/soundjs-0.5.2.min.js',
-						'public/libs/easeljs-0.6.1.min.js',
-						'public/libs/tweenjs-0.4.1.min.js',
-						'public/libs/uuid.js',
-						'public/pilasweb.js',
-				],
-      	dest: 'public/pilasweb.js',
-    	},
-  	},
-		typescript: {
-			base: {
-				src: ['src/**/*.ts'],
-				dest: 'public/pilasweb.js',
-				options: {
-					module: 'commonjs',
-					target: 'es5',
-					base_path: 'src',
-					sourcemap: false,
-					fullSourceMapPath: false,
-					declaration: false,
+    concat: {
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src: [
+            'public/libs/PxLoader.js',
+            'public/libs/PxLoaderImage.js',
+            'public/libs/Box2dWeb-2.1.a.3.js',
+            'public/libs/preloadjs-0.4.1.min.js',
+            'public/libs/soundjs-0.5.2.min.js',
+            'public/libs/easeljs-0.6.1.min.js',
+            'public/libs/tweenjs-0.4.1.min.js',
+            'public/libs/uuid.js',
+            'public/pilasweb.js',
+        ],
+        dest: 'public/pilasweb.js',
+      },
+    },
+    typescript: {
+      base: {
+        src: ['src/**/*.ts'],
+        dest: 'public/pilasweb.js',
+        options: {
+          module: 'commonjs',
+          target: 'es5',
+          base_path: 'src',
+          sourcemap: false,
+          fullSourceMapPath: false,
+          declaration: false,
           comments: true,
           }
         }
@@ -58,15 +58,15 @@ module.exports = function(grunt) {
         src: 'public/**',
         dest: 'ide/',
       },
-			documentacion_html: {
-				src: 'docs/build/html/**',
-				dest: 'ide/docs/',
-			},
+      documentacion_html: {
+        src: 'docs/build/html/**',
+        dest: 'ide/docs/',
+      },
     },
-		watch: {
-			scripts: {
-				files: ['src/**', 'test/**'],
-				tasks: ['clear', 'typescript', 'concat', 'copy'],
+    watch: {
+      scripts: {
+        files: ['src/**', 'test/**'],
+        tasks: ['clear', 'typescript', 'concat', 'copy'],
       }
     },
     mocha_phantomjs: {
@@ -94,16 +94,16 @@ module.exports = function(grunt) {
     shell.exec('clear');
   });
 
-	grunt.registerTask('generar_docs', "create documentation files", function() {
+  grunt.registerTask('generar_docs', "create documentation files", function() {
     shell.exec('git submodule update --init');
     shell.exec('cd docs; make actualizar_docs_pilasweb');
   });
-	
+  
   grunt.registerTask('make_docs', "create documentation files", function() {
     shell.exec('jsduck public/pilasweb.js --title="pilas-engine web" --images=docs/images/ -o docs/html');
   });
 
-	grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-node-webkit-builder');
   grunt.registerTask('docs', ['typescript', 'concat', 'make_docs']);
