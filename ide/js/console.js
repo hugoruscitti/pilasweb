@@ -146,7 +146,7 @@ function iniciar_consola() {
           //rawoutput = sandboxframe.contentWindow.eval(cmd);
           
           /* Emite un evento alertando lo que el usuario quiere ejecutar */
-  		  var entrada = new Event('entrada');
+        var entrada = new Event('entrada');
           entrada.texto = cmd;
           consola.dispatchEvent(entrada);
           
@@ -154,7 +154,7 @@ function iniciar_consola() {
           rawoutput = window.eval(cmd);
           
           /* Emite un evento alertando lo que el usuario quiere ejecutar */
-  		  var salida = new Event('salida');
+        var salida = new Event('salida');
           salida.texto = rawoutput;
           consola.dispatchEvent(salida);
           
