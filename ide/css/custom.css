@@ -217,3 +217,7 @@ div.tutorial {
     display: inline-block;
     width: 390px;
 }
+
+.error {
+    color: red;
+}

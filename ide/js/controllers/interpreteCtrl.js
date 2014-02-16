@@ -80,17 +80,19 @@ function ejecutar_codigo_python_sync(codigo_python) {
 
 var ModalExportarCtrl = function($scope, $modalInstance, $http, codigo) {
     $scope.mensaje = "";
+    $scope.error = "";
+    $scope.url_juego = "";
 
     function cargar_preview() {
         //var imagen = document.getElementById('imagen');
         var canvas = document.getElementById('canvas');
-        
+
         $scope.imagen_src = canvas.toDataURL();
     }
 
     cargar_preview();
 
-    
+
     $scope.subir = function () {
 
         function subir_codigo(parametros) {
@@ -99,22 +101,27 @@ var ModalExportarCtrl = function($scope, $modalInstance, $http, codigo) {
             // ver: https://github.com/hugoruscitti/nube-experimental-pilas
 
             $scope.mensaje = "Subiendo ...";
+
             $http.post(basepath + '/publicar', parametros).
-            success(function(data, status) {
+            success(function(data) {
                 // cuando se hace un post a '/publicar' la aplicación web
                 // guarda el código y retorna la URL en donde se publica el juego.
-                $modalInstance.close();
-                gui.Shell.openExternal(basepath + data.url);
+
+                $scope.mensaje = "OK";
+                $scope.url_juego = basepath + data.url;    
+            }).
+            error(function(error, code) {
+                $scope.error = "Error al intentar subir el código.";
+                $scope.mensaje = "";
             });
 
-            $scope.$apply();
         }
 
         function cargar_titulo_desde_interfaz() {
             var titulo = document.getElementById('titulo');
             $scope.titulo = titulo.value;
         }
-        
+
         cargar_titulo_desde_interfaz();
 
         ejecutar_codigo_python(codigo, 
@@ -134,6 +141,11 @@ var ModalExportarCtrl = function($scope, $modalInstance, $http, codigo) {
     $scope.cancelar = function () {
         $modalInstance.dismiss('cancel');
     };
+
+    $scope.abrir_juego_en_el_navegador = function() {
+        $modalInstance.close();
+        gui.Shell.openExternal($scope.url_juego);
+    }
 }
 
 app.controller('InterpreteCtrl', function($scope, $http, $modal) {
