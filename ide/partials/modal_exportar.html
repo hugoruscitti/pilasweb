@@ -9,9 +9,7 @@
     
     
     <div class='subir-datos'>
-        <p>Titulo: <input type="text" placeholder='un titulo'></p>
-        
-        
+        <p>Titulo: <input type="text" id='titulo' ng-model='titulo' placeholder='un titulo'></p>
     </div>
 
     <img class='subir-preview' id='imagen' src={{imagen_src}} width='160' height='120'/>
@@ -19,6 +17,7 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-success" ng-click="subir()">Subir</button>
+    {{mensaje}}
+    <button ng-disabled='mensaje' class="btn btn-success" ng-click="subir()">Subir</button>
     <button class="btn btn-primary" ng-click="cancelar()">Cancelar</button>
 </div>
