@@ -81,12 +81,12 @@ class Grupo extends HGrupo {
 		this.ejecutar_funcion("aprender", habilidad, argumentos);
 	}
 
-	hacer(comporamiento, argumentos=undefined) {
-		this.ejecutar_funcion("hacer", comporamiento, argumentos);
+	hacer(comportamiento, argumentos=undefined) {
+		this.ejecutar_funcion("hacer", comportamiento, argumentos);
 	}
 
-	hacer_luego(comporamiento, argumentos=undefined) {
-		this.ejecutar_funcion("hacer_luego", comporamiento, argumentos);
+	hacer_luego(comportamiento, argumentos=undefined) {
+		this.ejecutar_funcion("hacer_luego", comportamiento, argumentos);
 	}
 
 	decir(mensaje) {
