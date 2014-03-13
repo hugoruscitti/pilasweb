@@ -32,7 +32,6 @@ class Sonidos {
 
 	private cargar_recurso(nombre) {
 		this.recursos.push({id:nombre, src:nombre});
-		console.log("cargando " + nombre);
 	}
 
 	public cargar(nombre) {
