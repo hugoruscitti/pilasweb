@@ -111,6 +111,9 @@ class Actor extends Estudiante {
   eliminar() {
     this.vivo = false;
     pilas.escena_actual().eliminar_actor(this);
+    if (this.tiene_fisica()) {
+      this.figura.eliminar();
+    }
   }
 
   get z() {
