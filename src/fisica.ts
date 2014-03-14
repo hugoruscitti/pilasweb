@@ -112,6 +112,11 @@ class Figura {
       return convertir_a_pixels(shape.GetRadius());
     }
   }
+
+  eliminar() {
+    this.fisica.mundo.DestroyBody(this.cuerpo);
+  }
+
 }
 
 
