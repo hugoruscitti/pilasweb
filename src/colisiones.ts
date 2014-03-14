@@ -31,9 +31,10 @@ class Colisiones {
 
         if (actor_a.vivo && actor_b.vivo && actor_a.colisiona_con(actor_b)) {
           tupla.callback.call(tupla.parent, actor_a, actor_b);
-
-          // TODO: implementar alguna forma para quitar a los actores del
-          //       grupo si es que ya no están vivos.
+          if (!actor_a.vivo)
+            tupla.grupo_a.splice(i,1)
+          if (!actor_b.vivo)
+            tupla.grupo_b.splice(j,1)
         }
       }
     }
