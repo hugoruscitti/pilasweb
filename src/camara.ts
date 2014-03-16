@@ -8,16 +8,55 @@
  * entre coordenadas de pantalla y coordenadas de escenario.
  */
 class Camara {
-  x;
-  y;
+  escenario;
   centro_x;
   centro_y;
 
-  constructor() {
-    this.x = 0;
-    this.y = 0;
+  constructor(escenario) {
     this.centro_x = pilas.opciones.ancho / 2;
     this.centro_y = pilas.opciones.alto / 2;
+
+    this.escenario = escenario;
+  }
+
+  get x() {
+    return this.escenario.x;
+  }
+
+  set x(_x) {
+    if (_x instanceof Array)
+      pilas.interpolar(this.escenario,"x",[-_x],1);
+    else {
+      this.escenario.x = -_x;
+    }
+  }
+
+  get y() {
+    return this.escenario.y;
+  }
+
+  set y(_y) {
+    if (_y instanceof Array)
+      pilas.interpolar(this.escenario,"y",[-_y],1);
+    else {
+      this.escenario.y = -_y
+    }
+  }
+
+
+  get zoom() {
+    return this.escenario.scaleX;
+  }
+
+  set zoom(_z) {
+    if (_z instanceof Array) {
+      pilas.interpolar(this.escenario,"scaleX",[1+_z*0.1],1)
+      pilas.interpolar(this.escenario,"scaleY",[1+_z*0.1],1)
+    }
+    else {
+      this.escenario.scaleX = 1+_z*0.1;
+      this.escenario.scaleY = 1+_z*0.1;
+    }
   }
 
   /**
