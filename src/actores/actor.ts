@@ -205,8 +205,22 @@ class Actor extends Estudiante {
   get transparencia() {return (-100 * this.sprite.alpha) + 100}
   set transparencia(_t) {this.sprite.alpha = (_t - 100) / -100}
 
-  get ancho() {return this._imagen.ancho}
-  get alto() {return this._imagen.alto}
+  get ancho() {
+    if (this._imagen instanceof Grilla) {
+      return this._imagen.ancho/this._imagen.columnas
+    }
+    else {
+      return this._imagen.ancho;
+    }
+  }
+  get alto() {
+    if (this._imagen instanceof Grilla) {
+      return this._imagen.alto/this._imagen.filas
+    }
+    else {
+      return this._imagen.alto;
+    }
+  }
 
   set imagen(_i) {
     if (_i.substring)
