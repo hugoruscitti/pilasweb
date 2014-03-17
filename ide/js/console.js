@@ -136,7 +136,7 @@ function iniciar_consola() {
       var consola = document.getElementById("consola");
 
       consola.onclick = function() {
-        $("#exec").click();
+        //$("#exec").click();
       }
 
       if (internalCmd) {
@@ -632,7 +632,7 @@ function iniciar_consola() {
           }
           if (history[pos] != undefined && history[pos] !== '') {
             removeSuggestion();
-            setCursorTo(history[pos])
+            setCursorTo(history[pos]);
             return false;
           } else if (pos == history.length) {
             removeSuggestion();
@@ -774,8 +774,8 @@ function iniciar_consola() {
     };
 
     exec.onclick = function () {
-      var cursor = $("cursor");
-      cursor.focus();
+      //var cursor = $("cursor");
+      //cursor.focus();
     }
 
     function getProps(cmd, filter) {
