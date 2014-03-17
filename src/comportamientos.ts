@@ -133,6 +133,36 @@ class Saltar extends Comportamiento {
   }
 }
 
+class Saltando extends Comportamiento {
+  suelo;
+  dy;
+  cuando_termina;
+
+  iniciar(receptor) {
+    super.iniciar(receptor);
+    this.dy = 10;
+    this.suelo = this.receptor.y
+    this.cuando_termina = this.argumentos.cuando_termina || null;
+  }
+
+  actualizar() {
+    this.receptor.y += this.dy;
+    this.dy -= 0.3
+
+    if (this.receptor.y < this.suelo){
+      this.receptor.y = this.suelo;
+      if (this.cuando_termina) {
+        this.cuando_termina.call(this.receptor);
+      }
+      return true;
+    }
+
+    if (pilas.escena_actual().control.derecha)
+      this.receptor.x += 1;
+    else if (pilas.escena_actual().control.izquierda)
+      this.receptor.x -= 1
+  }
+}
 
 class Orbitar extends Comportamiento {
   punto_de_orbita_x;
@@ -259,6 +289,7 @@ class Comportamientos {
   Girar;
   Avanzar;
   AvanzarComoProyectil;
+  Saltando;
 
   constructor() {
     this.CaminarBase = CaminarBase;
@@ -272,5 +303,6 @@ class Comportamientos {
     this.Girar = Girar;
     this.Avanzar = Avanzar;
     this.AvanzarComoProyectil = AvanzarComoProyectil;
+    this.Saltando = Saltando;
   }
 }
