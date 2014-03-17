@@ -13,6 +13,60 @@ var output_opts = {
     "omit_baselib": true
 };
 
+
+var utils = {
+    getCaretPixelPos: function ($node, offsetx, offsety){
+        offsetx = offsetx || 0;
+        offsety = offsety || 0;
+
+        var nodeLeft = 0,
+            nodeTop = 0;
+        if ($node){
+            nodeLeft = $node.offsetLeft;
+            nodeTop = $node.offsetTop;
+        }
+
+        var pos = {left: 0, top: 0};
+
+        if (document.selection){
+            var range = document.selection.createRange();
+            pos.left = range.offsetLeft + offsetx - nodeLeft;
+            pos.top = range.offsetTop + offsety - nodeTop;
+        }else if (window.getSelection){
+            var sel = window.getSelection();
+            var range = sel.getRangeAt(0).cloneRange();
+            try{
+                range.setStart(range.startContainer, range.startOffset-1);
+            }catch(e){}
+            var rect = range.getBoundingClientRect();
+            if (range.endOffset == 0 || range.toString() === ''){
+                // first char of line
+                if (range.startContainer == $node){
+                    // empty div
+                    if (range.endOffset == 0){
+                        pos.top = 0;
+                        pos.left = 0;
+                    }else{
+                        // firefox need this
+                        var range2 = range.cloneRange();
+                        range2.setStart(range2.startContainer, 0);
+                        var rect2 = range2.getBoundingClientRect();
+                        pos.left = rect2.left + offsetx - nodeLeft;
+                        pos.top = rect2.top + rect2.height + offsety - nodeTop;
+                    }
+                }else{
+                    pos.top = range.startContainer.offsetTop;
+                    pos.left = range.startContainer.offsetLeft;
+                }
+            }else{
+                pos.left = rect.left + rect.width + offsetx - nodeLeft;
+                pos.top = rect.top + offsety - nodeTop;
+            }
+        }
+        return pos;
+    },
+}
+
 /**
      * Repara el codigo obtenido en python para que no use submodulos
      * en las superclases.
@@ -108,7 +162,7 @@ var ModalExportarCtrl = function($scope, $modalInstance, $http, codigo) {
                 // guarda el código y retorna la URL en donde se publica el juego.
 
                 $scope.mensaje = "OK";
-                $scope.url_juego = basepath + data.url;    
+                $scope.url_juego = basepath + data.url;
             }).
             error(function(error, code) {
                 $scope.error = "Error al intentar subir el código.";
@@ -124,14 +178,14 @@ var ModalExportarCtrl = function($scope, $modalInstance, $http, codigo) {
 
         cargar_titulo_desde_interfaz();
 
-        ejecutar_codigo_python(codigo, 
+        ejecutar_codigo_python(codigo,
                                function(codigo_js) {
-                                   parametros = {codigo: codigo_js, 
+                                   parametros = {codigo: codigo_js,
                                                  imagen: $scope.imagen_src,
                                                  titulo: $scope.titulo,
                                                 };
                                    subir_codigo(parametros);
-                               }, 
+                               },
                                function(mensaje_de_error) {
                                    alert(mensaje_de_error);
                                }
@@ -151,7 +205,7 @@ var ModalExportarCtrl = function($scope, $modalInstance, $http, codigo) {
 app.controller('InterpreteCtrl', function($scope, $http, $modal) {
     $scope.codigo = [
         '# codigo para ejecutar.',
-        '		',
+        '        ',
         'class MiActor(pilas.actores.Bomba):',
         '',
         '  def __init__(self):',
@@ -176,13 +230,13 @@ app.controller('InterpreteCtrl', function($scope, $http, $modal) {
         lineNumbers: true,
         theme: 'xq-light',
         mode: 'python',
-        };	
+        };
 
         $scope.data = {
         textoIngresado: '',
         sugerencias: [],
         indice_sugerido: 0,
-            todasLasSugerencias: ['pilas', 'mono', 'pilas.actores', 'pinpinela', 'pipita'],
+            todasLasSugerencias: ['pilas', 'pilas.actores'],
 };
 
     var codemirrorEditor = undefined;
@@ -252,7 +306,7 @@ app.controller('InterpreteCtrl', function($scope, $http, $modal) {
         document.getElementById('splitter-vertical'),
         document.getElementById('editor'),
         document.getElementById('panel-lateral-interprete'),
-        document.getElementById('content') 
+        document.getElementById('content')
     );
 
     pilas = new Pilas();
@@ -263,7 +317,7 @@ app.controller('InterpreteCtrl', function($scope, $http, $modal) {
         window.bomba = new pilas.actores.Bomba();
     }
 
-    pilas.ejecutar();	
+    pilas.ejecutar();
 
     $scope.ejecutar = function() {
         pilas.reiniciar();
@@ -271,10 +325,10 @@ app.controller('InterpreteCtrl', function($scope, $http, $modal) {
         var codigo = codemirrorEditor.getDoc().getValue();
         $scope.definir_modos();
 
-        ejecutar_codigo_python(codigo, 
+        ejecutar_codigo_python(codigo,
                                function(codigo_js) {
                                    eval(codigo_js);
-                               }, 
+                               },
                                function(mensaje_de_error) {
                                    console.log(mensaje_de_error);
 
@@ -397,7 +451,7 @@ app.controller('InterpreteCtrl', function($scope, $http, $modal) {
         }
 
         // Tecla Abajo
-        if (keycode === 40) { 
+        if (keycode === 40) {
             event.stopPropagation();
             event.preventDefault();
             $scope.data.indice_sugerido = Math.min($scope.data.indice_sugerido + 1, $scope.data.sugerencias.length - 1);
@@ -421,7 +475,7 @@ app.controller('InterpreteCtrl', function($scope, $http, $modal) {
         // Si hay texto sugerido en el popup de autocompletado
         // intenta capturar el teclado y absorver el evento.
         if ($scope.data.sugerencias.length > 0) {
-            var continuar_evento = procesar_keydown_sobre_autocompletado(event);	
+            var continuar_evento = procesar_keydown_sobre_autocompletado(event);
 
             if (!continuar_evento)
                 return false;
@@ -430,13 +484,29 @@ app.controller('InterpreteCtrl', function($scope, $http, $modal) {
         funcion_estandar_de_consolejs.call(this, event);
     }
 
+
     $('#exec').on('keyup', function() {
         var el_cursor = document.getElementById('cursor');
         var el_sugerencias = document.getElementById('sugerencias');
+        var el_console = document.getElementById('console');
 
         $scope.data.textoIngresado = $('#exec').text();
-        el_sugerencias.style.left = cursor.getClientRects()[0].right + 'px';
-        el_sugerencias.style.top = cursor.getClientRects()[0].bottom + 'px';
+
+        var pos = utils.getCaretPixelPos(el_cursor);
+
+        if (pos.left === 0)
+            pos.left = 5000;
+
+        el_sugerencias.style.left = pos.left + 30 + "px";
+        el_sugerencias.style.top = pos.top + 15 + "px";
+
+        var limite_inferior_contenedor = el_console.getClientRects()[0].bottom;
+
+        // Si sale por abajo del area visible lo sube.
+        if (pos.top + 150 > limite_inferior_contenedor) {
+            // 150 es el alto del area de sugerencias.
+            el_sugerencias.style.top = limite_inferior_contenedor - 145 + "px";
+        }
 
         $scope.$apply();
     });
@@ -489,7 +559,7 @@ app.controller('InterpreteCtrl', function($scope, $http, $modal) {
             return;
 
         $scope.data.sugerencias = obtener_sugerencias_para(ultima_palabra);
-        $scope.data.indice_sugerido = 0;		
+        $scope.data.indice_sugerido = 0;
     });
 
 });

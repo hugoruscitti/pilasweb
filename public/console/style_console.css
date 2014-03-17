@@ -92,7 +92,11 @@
 #console form { position: relative; top: 0; width: 100%; z-index: 20; }
 #exec, .fakeInput { position: relative; height: auto; }
 
-#cursor { height: auto; white-space: pre-wrap; }
+#cursor {
+    width: 90%;
+    height: auto;
+    white-space: pre-wrap; }
+
 
 #exec, .fakeInput { cursor: text; }
 #exec .suggest { color: #999; }
