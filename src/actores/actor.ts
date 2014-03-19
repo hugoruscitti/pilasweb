@@ -77,8 +77,8 @@ class Actor extends Estudiante {
     this.crear_sprite();
     this.x = x || 0;
     this.y = y || 0;
-    this.centro_x = this.ancho / 2;
-    this.centro_y = this.alto / 2;
+    this.centro_x = 0;
+    this.centro_y = 0;
 
     if (atributos['rotacion'])
       this.rotacion = atributos['rotacion'];
@@ -154,10 +154,10 @@ class Actor extends Estudiante {
   }
 
   get centro_x() {return this.sprite.regX}
-  set centro_x(_x) {this.sprite.regX = _x}
+  set centro_x(_x) {this.sprite.regX = (this.ancho/2) + _x}
 
   get centro_y() {return this.sprite.regY}
-  set centro_y(_y) {this.sprite.regY = _y}
+  set centro_y(_y) {this.sprite.regY = (this.alto/2) + _y}
 
   get escala_x() {return this.sprite.scaleX}
   set escala_x(valor) {
