@@ -10,8 +10,6 @@ class Pelota extends Actor {
 	
     var imagen = "pelota.png";
     super(imagen, x, y);
-    this.centro_x = 25;
-    this.centro_y = 25;
     this.radio_de_colision = 25;
 
     this.aprender(pilas.habilidades.RebotarComoPelota);

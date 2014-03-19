@@ -10,7 +10,7 @@ class Pingu extends Actor {
 		super(imagen, x, y);
 		this._imagen.definir_cuadro(4);
 		this.paso = 0;
-		this.centro_y = 100;
+		this.centro_y = 50;
 		this.cuadros_correr = [5,6,7,8,9];
 		this.saltando = false;
 	}

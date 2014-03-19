@@ -17,8 +17,6 @@ class Aceituna extends Actor {
     this.cuadro_gritar = 'aceituna_grita.png';
 
     super(this.cuadro_normal, x, y);
-    this.centro_x = 18;
-    this.centro_y = 18;
     this.radio_de_colision = 20;
   }
 

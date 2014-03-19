@@ -69,7 +69,7 @@ class Estudiante {
   _adoptar_el_siguiente_comportamiento() {
     if (this.comportamientos[0]) {
       this.comportamiento_actual = this.comportamientos.splice(0,1);
-      console.log(this.comportamiento_actual);
+      //console.log(this.comportamiento_actual);
       this.comportamiento_actual[0]["iniciar"](this);
     }
     else {

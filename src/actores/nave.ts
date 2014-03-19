@@ -12,8 +12,6 @@ class Nave extends Actor {
 	
     var imagen = pilas.imagenes.cargar_grilla("nave.png", 2);
     super(imagen, x, y);
-    this.centro_x = 23;
-    this.centro_y = 23;
     this.paso = 0;
     this.enemigos = [];
     this.teclado_habilitado = false;
