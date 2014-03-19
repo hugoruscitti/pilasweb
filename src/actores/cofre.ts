@@ -11,8 +11,6 @@ class Cofre extends Actor {
 	
     var imagen = pilas.imagenes.cargar_grilla("cofre.png", 4);
     super(imagen, x, y);
-    this.centro_x = 10;
-    this.centro_y = 17;
     this.z = y;
     this._imagen.definir_cuadro(0);
     this.paso = 0;

@@ -10,8 +10,6 @@ class Proyectil extends Actor {
 			return new Proyectil(x, y, atributos);
 	
     var imagen = pilas.imagenes.cargar_grilla("disparos/misil.png", 3);
-    atributos['centro_x'] = 20;
-    atributos['centro_y'] = 8;
     super(imagen, x, y, atributos);
     this.hacer(pilas.comportamientos.AvanzarComoProyectil);
     this.paso = 0;

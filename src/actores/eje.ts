@@ -9,8 +9,6 @@ class Eje extends Actor {
 	
     var imagen = "ejes.png";
     super(imagen, x, y);
-    this.centro_x = 256;
-    this.centro_y = 256;
   }
 
 }

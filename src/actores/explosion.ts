@@ -10,8 +10,6 @@ class Explosion extends Actor {
 	
     var imagen = pilas.imagenes.cargar_grilla("explosion.png", 7);
     super(imagen, x, y);
-    this.centro_x = 16;
-    this.centro_y = 16;
     this.paso = 0;
   }
 

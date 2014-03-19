@@ -10,7 +10,6 @@ class Manzana extends Actor {
     var imagen = "manzana_chica.png"; // TODO: reemplazar por manzana.png
     super(imagen, x, y);
     this.radio_de_colision = 11;
-    this.centro_y = 20;
   }
 
 }

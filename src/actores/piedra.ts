@@ -19,18 +19,15 @@ class Piedra extends Actor {
 		
 		switch (tamano) {
 				case 'chica':
-					this.centro_x = 7;
-					this.centro_y = 7;
+					this.radio_de_colision = 10;
 					break;
 				
 				case 'media':
-					this.centro_x = 16;
-					this.centro_y = 16;
+					this.radio_de_colision = 15;
 					break;
 				
 				case 'grande':
-					this.centro_x = 26;
-					this.centro_y = 26;
+					this.radio_de_colision = 20;
 					break;
 				
 				default:
@@ -38,7 +35,7 @@ class Piedra extends Actor {
 					break;
 		}
 		
-		this.rotacion = 0;
+	this.rotacion = 0;
     this.aprender(pilas.habilidades.SeMantieneEnPantalla);
     this.aprender(pilas.habilidades.PuedeExplotar);
   }

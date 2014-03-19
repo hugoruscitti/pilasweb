@@ -16,8 +16,6 @@ class Maton extends Actor {
 	
     var imagen = pilas.imagenes.cargar_grilla("rpg/maton.png", 3*4, 1);
     super(imagen, x, y);
-    this.centro_x = 36;
-    this.centro_y = 31;
     this.paso = 0;
     this.aprender(pilas.habilidades.PuedeExplotar);
     this.cuadros = [[1,1,1,1,0,0,0,0,1,1,1,1,2,2,2,2],            // arriba
@@ -30,8 +28,6 @@ class Maton extends Actor {
     window['maton'] = this;
     this.animar = false;
     this._imagen.definir_cuadro(7);
-    this.centro_x = 18;
-    this.centro_y = 40;
     this.obstaculos = [];
     this.teclado_habilitado = false;
   }
