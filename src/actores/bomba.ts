@@ -10,6 +10,7 @@ class Bomba extends Actor {
 	
     var imagen = pilas.imagenes.cargar_grilla("bomba.png", 2);
     super(imagen, x, y);
+    this.radio_de_colision = 25;
     this.paso = 0;
     this.aprender(pilas.habilidades.PuedeExplotar);
   }
