@@ -233,8 +233,8 @@ class Actor extends Estudiante {
        centro. */
     if (this.sprite !== undefined) {
       this.sprite.image = this._imagen.instanciar().image;
-      this.centro_x = this.ancho / 2;
-      this.centro_y = this.alto / 2;
+      this.centro_x = 0;
+      this.centro_y = 0;
     }
   }
 	
