@@ -1,0 +1,3 @@
+./doc/source/images/pilas-icono.png /usr/share/pixmaps
+debian/python-pilas.desktop /usr/share/applications
+
