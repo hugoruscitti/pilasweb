@@ -174,3 +174,7 @@
   }
 
 
+
+.modal {
+  overflow-y: hidden !important;
+}
