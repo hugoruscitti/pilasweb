@@ -1,50 +1,46 @@
 /// <reference path="actor.ts"/>
 
 class Piedra extends Actor {
-	dx;
-	dy;
+  dx;
+  dy;
 
   constructor(x, y, tamano, dx, dy) {
-		/* patch para permitir la instancia sin anteponer new */
-		if (!(this instanceof Piedra)) 
-			return new Piedra(x, y, tamano, dx, dy);
-	
-		this.dx = dx || 0;
-		this.dy = dy || 0;
+    this.dx = dx || 0;
+    this.dy = dy || 0;
 
-		var tamano = tamano || "grande";
+    var tamano = tamano || "grande";
     var imagen = "piedra_" + tamano + ".png";
-		
+
     super(imagen, x, y);
-		
-		switch (tamano) {
-				case 'chica':
-					this.radio_de_colision = 10;
-					break;
-				
-				case 'media':
-					this.radio_de_colision = 15;
-					break;
-				
-				case 'grande':
-					this.radio_de_colision = 20;
-					break;
-				
-				default:
-					throw "El tamaño " + tamano + "no está permitido. Use 'chica', 'media' o 'grande'."
-					break;
-		}
-		
-	this.rotacion = 0;
+
+    switch (tamano) {
+        case 'chica':
+          this.radio_de_colision = 10;
+          break;
+
+        case 'media':
+          this.radio_de_colision = 15;
+          break;
+
+        case 'grande':
+          this.radio_de_colision = 20;
+          break;
+
+        default:
+          throw "El tamaño " + tamano + "no está permitido. Use 'chica', 'media' o 'grande'."
+          break;
+    }
+
+  this.rotacion = 0;
     this.aprender(pilas.habilidades.SeMantieneEnPantalla);
     this.aprender(pilas.habilidades.PuedeExplotar);
   }
-	
-	actualizar() {
-		this.x += this.dx;
-		this.y += this.dy;
-		this.rotacion += 1;
-	}
+
+  actualizar() {
+    this.x += this.dx;
+    this.y += this.dy;
+    this.rotacion += 1;
+  }
 
   empujar(dx, dy)  {
     dx = dx || 0;

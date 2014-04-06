@@ -4,16 +4,11 @@ class Pelota extends Actor {
   figura;
 
   constructor(x, y) {
-		/* patch para permitir la instancia sin anteponer new */
-		if (!(this instanceof Pelota)) 
-			return new Pelota(x, y);
-	
     var imagen = "pelota.png";
     super(imagen, x, y);
     this.radio_de_colision = 25;
 
     this.aprender(pilas.habilidades.RebotarComoPelota);
-    window['aaa'] = this;
   }
 
   empujar(dx, dy) {

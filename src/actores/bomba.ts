@@ -4,10 +4,6 @@ class Bomba extends Actor {
   paso;
 
   constructor(x, y) {
-		/* patch para permitir la instancia sin anteponer new */
-		if (!(this instanceof Bomba)) 
-			return new Bomba(x, y);
-	
     var imagen = pilas.imagenes.cargar_grilla("bomba.png", 2);
     super(imagen, x, y);
     this.radio_de_colision = 25;

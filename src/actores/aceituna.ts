@@ -1,16 +1,12 @@
 /// <reference path="actor.ts"/>
 
 class Aceituna extends Actor {
-	cuadro_normal; 
-	cuadro_reir;
-	cuadro_burlar;
-	cuadro_gritar;
+  cuadro_normal;
+  cuadro_reir;
+  cuadro_burlar;
+  cuadro_gritar;
 
   constructor(x, y) {
-	  /* patch para permitir la instancia sin anteponer new */
-		if (!(this instanceof Aceituna)) 
-			return new Aceituna(x, y);
-	
     this.cuadro_normal = 'aceituna.png';
     this.cuadro_reir = 'aceituna_risa.png';
     this.cuadro_burlar = 'aceituna_burla.png';
@@ -21,24 +17,23 @@ class Aceituna extends Actor {
   }
 
   normal() {
-  	this.imagen = this.cuadro_normal;
+    this.imagen = this.cuadro_normal;
   }
 
   reir() {
-  	this.imagen = this.cuadro_reir;
+    this.imagen = this.cuadro_reir;
   }
 
   gritar() {
-  	this.imagen = this.cuadro_gritar
+    this.imagen = this.cuadro_gritar
   }
 
   burlarse() {
-  	this.imagen = this.cuadro_burlar;
+    this.imagen = this.cuadro_burlar;
   }
 
   saltar() {
-  	this.hacer(pilas.comportamientos.Saltar);
+    this.hacer(pilas.comportamientos.Saltar);
   }
 
 }
-

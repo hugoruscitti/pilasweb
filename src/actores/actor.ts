@@ -57,23 +57,20 @@ class Actor extends Estudiante {
   callbacks_cuando_mueve_mouse;
 
   constructor(imagen, x, y, atributos = {}) {
-		/* patch para permitir la instancia sin anteponer new */
-		if (!(this instanceof Actor)) 
-			return new Actor(imagen, x, y, atributos);
-		
+
     super();
     this.imagen = imagen || 'sin_imagen.png';
     atributos = atributos || {};
     this.vivo = true;
     this.radio_de_colision = 10;
     this.id = pilas.utils.obtener_uuid();
-		
-		/* Se ejecuta si el usuario intenta llamar al constructor sin usar 'new' 
-		
-			 Por ejemplo, si escribe "pilas.actores.Nave()" da un error. Si el usuario
-			 escribe "new pilas.actores.Nave()" sale bien :)
-		*/
-		
+
+    /* Se ejecuta si el usuario intenta llamar al constructor sin usar 'new'
+
+       Por ejemplo, si escribe "pilas.actores.Nave()" da un error. Si el usuario
+       escribe "new pilas.actores.Nave()" sale bien :)
+    */
+
     this.crear_sprite();
     this.x = x || 0;
     this.y = y || 0;
@@ -179,7 +176,7 @@ class Actor extends Estudiante {
   set escala(valor) {
 
     if (valor instanceof Array) {
-      var nuevo_radio_de_colision = [] 
+      var nuevo_radio_de_colision = []
       for (var i=0; i<valor.length; i++) {
         nuevo_radio_de_colision.push((this.radio_de_colision * valor[i]) / this.escala);
       }
@@ -189,7 +186,7 @@ class Actor extends Estudiante {
     else {
       this.radio_de_colision = (this.radio_de_colision * valor) / this.escala;
     }
-    
+
     this.escala_x = valor;
     this.escala_y = valor;
   }
@@ -237,39 +234,39 @@ class Actor extends Estudiante {
       this.centro_y = 0;
     }
   }
-	
-	/* TODO: hacer que se puedan interpolar
-		       las propiedades: izquierda, derecha, arriba, abajo.
-	*/
-	get izquierda() {
-		return this.x - (this.centro_x * this.escala);
-	}
-	set izquierda(x) {
-		this.x = x + (this.centro_x * this.escala);
-	}
-	
-	get derecha() {
-		return this.izquierda + (this.ancho * this.escala);
-	}
-	set derecha(x) {
-		this.izquierda = x - (this.ancho * this.escala);
-	}
-	
-	get arriba() {
-		return this.y + (this.centro_y * this.escala);
-	}
-	
-	set arriba(y) {
-		this.y = y - (this.centro_y * this.escala);
-	}
-	
-	get abajo() {
-		return this.arriba - (this.alto * this.escala);
-	}
-	
-	set abajo(y) {
-		this.arriba = y + (this.alto * this.escala);
-	}
+
+  /* TODO: hacer que se puedan interpolar
+           las propiedades: izquierda, derecha, arriba, abajo.
+  */
+  get izquierda() {
+    return this.x - (this.centro_x * this.escala);
+  }
+  set izquierda(x) {
+    this.x = x + (this.centro_x * this.escala);
+  }
+
+  get derecha() {
+    return this.izquierda + (this.ancho * this.escala);
+  }
+  set derecha(x) {
+    this.izquierda = x - (this.ancho * this.escala);
+  }
+
+  get arriba() {
+    return this.y + (this.centro_y * this.escala);
+  }
+
+  set arriba(y) {
+    this.y = y - (this.centro_y * this.escala);
+  }
+
+  get abajo() {
+    return this.arriba - (this.alto * this.escala);
+  }
+
+  set abajo(y) {
+    this.arriba = y + (this.alto * this.escala);
+  }
 
   ejecutar_callbacks_clicks() {
     for(var i=0; i<this.callbacks_cuando_hace_click.length; i++) {
@@ -292,7 +289,7 @@ class Actor extends Estudiante {
   get cuando_mueve_mouse() {return this.callbacks_cuando_mueve_mouse;}
   set cuando_mueve_mouse(funcion) {
     //Esta funcion no admite parametros
-    this.callbacks_cuando_mueve_mouse.push(funcion);    
+    this.callbacks_cuando_mueve_mouse.push(funcion);
   }
 
   //metodo recibir() para gestionar los eventos

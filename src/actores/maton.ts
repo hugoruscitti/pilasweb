@@ -10,10 +10,6 @@ class Maton extends Actor {
   teclado_habilitado;
 
   constructor(x, y) {
-		/* patch para permitir la instancia sin anteponer new */
-		if (!(this instanceof Maton)) 
-			return new Maton(x, y);
-	
     var imagen = pilas.imagenes.cargar_grilla("rpg/maton.png", 3*4, 1);
     super(imagen, x, y);
     this.paso = 0;
@@ -54,7 +50,7 @@ class Maton extends Actor {
     if (this.paso >= this.cuadros[this.direccion].length) {
       this.paso = 0;
     }
-    
+
     var cuadro_a_mostrar = this.cuadros[this.direccion][parseInt(this.paso, 10)];
 
     this._imagen.definir_cuadro(cuadro_a_mostrar);
@@ -66,7 +62,7 @@ class Maton extends Actor {
 
     if (x > 0)
       this.direccion = 1;
-    
+
     if (y > 0)
       this.direccion = 0;
 
@@ -79,7 +75,7 @@ class Maton extends Actor {
     if (this.puede_moverse_a(this.x, this.y + y * this.velocidad))
       this.y += y * this.velocidad;
 
-    this.avanzar_animacion(); // TODO: 
+    this.avanzar_animacion(); // TODO:
     this.z = this.y;
   }
 
@@ -118,27 +114,27 @@ class Maton extends Actor {
   }
 
   habilitar_teclado() {
-  	if (this.teclado_habilitado === false) {
+    if (this.teclado_habilitado === false) {
       this.aprender(pilas.habilidades.MoverseConElTeclado);
       this.teclado_habilitado = true;
       return "Habilitando el teclado";
     } else {
-    	return "El teclado ya estaba habilitado.";
+      return "El teclado ya estaba habilitado.";
     }
   }
 
   inspeccionar() {
     console.log("inspeccionando ...");
 
-    return "Métodos del actor Maton: \n" + 
-    "\n" + 
-    "- saludar() \n" + 
-    "- caminar_arriba(pasos) \n" + 
-    "- caminar_abajo(pasos) \n" + 
-    "- caminar_izquierda(pasos) \n" + 
-    "- caminar_derecha(pasos) \n" + 
-    "- mover(x, y) \n" + 
-    "- habilitar_teclado() \n" + 
+    return "Métodos del actor Maton: \n" +
+    "\n" +
+    "- saludar() \n" +
+    "- caminar_arriba(pasos) \n" +
+    "- caminar_abajo(pasos) \n" +
+    "- caminar_izquierda(pasos) \n" +
+    "- caminar_derecha(pasos) \n" +
+    "- mover(x, y) \n" +
+    "- habilitar_teclado() \n" +
     "";
   }
 

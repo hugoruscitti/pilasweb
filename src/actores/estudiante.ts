@@ -1,13 +1,9 @@
 class Estudiante {
   habilidades;
-  comportamientos; 
+  comportamientos;
   comportamiento_actual;
 
   constructor() {
-		/* patch para permitir la instancia sin anteponer new */
-		if (!(this instanceof Estudiante)) 
-			return new Estudiante();
-	
     this.habilidades = [];
     this.comportamientos = [];
   }

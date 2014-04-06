@@ -8,10 +8,6 @@ class Texto extends Actor {
   sprite_texto;
 
   constructor(x, y, texto, color) {
-		/* patch para permitir la instancia sin anteponer new */
-		if (!(this instanceof Texto)) 
-			return new Texto(x, y, texto, color);
-	
     var imagen = "invisible.png";
     super(imagen, x, y);
     this.texto = texto || "Sin texto";
@@ -61,7 +57,7 @@ class Texto extends Actor {
   set escala(valor) {
 
     if (valor instanceof Array) {
-      var nuevo_radio_de_colision = [] 
+      var nuevo_radio_de_colision = []
       for (var i=0; i<valor.length; i++) {
         nuevo_radio_de_colision.push((this.radio_de_colision * valor[i]) / this.escala);
       }
@@ -71,7 +67,7 @@ class Texto extends Actor {
     else {
       this.radio_de_colision = (this.radio_de_colision * valor) / this.escala;
     }
-    
+
     this.escala_x = valor;
     this.escala_y = valor;
   }

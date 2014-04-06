@@ -5,10 +5,6 @@ class Globo extends Actor {
   actor_texto;
 
   constructor(x, y, mensaje) {
-		/* patch para permitir la instancia sin anteponer new */
-		if (!(this instanceof Globo)) 
-			return new Globo(x, y, mensaje);
-	
     var imagen = "globo.png";
     super(imagen, x, y);
     this.centro_x = 85;
