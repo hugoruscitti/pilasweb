@@ -17,17 +17,19 @@
 class Sonidos {
   recursos;
   preload;
+
   constructor(data_path) {
     this.recursos = [];
     this.preload = new createjs.LoadQueue(true, data_path+"/");
     this.preload.installPlugin(createjs.Sound);
     this.cargar_recursos();
   }
+
   private cargar_recursos() {
     this.cargar_recurso('smile.ogg');
     this.cargar_recurso('shout.ogg');
     this.cargar_recurso('saltar.wav');
-    this.preload.loadManifest(this.recursos);
+    //this.preload.loadManifest(this.recursos);
   }
 
   private cargar_recurso(nombre) {
