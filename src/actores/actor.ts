@@ -328,7 +328,7 @@ class Actor extends Estudiante {
   }
 
   decir(mensaje) {
-    var globo = new pilas.actores.Globo(this.izquierda, this.arriba, mensaje);
+    var globo = new pilas.actores.Globo(this.izquierda+(this.ancho/2), this.arriba, mensaje);
   }
 
   imitar(actor_o_figura) {
