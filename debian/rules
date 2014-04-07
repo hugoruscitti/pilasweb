@@ -1,0 +1,17 @@
+#!/usr/bin/make -f
+%:
+	dh $@ --with python2 --buildsystem=python_distutils
+
+override_dh_auto_test:
+	
+override_dh_auto_build:
+	mv Makefile ~Makefile  # Ignorar Makefile y usar setup.py
+	dh_auto_build
+	mv ~Makefile Makefile
+
+override_dh_install:
+	chmod 644 `find . | grep .png`
+	dh_install
+
+override_dh_auto_clean:
+

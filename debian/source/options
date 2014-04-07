@@ -1,0 +1,2 @@
+tar-ignore
+extend-diff-ignore=README.md
