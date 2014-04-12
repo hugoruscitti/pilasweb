@@ -324,7 +324,7 @@ class RebotarComoCaja extends Habilidad {
 
   constructor(receptor) {
     super(receptor);
-    var rectangulo = pilas.escena_actual().fisica.crear_rectangulo(receptor.x, receptor.y, receptor.radio_de_colision, receptor.radio_de_colision, {});
+    var rectangulo = pilas.escena_actual().fisica.crear_rectangulo(receptor.x, receptor.y, receptor.radio_de_colision*2, receptor.radio_de_colision*2, {});
     receptor.imitar(rectangulo);
   }
 

@@ -64,13 +64,6 @@ class Actor extends Estudiante {
     this.vivo = true;
     this.radio_de_colision = 10;
     this.id = pilas.utils.obtener_uuid();
-
-    /* Se ejecuta si el usuario intenta llamar al constructor sin usar 'new'
-
-       Por ejemplo, si escribe "pilas.actores.Nave()" da un error. Si el usuario
-       escribe "new pilas.actores.Nave()" sale bien :)
-    */
-
     this.crear_sprite();
     this.x = x || 0;
     this.y = y || 0;
@@ -331,7 +324,7 @@ class Actor extends Estudiante {
   }
 
   decir(mensaje) {
-    var globo = new pilas.actores.Globo(this.x, this.y, mensaje);
+    var globo = new pilas.actores.Globo(this.izquierda+(this.ancho/2), this.arriba, mensaje);
   }
 
   imitar(actor_o_figura) {
