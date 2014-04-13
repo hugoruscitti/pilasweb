@@ -25,8 +25,8 @@ class Plano extends Fondo {
 
   constructor() {
     super('plano.png', 0, 0);
-    this.centro_x = 0;
-    this.centro_y = 0;
+    this.sprite.regX = 0;
+    this.sprite.regY = 0;
   }
 
    crear_sprite() {
@@ -47,8 +47,8 @@ class Pasto extends Fondo {
 
   constructor() {
     super('pasto.png', 0, 0);
-    this.centro_x = 0;
-    this.centro_y = 0;
+    this.sprite.regX = 0;
+    this.sprite.regY = 0;
   }
 
    crear_sprite() {
