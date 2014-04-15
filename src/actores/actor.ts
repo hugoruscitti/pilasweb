@@ -33,7 +33,7 @@
  *
  * Estas propiedades también se pueden manipular mediante
  * interpolaciones. Por ejemplo, para aumentar el tamaño del
- * personaje de 1 a 5 en 7 segundos:
+ * personaje de 1 a 5 en 1 segundo:
  *
  *     @example
  *     protagonista.escala = 1;
@@ -47,22 +47,22 @@
  *
  */
 class Actor extends Estudiante {
-  sprite;
-  _imagen;
-  vivo;
-  radio_de_colision;
-  id;
-  figura;
-  callbacks_cuando_hace_click;
-  callbacks_cuando_mueve_mouse;
+    sprite;
+    _imagen;
+    vivo;
+    radio_de_colision;
+    id;
+    figura;
+    callbacks_cuando_hace_click;
+    callbacks_cuando_mueve_mouse;
 
-  constructor(imagen, x, y, atributos = {}) {
-		/* patch para permitir la instancia sin anteponer new */
-		if (!(this instanceof Actor)) 
-			return new Actor(imagen, x, y, atributos);
-		
-    super();
-    this.imagen = imagen || 'sin_imagen.png';
+    constructor(imagen, x, y, atributos = {}) {
+  		/* patch para permitir la instancia sin anteponer new */
+  		if (!(this instanceof Actor)) 
+  			return new Actor(imagen, x, y, atributos);
+  		
+      super();
+      this.imagen = imagen || 'sin_imagen.png';
     atributos = atributos || {};
     this.vivo = true;
     this.radio_de_colision = 10;
@@ -193,7 +193,7 @@ class Actor extends Estudiante {
     if (valor instanceof Array)
       pilas.interpolar(this.sprite, 'rotation', valor, 1);
     else
-      this.sprite.rotation = valor;
+      this.sprite.rotation = valor % 360;
   }
 
   get transparencia() {return (-100 * this.sprite.alpha) + 100}
