@@ -18,6 +18,8 @@ class Imagenes {
     // });
 
     this.loader.addCompletionListener(function(e) {
+      pilas.ready = true;
+      pilas.escena_actual().iniciar();
       pilas.onready();
       pilas.ejecutar();
     });
