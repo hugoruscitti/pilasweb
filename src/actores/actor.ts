@@ -184,12 +184,16 @@ class Actor extends Estudiante {
     this.escala_y = valor;
   }
 
-  get rotacion() {return this.sprite.rotation % 360}
+  get rotacion() {return this.sprite.rotation}
   set rotacion(valor) {
-    if (valor instanceof Array)
+    if (valor instanceof Array) {
+      for (i in valor) {
+        valor[i] = ((valor[i]%360)+360)%360;
+      }
       pilas.interpolar(this.sprite, 'rotation', valor, 1);
+    }
     else
-      this.sprite.rotation = valor % 360;
+      this.sprite.rotation = ((valor%360)+360)%360;
   }
 
   get transparencia() {return (-100 * this.sprite.alpha) + 100}
