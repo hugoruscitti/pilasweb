@@ -24,6 +24,10 @@ class Base {
     this.fisica = new Fisica(this.camara);
     this.control = new Control(this);
   }
+
+  iniciar() {
+    throw "Tienes que re-definir el método iniciar";
+  }
 }
 
 /**
@@ -42,11 +46,16 @@ class Base {
 class Normal extends Base {
   actores;
   tareas;
+  fondo;
 
   constructor() {
     super();
     this.actores = [];
     this.tareas = new pilas.tareas.Tareas();
+  }
+
+  iniciar() {
+    this.fondo = new pilas.fondos.Plano();
   }
 
   actualizar() {

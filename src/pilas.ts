@@ -54,6 +54,8 @@ class Pilas {
   colores;          // acceso al módulo.
   sonidos;          // acceso al módulo.
 
+  ready;
+
   /**
    * @method iniciar 
    *
@@ -91,6 +93,8 @@ class Pilas {
     this.tareas = new tareas();
 
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
+
+    this.ready  = false;
   }
 
 	reiniciar() {
