@@ -210,6 +210,7 @@ class MoverseConElTecladoConRotacion extends Habilidad {
  */
 class Arrastrable extends Habilidad {
   debe_arrastrar;
+  constante;
 
   constructor(receptor) {
     super(receptor);
@@ -234,7 +235,7 @@ class Arrastrable extends Habilidad {
     if (evento.boton == 1) {
       if (this.receptor.colisiona_con_un_punto(evento.x, evento.y)) {
         pilas.escena_actual().cuando_termina_click.conectar(this);
-        this.comienza_a_arrastrar();
+        this.comienza_a_arrastrar(evento);
       }
     }
   }
@@ -250,7 +251,7 @@ class Arrastrable extends Habilidad {
 
     if (this.debe_arrastrar === true) {
       if (this.receptor.tiene_fisica()) {
-        this.receptor.figura.definir_posicion(evento.x, evento.y);
+        this.constante.mover(evento.x, evento.y);
       } else {
         this.receptor.x = evento.x;
         this.receptor.y = evento.y;
@@ -265,16 +266,16 @@ class Arrastrable extends Habilidad {
     this.termina_de_arrastrar();
   }
 
-  comienza_a_arrastrar() {
+  comienza_a_arrastrar(evento) {
     if (this.receptor.tiene_fisica())
-      this.receptor.figura.cuerpo.SetType(0);
-
+      this.constante = new ConstanteDeMovimiento(this.receptor.figura, evento);
+      
     this.debe_arrastrar = true;
   }
 
   termina_de_arrastrar() {
     if (this.receptor.tiene_fisica())
-      this.receptor.figura.cuerpo.SetType(2);
+      this.constante.eliminar();
 
     this.debe_arrastrar = false;
   }
@@ -329,6 +330,7 @@ class RebotarComoCaja extends Habilidad {
   }
 
 }
+
 
 
 class SeMantieneEnPantalla extends Habilidad {
