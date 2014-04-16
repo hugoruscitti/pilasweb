@@ -11,6 +11,7 @@ var box2d = {
   b2World: Box2D.Dynamics.b2World,
   b2PolygonShape: Box2D.Collision.Shapes.b2PolygonShape,
   b2DebugDraw: Box2D.Dynamics.b2DebugDraw,
+  b2MouseJointDef: Box2D.Dynamics.Joints.b2MouseJointDef,
 }
 
 function convertir_a_metros(valor) {
@@ -304,6 +305,8 @@ class Fisica {
 
 		var body = this.mundo.CreateBody(bodyDef);
 		body.CreateFixture(fixtureDef);
+
+    return body;
 	}
 
   crear_rectangulo(x, y, ancho, alto, opciones) {
@@ -312,5 +315,35 @@ class Fisica {
 
   crear_circulo(x, y, radio, opciones) {
     return new this.Circulo(this, x, y, radio, opciones);
+  }
+}
+
+
+class ConstanteDeMovimiento {
+  constante;
+  circulo;
+
+  constructor(figura, evento) {
+    var def = new box2d.b2MouseJointDef();
+    this.circulo = pilas.escena_actual().fisica.createBox(10,10,1,1,box2d.b2Body.b2_staticBody);
+    def.bodyA = this.circulo;
+    def.bodyB = figura.cuerpo;
+    var pos = pilas.escena_actual().camara.convertir_de_posicion_relativa_a_fisica(evento.x, evento.y);
+    def.target = new box2d.b2Vec2(convertir_a_metros(pos.x),convertir_a_metros(pos.y));
+    def.collideConnected = true;
+    def.maxForce = 1000 * figura.cuerpo.GetMass();
+
+    this.constante = pilas.escena_actual().fisica.mundo.CreateJoint(def);
+
+    figura.cuerpo.SetAwake(true);
+  }
+
+  mover(x, y) {
+    var pos = pilas.escena_actual().camara.convertir_de_posicion_relativa_a_fisica(x,y);
+    this.constante.SetTarget(new box2d.b2Vec2(convertir_a_metros(pos.x),convertir_a_metros(pos.y)));
+  }
+
+  eliminar() {
+    pilas.escena_actual().fisica.mundo.DestroyBody(this.circulo)
   }
 }
