@@ -53,6 +53,7 @@ class Pilas {
   colisiones;       // acceso al módulo.
   colores;          // acceso al módulo.
   sonidos;          // acceso al módulo.
+  escena;          // acceso al módulo.
 
   ready;
 
@@ -89,6 +90,7 @@ class Pilas {
     this.colisiones = new Colisiones();
     this.colores = new colores();
     this.sonidos = new Sonidos(this.opciones.data_path);
+    this.escena = new escena();
 
     this.tareas = new tareas();
 

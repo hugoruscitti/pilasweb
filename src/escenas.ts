@@ -1,3 +1,11 @@
+class escena {
+  Base;
+  Normal;
+  constructor() {
+    this.Base = Base; 
+    this.Normal = Normal;
+  }
+}
 
 class Base {
   click_de_mouse;
@@ -9,8 +17,9 @@ class Base {
   fisica;
   stage;      // escenario de cretejs.
   camara;
-
   control;
+  actores;
+  tareas;
 
   constructor() {
     this.click_de_mouse = new Evento('click_de_mouse');             // ['boton', 'x', 'y']
@@ -23,39 +32,13 @@ class Base {
     this.camara = new Camara(this.stage);
     this.fisica = new Fisica(this.camara);
     this.control = new Control(this);
-  }
 
-  iniciar() {
-    throw "Tienes que re-definir el método iniciar";
-  }
-}
-
-/**
- * @class Normal
- *
- * Escena básica de pilas.
- *
- * Si no se define ninguna escena, cuando se ejecuta:
- *
- *     @example
- *     pilas.iniciar();
- *
- * esta es la escena que se muestra en la pantalla.
- *
- */
-class Normal extends Base {
-  actores;
-  tareas;
-  fondo;
-
-  constructor() {
-    super();
     this.actores = [];
     this.tareas = new pilas.tareas.Tareas();
   }
 
   iniciar() {
-    this.fondo = new pilas.fondos.Plano();
+    throw "Tienes que re-definir el método iniciar";
   }
 
   actualizar() {
@@ -108,4 +91,26 @@ class Normal extends Base {
   obtener_posicion_escenario(x, y) {
     return this.camara.obtener_posicion_escenario(x, y);
   }
+}
+
+/**
+ * @class Normal
+ *
+ * Escena básica de pilas.
+ *
+ * Si no se define ninguna escena, cuando se ejecuta:
+ *
+ *     @example
+ *     pilas.iniciar();
+ *
+ * esta es la escena que se muestra en la pantalla.
+ *
+ */
+class Normal extends Base {
+  fondo;
+
+  iniciar() {
+    this.fondo = new pilas.fondos.Plano();
+  }
+
 }
