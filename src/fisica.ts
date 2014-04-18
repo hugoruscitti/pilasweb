@@ -321,20 +321,20 @@ class Fisica {
 
 class ConstanteDeMovimiento {
   constante;
-  circulo;
+  cuerpo_enlazado;
 
   constructor(figura, evento) {
     var def = new box2d.b2MouseJointDef();
-    this.circulo = pilas.escena_actual().fisica.createBox(10,10,1,1,box2d.b2Body.b2_staticBody);
-    def.bodyA = this.circulo;
+    this.cuerpo_enlazado = pilas.escena_actual().fisica.createBox(8.5,2,1,1,box2d.b2Body.b2_staticBody);
+    def.bodyA = this.cuerpo_enlazado;
     def.bodyB = figura.cuerpo;
     var pos = pilas.escena_actual().camara.convertir_de_posicion_relativa_a_fisica(evento.x, evento.y);
     def.target = new box2d.b2Vec2(convertir_a_metros(pos.x),convertir_a_metros(pos.y));
     def.collideConnected = true;
-    def.maxForce = 1000 * figura.cuerpo.GetMass();
+    def.maxForce = 1000.0 * figura.cuerpo.GetMass();
+    def.dampingRatio = 0;
 
     this.constante = pilas.escena_actual().fisica.mundo.CreateJoint(def);
-
     figura.cuerpo.SetAwake(true);
   }
 
@@ -344,6 +344,6 @@ class ConstanteDeMovimiento {
   }
 
   eliminar() {
-    pilas.escena_actual().fisica.mundo.DestroyBody(this.circulo)
+    pilas.escena_actual().fisica.mundo.DestroyBody(this.cuerpo_enlazado);
   }
 }
