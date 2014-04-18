@@ -96,24 +96,6 @@ class Figura {
     this.cuerpo.SetLinearVelocity(v);
   }
 
-  definir_radio(radio) {
-    var fixture = this.cuerpo.GetFixtureList();
-
-    if (fixture) {
-      var shape = fixture.GetShape();
-      shape.SetRadius(convertir_a_metros(radio));
-    }
-  }
-
-  obtener_radio() {
-    var fixture = this.cuerpo.GetFixtureList();
-
-    if (fixture) {
-      var shape = fixture.GetShape();
-      return convertir_a_pixels(shape.GetRadius());
-    }
-  }
-
   eliminar() {
     this.fisica.mundo.DestroyBody(this.cuerpo);
   }
@@ -157,16 +139,24 @@ class Rectangulo extends Figura {
 
 
 class Circulo extends Figura {
+  _radio;
+
   constructor(fisica, x, y, radio, opciones) {
     super(fisica);
-    opciones.dinamico = opciones.dinamico || true;
+    this._radio = convertir_a_metros(radio);
+    
+    var opciones = opciones || {};
+
+    if (opciones.dinamico === undefined)
+      opciones.dinamico = true;
+
     var fixDef = new Box2D.Dynamics.b2FixtureDef;
 
     fixDef.density = opciones.densidad || 1.0;
     fixDef.friction = opciones.friccion || 0.5;
     fixDef.restitution = opciones.restitucion || 0.2;
 
-    fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(convertir_a_metros(radio));
+    fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(this._radio);
 
     // crear el body dinamico
     var bodyDef = new Box2D.Dynamics.b2BodyDef;
@@ -186,6 +176,30 @@ class Circulo extends Figura {
     this.cuerpo = this.fisica.mundo.CreateBody(bodyDef);
     this.cuerpo.CreateFixture(fixDef);
   }
+
+  definir_radio() {
+    var fixture = this.cuerpo.GetFixtureList();
+
+    if (fixture) {
+      var shape = fixture.GetShape();
+      shape.SetRadius(this._radio);
+    }
+  }
+
+  set radio(radio) {
+    if (radio instanceof Array) {
+      pilas.interpolar(this,"radio",radio,1);
+    }
+    else {
+      this._radio = convertir_a_metros(radio);
+      this.definir_radio();
+    }
+  }
+
+  get radio() {
+    return convertir_a_pixels(this._radio);
+  }
+
 }
 
 
