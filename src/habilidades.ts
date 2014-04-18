@@ -27,7 +27,13 @@ class Imitar extends Habilidad {
   constructor(receptor, argumentos) {
     super(receptor,argumentos);
     this.objeto_a_imitar = this.argumentos.objeto_a_imitar;
-    this.con_rotacion = this.argumentos.con_rotacion || true;
+
+    if (this.argumentos.con_rotacion === undefined) {
+      this.argumentos.con_rotacion = true;
+    }
+    if (this.argumentos.con_escala === undefined) {
+      this.argumentos.con_escala = true;
+    }
 
     receptor.id = this.argumentos.objeto_a_imitar.id;
     receptor.figura = this.argumentos.objeto_a_imitar;
@@ -36,8 +42,11 @@ class Imitar extends Habilidad {
   actualizar() {
       this.receptor.x = this.objeto_a_imitar.x;
       this.receptor.y = this.objeto_a_imitar.y;
-      if(this.con_rotacion==true) {
+      if (this.argumentos.con_rotacion) {
         this.receptor.rotacion = this.objeto_a_imitar.rotacion;
+      }
+      if (this.argumentos.con_escala) {
+        this.objeto_a_imitar.escala = this.receptor.escala;
       }
   }
 
