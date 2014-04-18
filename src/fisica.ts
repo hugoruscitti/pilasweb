@@ -107,8 +107,12 @@ class Rectangulo extends Figura {
   constructor(fisica, x, y, ancho, alto, opciones) {
     super(fisica);
 
+
+    var opciones = opciones || {};
+
     if (opciones.dinamico === undefined)
       opciones.dinamico = true;
+
 
     var bodyDef = new box2d.b2BodyDef;
 
@@ -140,10 +144,12 @@ class Rectangulo extends Figura {
 
 class Circulo extends Figura {
   _radio;
+  _escala;
 
   constructor(fisica, x, y, radio, opciones) {
     super(fisica);
     this._radio = convertir_a_metros(radio);
+    this._escala = 1;
     
     var opciones = opciones || {};
 
@@ -191,6 +197,7 @@ class Circulo extends Figura {
       pilas.interpolar(this,"radio",radio,1);
     }
     else {
+      this._escala = (this._escala * radio) / this.radio
       this._radio = convertir_a_metros(radio);
       this.definir_radio();
     }
@@ -198,6 +205,21 @@ class Circulo extends Figura {
 
   get radio() {
     return convertir_a_pixels(this._radio);
+  }
+
+  set escala(escala) {
+    if (escala instanceof Array) {
+      pilas.interpolar(this,"escala",escala,1);
+    }
+    else {
+      this._radio = (this._radio * escala)/this.escala;
+      this._escala = escala;
+      this.definir_radio();
+    }    
+  }
+
+  get escala() {
+    return this._escala;
   }
 
 }
