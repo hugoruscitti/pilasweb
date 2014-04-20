@@ -192,7 +192,7 @@ class Circulo extends Figura {
     }
   }
 
-  set radio(radio) {
+  set radio(radio:any) {
     if (radio instanceof Array) {
       pilas.interpolar(this,"radio",radio,1);
     }
@@ -203,7 +203,7 @@ class Circulo extends Figura {
     }
   }
 
-  get radio() {
+  get radio():any {
     return convertir_a_pixels(this._radio);
   }
 
