@@ -1,30 +1,32 @@
 {
   "name": "pilasweb",
-  "version": "0.0.1",
-  "author": "Hugo Ruscitti",
-  "repository": "http://github.com/hugoruscitti/pilasweb",
-  "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-typescript": "*",
-    "grunt-contrib-watch": "*",
-    "shelljs": "*",
-    "grunt-mocha-phantomjs": "~0.2.8",
-    "mocha": "~1.14.0",
-    "chai": "~1.7.0",
-    "mocha-phantomjs": "~3.1.6",
-    "process": "~0.5.1",
-    "grunt-cli": "~0.1.9",
-    "phantomjs": "~1.9.2-4",
-    "grunt-node-webkit-builder": "~0.1.14",
-    "jsonfile": "~1.1.1",
-    "gaze": "~0.4.3",
-    "q": "~0.9.7",
-    "async": "~0.2.9",
-    "grunt-contrib-copy": "~0.5.0",
-    "grunt-contrib-concat": "~0.3.0"
+  "version": "0.0.2",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "author": "http://github.com/hugoruscitti/pilasweb",
+  "license": "ISC",
   "dependencies": {
-    "bower": "~1.2.8",
-    "grunt": "~0.4.2"
+    "process": "^0.6.0",
+    "grunt-contrib-copy": "^0.5.0",
+    "jsonfile": "^1.1.1",
+    "async": "^0.7.0",
+    "q": "^1.0.1",
+    "shelljs": "^0.2.6",
+    "grunt-contrib-concat": "^0.4.0",
+    "mocha": "^1.18.2",
+    "mocha-phantomjs": "^3.3.2",
+    "chai": "^1.9.1",
+    "grunt-typescript": "^0.3.0",
+    "phantomjs": "^1.9.7-3",
+    "grunt-mocha-phantomjs": "^0.4.3",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-cli": "^0.1.13",
+    "grunt": "^0.4.4",
+    "grunt-node-webkit-builder": "^0.1.20",
+    "gaze": "^0.6.3",
+    "bower": "^1.3.2"
   }
 }
