@@ -29,7 +29,7 @@ class Sonidos {
     this.cargar_recurso('smile.ogg');
     this.cargar_recurso('shout.ogg');
     this.cargar_recurso('saltar.wav');
-    //this.preload.loadManifest(this.recursos);
+    this.preload.loadManifest(this.recursos);
   }
 
   private cargar_recurso(nombre) {
