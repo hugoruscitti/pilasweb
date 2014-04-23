@@ -16,6 +16,8 @@ declare var createjs;
 /// <reference path="colores.ts />
 /// <reference path="tareas.ts />
 /// <reference path="sonidos.ts />
+/// <reference path="evento.ts />
+
 
 /**
  * @class Pilas
@@ -54,6 +56,7 @@ class Pilas {
   colores;          // acceso al módulo.
   sonidos;          // acceso al módulo.
   escena;          // acceso al módulo.
+  eventos;          // acceso al módulo.
 
   ready;
 
@@ -91,10 +94,11 @@ class Pilas {
     this.colores = new colores();
     this.sonidos = new Sonidos(this.opciones.data_path);
     this.escena = new escena();
-
     this.tareas = new tareas();
 
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
+
+    this.eventos = new ProxyEventos();
 
     this.ready  = false;
   }
@@ -179,27 +183,27 @@ class Pilas {
   private conectar_eventos() {
     this.canvas.onmousedown = function (event) {
       var posicion = pilas.obtener_posicion_desde_evento(this, event);
-      pilas.escena_actual().click_de_mouse.emitir(posicion);
+      pilas.eventos.click_de_mouse.emitir(posicion);
     }
 
     this.canvas.onmouseup = function (event) {
       var posicion = pilas.obtener_posicion_desde_evento(this, event);
-      pilas.escena_actual().cuando_termina_click.emitir(posicion);
+      pilas.eventos.cuando_termina_click.emitir(posicion);
     }
 
     this.canvas.onmousemove = function (event) {
       var posicion = pilas.obtener_posicion_desde_evento(this, event);
-      pilas.escena_actual().mueve_mouse.emitir(posicion);
+      pilas.eventos.mueve_mouse.emitir(posicion);
     }
 
     window.onkeydown = function (event) {
       var e = pilas.obtener_codigo_y_texto_desde_evento(event);
-      pilas.escena_actual().pulsa_tecla.emitir(e);
+      pilas.eventos.pulsa_tecla.emitir(e);
     }
 
     window.onkeyup = function (event) {
       var e = pilas.obtener_codigo_y_texto_desde_evento(event);
-      pilas.escena_actual().suelta_tecla.emitir(e);
+      pilas.eventos.suelta_tecla.emitir(e);
     }
   }
 
