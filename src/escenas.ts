@@ -50,7 +50,7 @@ class Base {
       this.actores[i].actualizar();
     }
 
-    //this.ordenar_actores_por_valor_z();
+    this.ordenar_actores_por_valor_z();
     this.stage.update();
     this.actualiza.emitir();
     pilas.colisiones.verificar_colisiones();
@@ -70,6 +70,9 @@ class Base {
   }
 
   agregar_actor(actor) {
+    if (this.actores[1]) {
+      actor.z = this.actores[this.actores.length-1].z-1;
+    }
     this.actores.push(actor);
 
     this.stage.addChild(actor.sprite);
