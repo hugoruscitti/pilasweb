@@ -183,27 +183,27 @@ class Pilas {
   private conectar_eventos() {
     this.canvas.onmousedown = function (event) {
       var posicion = pilas.obtener_posicion_desde_evento(this, event);
-      pilas.eventos.click_de_mouse.emitir(posicion);
+      pilas.escena_actual().click_de_mouse.emitir(posicion);
     }
 
     this.canvas.onmouseup = function (event) {
       var posicion = pilas.obtener_posicion_desde_evento(this, event);
-      pilas.eventos.cuando_termina_click.emitir(posicion);
+      pilas.escena_actual().cuando_termina_click.emitir(posicion);
     }
 
     this.canvas.onmousemove = function (event) {
       var posicion = pilas.obtener_posicion_desde_evento(this, event);
-      pilas.eventos.mueve_mouse.emitir(posicion);
+      pilas.escena_actual().mueve_mouse.emitir(posicion);
     }
 
     window.onkeydown = function (event) {
       var e = pilas.obtener_codigo_y_texto_desde_evento(event);
-      pilas.eventos.pulsa_tecla.emitir(e);
+      pilas.escena_actual().pulsa_tecla.emitir(e);
     }
 
     window.onkeyup = function (event) {
       var e = pilas.obtener_codigo_y_texto_desde_evento(event);
-      pilas.eventos.suelta_tecla.emitir(e);
+      pilas.escena_actual().suelta_tecla.emitir(e);
     }
   }
 
