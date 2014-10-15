@@ -1,4 +1,5 @@
 declare var pilas;
+declare var pilasengine;
 declare var PxLoader;
 declare var createjs;
 
@@ -26,7 +27,7 @@ declare var createjs;
  * Módulo pilas
  * ============
  *
- * Pilas es una biblioteca para facilitar el desarrollo de videojuegos. Es útil para 
+ * Pilas es una biblioteca para facilitar el desarrollo de videojuegos. Es útil para
  * programadores principiantes o para el desarrollo de juegos casuales.
  *
  * Este módulo contiene las funciones principales para iniciar y ejecutar la biblioteca.
@@ -34,13 +35,13 @@ declare var createjs;
  *
  *     @example
  *     pilas.iniciar({ancho: 320, alto: 240});
- *     aceituna = new pilas.actores.Aceituna(); 
+ *     aceituna = new pilas.actores.Aceituna();
  */
 class Pilas {
   canvas;     // elemento canvas html.
   opciones;   // dict de opciones iniciales.
   mundo;
-  
+
   fondos;           // acceso a módulo.
   imagenes;         // acceso a módulo.
   actores;          // acceso a módulo.
@@ -61,7 +62,7 @@ class Pilas {
   ready;
 
   /**
-   * @method iniciar 
+   * @method iniciar
    *
    * Inicia la ventana principal del juego con algunos detalles de funcionamiento.
    *
@@ -107,7 +108,7 @@ class Pilas {
 		// TODO: hacer que el fondo sea un atributo de la escena y que
 		// siempre se inicialice ahí, y no en la función onload del lado del
 		// usuario como hace ahora...
-		
+
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
 		var fondo = new pilas.fondos.Plano();
 	}
@@ -227,7 +228,7 @@ class Pilas {
   /**
    * @method obtener_canvas
    * @private
-   * 
+   *
    * Obtiene la referencia al elemento HTML canvas usando
    * el atributo *canvas_id* de las opciones iniciales.
    */
@@ -303,8 +304,16 @@ class Pilas {
     this.definir_modos(modos);
     return "Ocultando fisica";
   }
-
-
+  
 }
 
 pilas = new Pilas();
+
+pilasengine = {
+  iniciar: function iniciar(opciones) {
+    var pilas = new Pilas();
+
+    pilas.iniciar(opciones);
+    return pilas;
+  }
+}

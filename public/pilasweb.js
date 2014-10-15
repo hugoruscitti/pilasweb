@@ -11656,7 +11656,7 @@ var Actores = (function () {
         this.Maton = Maton;
         this.Globo = Globo;
         this.Texto = Texto;
-        this.Bloque = Bloque;
+        this.Bloque = Bloque; // TODO: eliminar, es solo para implementar tutorial.
         this.Manzana = Manzana;
         this.Cofre = Cofre;
         this.Llave = Llave;
@@ -11670,14 +11670,12 @@ var Actores = (function () {
         this.Banana = Banana;
         this.Tortuga = Tortuga;
         this.Pizarra = Pizarra;
+        this.Pingu = Pingu;
     }
     return Actores;
 })();
 var Estudiante = (function () {
     function Estudiante() {
-        if (!(this instanceof Estudiante))
-            return new Estudiante();
-
         this.habilidades = [];
         this.comportamientos = [];
     }
@@ -11739,7 +11737,8 @@ var Estudiante = (function () {
     Estudiante.prototype._adoptar_el_siguiente_comportamiento = function () {
         if (this.comportamientos[0]) {
             this.comportamiento_actual = this.comportamientos.splice(0, 1);
-            console.log(this.comportamiento_actual);
+
+            //console.log(this.comportamiento_actual);
             this.comportamiento_actual[0]["iniciar"](this);
         } else {
             this.comportamiento_actual = undefined;
@@ -11804,26 +11803,17 @@ var Actor = (function (_super) {
     __extends(Actor, _super);
     function Actor(imagen, x, y, atributos) {
         if (typeof atributos === "undefined") { atributos = {}; }
-        if (!(this instanceof Actor))
-            return new Actor(imagen, x, y, atributos);
-
         _super.call(this);
         this.imagen = imagen || 'sin_imagen.png';
         atributos = atributos || {};
         this.vivo = true;
         this.radio_de_colision = 10;
         this.id = pilas.utils.obtener_uuid();
-
-        /* Se ejecuta si el usuario intenta llamar al constructor sin usar 'new'
-        
-        Por ejemplo, si escribe "pilas.actores.Nave()" da un error. Si el usuario
-        escribe "new pilas.actores.Nave()" sale bien :)
-        */
         this.crear_sprite();
         this.x = x || 0;
         this.y = y || 0;
-        this.centro_x = this.ancho / 2;
-        this.centro_y = this.alto / 2;
+        this.centro_x = 0;
+        this.centro_y = 0;
 
         if (atributos['rotacion'])
             this.rotacion = atributos['rotacion'];
@@ -11855,6 +11845,9 @@ var Actor = (function (_super) {
     Actor.prototype.eliminar = function () {
         this.vivo = false;
         pilas.escena_actual().eliminar_actor(this);
+        if (this.tiene_fisica()) {
+            this.figura.eliminar();
+        }
     };
 
     Object.defineProperty(Actor.prototype, "z", {
@@ -11877,7 +11870,7 @@ var Actor = (function (_super) {
         set: function (_x) {
             if (_x instanceof Array)
                 pilas.interpolar(this, 'x', _x, 1);
-else {
+            else {
                 var pos = pilas.escena_actual().obtener_posicion_pantalla(_x, 0);
                 this.sprite.x = pos.x;
             }
@@ -11895,7 +11888,7 @@ else {
         set: function (_y) {
             if (_y instanceof Array)
                 pilas.interpolar(this, 'y', _y, 1);
-else {
+            else {
                 var pos = pilas.escena_actual().obtener_posicion_pantalla(0, _y);
                 this.sprite.y = pos.y;
             }
@@ -11910,7 +11903,7 @@ else {
             return this.sprite.regX;
         },
         set: function (_x) {
-            this.sprite.regX = _x;
+            this.sprite.regX = (this.ancho / 2) + _x;
         },
         enumerable: true,
         configurable: true
@@ -11921,7 +11914,7 @@ else {
             return this.sprite.regY;
         },
         set: function (_y) {
-            this.sprite.regY = _y;
+            this.sprite.regY = (this.alto / 2) + _y;
         },
         enumerable: true,
         configurable: true
@@ -11934,7 +11927,7 @@ else {
         set: function (valor) {
             if (valor instanceof Array)
                 pilas.interpolar(this.sprite, 'scaleX', valor, 1);
-else
+            else
                 this.sprite.scaleX = valor;
         },
         enumerable: true,
@@ -11948,7 +11941,7 @@ else
         set: function (valor) {
             if (valor instanceof Array)
                 pilas.interpolar(this.sprite, 'scaleY', valor, 1);
-else
+            else
                 this.sprite.scaleY = valor;
         },
         enumerable: true,
@@ -11983,10 +11976,13 @@ else
             return this.sprite.rotation;
         },
         set: function (valor) {
-            if (valor instanceof Array)
+            if (valor instanceof Array) {
+                for (var i in valor) {
+                    valor[i] = ((valor[i] % 360) + 360) % 360;
+                }
                 pilas.interpolar(this.sprite, 'rotation', valor, 1);
-else
-                this.sprite.rotation = valor;
+            } else
+                this.sprite.rotation = ((valor % 360) + 360) % 360;
         },
         enumerable: true,
         configurable: true
@@ -12005,14 +12001,22 @@ else
 
     Object.defineProperty(Actor.prototype, "ancho", {
         get: function () {
-            return this._imagen.ancho;
+            if (this._imagen instanceof Grilla) {
+                return this._imagen.ancho / this._imagen.columnas;
+            } else {
+                return this._imagen.ancho;
+            }
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Actor.prototype, "alto", {
         get: function () {
-            return this._imagen.alto;
+            if (this._imagen instanceof Grilla) {
+                return this._imagen.alto / this._imagen.filas;
+            } else {
+                return this._imagen.alto;
+            }
         },
         enumerable: true,
         configurable: true
@@ -12022,13 +12026,16 @@ else
         set: function (_i) {
             if (_i.substring)
                 this._imagen = pilas.imagenes.cargar(_i);
-else
+            else
                 this._imagen = _i;
 
+            /* Si el actor ya tenía imagen, entonces se encarga de reemplazar
+            la imagen actual, y vuelve a definir el punto de control en el
+            centro. */
             if (this.sprite !== undefined) {
                 this.sprite.image = this._imagen.instanciar().image;
-                this.centro_x = this.ancho / 2;
-                this.centro_y = this.alto / 2;
+                this.centro_x = 0;
+                this.centro_y = 0;
             }
         },
         enumerable: true,
@@ -12036,10 +12043,10 @@ else
     });
 
     Object.defineProperty(Actor.prototype, "izquierda", {
-        get: /* TODO: hacer que se puedan interpolar
+        /* TODO: hacer que se puedan interpolar
         las propiedades: izquierda, derecha, arriba, abajo.
         */
-        function () {
+        get: function () {
             return this.x - (this.centro_x * this.escala);
         },
         set: function (x) {
@@ -12157,7 +12164,7 @@ else
     };
 
     Actor.prototype.decir = function (mensaje) {
-        var globo = new pilas.actores.Globo(this.x, this.y, mensaje);
+        var globo = new pilas.actores.Globo(this.izquierda + (this.ancho / 2), this.arriba, mensaje);
     };
 
     Actor.prototype.imitar = function (actor_o_figura) {
@@ -12189,17 +12196,12 @@ else
 var Aceituna = (function (_super) {
     __extends(Aceituna, _super);
     function Aceituna(x, y) {
-        if (!(this instanceof Aceituna))
-            return new Aceituna(x, y);
-
         this.cuadro_normal = 'aceituna.png';
         this.cuadro_reir = 'aceituna_risa.png';
         this.cuadro_burlar = 'aceituna_burla.png';
         this.cuadro_gritar = 'aceituna_grita.png';
 
         _super.call(this, this.cuadro_normal, x, y);
-        this.centro_x = 18;
-        this.centro_y = 18;
         this.radio_de_colision = 20;
     }
     Aceituna.prototype.normal = function () {
@@ -12228,9 +12230,6 @@ var Banana = (function (_super) {
     function Banana(x, y) {
         if (typeof x === "undefined") { x = 0; }
         if (typeof y === "undefined") { y = 0; }
-        if (!(this instanceof Banana))
-            return new Banana(x, y);
-
         var imagen = pilas.imagenes.cargar_grilla('banana.png', 2);
         _super.call(this, imagen, x, y);
         this._imagen.definir_cuadro(0);
@@ -12248,13 +12247,8 @@ var Banana = (function (_super) {
 var Bloque = (function (_super) {
     __extends(Bloque, _super);
     function Bloque(x, y, nombre_imagen) {
-        if (!(this instanceof Bloque))
-            return new Bloque(x, y, nombre_imagen);
-
         var imagen = nombre_imagen || "bloque.png";
         _super.call(this, imagen, x, y);
-        this.centro_x = 13;
-        this.centro_y = this.alto;
         this.z = y;
     }
     return Bloque;
@@ -12263,13 +12257,9 @@ var Bloque = (function (_super) {
 var Bomba = (function (_super) {
     __extends(Bomba, _super);
     function Bomba(x, y) {
-        if (!(this instanceof Bomba))
-            return new Bomba(x, y);
-
         var imagen = pilas.imagenes.cargar_grilla("bomba.png", 2);
         _super.call(this, imagen, x, y);
-        this.centro_x = 36;
-        this.centro_y = 31;
+        this.radio_de_colision = 25;
         this.paso = 0;
         this.aprender(pilas.habilidades.PuedeExplotar);
     }
@@ -12285,9 +12275,6 @@ var Boton = (function (_super) {
         if (typeof ruta_normal === "undefined") { ruta_normal = 'boton/boton_normal.png'; }
         if (typeof ruta_press === "undefined") { ruta_press = 'boton/boton_press.png'; }
         if (typeof ruta_over === "undefined") { ruta_over = 'boton/boton_over.png'; }
-        if (!(this instanceof Boton))
-            return new Boton(x, y, ruta_normal, ruta_press, ruta_over);
-
         this.ruta_normal = ruta_normal;
         this.ruta_press = ruta_press;
         this.ruta_over = ruta_over;
@@ -12447,14 +12434,9 @@ var Boton = (function (_super) {
 var Caja = (function (_super) {
     __extends(Caja, _super);
     function Caja(x, y) {
-        if (!(this instanceof Caja))
-            return new Caja(x, y);
-
         var imagen = "caja.png";
         _super.call(this, imagen, x, y);
-        this.centro_x = 24;
-        this.centro_y = 24;
-        this.radio_de_colision = 45;
+        this.radio_de_colision = 25;
 
         this.aprender(pilas.habilidades.RebotarComoCaja);
     }
@@ -12466,9 +12448,6 @@ var Cesto = (function (_super) {
     function Cesto(x, y) {
         if (typeof x === "undefined") { x = 120; }
         if (typeof y === "undefined") { y = 0; }
-        if (!(this instanceof Cesto))
-            return new Cesto(x, y);
-
         var ancho = 40;
         var imagen = "cesto.png";
         _super.call(this, imagen, x, y);
@@ -12488,13 +12467,8 @@ var Cesto = (function (_super) {
 var Cofre = (function (_super) {
     __extends(Cofre, _super);
     function Cofre(x, y) {
-        if (!(this instanceof Cofre))
-            return new Cofre(x, y);
-
         var imagen = pilas.imagenes.cargar_grilla("cofre.png", 4);
         _super.call(this, imagen, x, y);
-        this.centro_x = 10;
-        this.centro_y = 17;
         this.z = y;
         this._imagen.definir_cuadro(0);
         this.paso = 0;
@@ -12505,6 +12479,7 @@ var Cofre = (function (_super) {
     };
 
     Cofre.prototype.actualizar = function () {
+        // TODO: temporal para el tutorial
         if (this.esta_abierto) {
             this.paso += 0.1;
 
@@ -12520,13 +12495,8 @@ var Cofre = (function (_super) {
 var Eje = (function (_super) {
     __extends(Eje, _super);
     function Eje(x, y) {
-        if (!(this instanceof Eje))
-            return new Eje(x, y);
-
         var imagen = "ejes.png";
         _super.call(this, imagen, x, y);
-        this.centro_x = 256;
-        this.centro_y = 256;
     }
     return Eje;
 })(Actor);
@@ -12534,13 +12504,8 @@ var Eje = (function (_super) {
 var Explosion = (function (_super) {
     __extends(Explosion, _super);
     function Explosion(x, y) {
-        if (!(this instanceof Explosion))
-            return new Explosion(x, y);
-
         var imagen = pilas.imagenes.cargar_grilla("explosion.png", 7);
         _super.call(this, imagen, x, y);
-        this.centro_x = 16;
-        this.centro_y = 16;
         this.paso = 0;
     }
     Explosion.prototype.actualizar = function () {
@@ -12558,15 +12523,12 @@ var Explosion = (function (_super) {
 var Globo = (function (_super) {
     __extends(Globo, _super);
     function Globo(x, y, mensaje) {
-        if (!(this instanceof Globo))
-            return new Globo(x, y, mensaje);
-
         var imagen = "globo.png";
         _super.call(this, imagen, x, y);
-        this.centro_x = 85;
-        this.centro_y = 80;
+        this.centro_x = 25;
+        this.centro_y = 20;
         this.mensaje = mensaje;
-        this.actor_texto = new pilas.actores.Texto(x - 25, y + 50, mensaje);
+        this.actor_texto = new pilas.actores.Texto(x - 20, y + 20, mensaje);
 
         pilas.mundo.agregar_tarea_una_vez(3, this.eliminar, {}, this);
     }
@@ -12580,13 +12542,8 @@ var Globo = (function (_super) {
 var Llave = (function (_super) {
     __extends(Llave, _super);
     function Llave(x, y) {
-        if (!(this instanceof Llave))
-            return new Llave(x, y);
-
         var imagen = "llave.png";
         _super.call(this, imagen, x, y);
-        this.centro_x = 9;
-        this.centro_y = 13;
         this.z = y;
     }
     return Llave;
@@ -12595,13 +12552,9 @@ var Llave = (function (_super) {
 var Manzana = (function (_super) {
     __extends(Manzana, _super);
     function Manzana(x, y) {
-        if (!(this instanceof Manzana))
-            return new Manzana(x, y);
-
         var imagen = "manzana_chica.png";
         _super.call(this, imagen, x, y);
         this.radio_de_colision = 11;
-        this.centro_y = 20;
     }
     return Manzana;
 })(Actor);
@@ -12609,13 +12562,8 @@ var Manzana = (function (_super) {
 var Maton = (function (_super) {
     __extends(Maton, _super);
     function Maton(x, y) {
-        if (!(this instanceof Maton))
-            return new Maton(x, y);
-
         var imagen = pilas.imagenes.cargar_grilla("rpg/maton.png", 3 * 4, 1);
         _super.call(this, imagen, x, y);
-        this.centro_x = 36;
-        this.centro_y = 31;
         this.paso = 0;
         this.aprender(pilas.habilidades.PuedeExplotar);
         this.cuadros = [
@@ -12629,8 +12577,6 @@ var Maton = (function (_super) {
         window['maton'] = this;
         this.animar = false;
         this._imagen.definir_cuadro(7);
-        this.centro_x = 18;
-        this.centro_y = 40;
         this.obstaculos = [];
         this.teclado_habilitado = false;
     }
@@ -12680,7 +12626,7 @@ var Maton = (function (_super) {
         if (this.puede_moverse_a(this.x, this.y + y * this.velocidad))
             this.y += y * this.velocidad;
 
-        this.avanzar_animacion();
+        this.avanzar_animacion(); // TODO:
         this.z = this.y;
     };
 
@@ -12739,9 +12685,6 @@ var Maton = (function (_super) {
 var Mono = (function (_super) {
     __extends(Mono, _super);
     function Mono(x, y) {
-        if (!(this instanceof Mono))
-            return new Mono(x, y);
-
         this.image_normal = 'monkey_normal.png';
         this.image_smile = 'monkey_smile.png';
         this.image_shout = 'monkey_shout.png';
@@ -12783,13 +12726,8 @@ var Mono = (function (_super) {
 var Nave = (function (_super) {
     __extends(Nave, _super);
     function Nave(x, y) {
-        if (!(this instanceof Nave))
-            return new Nave(x, y);
-
         var imagen = pilas.imagenes.cargar_grilla("nave.png", 2);
         _super.call(this, imagen, x, y);
-        this.centro_x = 23;
-        this.centro_y = 23;
         this.paso = 0;
         this.enemigos = [];
         this.teclado_habilitado = false;
@@ -12846,17 +12784,11 @@ var Nave = (function (_super) {
 var Pelota = (function (_super) {
     __extends(Pelota, _super);
     function Pelota(x, y) {
-        if (!(this instanceof Pelota))
-            return new Pelota(x, y);
-
         var imagen = "pelota.png";
         _super.call(this, imagen, x, y);
-        this.centro_x = 25;
-        this.centro_y = 25;
         this.radio_de_colision = 25;
 
         this.aprender(pilas.habilidades.RebotarComoPelota);
-        window['aaa'] = this;
     }
     Pelota.prototype.empujar = function (dx, dy) {
         this.figura.empujar(dx * 100, -dy * 100);
@@ -12877,9 +12809,6 @@ var Pelota = (function (_super) {
 var Piedra = (function (_super) {
     __extends(Piedra, _super);
     function Piedra(x, y, tamano, dx, dy) {
-        if (!(this instanceof Piedra))
-            return new Piedra(x, y, tamano, dx, dy);
-
         this.dx = dx || 0;
         this.dy = dy || 0;
 
@@ -12890,18 +12819,15 @@ var Piedra = (function (_super) {
 
         switch (tamano) {
             case 'chica':
-                this.centro_x = 7;
-                this.centro_y = 7;
+                this.radio_de_colision = 10;
                 break;
 
             case 'media':
-                this.centro_x = 16;
-                this.centro_y = 16;
+                this.radio_de_colision = 15;
                 break;
 
             case 'grande':
-                this.centro_x = 26;
-                this.centro_y = 26;
+                this.radio_de_colision = 20;
                 break;
 
             default:
@@ -12960,6 +12886,58 @@ var Piedra = (function (_super) {
     };
     return Piedra;
 })(Actor);
+var Pingu = (function (_super) {
+    __extends(Pingu, _super);
+    function Pingu(x, y) {
+        if (typeof x === "undefined") { x = 0; }
+        if (typeof y === "undefined") { y = 0; }
+        var imagen = pilas.imagenes.cargar_grilla('pingu.png', 10);
+        _super.call(this, imagen, x, y);
+        this._imagen.definir_cuadro(4);
+        this.paso = 0;
+        this.centro_y = 50;
+        this.cuadros_correr = [5, 6, 7, 8, 9];
+        this.saltando = false;
+    }
+    Pingu.prototype.actualizar = function () {
+        if (!this.saltando) {
+            if (pilas.escena_actual().control.derecha) {
+                this.hacer(pilas.comportamientos.CaminaDerecha);
+            } else if (pilas.escena_actual().control.izquierda) {
+                this.hacer(pilas.comportamientos.CaminaIzquierda);
+            }
+
+            if (pilas.escena_actual().control.arriba) {
+                this.saltando = true;
+                this.hacer(pilas.comportamientos.Saltando, { cuando_termina: this.puede_saltar });
+                this._imagen.definir_cuadro(0);
+            }
+        }
+    };
+
+    Pingu.prototype.puede_saltar = function () {
+        this.saltando = false;
+        this.detener_animacion();
+    };
+
+    Pingu.prototype.mover = function (x, y) {
+        this.x += x;
+        this.animacion_correr();
+    };
+
+    Pingu.prototype.animacion_correr = function () {
+        this.paso += .3;
+        if (this.paso > this.cuadros_correr.length) {
+            this.paso = 0;
+        }
+        this._imagen.definir_cuadro(this.cuadros_correr[parseInt(this.paso)]);
+    };
+
+    Pingu.prototype.detener_animacion = function () {
+        this._imagen.definir_cuadro(4);
+    };
+    return Pingu;
+})(Actor);
 var Pizarra = (function (_super) {
     __extends(Pizarra, _super);
     function Pizarra(x, y) {
@@ -12973,7 +12951,7 @@ var Pizarra = (function (_super) {
 
         //crear lienzo
         this.container = new createjs.Container();
-        this.lienzo = new createjs.Shape(this.x, this.y);
+        this.lienzo = new createjs.Shape(this.x, this.y); // TODO: Permitir que acepte ancho y alto de la pizarra
         this.container.addChild(this.lienzo);
         pilas.escena_actual().stage.addChild(this.container);
     }
@@ -13004,7 +12982,7 @@ var Pizarra = (function (_super) {
         if (typeof grosor === "undefined") { grosor = 1; }
         if (!relleno)
             var color_relleno = createjs.Graphics.getRGB(255, 255, 255, 0);
-else
+        else
             var color_relleno = relleno;
 
         var pos = pilas.escena_actual().obtener_posicion_pantalla(x, y);
@@ -13036,12 +13014,7 @@ else
 var Proyectil = (function (_super) {
     __extends(Proyectil, _super);
     function Proyectil(x, y, atributos) {
-        if (!(this instanceof Proyectil))
-            return new Proyectil(x, y, atributos);
-
         var imagen = pilas.imagenes.cargar_grilla("disparos/misil.png", 3);
-        atributos['centro_x'] = 20;
-        atributos['centro_y'] = 8;
         _super.call(this, imagen, x, y, atributos);
         this.hacer(pilas.comportamientos.AvanzarComoProyectil);
         this.paso = 0;
@@ -13070,9 +13043,6 @@ var Proyectil = (function (_super) {
 var Texto = (function (_super) {
     __extends(Texto, _super);
     function Texto(x, y, texto, color) {
-        if (!(this instanceof Texto))
-            return new Texto(x, y, texto, color);
-
         var imagen = "invisible.png";
         _super.call(this, imagen, x, y);
         this.texto = texto || "Sin texto";
@@ -13101,14 +13071,14 @@ var Texto = (function (_super) {
     };
 
     Object.defineProperty(Texto.prototype, "escala_x", {
-        get: //TODO: hacer que pueda utilizar los metodos propios de la clase padre Actor
-        function () {
+        //TODO: hacer que pueda utilizar los metodos propios de la clase padre Actor
+        get: function () {
             return this.sprite_texto.scaleX;
         },
         set: function (valor) {
             if (valor instanceof Array)
                 pilas.interpolar(this.sprite_texto, 'scaleX', valor, 1000);
-else
+            else
                 this.sprite_texto.scaleX = valor;
         },
         enumerable: true,
@@ -13122,7 +13092,7 @@ else
         set: function (valor) {
             if (valor instanceof Array)
                 pilas.interpolar(this.sprite_texto, 'scaleY', valor, 1000);
-else
+            else
                 this.sprite_texto.scaleY = valor;
         },
         enumerable: true,
@@ -13158,9 +13128,6 @@ else
 var Puntaje = (function (_super) {
     __extends(Puntaje, _super);
     function Puntaje(x, y, puntaje, color) {
-        if (!(this instanceof Puntaje))
-            return new Puntaje(x, y, puntaje, color);
-
         this.valor = puntaje || 0;
         _super.call(this, x, y, this.valor.toString(), color);
     }
@@ -13195,11 +13162,10 @@ var Tortuga = (function (_super) {
 
         this.pizarra = new pilas.actores.Pizarra();
 
-        if (dibuja) {
+        if (dibuja)
             this.bajalapiz();
-        } else {
+        else
             this.subelapiz();
-        }
 
         this.color = pilas.colores.negro;
     }
@@ -13220,6 +13186,7 @@ var Tortuga = (function (_super) {
             if (this.lapiz_bajo) {
                 this.pizarra.linea(this.anterior_x, this.anterior_y, this.x, this.y, this.color, 4);
             }
+
             this.anterior_x = this.x;
             this.anterior_y = this.y;
         }
@@ -13238,11 +13205,13 @@ var Tortuga = (function (_super) {
         if (typeof escala === "undefined") { escala = 100; }
         if (typeof sentido === "undefined") { sentido = -1; }
         var rotacion = 360 / lados;
+
         for (var i = 0; i < lados; i++) {
             this.avanzar(escala);
+
             if (sentido == 1)
                 this.girarderecha(rotacion);
-else
+            else
                 this.girarizquierda(rotacion);
         }
     };
@@ -13253,7 +13222,7 @@ else
             this.avanzar(radio);
             if (sentido == 1)
                 this.girarderecha(10);
-else
+            else
                 this.girarizquierda(10);
         }
     };
@@ -13275,9 +13244,6 @@ else
 var Zanahoria = (function (_super) {
     __extends(Zanahoria, _super);
     function Zanahoria(x, y) {
-        if (!(this instanceof Zanahoria))
-            return new Zanahoria(x, y);
-
         this.cuadro_normal = "zanahoria_normal.png";
         this.cuadro_sonrie = "zanahoria_sonrie.png";
         _super.call(this, this.cuadro_normal, x, y);
@@ -13313,12 +13279,62 @@ var Zanahoria = (function (_super) {
 * entre coordenadas de pantalla y coordenadas de escenario.
 */
 var Camara = (function () {
-    function Camara() {
-        this.x = 0;
-        this.y = 0;
+    function Camara(escenario) {
         this.centro_x = pilas.opciones.ancho / 2;
         this.centro_y = pilas.opciones.alto / 2;
+
+        this.escenario = escenario;
     }
+    Object.defineProperty(Camara.prototype, "x", {
+        get: function () {
+            return this.escenario.x;
+        },
+        set: function (_x) {
+            if (_x instanceof Array)
+                pilas.interpolar(this.escenario, "x", [-_x], 1);
+            else {
+                this.escenario.x = -_x;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+
+    Object.defineProperty(Camara.prototype, "y", {
+        get: function () {
+            return this.escenario.y;
+        },
+        set: function (_y) {
+            if (_y instanceof Array)
+                pilas.interpolar(this.escenario, "y", [-_y], 1);
+            else {
+                this.escenario.y = -_y;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+
+    Object.defineProperty(Camara.prototype, "zoom", {
+        get: function () {
+            return this.escenario.scaleX;
+        },
+        set: function (_z) {
+            if (_z instanceof Array) {
+                pilas.interpolar(this.escenario, "scaleX", [1 + _z * 0.1], 1);
+                pilas.interpolar(this.escenario, "scaleY", [1 + _z * 0.1], 1);
+            } else {
+                this.escenario.scaleX = 1 + _z * 0.1;
+                this.escenario.scaleY = 1 + _z * 0.1;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+
     /**
     * @method obtener_posicion_pantalla
     *
@@ -13346,8 +13362,7 @@ var Camara = (function () {
     Camara.prototype.obtener_posicion = function () {
         return {
             x: this.centro_x - this.x,
-            y: this.centro_y + this.y
-        };
+            y: this.centro_y + this.y };
     };
 
     /*
@@ -13358,8 +13373,7 @@ var Camara = (function () {
         var centro = this.obtener_posicion();
         return {
             x: centro.x + x,
-            y: centro.y - y
-        };
+            y: centro.y - y };
     };
 
     /*
@@ -13370,8 +13384,7 @@ var Camara = (function () {
         var centro = this.obtener_posicion();
         return {
             x: -centro.x + x,
-            y: +centro.y - y
-        };
+            y: +centro.y - y };
     };
 
     /*
@@ -13383,11 +13396,7 @@ var Camara = (function () {
         var alto = pilas.opciones.alto;
 
         return {
-            izquierda: this.x - ancho / 2,
-            derecha: this.x + ancho / 2,
-            arriba: this.y + alto / 2,
-            abajo: this.y - alto / 2
-        };
+            izquierda: this.x - ancho / 2, derecha: this.x + ancho / 2, arriba: this.y + alto / 2, abajo: this.y - alto / 2 };
     };
     return Camara;
 })();
@@ -13420,8 +13429,10 @@ var Colisiones = (function () {
 
                 if (actor_a.vivo && actor_b.vivo && actor_a.colisiona_con(actor_b)) {
                     tupla.callback.call(tupla.parent, actor_a, actor_b);
-                    // TODO: implementar alguna forma para quitar a los actores del
-                    //       grupo si es que ya no están vivos.
+                    if (!actor_a.vivo)
+                        tupla.grupo_a.splice(i, 1);
+                    if (!actor_b.vivo)
+                        tupla.grupo_b.splice(j, 1);
                 }
             }
         }
@@ -13591,6 +13602,38 @@ var Saltar = (function (_super) {
     return Saltar;
 })(Comportamiento);
 
+var Saltando = (function (_super) {
+    __extends(Saltando, _super);
+    function Saltando() {
+        _super.apply(this, arguments);
+    }
+    Saltando.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.dy = 10;
+        this.suelo = this.receptor.y;
+        this.cuando_termina = this.argumentos.cuando_termina || null;
+    };
+
+    Saltando.prototype.actualizar = function () {
+        this.receptor.y += this.dy;
+        this.dy -= 0.3;
+
+        if (this.receptor.y < this.suelo) {
+            this.receptor.y = this.suelo;
+            if (this.cuando_termina) {
+                this.cuando_termina.call(this.receptor);
+            }
+            return true;
+        }
+
+        if (pilas.escena_actual().control.derecha)
+            this.receptor.x += 1;
+        else if (pilas.escena_actual().control.izquierda)
+            this.receptor.x -= 1;
+    };
+    return Saltando;
+})(Comportamiento);
+
 var Orbitar = (function (_super) {
     __extends(Orbitar, _super);
     function Orbitar() {
@@ -13732,6 +13775,7 @@ var Comportamientos = (function () {
         this.Girar = Girar;
         this.Avanzar = Avanzar;
         this.AvanzarComoProyectil = AvanzarComoProyectil;
+        this.Saltando = Saltando;
     }
     return Comportamientos;
 })();
@@ -13940,76 +13984,72 @@ var DepuradorDeshabilitado = (function () {
     return DepuradorDeshabilitado;
 })();
 
-var ModoRadiosDeColision = (function () {
-    function ModoRadiosDeColision() {
+var ModoDeDepuracion = (function () {
+    function ModoDeDepuracion() {
         this.container = new createjs.Container();
 
         this.shape = new createjs.Shape();
         this.container.addChild(this.shape);
 
         pilas.escena_actual().stage.addChild(this.container);
+
+        this.grosor_linea = 2;
     }
-    ModoRadiosDeColision.prototype.eliminar = function () {
+    ModoDeDepuracion.prototype.eliminar = function () {
         pilas.escena_actual().stage.removeChild(this.container);
     };
 
-    ModoRadiosDeColision.prototype.actualizar = function () {
-        var escena = pilas.escena_actual();
+    ModoDeDepuracion.prototype.actualizar = function () {
         this.shape.graphics.clear();
+    };
+    return ModoDeDepuracion;
+})();
 
+var ModoRadiosDeColision = (function (_super) {
+    __extends(ModoRadiosDeColision, _super);
+    function ModoRadiosDeColision() {
+        _super.apply(this, arguments);
+    }
+    ModoRadiosDeColision.prototype.actualizar = function () {
+        _super.prototype.actualizar.call(this);
+        var escena = pilas.escena_actual();
         for (var i = 0; i < escena.actores.length; i++) {
             var actor = escena.actores[i];
             var posicion = escena.obtener_posicion_pantalla(actor.x, actor.y);
 
-            this.shape.graphics.beginStroke("#FFF").drawCircle(posicion.x, posicion.y, actor.radio_de_colision).endStroke();
+            this.shape.graphics.beginStroke("#FFF").setStrokeStyle(this.grosor_linea).drawCircle(posicion.x, posicion.y, actor.radio_de_colision).endStroke();
         }
     };
     return ModoRadiosDeColision;
-})();
+})(ModoDeDepuracion);
 
-var ModoArea = (function () {
+var ModoArea = (function (_super) {
+    __extends(ModoArea, _super);
     function ModoArea() {
-        this.container = new createjs.Container();
-
-        this.shape = new createjs.Shape();
-        this.container.addChild(this.shape);
-
-        pilas.escena_actual().stage.addChild(this.container);
+        _super.apply(this, arguments);
     }
-    ModoArea.prototype.eliminar = function () {
-        pilas.escena_actual().stage.removeChild(this.container);
-    };
-
     ModoArea.prototype.actualizar = function () {
+        _super.prototype.actualizar.call(this);
         var escena = pilas.escena_actual();
-        this.shape.graphics.clear();
 
         for (var i = 0; i < escena.actores.length; i++) {
             var actor = escena.actores[i];
             var posicion = escena.obtener_posicion_pantalla(actor.x, actor.y);
 
-            this.shape.graphics.beginStroke("#FFF").drawRect(posicion.x - actor.ancho / 2, posicion.y - actor.alto / 2, actor.ancho, actor.alto).endStroke();
+            this.shape.graphics.beginStroke("#FFF").setStrokeStyle(this.grosor_linea).drawRect(posicion.x - actor.ancho / 2, posicion.y - actor.alto / 2, actor.ancho, actor.alto).endStroke();
         }
     };
     return ModoArea;
-})();
+})(ModoDeDepuracion);
 
-var ModoPuntosDeControl = (function () {
+var ModoPuntosDeControl = (function (_super) {
+    __extends(ModoPuntosDeControl, _super);
     function ModoPuntosDeControl() {
-        this.container = new createjs.Container();
-
-        this.shape = new createjs.Shape();
-        this.container.addChild(this.shape);
-
-        pilas.escena_actual().stage.addChild(this.container);
+        _super.apply(this, arguments);
     }
-    ModoPuntosDeControl.prototype.eliminar = function () {
-        pilas.escena_actual().stage.removeChild(this.container);
-    };
-
     ModoPuntosDeControl.prototype.actualizar = function () {
+        _super.prototype.actualizar.call(this);
         var escena = pilas.escena_actual();
-        this.shape.graphics.clear();
 
         for (var i = 0; i < escena.actores.length; i++) {
             var actor = escena.actores[i];
@@ -14017,28 +14057,37 @@ var ModoPuntosDeControl = (function () {
             var size = 3;
 
             // Dibuja una cruz
-            this.shape.graphics.beginStroke("#ffffff").moveTo(posicion.x - size, posicion.y - size).lineTo(posicion.x + size, posicion.y + size).endStroke();
-            this.shape.graphics.beginStroke("#ffffff").moveTo(posicion.x - size, posicion.y + size).lineTo(posicion.x + size, posicion.y - size).endStroke();
+            this.shape.graphics.beginStroke("#FFF").setStrokeStyle(this.grosor_linea).moveTo(posicion.x - size, posicion.y - size).lineTo(posicion.x + size, posicion.y + size).endStroke();
+            this.shape.graphics.beginStroke("#FFF").setStrokeStyle(this.grosor_linea).moveTo(posicion.x - size, posicion.y + size).lineTo(posicion.x + size, posicion.y - size).endStroke();
         }
     };
     return ModoPuntosDeControl;
-})();
+})(ModoDeDepuracion);
 
-var ModoPosicion = (function () {
+var ModoFisica = (function (_super) {
+    __extends(ModoFisica, _super);
+    function ModoFisica() {
+        _super.apply(this, arguments);
+    }
+    ModoFisica.prototype.actualizar = function () {
+        _super.prototype.actualizar.call(this);
+        var escena = pilas.escena_actual();
+        this.shape.graphics.setStrokeStyle(this.grosor_linea);
+        escena.fisica.dibujar_figuras_sobre_lienzo(this.shape.graphics);
+    };
+    return ModoFisica;
+})(ModoDeDepuracion);
+
+var ModoPosicion = (function (_super) {
+    __extends(ModoPosicion, _super);
     function ModoPosicion() {
-        this.container = new createjs.Container();
-
-        this.shape = new createjs.Shape();
-        this.container.addChild(this.shape);
-
+        _super.call(this);
         this.text_coordenada = new createjs.Text("Posición del mouse: x=12 y=33", "12px Arial", "white");
-        this.text_coordenada.y = 920 / 2;
+        this.text_coordenada.y = 920 / 2; //TODO: Tamaño decanvas 640*480
         this.text_coordenada.x = 900 / 2;
         this.container.addChild(this.text_coordenada);
         this.eje = new pilas.actores.Eje();
         this.sobre_escribir_dibujado();
-
-        pilas.escena_actual().stage.addChild(this.container);
     }
     ModoPosicion.prototype.sobre_escribir_dibujado = function () {
         var anterior_draw = this.shape.graphics.draw;
@@ -14060,14 +14109,13 @@ var ModoPosicion = (function () {
     };
 
     ModoPosicion.prototype.eliminar = function () {
-        pilas.escena_actual().stage.removeChild(this.container);
+        _super.prototype.eliminar.call(this);
         this.eje.eliminar();
     };
 
     ModoPosicion.prototype.actualizar = function () {
+        _super.prototype.actualizar.call(this);
         var escena = pilas.escena_actual();
-        this.shape.graphics.clear();
-
         this.shape.graphics.actores = escena.actores;
         this.shape.graphics.escena = escena;
 
@@ -14077,49 +14125,95 @@ var ModoPosicion = (function () {
             var size = 3;
 
             // Dibuja un punto
-            this.shape.graphics.beginFill("#ffffff").drawCircle(posicion.x, posicion.y, 2);
+            this.shape.graphics.beginFill("#FFF").setStrokeStyle(this.grosor_linea).drawCircle(posicion.x, posicion.y, 2);
         }
 
         var pos = escena.obtener_posicion_escenario(escena.stage.mouseX, escena.stage.mouseY);
         this.text_coordenada.text = "Posición del mouse: x=" + Math.floor(pos.x) + " y=" + Math.floor(pos.y);
     };
     return ModoPosicion;
-})();
-
-var ModoFisica = (function () {
-    function ModoFisica() {
-        this.container = new createjs.Container();
-
-        this.shape = new createjs.Shape();
-        this.container.addChild(this.shape);
-
-        pilas.escena_actual().stage.addChild(this.container);
+})(ModoDeDepuracion);
+var escena = (function () {
+    function escena() {
+        this.Base = Base;
+        this.Normal = Normal;
     }
-    ModoFisica.prototype.eliminar = function () {
-        pilas.escena_actual().stage.removeChild(this.container);
-    };
-
-    ModoFisica.prototype.actualizar = function () {
-        var escena = pilas.escena_actual();
-        this.shape.graphics.clear();
-        this.shape.graphics.setStrokeStyle(3);
-        escena.fisica.dibujar_figuras_sobre_lienzo(this.shape.graphics);
-    };
-    return ModoFisica;
+    return escena;
 })();
+
 var Base = (function () {
     function Base() {
-        this.click_de_mouse = new Evento('click_de_mouse');
-        this.cuando_termina_click = new Evento('cuando_termina_click');
-        this.mueve_mouse = new Evento('mueve_mouse');
-        this.pulsa_tecla = new Evento('pulsa_tecla');
-        this.suelta_tecla = new Evento('suelta_tecla');
-        this.actualiza = new Evento('actualiza');
+        this.click_de_mouse = new Evento('click_de_mouse'); // ['boton', 'x', 'y']
+        this.cuando_termina_click = new Evento('cuando_termina_click'); // ['boton', 'x', 'y']
+        this.mueve_mouse = new Evento('mueve_mouse'); // ['x', 'y', 'dx', 'dy']
+        this.pulsa_tecla = new Evento('pulsa_tecla'); // ['codigo', 'texto']
+        this.suelta_tecla = new Evento('suelta_tecla'); // ['codigo', 'texto']
+        this.actualiza = new Evento('actualiza'); // []
         this.stage = new createjs.Stage(pilas.canvas);
-        this.camara = new Camara();
+        this.camara = new Camara(this.stage);
         this.fisica = new Fisica(this.camara);
         this.control = new Control(this);
+
+        this.actores = [];
+        this.tareas = new pilas.tareas.Tareas();
     }
+    Base.prototype.iniciar = function () {
+        throw "Tienes que re-definir el método iniciar";
+    };
+
+    Base.prototype.actualizar = function () {
+        this.fisica.actualizar();
+        this.tareas.actualizar();
+
+        for (var i = 0; i < this.actores.length; i++) {
+            this.actores[i].pre_actualizar();
+            this.actores[i].actualizar();
+        }
+
+        this.ordenar_actores_por_valor_z();
+        this.stage.update();
+        this.actualiza.emitir();
+        pilas.colisiones.verificar_colisiones();
+    };
+
+    Base.prototype.ordenar_actores_por_valor_z = function () {
+        var sortFunction = function (item1, item2, options) {
+            if (item1.z < item2.z)
+                return 1;
+
+            if (item1.z > item2.z)
+                return -1;
+
+            return 0;
+        };
+        this.stage.sortChildren(sortFunction);
+    };
+
+    Base.prototype.agregar_actor = function (actor) {
+        if (this.actores[1]) {
+            actor.z = this.actores[this.actores.length - 1].z - 1;
+        }
+        this.actores.push(actor);
+
+        this.stage.addChild(actor.sprite);
+        this.stage.update();
+    };
+
+    Base.prototype.eliminar_actor = function (actor) {
+        var index = this.actores.indexOf(actor);
+        this.actores.splice(index, 1);
+
+        this.stage.removeChild(actor.sprite);
+        this.stage.update();
+    };
+
+    Base.prototype.obtener_posicion_pantalla = function (x, y) {
+        return this.camara.obtener_posicion_pantalla(x, y);
+    };
+
+    Base.prototype.obtener_posicion_escenario = function (x, y) {
+        return this.camara.obtener_posicion_escenario(x, y);
+    };
     return Base;
 })();
 
@@ -14139,59 +14233,10 @@ var Base = (function () {
 var Normal = (function (_super) {
     __extends(Normal, _super);
     function Normal() {
-        _super.call(this);
-        this.actores = [];
-        this.tareas = new pilas.tareas.Tareas();
+        _super.apply(this, arguments);
     }
-    Normal.prototype.actualizar = function () {
-        this.fisica.actualizar();
-        this.tareas.actualizar();
-
-        for (var i = 0; i < this.actores.length; i++) {
-            this.actores[i].pre_actualizar();
-            this.actores[i].actualizar();
-        }
-
-        //this.ordenar_actores_por_valor_z();
-        this.stage.update();
-        this.actualiza.emitir();
-        pilas.colisiones.verificar_colisiones();
-    };
-
-    Normal.prototype.ordenar_actores_por_valor_z = function () {
-        var sortFunction = function (item1, item2, options) {
-            if (item1.z < item2.z)
-                return 1;
-
-            if (item1.z > item2.z)
-                return -1;
-
-            return 0;
-        };
-        this.stage.sortChildren(sortFunction);
-    };
-
-    Normal.prototype.agregar_actor = function (actor) {
-        this.actores.push(actor);
-
-        this.stage.addChild(actor.sprite);
-        this.stage.update();
-    };
-
-    Normal.prototype.eliminar_actor = function (actor) {
-        var index = this.actores.indexOf(actor);
-        this.actores.splice(index, 1);
-
-        this.stage.removeChild(actor.sprite);
-        this.stage.update();
-    };
-
-    Normal.prototype.obtener_posicion_pantalla = function (x, y) {
-        return this.camara.obtener_posicion_pantalla(x, y);
-    };
-
-    Normal.prototype.obtener_posicion_escenario = function (x, y) {
-        return this.camara.obtener_posicion_escenario(x, y);
+    Normal.prototype.iniciar = function () {
+        this.fondo = new pilas.fondos.Plano();
     };
     return Normal;
 })(Base);
@@ -14220,6 +14265,19 @@ var Evento = (function () {
     };
     return Evento;
 })();
+
+var ProxyEventos = (function () {
+    function ProxyEventos() {
+        this.click_de_mouse = pilas.escena_actual().click_de_mouse;
+        this.cuando_termina_click = pilas.escena_actual().cuando_termina_click;
+        this.mueve_mouse = pilas.escena_actual().mueve_mouse;
+        this.actualiza = pilas.escena_actual().actualiza;
+        this.pulsa_tecla = pilas.escena_actual().pulsa_tecla;
+        this.suelta_tecla = pilas.escena_actual().suelta_tecla;
+        this.Evento = Evento;
+    }
+    return ProxyEventos;
+})();
 var PPM = 30;
 
 var box2d = {
@@ -14231,7 +14289,8 @@ var box2d = {
     b2Fixture: Box2D.Dynamics.b2Fixture,
     b2World: Box2D.Dynamics.b2World,
     b2PolygonShape: Box2D.Collision.Shapes.b2PolygonShape,
-    b2DebugDraw: Box2D.Dynamics.b2DebugDraw
+    b2DebugDraw: Box2D.Dynamics.b2DebugDraw,
+    b2MouseJointDef: Box2D.Dynamics.Joints.b2MouseJointDef
 };
 
 function convertir_a_metros(valor) {
@@ -14321,22 +14380,8 @@ var Figura = (function () {
         this.cuerpo.SetLinearVelocity(v);
     };
 
-    Figura.prototype.definir_radio = function (radio) {
-        var fixture = this.cuerpo.GetFixtureList();
-
-        if (fixture) {
-            var shape = fixture.GetShape();
-            shape.SetRadius(convertir_a_metros(radio));
-        }
-    };
-
-    Figura.prototype.obtener_radio = function () {
-        var fixture = this.cuerpo.GetFixtureList();
-
-        if (fixture) {
-            var shape = fixture.GetShape();
-            return convertir_a_pixels(shape.GetRadius());
-        }
+    Figura.prototype.eliminar = function () {
+        this.fisica.mundo.DestroyBody(this.cuerpo);
     };
     return Figura;
 })();
@@ -14346,24 +14391,26 @@ var Rectangulo = (function (_super) {
     function Rectangulo(fisica, x, y, ancho, alto, opciones) {
         _super.call(this, fisica);
 
+        var opciones = opciones || {};
+
         if (opciones.dinamico === undefined)
             opciones.dinamico = true;
 
-        var bodyDef = new box2d.b2BodyDef();
+        var bodyDef = new box2d.b2BodyDef;
 
         if (opciones.dinamico)
             bodyDef.type = box2d.b2Body.b2_dynamicBody;
-else
+        else
             bodyDef.type = box2d.b2Body.b2_staticBody;
 
         var pos = this.fisica.camara.convertir_de_posicion_relativa_a_fisica(x, y);
         bodyDef.position.Set(convertir_a_metros(pos.x), convertir_a_metros(pos.y));
 
         //bodyDef.userData=data;
-        var polygonShape = new box2d.b2PolygonShape();
+        var polygonShape = new box2d.b2PolygonShape;
         polygonShape.SetAsBox(convertir_a_metros(ancho / 2), convertir_a_metros(alto / 2));
 
-        var fixtureDef = new box2d.b2FixtureDef();
+        var fixtureDef = new box2d.b2FixtureDef;
         fixtureDef.density = 1.0;
         fixtureDef.friction = 0.5;
         fixtureDef.restitution = 0.5;
@@ -14381,17 +14428,24 @@ var Circulo = (function (_super) {
     __extends(Circulo, _super);
     function Circulo(fisica, x, y, radio, opciones) {
         _super.call(this, fisica);
-        opciones.dinamico = opciones.dinamico || true;
-        var fixDef = new Box2D.Dynamics.b2FixtureDef();
+        this._radio = convertir_a_metros(radio);
+        this._escala = 1;
+
+        var opciones = opciones || {};
+
+        if (opciones.dinamico === undefined)
+            opciones.dinamico = true;
+
+        var fixDef = new Box2D.Dynamics.b2FixtureDef;
 
         fixDef.density = opciones.densidad || 1.0;
         fixDef.friction = opciones.friccion || 0.5;
         fixDef.restitution = opciones.restitucion || 0.2;
 
-        fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(convertir_a_metros(radio));
+        fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(this._radio);
 
         // crear el body dinamico
-        var bodyDef = new Box2D.Dynamics.b2BodyDef();
+        var bodyDef = new Box2D.Dynamics.b2BodyDef;
 
         var posicion = this.camara.convertir_de_posicion_relativa_a_fisica(x, y);
         posicion.x = convertir_a_metros(posicion.x);
@@ -14402,12 +14456,56 @@ var Circulo = (function (_super) {
 
         if (opciones.dinamico)
             bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
-else
+        else
             bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
 
         this.cuerpo = this.fisica.mundo.CreateBody(bodyDef);
         this.cuerpo.CreateFixture(fixDef);
     }
+    Circulo.prototype.definir_radio = function () {
+        var fixture = this.cuerpo.GetFixtureList();
+
+        if (fixture) {
+            var shape = fixture.GetShape();
+            shape.SetRadius(this._radio);
+        }
+    };
+
+
+    Object.defineProperty(Circulo.prototype, "radio", {
+        get: function () {
+            return convertir_a_pixels(this._radio);
+        },
+        set: function (radio) {
+            if (radio instanceof Array) {
+                pilas.interpolar(this, "radio", radio, 1);
+            } else {
+                this._escala = (this._escala * radio) / this.radio;
+                this._radio = convertir_a_metros(radio);
+                this.definir_radio();
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+
+    Object.defineProperty(Circulo.prototype, "escala", {
+        get: function () {
+            return this._escala;
+        },
+        set: function (escala) {
+            if (escala instanceof Array) {
+                pilas.interpolar(this, "escala", escala, 1);
+            } else {
+                this._radio = (this._radio * escala) / this.escala;
+                this._escala = escala;
+                this.definir_radio();
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Circulo;
 })(Figura);
 
@@ -14415,16 +14513,16 @@ var Fisica = (function () {
     function Fisica(camara) {
         this.camara = camara;
         this.mundo = new box2d.b2World(new box2d.b2Vec2(0, 10), false);
-        this.Rectangulo = Rectangulo;
-        this.Circulo = Circulo;
+        this.Rectangulo = Rectangulo; // TODO: separar fisica como Motor y Módulo, dos clases separadas.
+        this.Circulo = Circulo; // TODO: separar fisica como Motor y Módulo, dos clases separadas.
         this.velocidad = 1.0;
         this.timeStep = this.velocidad / 120.0;
 
         // Bordes del escenario
-        this.crear_rectangulo(0, -pilas.opciones.alto / 2, pilas.opciones.ancho, 5, { dinamico: false });
-        this.crear_rectangulo(0, pilas.opciones.alto / 2, pilas.opciones.ancho, 5, { dinamico: false });
-        this.crear_rectangulo(-pilas.opciones.ancho / 2, 0, 5, pilas.opciones.alto, { dinamico: false });
-        this.crear_rectangulo(pilas.opciones.ancho / 2, 0, 5, pilas.opciones.alto, { dinamico: false });
+        this.crear_rectangulo(0, -pilas.opciones.alto / 2, pilas.opciones.ancho, 5, { dinamico: false }); // abajo
+        this.crear_rectangulo(0, pilas.opciones.alto / 2, pilas.opciones.ancho, 5, { dinamico: false }); // arriba
+        this.crear_rectangulo(-pilas.opciones.ancho / 2, 0, 5, pilas.opciones.alto, { dinamico: false }); // izquierda
+        this.crear_rectangulo(pilas.opciones.ancho / 2, 0, 5, pilas.opciones.alto, { dinamico: false }); // derecha
     }
     Fisica.prototype.actualizar = function () {
         this.mundo.Step(this.timeStep, 6, 3);
@@ -14444,6 +14542,14 @@ var Fisica = (function () {
                 var y = b.GetPosition().y * PPM;
                 var shape = fixture.GetShape();
 
+                // dibuja un circulo en el centro de la figura.
+                //graphics.beginStroke("#FFF").
+                //    drawCircle(
+                //      x,
+                //      y,
+                //      5
+                //    ).
+                //endStroke();
                 if (shape.GetRadius !== undefined) {
                     var radio = shape.GetRadius();
                     graphics.beginStroke("#FFF").drawCircle(x, y, convertir_a_pixels(radio)).endStroke();
@@ -14475,20 +14581,19 @@ var Fisica = (function () {
         var vector_salida = cuerpo.GetWorldVector(v);
         return {
             x: vector_salida.x * PPM + x,
-            y: vector_salida.y * PPM + y
-        };
+            y: vector_salida.y * PPM + y };
     };
 
     Fisica.prototype.createBox = function (width, height, pX, pY, type, data) {
-        var bodyDef = new box2d.b2BodyDef();
+        var bodyDef = new box2d.b2BodyDef;
         bodyDef.type = type;
         bodyDef.position.Set(pX / PPM, pY / PPM);
 
         //bodyDef.userData=data;
-        var polygonShape = new box2d.b2PolygonShape();
+        var polygonShape = new box2d.b2PolygonShape;
         polygonShape.SetAsBox(width / 2 / PPM, height / 2 / PPM);
 
-        var fixtureDef = new box2d.b2FixtureDef();
+        var fixtureDef = new box2d.b2FixtureDef;
         fixtureDef.density = 1.0;
         fixtureDef.friction = 0.5;
         fixtureDef.restitution = 0.5;
@@ -14496,6 +14601,8 @@ var Fisica = (function () {
 
         var body = this.mundo.CreateBody(bodyDef);
         body.CreateFixture(fixtureDef);
+
+        return body;
     };
 
     Fisica.prototype.crear_rectangulo = function (x, y, ancho, alto, opciones) {
@@ -14506,6 +14613,32 @@ var Fisica = (function () {
         return new this.Circulo(this, x, y, radio, opciones);
     };
     return Fisica;
+})();
+
+var ConstanteDeMovimiento = (function () {
+    function ConstanteDeMovimiento(figura, evento) {
+        var def = new box2d.b2MouseJointDef();
+        this.cuerpo_enlazado = pilas.escena_actual().fisica.createBox(8.5, 2, 1, 1, box2d.b2Body.b2_staticBody);
+        def.bodyA = this.cuerpo_enlazado;
+        def.bodyB = figura.cuerpo;
+        var pos = pilas.escena_actual().camara.convertir_de_posicion_relativa_a_fisica(evento.x, evento.y);
+        def.target = new box2d.b2Vec2(convertir_a_metros(pos.x), convertir_a_metros(pos.y));
+        def.collideConnected = true;
+        def.maxForce = 1000.0 * figura.cuerpo.GetMass();
+        def.dampingRatio = 0;
+
+        this.constante = pilas.escena_actual().fisica.mundo.CreateJoint(def);
+        figura.cuerpo.SetAwake(true);
+    }
+    ConstanteDeMovimiento.prototype.mover = function (x, y) {
+        var pos = pilas.escena_actual().camara.convertir_de_posicion_relativa_a_fisica(x, y);
+        this.constante.SetTarget(new box2d.b2Vec2(convertir_a_metros(pos.x), convertir_a_metros(pos.y)));
+    };
+
+    ConstanteDeMovimiento.prototype.eliminar = function () {
+        pilas.escena_actual().fisica.mundo.DestroyBody(this.cuerpo_enlazado);
+    };
+    return ConstanteDeMovimiento;
 })();
 /// <reference path="actores/actor.ts"/>
 var Fondo = (function (_super) {
@@ -14522,7 +14655,7 @@ var Tarde = (function (_super) {
     function Tarde() {
         _super.call(this, "fondos/tarde.jpg", 0, 0);
         this.z = 1000;
-        this.y = 120;
+        this.y = 120; // TODO: temporal solo para tutorial.
     }
     return Tarde;
 })(Fondo);
@@ -14531,8 +14664,8 @@ var Plano = (function (_super) {
     __extends(Plano, _super);
     function Plano() {
         _super.call(this, 'plano.png', 0, 0);
-        this.centro_x = 0;
-        this.centro_y = 0;
+        this.sprite.regX = 0;
+        this.sprite.regY = 0;
     }
     Plano.prototype.crear_sprite = function () {
         var img = this._imagen.imagen;
@@ -14552,8 +14685,8 @@ var Pasto = (function (_super) {
     __extends(Pasto, _super);
     function Pasto() {
         _super.call(this, 'pasto.png', 0, 0);
-        this.centro_x = 0;
-        this.centro_y = 0;
+        this.sprite.regX = 0;
+        this.sprite.regY = 0;
     }
     Pasto.prototype.crear_sprite = function () {
         var img = this._imagen.imagen;
@@ -14595,7 +14728,10 @@ var GestorDeEscenas = (function () {
     }
     GestorDeEscenas.prototype.cambiar_escena = function (nueva_escena) {
         this.escena = nueva_escena;
-        this.actualizar();
+        if (pilas.ready) {
+            this.escena.iniciar();
+        }
+        this.actualizar(); // NOTA: se ejecuta para que los actores
         //       tomen su posición inicial.
     };
 
@@ -14708,14 +14844,14 @@ var Grupo = (function (_super) {
         this.ejecutar_funcion("aprender", habilidad, argumentos);
     };
 
-    Grupo.prototype.hacer = function (comporamiento, argumentos) {
+    Grupo.prototype.hacer = function (comportamiento, argumentos) {
         if (typeof argumentos === "undefined") { argumentos = undefined; }
-        this.ejecutar_funcion("hacer", comporamiento, argumentos);
+        this.ejecutar_funcion("hacer", comportamiento, argumentos);
     };
 
-    Grupo.prototype.hacer_luego = function (comporamiento, argumentos) {
+    Grupo.prototype.hacer_luego = function (comportamiento, argumentos) {
         if (typeof argumentos === "undefined") { argumentos = undefined; }
-        this.ejecutar_funcion("hacer_luego", comporamiento, argumentos);
+        this.ejecutar_funcion("hacer_luego", comportamiento, argumentos);
     };
 
     Grupo.prototype.decir = function (mensaje) {
@@ -14773,7 +14909,13 @@ var Imitar = (function (_super) {
     function Imitar(receptor, argumentos) {
         _super.call(this, receptor, argumentos);
         this.objeto_a_imitar = this.argumentos.objeto_a_imitar;
-        this.con_rotacion = this.argumentos.con_rotacion || true;
+
+        if (this.argumentos.con_rotacion === undefined) {
+            this.argumentos.con_rotacion = true;
+        }
+        if (this.argumentos.con_escala === undefined) {
+            this.argumentos.con_escala = true;
+        }
 
         receptor.id = this.argumentos.objeto_a_imitar.id;
         receptor.figura = this.argumentos.objeto_a_imitar;
@@ -14781,8 +14923,11 @@ var Imitar = (function (_super) {
     Imitar.prototype.actualizar = function () {
         this.receptor.x = this.objeto_a_imitar.x;
         this.receptor.y = this.objeto_a_imitar.y;
-        if (this.con_rotacion == true) {
+        if (this.argumentos.con_rotacion) {
             this.receptor.rotacion = this.objeto_a_imitar.rotacion;
+        }
+        if (this.argumentos.con_escala) {
+            this.objeto_a_imitar.escala = this.receptor.escala;
         }
     };
     return Imitar;
@@ -14974,20 +15119,22 @@ var Arrastrable = (function (_super) {
         if (evento.boton == 1) {
             if (this.receptor.colisiona_con_un_punto(evento.x, evento.y)) {
                 pilas.escena_actual().cuando_termina_click.conectar(this);
-                this.comienza_a_arrastrar();
+                this.comienza_a_arrastrar(evento);
             }
         }
     };
 
     Arrastrable.prototype.cuando_arrastra = function (evento) {
+        // Muestra un cursor diferente si puede comenzar
+        // a mover la figura.
         if (this.receptor.colisiona_con_un_punto(evento.x, evento.y))
             document.body.style.cursor = "move";
-else
+        else
             document.body.style.cursor = "default";
 
         if (this.debe_arrastrar === true) {
             if (this.receptor.tiene_fisica()) {
-                this.receptor.figura.definir_posicion(evento.x, evento.y);
+                this.constante.mover(evento.x, evento.y);
             } else {
                 this.receptor.x = evento.x;
                 this.receptor.y = evento.y;
@@ -15001,16 +15148,16 @@ else
         this.termina_de_arrastrar();
     };
 
-    Arrastrable.prototype.comienza_a_arrastrar = function () {
+    Arrastrable.prototype.comienza_a_arrastrar = function (evento) {
         if (this.receptor.tiene_fisica())
-            this.receptor.figura.cuerpo.SetType(0);
+            this.constante = new ConstanteDeMovimiento(this.receptor.figura, evento);
 
         this.debe_arrastrar = true;
     };
 
     Arrastrable.prototype.termina_de_arrastrar = function () {
         if (this.receptor.tiene_fisica())
-            this.receptor.figura.cuerpo.SetType(2);
+            this.constante.eliminar();
 
         this.debe_arrastrar = false;
     };
@@ -15055,7 +15202,7 @@ var RebotarComoCaja = (function (_super) {
     __extends(RebotarComoCaja, _super);
     function RebotarComoCaja(receptor) {
         _super.call(this, receptor);
-        var rectangulo = pilas.escena_actual().fisica.crear_rectangulo(receptor.x, receptor.y, receptor.radio_de_colision, receptor.radio_de_colision, {});
+        var rectangulo = pilas.escena_actual().fisica.crear_rectangulo(receptor.x, receptor.y, receptor.radio_de_colision * 2, receptor.radio_de_colision * 2, {});
         receptor.imitar(rectangulo);
     }
     return RebotarComoCaja;
@@ -15120,6 +15267,8 @@ var Imagenes = (function () {
         //            return true
         // });
         this.loader.addCompletionListener(function (e) {
+            pilas.ready = true;
+            pilas.escena_actual().iniciar();
             pilas.onready();
             pilas.ejecutar();
         });
@@ -15170,6 +15319,8 @@ var Imagenes = (function () {
         this.cargar_recurso('monkey_smile.png');
         this.cargar_recurso('monkey_shout.png');
         this.cargar_recurso('tortuga.png');
+
+        this.cargar_recurso('pingu.png');
         //this.cargar_recurso('cooperativista/alerta.png');
         //this.cargar_recurso('cooperativista/camina.png');
         //this.cargar_recurso('cooperativista/camina_sujeta.png');
@@ -15188,7 +15339,7 @@ var Imagenes = (function () {
     Imagenes.prototype.cargar = function (nombre) {
         if (nombre in this.recursos)
             return new Imagen(this.recursos[nombre]);
-else
+        else
             throw "No se puede encontrar la imagen: " + nombre + " ¿ha sido pre-cargada en el archivo imagenes.ts?";
     };
 
@@ -15336,11 +15487,13 @@ var Mundo = (function () {
     };
 
     Mundo.prototype.agregar_tarea_una_vez = function (tiempo, funcion, parametros, parent) {
+        if (typeof parametros === "undefined") { parametros = undefined; }
         if (typeof parent === "undefined") { parent = undefined; }
         pilas.escena_actual().tareas.una_vez(tiempo, funcion, parametros, parent);
     };
 
     Mundo.prototype.agregar_tarea_siempre = function (tiempo, funcion, parametros, parent) {
+        if (typeof parametros === "undefined") { parametros = undefined; }
         if (typeof parent === "undefined") { parent = undefined; }
         pilas.escena_actual().tareas.siempre(tiempo, funcion, parametros, parent);
     };
@@ -15360,6 +15513,7 @@ var Mundo = (function () {
 /// <reference path="colores.ts />
 /// <reference path="tareas.ts />
 /// <reference path="sonidos.ts />
+/// <reference path="evento.ts />
 /**
 * @class Pilas
 * @singleton
@@ -15413,10 +15567,14 @@ var Pilas = (function () {
         this.colisiones = new Colisiones();
         this.colores = new colores();
         this.sonidos = new Sonidos(this.opciones.data_path);
-
+        this.escena = new escena();
         this.tareas = new tareas();
 
         this.mundo.gestor_escenas.cambiar_escena(new Normal());
+
+        this.eventos = new ProxyEventos();
+
+        this.ready = false;
     };
 
     Pilas.prototype.reiniciar = function () {
@@ -15622,6 +15780,15 @@ var Pilas = (function () {
 })();
 
 pilas = new Pilas();
+
+pilasengine = {
+    iniciar: function iniciar(opciones) {
+        var pilas = new Pilas();
+
+        pilas.iniciar(opciones);
+        return pilas;
+    }
+};
 var simbolos = {
     IZQUIERDA: 37,
     DERECHA: 39,
@@ -15635,20 +15802,20 @@ var simbolos = {
     J: 74
 };
 /*
-*	Modulo sonidos:
+*  Modulo sonidos:
 *
-*	Hay una instancia de la clase sonidos al momento de iniciar pilas
-*	posteriormente para cargar y reproducir un sonido se debe de hacer lo siguiente:
+*  Hay una instancia de la clase sonidos al momento de iniciar pilas
+*  posteriormente para cargar y reproducir un sonido se debe de hacer lo siguiente:
 *
-*	1.- cargar el sonido en la función cargar_recursos() con ayuda de cargar_recurso(...)
-*		Por ejemplo: cargar_recurso("smile.ogg")
+*  1.- cargar el sonido en la función cargar_recursos() con ayuda de cargar_recurso(...)
+*    Por ejemplo: cargar_recurso("smile.ogg")
 *
-*	2.- Simulamos la carga del sonido lo más parecido a la versión Python, así que:
-*		cuando deseamos usar el sonido hacemos lo siguiente:
-*		var mi_sonido = pilas.sonidos.cargar("smile.ogg")
+*  2.- Simulamos la carga del sonido lo más parecido a la versión Python, así que:
+*    cuando deseamos usar el sonido hacemos lo siguiente:
+*    var mi_sonido = pilas.sonidos.cargar("smile.ogg")
 *
-*	3.- Por ultima para reproducir el sonido:
-*		mi_sonido.reproducir()
+*  3.- Por ultima para reproducir el sonido:
+*    mi_sonido.reproducir()
 */
 var Sonidos = (function () {
     function Sonidos(data_path) {
@@ -15666,7 +15833,6 @@ var Sonidos = (function () {
 
     Sonidos.prototype.cargar_recurso = function (nombre) {
         this.recursos.push({ id: nombre, src: nombre });
-        console.log("cargando " + nombre);
     };
 
     Sonidos.prototype.cargar = function (nombre) {

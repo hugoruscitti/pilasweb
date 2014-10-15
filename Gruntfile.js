@@ -2,7 +2,7 @@ var shell = require('shelljs');
 
 module.exports = function(grunt) {
 
-  grunt.initConfig({	
+  grunt.initConfig({
     nodewebkit: {
                   options: {
                             //version: '0.8.3',
@@ -98,7 +98,7 @@ module.exports = function(grunt) {
     shell.exec('git submodule update --init');
     shell.exec('cd docs; make actualizar_docs_pilasweb');
   });
-  
+
   grunt.registerTask('make_docs', "create documentation files", function() {
     shell.exec('jsduck public/pilasweb.js --title="pilas-engine web" --images=docs/images/ -o docs/html');
   });
@@ -109,4 +109,3 @@ module.exports = function(grunt) {
   grunt.registerTask('docs', ['typescript', 'concat', 'make_docs']);
   grunt.registerTask('default', ['typescript', 'concat', 'copy']);
 };
-

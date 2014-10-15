@@ -27,7 +27,7 @@ class colores {
 	verde_transparente;
 	azul_transparente;
 	gris_transparente;
-	
+
 	constructor() {
 		//Colores principales.
 		this.negro = createjs.Graphics.getRGB(0, 0, 0)

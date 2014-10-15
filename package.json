@@ -3,10 +3,10 @@
   "version": "0.0.2",
   "description": "",
   "main": "index.js",
-  "repository" : { 
-     "type" : "git",
-     "url" : "https://github.com/hugoruscitti/pilasweb.git"
-   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hugoruscitti/pilasweb.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -32,5 +32,7 @@
     "grunt-node-webkit-builder": "~0.1.20",
     "gaze": "~0.6.3",
     "bower": "~1.3.2"
+  },
+  "devDependencies": {
   }
 }
