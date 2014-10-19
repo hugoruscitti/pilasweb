@@ -15610,6 +15610,7 @@ var Pilas = (function () {
         this.opciones.alto = opciones.alto || 240;
         this.opciones.data_path = opciones.data_path || 'data';
         this.opciones.canvas_id = opciones.canvas_id || 'canvas';
+        this.opciones.canvas = opciones.canvas || null;
     };
 
     /**
@@ -15703,7 +15704,10 @@ var Pilas = (function () {
     * el atributo *canvas_id* de las opciones iniciales.
     */
     Pilas.prototype.obtener_canvas = function () {
-        this.canvas = document.getElementById(this.opciones.canvas_id);
+        if (this.opciones.canvas !== null)
+            this.canvas = this.opciones.canvas;
+        else
+            this.canvas = document.getElementById(this.opciones.canvas_id);
 
         if (!this.canvas)
             throw new Error("No se encuentra el elemento canvas (id='" + this.opciones.canvas_id + "')");

@@ -138,6 +138,7 @@ class Pilas {
     this.opciones.alto = opciones.alto || 240;
     this.opciones.data_path = opciones.data_path || 'data';
     this.opciones.canvas_id = opciones.canvas_id || 'canvas';
+    this.opciones.canvas = opciones.canvas || null;
   }
 
   /**
@@ -233,7 +234,10 @@ class Pilas {
    * el atributo *canvas_id* de las opciones iniciales.
    */
   private obtener_canvas() {
-    this.canvas = document.getElementById(this.opciones.canvas_id);
+    if (this.opciones.canvas !== null)
+      this.canvas = this.opciones.canvas;
+    else
+      this.canvas = document.getElementById(this.opciones.canvas_id);
 
     if (! this.canvas)
       throw new Error("No se encuentra el elemento canvas (id='" + this.opciones.canvas_id + "')");
@@ -304,7 +308,7 @@ class Pilas {
     this.definir_modos(modos);
     return "Ocultando fisica";
   }
-  
+
 }
 
 pilas = new Pilas();
