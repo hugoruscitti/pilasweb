@@ -134,12 +134,13 @@ class Pilas {
    */
   private inicializar_opciones(opciones) {
     this.opciones = opciones || {};
-    this.opciones.ancho = opciones.ancho || 320;
-    this.opciones.alto = opciones.alto || 240;
-    this.opciones.data_path = opciones.data_path || 'data';
-    this.opciones.canvas_id = opciones.canvas_id || 'canvas';
-    this.opciones.canvas = opciones.canvas || null;
+    this.opciones.ancho = this.opciones.ancho || 320;
+    this.opciones.alto = this.opciones.alto || 240;
+    this.opciones.data_path = this.opciones.data_path || 'data';
+    this.opciones.canvas_id = this.opciones.canvas_id || 'canvas';
+    this.opciones.canvas = this.opciones.canvas || null;
   }
+
 
   /**
    * @method definir_tamano_del_canvas
@@ -240,7 +241,7 @@ class Pilas {
       this.canvas = document.getElementById(this.opciones.canvas_id);
 
     if (! this.canvas)
-      throw new Error("No se encuentra el elemento canvas (id='" + this.opciones.canvas_id + "')");
+      throw new Error("No se encuentra el elemento canvas (id='" + this.opciones.canvas_id + "'), especificalo con opciones como {canvas_id: 'id_del_canvas'}");
   }
 
   /**
