@@ -41,8 +41,9 @@ class Imagenes {
     this.cargar_recurso('sin_imagen.png');
 
     this.cargar_recurso('plano.png');
+    this.cargar_recurso('alien_camina.png');
     this.cargar_recurso('nave.png');
-		
+
     this.cargar_recurso('piedra_chica.png');
     this.cargar_recurso('piedra_grande.png');
     this.cargar_recurso('piedra_media.png');
@@ -155,7 +156,7 @@ class Grilla extends Imagen {
 
   avanzar() {
     var ha_avanzado = true;
-    this.cuadro +=1; 
+    this.cuadro +=1;
 
     if (this.cuadro >= this.cantidad_cuadros) {
       this.cuadro = 0;

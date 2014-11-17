@@ -35,6 +35,7 @@ class Actores {
   Tortuga;
   Pizarra;
   Pingu;
+  Alien;
 
 
   constructor() {
@@ -64,5 +65,6 @@ class Actores {
     this.Tortuga = Tortuga;
     this.Pizarra = Pizarra;
     this.Pingu = Pingu;
+    this.Alien = Alien;
   }
 }

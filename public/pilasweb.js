@@ -11671,6 +11671,7 @@ var Actores = (function () {
         this.Tortuga = Tortuga;
         this.Pizarra = Pizarra;
         this.Pingu = Pingu;
+        this.Alien = Alien;
     }
     return Actores;
 })();
@@ -12224,6 +12225,17 @@ var Aceituna = (function (_super) {
         this.hacer(pilas.comportamientos.Saltar);
     };
     return Aceituna;
+})(Actor);
+var Alien = (function (_super) {
+    __extends(Alien, _super);
+    function Alien(x, y) {
+        if (typeof x === "undefined") { x = 0; }
+        if (typeof y === "undefined") { y = 0; }
+        var imagen = pilas.imagenes.cargar_grilla('alien_camina.png', 1);
+        _super.call(this, imagen, x, y);
+        this._imagen.definir_cuadro(0);
+    }
+    return Alien;
 })(Actor);
 var Banana = (function (_super) {
     __extends(Banana, _super);
@@ -15289,6 +15301,7 @@ var Imagenes = (function () {
         this.cargar_recurso('sin_imagen.png');
 
         this.cargar_recurso('plano.png');
+        this.cargar_recurso('alien_camina.png');
         this.cargar_recurso('nave.png');
 
         this.cargar_recurso('piedra_chica.png');
@@ -15561,8 +15574,6 @@ var Pilas = (function () {
         this.imagenes = new Imagenes(this.onready, this.opciones.data_path);
         this.fondos = new Fondos();
         this.mundo = new Mundo();
-        console.log(this.mundo);
-
         this.interpolaciones = new Interpolaciones();
         this.utils = new Utils();
         this.grupo = new grupo();
