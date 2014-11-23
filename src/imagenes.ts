@@ -100,6 +100,10 @@ class Imagenes {
   cargar_grilla(nombre, columnas=1, filas=1) {
     return new Grilla(this.recursos[nombre], columnas, filas);
   }
+
+  cargar_animacion(nombre, columnas=1, filas=1) {
+    return new Animacion(this.recursos[nombre], columnas, filas);
+  }
 }
 
 class Imagen {
@@ -115,6 +119,9 @@ class Imagen {
     return new createjs.Bitmap(this.imagen);
   }
 
+  avanzar(velocidad=60) {
+    return false;
+  }
 
   get ancho() {return this.imagen.width}
   get alto() {return this.imagen.height}
@@ -154,7 +161,7 @@ class Grilla extends Imagen {
     this.sprite.gotoAndStop(numero_de_cuadro);
   }
 
-  avanzar() {
+  avanzar(velocidad=60) {
     var ha_avanzado = true;
     this.cuadro +=1;
 
@@ -165,5 +172,64 @@ class Grilla extends Imagen {
 
     this.definir_cuadro(this.cuadro);
     return ha_avanzado;
+  }
+}
+
+
+class Animacion extends Grilla {
+  animaciones;
+  animacion_en_curso;
+  cuadro_en_la_animacion;
+  _ticks_acumulados;
+
+  constructor(imagen, columnas=1, filas=1) {
+    super(imagen, columnas, filas);
+    this.animaciones = {};
+    this.animacion_en_curso = null
+    this.cuadro_en_la_animacion = 0
+    this._ticks_acumulados = 0;
+  }
+
+  definir_animacion(nombre, cuadros, velocidad) {
+    this.animaciones[nombre] = {
+      cuadros: cuadros,
+      velocidad: velocidad
+    };
+  }
+
+  cargar_animacion(nombre) {
+    if (this.animacion_en_curso !== this.animaciones[nombre]) {
+      this._ticks_acumulados = 0;
+      this.animacion_en_curso = this.animaciones[nombre];
+      this.cuadro_en_la_animacion = 0;
+      this.definir_cuadro(this.animacion_en_curso["cuadros"][this.cuadro_en_la_animacion])
+    }
+  }
+
+  avanzar(velocidad=-1) {
+    if (velocidad !== -1)
+      throw new Error("Tienes que definir la velocidad usando 'definir_animacion' no llamando al metodo avanzar con un numero.");
+
+    if (! this.animacion_en_curso)
+      throw new Error("Tienes que definir al menos una animacion inicial.");
+
+    var velocidad_de_animacion = (1000.0 / 60) * this.animacion_en_curso["velocidad"];
+    this._ticks_acumulados += velocidad_de_animacion
+    var ha_avanzado = true
+
+    if (this._ticks_acumulados > 1000.0) {
+      this._ticks_acumulados -= 1000.0
+
+      if (this.cuadro_en_la_animacion >= this.animacion_en_curso['cuadros'].length) {
+        this.cuadro_en_la_animacion = 0;
+        ha_avanzado = false;
+      }
+
+      this.definir_cuadro(this.animacion_en_curso['cuadros'][this.cuadro_en_la_animacion])
+      this.cuadro_en_la_animacion += 1;
+    }
+
+    return ha_avanzado;
+
   }
 }
