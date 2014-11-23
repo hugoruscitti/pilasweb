@@ -12226,17 +12226,102 @@ var Aceituna = (function (_super) {
     };
     return Aceituna;
 })(Actor);
+// <reference path="comportamientos.ts />
 var Alien = (function (_super) {
     __extends(Alien, _super);
     function Alien(x, y) {
         if (typeof x === "undefined") { x = 0; }
         if (typeof y === "undefined") { y = 0; }
-        var imagen = pilas.imagenes.cargar_grilla('alien_camina.png', 1);
+        var imagen = pilas.imagenes.cargar_grilla('alien_camina.png', 11);
         _super.call(this, imagen, x, y);
         this._imagen.definir_cuadro(0);
+
+        this.hacer_luego(MoverHaciaDerecha, { cantidad: 100, tiempo: 2 });
+        this.hacer_luego(MoverHaciaIzquierda, { cantidad: 100, tiempo: 2 });
+        this.hacer_luego(MoverHaciaArriba, { cantidad: 100, tiempo: 2 });
+        this.hacer_luego(MoverHaciaAbajo, { cantidad: 100, tiempo: 2 });
     }
     return Alien;
 })(Actor);
+
+var Movimiento = (function () {
+    function Movimiento(argumentos) {
+        this.argumentos = argumentos;
+    }
+    Movimiento.prototype.iniciar = function (receptor) {
+        this.receptor = receptor;
+        this.tiempo = this.argumentos.tiempo || 2;
+        this.cantidad = this.argumentos.cantidad || 32;
+
+        this._contador_de_tiempo = 0;
+        this._velocidad = (this.cantidad / 60.0) / this.tiempo;
+        this.iniciar_animacion();
+    };
+
+    Movimiento.prototype.iniciar_animacion = function () {
+    };
+
+    Movimiento.prototype.supero_el_tiempo = function () {
+        return (this._contador_de_tiempo > this.tiempo * 60);
+    };
+    return Movimiento;
+})();
+
+var MoverHaciaDerecha = (function (_super) {
+    __extends(MoverHaciaDerecha, _super);
+    function MoverHaciaDerecha() {
+        _super.apply(this, arguments);
+    }
+    MoverHaciaDerecha.prototype.iniciar_animacion = function () {
+    };
+
+    MoverHaciaDerecha.prototype.actualizar = function () {
+        this.realizar_movimiento();
+
+        if (this.supero_el_tiempo())
+            return true;
+
+        this._contador_de_tiempo += 1;
+    };
+
+    MoverHaciaDerecha.prototype.realizar_movimiento = function () {
+        this.receptor.x += this._velocidad;
+    };
+    return MoverHaciaDerecha;
+})(Movimiento);
+
+var MoverHaciaIzquierda = (function (_super) {
+    __extends(MoverHaciaIzquierda, _super);
+    function MoverHaciaIzquierda() {
+        _super.apply(this, arguments);
+    }
+    MoverHaciaIzquierda.prototype.realizar_movimiento = function () {
+        this.receptor.x -= this._velocidad;
+    };
+    return MoverHaciaIzquierda;
+})(MoverHaciaDerecha);
+
+var MoverHaciaArriba = (function (_super) {
+    __extends(MoverHaciaArriba, _super);
+    function MoverHaciaArriba() {
+        _super.apply(this, arguments);
+    }
+    MoverHaciaArriba.prototype.realizar_movimiento = function () {
+        this.receptor.y += this._velocidad;
+    };
+    return MoverHaciaArriba;
+})(MoverHaciaDerecha);
+
+var MoverHaciaAbajo = (function (_super) {
+    __extends(MoverHaciaAbajo, _super);
+    function MoverHaciaAbajo() {
+        _super.apply(this, arguments);
+    }
+    MoverHaciaAbajo.prototype.realizar_movimiento = function () {
+        this.receptor.y -= this._velocidad;
+    };
+    return MoverHaciaAbajo;
+})(MoverHaciaDerecha);
 var Banana = (function (_super) {
     __extends(Banana, _super);
     function Banana(x, y) {
