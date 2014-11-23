@@ -1,21 +1,29 @@
 // <reference path="comportamientos.ts />
 
 class Alien extends Actor {
+  sombra;
+
   constructor(x=0, y=0) {
     var imagen = pilas.imagenes.cargar_animacion('alien_camina.png', 11);
     super(imagen, x, y);
 
-    this.centro_y = 40;
+    this.centro_y = 45;
 
     this._imagen.definir_animacion("parado", [0], 10);
     this._imagen.definir_animacion("camina", [4, 5, 6, 7, 8, 9, 8, 7, 6, 5], 10);
     this._imagen.cargar_animacion("parado");
 
+    this.sombra = new pilas.actores.Sombra();
+    this.sombra.escala = 0.5;
   }
 
   actualizar() {
     this._imagen.avanzar();
     this.z = this.y;
+
+    this.sombra.x = this.x;
+    this.sombra.y = this.y;
+    this.sombra.z = this.z + 1;
   }
 
   ir_derecha() {

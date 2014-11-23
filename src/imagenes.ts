@@ -74,6 +74,7 @@ class Imagenes {
     this.cargar_recurso('tortuga.png');
 
     this.cargar_recurso('pingu.png');
+    this.cargar_recurso('sombra.png');
 
     //this.cargar_recurso('cooperativista/alerta.png');
     //this.cargar_recurso('cooperativista/camina.png');
@@ -94,7 +95,7 @@ class Imagenes {
     if (nombre in this.recursos)
       return new Imagen(this.recursos[nombre]);
     else
-      throw "No se puede encontrar la imagen: " + nombre + " ¿ha sido pre-cargada en el archivo imagenes.ts?";
+      throw "No se puede encontrar la imagen: '" + nombre + "' ¿ha sido pre-cargada en el archivo imagenes.ts?";
   }
 
   cargar_grilla(nombre, columnas=1, filas=1) {

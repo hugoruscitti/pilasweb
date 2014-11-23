@@ -11672,6 +11672,7 @@ var Actores = (function () {
         this.Pizarra = Pizarra;
         this.Pingu = Pingu;
         this.Alien = Alien;
+        this.Sombra = Sombra;
     }
     return Actores;
 })();
@@ -12253,15 +12254,22 @@ var Alien = (function (_super) {
         var imagen = pilas.imagenes.cargar_animacion('alien_camina.png', 11);
         _super.call(this, imagen, x, y);
 
-        this.centro_y = 40;
+        this.centro_y = 45;
 
         this._imagen.definir_animacion("parado", [0], 10);
         this._imagen.definir_animacion("camina", [4, 5, 6, 7, 8, 9, 8, 7, 6, 5], 10);
         this._imagen.cargar_animacion("parado");
+
+        this.sombra = new pilas.actores.Sombra();
+        this.sombra.escala = 0.5;
     }
     Alien.prototype.actualizar = function () {
         this._imagen.avanzar();
         this.z = this.y;
+
+        this.sombra.x = this.x;
+        this.sombra.y = this.y;
+        this.sombra.z = this.z + 1;
     };
 
     Alien.prototype.ir_derecha = function () {
@@ -13327,6 +13335,15 @@ var Puntaje = (function (_super) {
     };
     return Puntaje;
 })(Texto);
+/// <reference path="actor.ts"/>
+var Sombra = (function (_super) {
+    __extends(Sombra, _super);
+    function Sombra(x, y) {
+        _super.call(this, "sombra.png", x, y);
+        this.radio_de_colision = 20;
+    }
+    return Sombra;
+})(Actor);
 var Tortuga = (function (_super) {
     __extends(Tortuga, _super);
     function Tortuga(x, y, dibuja) {
@@ -15498,6 +15515,7 @@ var Imagenes = (function () {
         this.cargar_recurso('tortuga.png');
 
         this.cargar_recurso('pingu.png');
+        this.cargar_recurso('sombra.png');
         //this.cargar_recurso('cooperativista/alerta.png');
         //this.cargar_recurso('cooperativista/camina.png');
         //this.cargar_recurso('cooperativista/camina_sujeta.png');
@@ -15517,7 +15535,7 @@ var Imagenes = (function () {
         if (nombre in this.recursos)
             return new Imagen(this.recursos[nombre]);
         else
-            throw "No se puede encontrar la imagen: " + nombre + " ¿ha sido pre-cargada en el archivo imagenes.ts?";
+            throw "No se puede encontrar la imagen: '" + nombre + "' ¿ha sido pre-cargada en el archivo imagenes.ts?";
     };
 
     Imagenes.prototype.cargar_grilla = function (nombre, columnas, filas) {
