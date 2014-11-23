@@ -10,6 +10,7 @@ class Alien extends Actor {
     this.centro_y = 45;
 
     this._imagen.definir_animacion("parado", [0], 10);
+    this._imagen.definir_animacion("recoger", [1], 10);
     this._imagen.definir_animacion("camina", [4, 5, 6, 7, 8, 9, 8, 7, 6, 5], 10);
     this._imagen.cargar_animacion("parado");
 
@@ -50,6 +51,10 @@ class Alien extends Actor {
     this.esperar(0);
   }
 
+  recoger() {
+    this.hacer_luego(Recoger, {tiempo: 1});
+  }
+
 }
 
 class Movimiento {
@@ -81,6 +86,9 @@ class Movimiento {
   supero_el_tiempo() {
     return (this._contador_de_tiempo > this.tiempo * 60);
   }
+
+  al_terminar() {
+  }
 }
 
 class MoverHaciaDerecha extends Movimiento {
@@ -95,6 +103,7 @@ class MoverHaciaDerecha extends Movimiento {
 
     if (this.supero_el_tiempo()) {
       this.receptor._imagen.cargar_animacion('parado');
+      this.al_terminar();
       return true;
     }
 
@@ -149,5 +158,20 @@ class Esperar extends MoverHaciaDerecha {
   }
 
   realizar_movimiento() {
+  }
+}
+
+
+class Recoger extends MoverHaciaDerecha {
+
+  iniciar_animacion() {
+    this.receptor._imagen.cargar_animacion("recoger");
+  }
+
+  realizar_movimiento() {
+  }
+
+  al_terminar() {
+    this.receptor._imagen.cargar_animacion("parado");
   }
 }

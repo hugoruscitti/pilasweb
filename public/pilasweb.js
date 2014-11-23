@@ -12257,6 +12257,7 @@ var Alien = (function (_super) {
         this.centro_y = 45;
 
         this._imagen.definir_animacion("parado", [0], 10);
+        this._imagen.definir_animacion("recoger", [1], 10);
         this._imagen.definir_animacion("camina", [4, 5, 6, 7, 8, 9, 8, 7, 6, 5], 10);
         this._imagen.cargar_animacion("parado");
 
@@ -12296,6 +12297,10 @@ var Alien = (function (_super) {
     Alien.prototype.detener = function () {
         this.esperar(0);
     };
+
+    Alien.prototype.recoger = function () {
+        this.hacer_luego(Recoger, { tiempo: 1 });
+    };
     return Alien;
 })(Actor);
 
@@ -12319,6 +12324,9 @@ var Movimiento = (function () {
     Movimiento.prototype.supero_el_tiempo = function () {
         return (this._contador_de_tiempo > this.tiempo * 60);
     };
+
+    Movimiento.prototype.al_terminar = function () {
+    };
     return Movimiento;
 })();
 
@@ -12337,6 +12345,7 @@ var MoverHaciaDerecha = (function (_super) {
 
         if (this.supero_el_tiempo()) {
             this.receptor._imagen.cargar_animacion('parado');
+            this.al_terminar();
             return true;
         }
 
@@ -12408,6 +12417,24 @@ var Esperar = (function (_super) {
     Esperar.prototype.realizar_movimiento = function () {
     };
     return Esperar;
+})(MoverHaciaDerecha);
+
+var Recoger = (function (_super) {
+    __extends(Recoger, _super);
+    function Recoger() {
+        _super.apply(this, arguments);
+    }
+    Recoger.prototype.iniciar_animacion = function () {
+        this.receptor._imagen.cargar_animacion("recoger");
+    };
+
+    Recoger.prototype.realizar_movimiento = function () {
+    };
+
+    Recoger.prototype.al_terminar = function () {
+        this.receptor._imagen.cargar_animacion("parado");
+    };
+    return Recoger;
 })(MoverHaciaDerecha);
 var Banana = (function (_super) {
     __extends(Banana, _super);
