@@ -11813,6 +11813,7 @@ var Actor = (function (_super) {
         this.crear_sprite();
         this.x = x || 0;
         this.y = y || 0;
+        this.espejado = false;
         this.centro_x = 0;
         this.centro_y = 0;
 
@@ -11857,6 +11858,23 @@ var Actor = (function (_super) {
         },
         set: function (_z) {
             this.sprite.z = _z;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+
+    Object.defineProperty(Actor.prototype, "espejado", {
+        get: function () {
+            return this._espejado;
+        },
+        set: function (_espejado) {
+            this._espejado = _espejado;
+
+            if (_espejado)
+                this.sprite.scaleX = -Math.abs(this.sprite.scaleX);
+            else
+                this.sprite.scaleX = Math.abs(this.sprite.scaleX);
         },
         enumerable: true,
         configurable: true
@@ -12232,15 +12250,44 @@ var Alien = (function (_super) {
     function Alien(x, y) {
         if (typeof x === "undefined") { x = 0; }
         if (typeof y === "undefined") { y = 0; }
-        var imagen = pilas.imagenes.cargar_grilla('alien_camina.png', 11);
+        var imagen = pilas.imagenes.cargar_animacion('alien_camina.png', 11);
         _super.call(this, imagen, x, y);
-        this._imagen.definir_cuadro(0);
 
-        this.hacer_luego(MoverHaciaDerecha, { cantidad: 100, tiempo: 2 });
-        this.hacer_luego(MoverHaciaIzquierda, { cantidad: 100, tiempo: 2 });
-        this.hacer_luego(MoverHaciaArriba, { cantidad: 100, tiempo: 2 });
-        this.hacer_luego(MoverHaciaAbajo, { cantidad: 100, tiempo: 2 });
+        this.centro_y = 40;
+
+        this._imagen.definir_animacion("parado", [0], 10);
+        this._imagen.definir_animacion("camina", [4, 5, 6, 7, 8, 9, 8, 7, 6, 5], 10);
+        this._imagen.cargar_animacion("parado");
     }
+    Alien.prototype.actualizar = function () {
+        this._imagen.avanzar();
+        this.z = this.y;
+    };
+
+    Alien.prototype.ir_derecha = function () {
+        this.hacer_luego(MoverHaciaDerecha, { cantidad: 100, tiempo: 2 });
+    };
+
+    Alien.prototype.ir_izquierda = function () {
+        this.hacer_luego(MoverHaciaIzquierda, { cantidad: 100, tiempo: 2 });
+    };
+
+    Alien.prototype.ir_arriba = function () {
+        this.hacer_luego(MoverHaciaArriba, { cantidad: 100, tiempo: 2 });
+    };
+
+    Alien.prototype.ir_abajo = function () {
+        this.hacer_luego(MoverHaciaAbajo, { cantidad: 100, tiempo: 2 });
+    };
+
+    Alien.prototype.esperar = function (tiempo) {
+        if (typeof tiempo === "undefined") { tiempo = 2; }
+        this.hacer_luego(Esperar, { tiempo: tiempo });
+    };
+
+    Alien.prototype.detener = function () {
+        this.esperar(0);
+    };
     return Alien;
 })(Actor);
 
@@ -12273,13 +12320,17 @@ var MoverHaciaDerecha = (function (_super) {
         _super.apply(this, arguments);
     }
     MoverHaciaDerecha.prototype.iniciar_animacion = function () {
+        this.receptor._imagen.cargar_animacion("camina");
+        this.receptor.espejado = false;
     };
 
     MoverHaciaDerecha.prototype.actualizar = function () {
         this.realizar_movimiento();
 
-        if (this.supero_el_tiempo())
+        if (this.supero_el_tiempo()) {
+            this.receptor._imagen.cargar_animacion('parado');
             return true;
+        }
 
         this._contador_de_tiempo += 1;
     };
@@ -12295,6 +12346,11 @@ var MoverHaciaIzquierda = (function (_super) {
     function MoverHaciaIzquierda() {
         _super.apply(this, arguments);
     }
+    MoverHaciaIzquierda.prototype.iniciar_animacion = function () {
+        this.receptor._imagen.cargar_animacion("camina");
+        this.receptor.espejado = true;
+    };
+
     MoverHaciaIzquierda.prototype.realizar_movimiento = function () {
         this.receptor.x -= this._velocidad;
     };
@@ -12306,6 +12362,10 @@ var MoverHaciaArriba = (function (_super) {
     function MoverHaciaArriba() {
         _super.apply(this, arguments);
     }
+    MoverHaciaArriba.prototype.iniciar_animacion = function () {
+        this.receptor._imagen.cargar_animacion("camina");
+    };
+
     MoverHaciaArriba.prototype.realizar_movimiento = function () {
         this.receptor.y += this._velocidad;
     };
@@ -12317,10 +12377,29 @@ var MoverHaciaAbajo = (function (_super) {
     function MoverHaciaAbajo() {
         _super.apply(this, arguments);
     }
+    MoverHaciaAbajo.prototype.iniciar_animacion = function () {
+        this.receptor._imagen.cargar_animacion("camina");
+    };
+
     MoverHaciaAbajo.prototype.realizar_movimiento = function () {
         this.receptor.y -= this._velocidad;
     };
     return MoverHaciaAbajo;
+})(MoverHaciaDerecha);
+
+var Esperar = (function (_super) {
+    __extends(Esperar, _super);
+    function Esperar() {
+        _super.apply(this, arguments);
+    }
+    Esperar.prototype.iniciar_animacion = function () {
+        this.receptor._imagen.cargar_animacion("parado");
+        this.receptor.espejado = false;
+    };
+
+    Esperar.prototype.realizar_movimiento = function () {
+    };
+    return Esperar;
 })(MoverHaciaDerecha);
 var Banana = (function (_super) {
     __extends(Banana, _super);
@@ -15446,6 +15525,12 @@ var Imagenes = (function () {
         if (typeof filas === "undefined") { filas = 1; }
         return new Grilla(this.recursos[nombre], columnas, filas);
     };
+
+    Imagenes.prototype.cargar_animacion = function (nombre, columnas, filas) {
+        if (typeof columnas === "undefined") { columnas = 1; }
+        if (typeof filas === "undefined") { filas = 1; }
+        return new Animacion(this.recursos[nombre], columnas, filas);
+    };
     return Imagenes;
 })();
 
@@ -15456,6 +15541,11 @@ var Imagen = (function () {
     }
     Imagen.prototype.instanciar = function () {
         return new createjs.Bitmap(this.imagen);
+    };
+
+    Imagen.prototype.avanzar = function (velocidad) {
+        if (typeof velocidad === "undefined") { velocidad = 60; }
+        return false;
     };
 
     Object.defineProperty(Imagen.prototype, "ancho", {
@@ -15510,7 +15600,8 @@ var Grilla = (function (_super) {
         this.sprite.gotoAndStop(numero_de_cuadro);
     };
 
-    Grilla.prototype.avanzar = function () {
+    Grilla.prototype.avanzar = function (velocidad) {
+        if (typeof velocidad === "undefined") { velocidad = 60; }
         var ha_avanzado = true;
         this.cuadro += 1;
 
@@ -15524,6 +15615,62 @@ var Grilla = (function (_super) {
     };
     return Grilla;
 })(Imagen);
+
+var Animacion = (function (_super) {
+    __extends(Animacion, _super);
+    function Animacion(imagen, columnas, filas) {
+        if (typeof columnas === "undefined") { columnas = 1; }
+        if (typeof filas === "undefined") { filas = 1; }
+        _super.call(this, imagen, columnas, filas);
+        this.animaciones = {};
+        this.animacion_en_curso = null;
+        this.cuadro_en_la_animacion = 0;
+        this._ticks_acumulados = 0;
+    }
+    Animacion.prototype.definir_animacion = function (nombre, cuadros, velocidad) {
+        this.animaciones[nombre] = {
+            cuadros: cuadros,
+            velocidad: velocidad
+        };
+    };
+
+    Animacion.prototype.cargar_animacion = function (nombre) {
+        if (this.animacion_en_curso !== this.animaciones[nombre]) {
+            this._ticks_acumulados = 0;
+            this.animacion_en_curso = this.animaciones[nombre];
+            this.cuadro_en_la_animacion = 0;
+            this.definir_cuadro(this.animacion_en_curso["cuadros"][this.cuadro_en_la_animacion]);
+        }
+    };
+
+    Animacion.prototype.avanzar = function (velocidad) {
+        if (typeof velocidad === "undefined") { velocidad = -1; }
+        if (velocidad !== -1)
+            throw new Error("Tienes que definir la velocidad usando 'definir_animacion' no llamando al metodo avanzar con un numero.");
+
+        if (!this.animacion_en_curso)
+            throw new Error("Tienes que definir al menos una animacion inicial.");
+
+        var velocidad_de_animacion = (1000.0 / 60) * this.animacion_en_curso["velocidad"];
+        this._ticks_acumulados += velocidad_de_animacion;
+        var ha_avanzado = true;
+
+        if (this._ticks_acumulados > 1000.0) {
+            this._ticks_acumulados -= 1000.0;
+
+            if (this.cuadro_en_la_animacion >= this.animacion_en_curso['cuadros'].length) {
+                this.cuadro_en_la_animacion = 0;
+                ha_avanzado = false;
+            }
+
+            this.definir_cuadro(this.animacion_en_curso['cuadros'][this.cuadro_en_la_animacion]);
+            this.cuadro_en_la_animacion += 1;
+        }
+
+        return ha_avanzado;
+    };
+    return Animacion;
+})(Grilla);
 var Interpolaciones = (function () {
     function Interpolaciones() {
     }

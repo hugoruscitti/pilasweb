@@ -53,6 +53,7 @@ class Actor extends Estudiante {
   radio_de_colision;
   id;
   figura;
+  _espejado;
   callbacks_cuando_hace_click;
   callbacks_cuando_mueve_mouse;
 
@@ -67,6 +68,7 @@ class Actor extends Estudiante {
     this.crear_sprite();
     this.x = x || 0;
     this.y = y || 0;
+    this.espejado = false;
     this.centro_x = 0;
     this.centro_y = 0;
 
@@ -112,6 +114,19 @@ class Actor extends Estudiante {
 
   set z(_z) {
     this.sprite.z = _z;
+  }
+
+  get espejado() {
+    return this._espejado;
+  }
+
+  set espejado(_espejado) {
+    this._espejado = _espejado;
+
+    if (_espejado)
+      this.sprite.scaleX = -Math.abs(this.sprite.scaleX);
+    else
+      this.sprite.scaleX = Math.abs(this.sprite.scaleX);
   }
 
   get x() {
