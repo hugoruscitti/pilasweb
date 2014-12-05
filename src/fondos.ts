@@ -34,8 +34,8 @@ class Plano extends Fondo {
     var s = new createjs.Shape();
 
     s.graphics.beginBitmapFill(img, 'repeat');
-    s.graphics.drawRect(-pilas.opciones.ancho/2, -pilas.opciones.alto/2, 
-      pilas.opciones.ancho, pilas.opciones.alto); 
+    s.graphics.drawRect(-pilas.opciones.ancho/2, -pilas.opciones.alto/2,
+      pilas.opciones.ancho, pilas.opciones.alto);
     this.sprite = s;
   }
 
@@ -56,8 +56,8 @@ class Pasto extends Fondo {
     var s = new createjs.Shape();
 
     s.graphics.beginBitmapFill(img, 'repeat');
-    s.graphics.drawRect(-pilas.opciones.ancho/2, -pilas.opciones.alto/2, 
-      pilas.opciones.ancho, pilas.opciones.alto); 
+    s.graphics.drawRect(-pilas.opciones.ancho/2, -pilas.opciones.alto/2,
+      pilas.opciones.ancho, pilas.opciones.alto);
     this.sprite = s;
   }
 
@@ -75,16 +75,28 @@ class PastoCuadriculado extends Fondo {
   }
 }
 
+class Laberinto1 extends Fondo {
+
+  constructor() {
+    super('fondos/laberinto1.png', 0, 0);
+  }
+
+  actualizar() {
+  }
+}
+
 class Fondos {
   Plano;
   Pasto;
   PastoCuadriculado;
   Tarde;
+  Laberinto1;
 
   constructor() {
     this.Plano = Plano;
     this.Pasto = Pasto;
     this.PastoCuadriculado = PastoCuadriculado;
     this.Tarde = Tarde;
+    this.Laberinto1 = Laberinto1;
   }
 }

@@ -9,9 +9,9 @@ class Alien extends Actor {
 
     this.centro_y = 45;
 
-    this._imagen.definir_animacion("parado", [0], 10);
-    this._imagen.definir_animacion("recoger", [1], 10);
-    this._imagen.definir_animacion("camina", [4, 5, 6, 7, 8, 9, 8, 7, 6, 5], 10);
+    this._imagen.definir_animacion("parado", [0], 15);
+    this._imagen.definir_animacion("recoger", [1], 15);
+    this._imagen.definir_animacion("camina", [4, 5, 6, 7, 8, 9, 8, 7, 6, 5], 15);
     this._imagen.cargar_animacion("parado");
 
     this.sombra = new pilas.actores.Sombra();
@@ -28,19 +28,19 @@ class Alien extends Actor {
   }
 
   ir_derecha() {
-    this.hacer_luego(MoverHaciaDerecha, {cantidad: 100, tiempo: 2});
+    this.hacer_luego(MoverHaciaDerecha, {cantidad: 100, tiempo: 1});
   }
 
   ir_izquierda() {
-    this.hacer_luego(MoverHaciaIzquierda, {cantidad: 100, tiempo: 2});
+    this.hacer_luego(MoverHaciaIzquierda, {cantidad: 100, tiempo: 1});
   }
 
   ir_arriba() {
-    this.hacer_luego(MoverHaciaArriba, {cantidad: 100, tiempo: 2});
+    this.hacer_luego(MoverHaciaArriba, {cantidad: 100, tiempo: 1});
   }
 
   ir_abajo() {
-    this.hacer_luego(MoverHaciaAbajo, {cantidad: 100, tiempo: 2});
+    this.hacer_luego(MoverHaciaAbajo, {cantidad: 100, tiempo: 1});
   }
 
   esperar(tiempo=2) {
@@ -160,6 +160,7 @@ class Esperar extends MoverHaciaDerecha {
   realizar_movimiento() {
   }
 }
+
 
 
 class Recoger extends MoverHaciaDerecha {

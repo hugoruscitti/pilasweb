@@ -2,7 +2,7 @@ class escena {
   Base;
   Normal;
   constructor() {
-    this.Base = Base; 
+    this.Base = Base;
     this.Normal = Normal;
   }
 }
@@ -51,18 +51,18 @@ class Base {
     }
 
     this.ordenar_actores_por_valor_z();
-    this.stage.update();
     this.actualiza.emitir();
     pilas.colisiones.verificar_colisiones();
+    this.stage.update();
   }
 
   ordenar_actores_por_valor_z() {
     var sortFunction = function(item1, item2, options) {
       if (item1.z < item2.z)
-        return 1; 
+        return 1;
 
       if (item1.z > item2.z)
-        return -1; 
+        return -1;
 
       return 0;
     }

@@ -42,11 +42,7 @@
 
     <div class='container'>
 
-      <div class="row"  style='margin-top: 70px'>
-          <div class="span12">
               <canvas id='canvas_id'></canvas>
-          </div>
-      </div>
 
     </div>
 
@@ -58,10 +54,10 @@
 		var canvas_element = document.getElementById('canvas_id');
     window['canvas'] = canvas_element;
     pilas = new Pilas();
-    pilas.iniciar({ancho: 320, alto: 240, canvas: canvas_element, data_path: 'data'});
+    pilas.iniciar({ancho: 450, alto: 450, canvas: canvas_element, data_path: 'data'});
 
     pilas.onready = function() {
-      var fondo = new pilas.fondos.Tarde();
+      var fondo = new pilas.fondos.Laberinto1();
 			var alien = new pilas.actores.Alien(0, -50);
     }
 

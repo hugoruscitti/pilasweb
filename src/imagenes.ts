@@ -68,6 +68,7 @@ class Imagenes {
     this.cargar_recurso('boton/boton_press.png');
 
     this.cargar_recurso('fondos/tarde.jpg');
+    this.cargar_recurso('fondos/laberinto1.png');
     this.cargar_recurso('monkey_normal.png');
     this.cargar_recurso('monkey_smile.png');
     this.cargar_recurso('monkey_shout.png');
