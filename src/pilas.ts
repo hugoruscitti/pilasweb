@@ -1,4 +1,5 @@
 declare var pilas;
+declare var window: Window;
 declare var pilasengine;
 declare var PxLoader;
 declare var createjs;
@@ -100,6 +101,10 @@ class Pilas {
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
 
     this.eventos = new ProxyEventos();
+
+    // Deshabilita el interpolado de pixels.
+    var ctx = this.canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
 
     this.ready  = false;
   }
@@ -316,9 +321,9 @@ pilas = new Pilas();
 
 pilasengine = {
   iniciar: function iniciar(opciones) {
-    var pilas = new Pilas();
+    window['pilas'] = new Pilas();
 
-    pilas.iniciar(opciones);
-    return pilas;
+    window['pilas'].iniciar(opciones);
+    return window['pilas'];
   }
 }
