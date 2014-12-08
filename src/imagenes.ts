@@ -41,7 +41,7 @@ class Imagenes {
     this.cargar_recurso('sin_imagen.png');
 
     this.cargar_recurso('plano.png');
-    this.cargar_recurso('alien_camina.png');
+    this.cargar_recurso('alien.png');
     this.cargar_recurso('nave.png');
 
     this.cargar_recurso('piedra_chica.png');

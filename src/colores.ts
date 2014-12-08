@@ -58,4 +58,5 @@ class colores {
 		this.azul_transparente = createjs.Graphics.getRGB(0, 0, 255, 0.5)
 		this.gris_transparente = createjs.Graphics.getRGB(128, 128, 128, 0.5)
 	}
+
 }

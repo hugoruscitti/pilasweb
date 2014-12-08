@@ -4,18 +4,19 @@ class Alien extends Actor {
   sombra;
 
   constructor(x=0, y=0) {
-    var imagen = pilas.imagenes.cargar_animacion('alien_camina.png', 11);
+    var imagen = pilas.imagenes.cargar_animacion('alien.png', 14);
     super(imagen, x, y);
 
-    this.centro_y = 45;
+    window['alien'] = this;
 
-    this._imagen.definir_animacion("parado", [0], 15);
+    this._imagen.definir_animacion("parado", [11, 11], 5);
     this._imagen.definir_animacion("recoger", [1], 15);
     this._imagen.definir_animacion("camina", [4, 5, 6, 7, 8, 9, 8, 7, 6, 5], 15);
     this._imagen.cargar_animacion("parado");
 
     this.sombra = new pilas.actores.Sombra();
-    this.sombra.escala = 0.5;
+    //this.sombra.escala = 0.5;
+    //this.ir_derecha();
   }
 
   actualizar() {
@@ -154,7 +155,7 @@ class Esperar extends MoverHaciaDerecha {
 
   iniciar_animacion() {
     this.receptor._imagen.cargar_animacion("parado");
-    this.receptor.espejado = false;
+    this.receptor.espejado = true;
   }
 
   realizar_movimiento() {

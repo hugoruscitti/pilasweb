@@ -29,6 +29,9 @@ class Base {
     this.suelta_tecla = new Evento('suelta_tecla');                 // ['codigo', 'texto']
     this.actualiza = new Evento('actualiza');                       // []
     this.stage = new createjs.Stage(pilas.canvas);
+
+    this.stage.snapToPixel = true;
+
     this.camara = new Camara(this.stage);
     this.fisica = new Fisica(this.camara);
     this.control = new Control(this);
