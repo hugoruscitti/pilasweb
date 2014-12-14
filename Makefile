@@ -14,6 +14,9 @@ all:
 	@echo " $(V)upload$(N)       Sube los archivos generados para publicar una release."
 	@echo " $(V)version$(N)      Informa el numero de version."
 	@echo ""
+	@echo "   nota: para activar el modo live-reload tendrías que"
+	@echo "   ejecutar los comandos $(V)watch$(N), $(V)t($N)."
+	@echo ""
 
 
 version:
