@@ -34,7 +34,7 @@ class DepuradorDeshabilitado {
 
     if (modos.area)
       this.modos.push(new ModoArea());
-		
+
     if (modos.posiciones)
       this.modos.push(new ModoPosicion());
 
@@ -116,7 +116,13 @@ class ModoPuntosDeControl extends ModoDeDepuracion {
       var posicion = escena.obtener_posicion_pantalla(actor.x, actor.y);
       var size = 3;
 
-      // Dibuja una cruz
+      // Dibuja una cruz negra
+      size = 4;
+      this.shape.graphics.beginStroke("#000").setStrokeStyle(this.grosor_linea+2).moveTo(posicion.x - size, posicion.y - size).lineTo(posicion.x + size, posicion.y + size).endStroke();
+      this.shape.graphics.beginStroke("#000").setStrokeStyle(this.grosor_linea+2).moveTo(posicion.x - size, posicion.y + size).lineTo(posicion.x + size, posicion.y - size).endStroke();
+
+      // Dibuja una cruz blanca
+      size = 3;
       this.shape.graphics.beginStroke("#FFF").setStrokeStyle(this.grosor_linea).moveTo(posicion.x - size, posicion.y - size).lineTo(posicion.x + size, posicion.y + size).endStroke();
       this.shape.graphics.beginStroke("#FFF").setStrokeStyle(this.grosor_linea).moveTo(posicion.x - size, posicion.y + size).lineTo(posicion.x + size, posicion.y - size).endStroke();
     }
@@ -140,7 +146,7 @@ class ModoPosicion extends ModoDeDepuracion {
   constructor() {
     super();
     this.text_coordenada = new createjs.Text("Posición del mouse: x=12 y=33", "12px Arial", "white");
-    this.text_coordenada.y = 920/2; //TODO: Tamaño decanvas 640*480 
+    this.text_coordenada.y = 920/2; //TODO: Tamaño decanvas 640*480
     this.text_coordenada.x = 900/2;
     this.container.addChild(this.text_coordenada);
     this.eje = new pilas.actores.Eje();
@@ -148,25 +154,25 @@ class ModoPosicion extends ModoDeDepuracion {
   }
 
 	private sobre_escribir_dibujado() {
-		
+
 		var anterior_draw = this.shape.graphics.draw;
 		var g = this.shape.graphics;
 		this.shape.graphics.actores = [];
-	
+
 		this.shape.graphics.draw = function(a) {
-	
+
 			a.fillStyle = "white";
-	
+
 			for (var i=0; i<this.actores.length; i++) {
 				var actor = this.escena.actores[i];
 				var posicion = this.escena.obtener_posicion_pantalla(actor.x, actor.y);
-	
+
 				a.fillText(" (" + Math.floor(actor.x) + ", " + Math.floor(actor.y) + ")", posicion.x + 10, posicion.y + 10);
 			}
-		
+
 			anterior_draw.call(g, a);
 		}
-	
+
 	}
 
   eliminar() {
@@ -176,7 +182,7 @@ class ModoPosicion extends ModoDeDepuracion {
 
   actualizar() {
     super.actualizar();
-    var escena = pilas.escena_actual();		
+    var escena = pilas.escena_actual();
 		this.shape.graphics.actores = escena.actores;
 		this.shape.graphics.escena = escena;
 
@@ -194,6 +200,3 @@ class ModoPosicion extends ModoDeDepuracion {
   }
 
 }
-
-
-

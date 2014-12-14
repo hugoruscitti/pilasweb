@@ -149,7 +149,7 @@ class Grilla extends Imagen {
     };
     var spritesheet = new createjs.SpriteSheet(data);
 
-    this.sprite = new createjs.BitmapAnimation(spritesheet);
+    this.sprite = new createjs.Sprite(spritesheet);
     this.definir_cuadro(0);
     return this.sprite;
   }
@@ -232,6 +232,5 @@ class Animacion extends Grilla {
     }
 
     return ha_avanzado;
-
   }
 }
