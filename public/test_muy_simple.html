@@ -41,8 +41,18 @@
    </div>
 
     <div class='container'>
+      <style type="text/css" media="all">
 
-              <canvas id='canvas_id'></canvas>
+        canvas#canvas_id2 {
+					margin-top: 20px;
+          width: 420px;
+          height: 480px;
+					border: 1px solid #ccc;
+        }
+
+      </style>
+
+              <canvas id='canvas_id2'></canvas>
 
     </div>
 
@@ -51,17 +61,19 @@
 
 
   <script>
-		var canvas_element = document.getElementById('canvas_id');
+		var canvas_element = document.getElementById('canvas_id2');
     window['canvas'] = canvas_element;
-    pilas = new Pilas();
-    pilas.iniciar({ancho: 450, alto: 450, canvas: canvas_element, data_path: 'data'});
 
-    pilas.onready = function() {
+    var obj_pilas = pilasengine.iniciar({ancho: 420, alto: 480, canvas: canvas_element, data_path: 'data'});
+
+    obj_pilas.onready = function() {
       var fondo = new pilas.fondos.Laberinto1();
-			var alien = new pilas.actores.Alien(0, -50);
+      var alien = new obj_pilas.actores.Alien(0, 0);
+      pilas.mostrar_posiciones();
     }
 
-    pilas.ejecutar();
+
+    obj_pilas.ejecutar();
   </script>
 </body>
 </html>
