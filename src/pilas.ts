@@ -79,7 +79,7 @@ class Pilas {
    */
   iniciar(opciones) {
     this.inicializar_opciones(opciones);
-    this.actores = new Actores();
+    this.actores = new Actores(this);
     this.habilidades = new Habilidades();
     this.comportamientos = new Comportamientos();
     this.obtener_canvas();

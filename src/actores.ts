@@ -9,6 +9,8 @@
  * Representa todos los actores conocidos en pilas-engine.
  */
 class Actores {
+  pilas;
+
   Aceituna;
   Actor;
   Bomba;
@@ -39,7 +41,8 @@ class Actores {
   Sombra;
 
 
-  constructor() {
+  constructor(pilas) {
+    this.pilas = pilas;
     this.Aceituna = Aceituna;
     this.Actor = Actor;
     this.Bomba = Bomba;
