@@ -2,6 +2,7 @@
 
 class Alien extends Actor {
   sombra;
+  limitar_movimientos;
   sonido_blabla;
 
   constructor(x=0, y=0) {
@@ -10,15 +11,23 @@ class Alien extends Actor {
 
     window['alien'] = this;
 
-    this._imagen.definir_animacion("parado", [11, 11], 5);
-    this._imagen.definir_animacion("recoger", [1], 15);
-    this._imagen.definir_animacion("camina", [4, 5, 6, 7, 8, 9, 8, 7, 6, 5], 15);
-    this._imagen.cargar_animacion("parado");
+    imagen.definir_animacion("parado", [11, 11], 5);
+    imagen.definir_animacion("hablar", [12, 13, 11, 12, 11, 13], 20);
+    imagen.definir_animacion("recoger", [11, 12, 10, 12, 11], 1);
+    imagen.definir_animacion("camina", [0, 1, 2, 3, 4, 3, 2, 1], 15);
+    imagen.cargar_animacion("parado");
     this.sonido_blabla = pilas.sonidos.cargar('blabla.wav');
+  }
 
+  iniciar() {
     this.sombra = new pilas.actores.Sombra();
-    //this.sombra.escala = 0.5;
-    //this.ir_derecha();
+    this.sombra.escala = 0.5;
+    this.limitar_movimientos = true;
+
+    this.centro_y = 'abajo';
+    this.centro_y -= 10;
+  }
+
   decir(mensaje) {
     this.hacer_luego(Hablar, {mensaje: mensaje, tiempo: 1});
   }
@@ -38,19 +47,31 @@ class Alien extends Actor {
   }
 
   ir_derecha() {
-    this.hacer_luego(MoverHaciaDerecha, {cantidad: 100, tiempo: 1});
+    if (this.x < 176)
+      this.hacer_luego(MoverHaciaDerecha, {cantidad: 68, tiempo: 1});
+    else
+      this.decir("no puedo ir ahí");
   }
 
   ir_izquierda() {
-    this.hacer_luego(MoverHaciaIzquierda, {cantidad: 100, tiempo: 1});
+    if (this.x > -175)
+      this.hacer_luego(MoverHaciaIzquierda, {cantidad: 68, tiempo: 1});
+    else
+      this.decir("no puedo ir ahí");
   }
 
   ir_arriba() {
-    this.hacer_luego(MoverHaciaArriba, {cantidad: 100, tiempo: 1});
+    if (this.y < 150)
+      this.hacer_luego(MoverHaciaArriba, {cantidad: 80, tiempo: 1});
+    else
+      this.decir("no puedo ir ahí");
   }
 
   ir_abajo() {
-    this.hacer_luego(MoverHaciaAbajo, {cantidad: 100, tiempo: 1});
+    if (this.y > -180)
+      this.hacer_luego(MoverHaciaAbajo, {cantidad: 80, tiempo: 1});
+    else
+      this.decir("no puedo ir ahí");
   }
 
   esperar(tiempo=2) {

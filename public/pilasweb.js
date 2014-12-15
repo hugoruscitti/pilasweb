@@ -11499,7 +11499,8 @@ Dual licensed under the MIT and GPL licenses.
 * Representa todos los actores conocidos en pilas-engine.
 */
 var Actores = (function () {
-    function Actores() {
+    function Actores(pilas) {
+        this.pilas = pilas;
         this.Aceituna = Aceituna;
         this.Actor = Actor;
         this.Bomba = Bomba;
@@ -11666,12 +11667,10 @@ var Actor = (function (_super) {
         this.vivo = true;
         this.radio_de_colision = 10;
         this.id = pilas.utils.obtener_uuid();
-        this.crear_sprite();
         this.x = x || 0;
         this.y = y || 0;
         this.espejado = false;
-        this.centro_x = 0;
-        this.centro_y = 0;
+        this.centro = ['centro', 'centro'];
 
         if (atributos['rotacion'])
             this.rotacion = atributos['rotacion'];
@@ -11691,13 +11690,24 @@ var Actor = (function (_super) {
 
         this.callbacks_cuando_hace_click = [];
         this.callbacks_cuando_mueve_mouse = [];
+        this.iniciar();
     }
+    Actor.prototype.iniciar = function () {
+    };
+
     Actor.prototype.tiene_fisica = function () {
         return (this.figura !== undefined);
     };
 
-    Actor.prototype.crear_sprite = function () {
-        this.sprite = this._imagen.instanciar();
+    Actor.prototype._crear_sprite = function () {
+        /* Si el actor ya tenía imagen, entonces se encarga de reemplazar
+        la imagen actual, y vuelve a definir el punto de control en el
+        centro. */
+        if (this.sprite !== undefined) {
+            this.sprite.image = this._imagen.instanciar().image;
+        } else {
+            this.sprite = this._imagen.instanciar();
+        }
     };
 
     Actor.prototype.eliminar = function () {
@@ -11773,12 +11783,42 @@ var Actor = (function (_super) {
     });
 
 
+    Object.defineProperty(Actor.prototype, "centro", {
+        get: function () {
+            return [this.centro_x, this.centro_y];
+        },
+        set: function (_valor) {
+            if (typeof _valor === 'object' && _valor.length) {
+                var x = _valor[0];
+                var y = _valor[1];
+                this.centro_x = x;
+                this.centro_y = y;
+            } else {
+                throw Error("Solo se permite centrar usando un array de dos elementos.");
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+
     Object.defineProperty(Actor.prototype, "centro_x", {
         get: function () {
             return this.sprite.regX;
         },
         set: function (_x) {
-            this.sprite.regX = (this.ancho / 2) + _x;
+            if (_x === 'centro')
+                _x = this.ancho / 2;
+
+            if (_x === 'derecha')
+                _x = this.ancho;
+
+            if (_x === 'izquierda')
+                _x = 0;
+
+            if (typeof _x !== 'number')
+                throw new Error("Solo se permite asignar números o las cadenas 'centro', 'izquierda' y 'derecha'");
+
+            this.sprite.regX = _x;
         },
         enumerable: true,
         configurable: true
@@ -11789,7 +11829,19 @@ var Actor = (function (_super) {
             return this.sprite.regY;
         },
         set: function (_y) {
-            this.sprite.regY = (this.alto / 2) + _y;
+            if (_y === 'centro')
+                _y = this.alto / 2;
+
+            if (_y === 'abajo')
+                _y = this.alto;
+
+            if (_y === 'arriba')
+                _y = 0;
+
+            if (typeof _y !== 'number')
+                throw new Error("Solo se permite asignar números o las cadenas 'centro', 'abajo' y 'arriba'");
+
+            this.sprite.regY = _y;
         },
         enumerable: true,
         configurable: true
@@ -11848,16 +11900,16 @@ var Actor = (function (_super) {
 
     Object.defineProperty(Actor.prototype, "rotacion", {
         get: function () {
-            return this.sprite.rotation;
+            return -this.sprite.rotation;
         },
         set: function (valor) {
             if (valor instanceof Array) {
                 for (var i in valor) {
-                    valor[i] = ((valor[i] % 360) + 360) % 360;
+                    valor[i] = -1 * (((valor[i] % 360) + 360) % 360);
                 }
                 pilas.interpolar(this.sprite, 'rotation', valor, 1);
             } else
-                this.sprite.rotation = ((valor % 360) + 360) % 360;
+                this.sprite.rotation = -1 * (((valor % 360) + 360) % 360);
         },
         enumerable: true,
         configurable: true
@@ -11904,14 +11956,8 @@ var Actor = (function (_super) {
             else
                 this._imagen = _i;
 
-            /* Si el actor ya tenía imagen, entonces se encarga de reemplazar
-            la imagen actual, y vuelve a definir el punto de control en el
-            centro. */
-            if (this.sprite !== undefined) {
-                this.sprite.image = this._imagen.instanciar().image;
-                this.centro_x = 0;
-                this.centro_y = 0;
-            }
+            this._crear_sprite();
+            this.centro = ['centro', 'centro'];
         },
         enumerable: true,
         configurable: true
@@ -12111,15 +12157,31 @@ var Alien = (function (_super) {
 
         window['alien'] = this;
 
-        this._imagen.definir_animacion("parado", [11, 11], 5);
-        this._imagen.definir_animacion("recoger", [1], 15);
-        this._imagen.definir_animacion("camina", [4, 5, 6, 7, 8, 9, 8, 7, 6, 5], 15);
-        this._imagen.cargar_animacion("parado");
-
-        this.sombra = new pilas.actores.Sombra();
-        //this.sombra.escala = 0.5;
-        //this.ir_derecha();
+        imagen.definir_animacion("parado", [11, 11], 5);
+        imagen.definir_animacion("hablar", [12, 13, 11, 12, 11, 13], 20);
+        imagen.definir_animacion("recoger", [11, 12, 10, 12, 11], 1);
+        imagen.definir_animacion("camina", [0, 1, 2, 3, 4, 3, 2, 1], 15);
+        imagen.cargar_animacion("parado");
+        this.sonido_blabla = pilas.sonidos.cargar('blabla.wav');
     }
+    Alien.prototype.iniciar = function () {
+        this.sombra = new pilas.actores.Sombra();
+        this.sombra.escala = 0.5;
+        this.limitar_movimientos = true;
+
+        this.centro_y = 'abajo';
+        this.centro_y -= 10;
+    };
+
+    Alien.prototype.decir = function (mensaje) {
+        this.hacer_luego(Hablar, { mensaje: mensaje, tiempo: 1 });
+    };
+
+    Alien.prototype.super_decir = function (mensaje) {
+        _super.prototype.decir.call(this, mensaje);
+        this.sonido_blabla.reproducir();
+    };
+
     Alien.prototype.actualizar = function () {
         this._imagen.avanzar();
         this.z = this.y;
@@ -12130,19 +12192,31 @@ var Alien = (function (_super) {
     };
 
     Alien.prototype.ir_derecha = function () {
-        this.hacer_luego(MoverHaciaDerecha, { cantidad: 100, tiempo: 1 });
+        if (this.x < 176)
+            this.hacer_luego(MoverHaciaDerecha, { cantidad: 68, tiempo: 1 });
+        else
+            this.decir("no puedo ir ahí");
     };
 
     Alien.prototype.ir_izquierda = function () {
-        this.hacer_luego(MoverHaciaIzquierda, { cantidad: 100, tiempo: 1 });
+        if (this.x > -175)
+            this.hacer_luego(MoverHaciaIzquierda, { cantidad: 68, tiempo: 1 });
+        else
+            this.decir("no puedo ir ahí");
     };
 
     Alien.prototype.ir_arriba = function () {
-        this.hacer_luego(MoverHaciaArriba, { cantidad: 100, tiempo: 1 });
+        if (this.y < 150)
+            this.hacer_luego(MoverHaciaArriba, { cantidad: 80, tiempo: 1 });
+        else
+            this.decir("no puedo ir ahí");
     };
 
     Alien.prototype.ir_abajo = function () {
-        this.hacer_luego(MoverHaciaAbajo, { cantidad: 100, tiempo: 1 });
+        if (this.y > -180)
+            this.hacer_luego(MoverHaciaAbajo, { cantidad: 80, tiempo: 1 });
+        else
+            this.decir("no puedo ir ahí");
     };
 
     Alien.prototype.esperar = function (tiempo) {
@@ -12291,6 +12365,21 @@ var Recoger = (function (_super) {
         this.receptor._imagen.cargar_animacion("parado");
     };
     return Recoger;
+})(MoverHaciaDerecha);
+
+var Hablar = (function (_super) {
+    __extends(Hablar, _super);
+    function Hablar() {
+        _super.apply(this, arguments);
+    }
+    Hablar.prototype.iniciar_animacion = function () {
+        this.receptor._imagen.cargar_animacion("hablar");
+        this.receptor.super_decir(this.argumentos.mensaje);
+    };
+
+    Hablar.prototype.realizar_movimiento = function () {
+    };
+    return Hablar;
 })(MoverHaciaDerecha);
 var Banana = (function (_super) {
     __extends(Banana, _super);
@@ -12592,10 +12681,8 @@ var Globo = (function (_super) {
     function Globo(x, y, mensaje) {
         var imagen = "globo.png";
         _super.call(this, imagen, x, y);
-        this.centro_x = 25;
-        this.centro_y = 20;
         this.mensaje = mensaje;
-        this.actor_texto = new pilas.actores.Texto(x - 20, y + 20, mensaje);
+        this.actor_texto = new pilas.actores.Texto(x - 20, y, mensaje);
 
         pilas.mundo.agregar_tarea_una_vez(3, this.eliminar, {}, this);
     }
@@ -14132,7 +14219,13 @@ var ModoPuntosDeControl = (function (_super) {
             var posicion = escena.obtener_posicion_pantalla(actor.x, actor.y);
             var size = 3;
 
-            // Dibuja una cruz
+            // Dibuja una cruz negra
+            size = 4;
+            this.shape.graphics.beginStroke("#000").setStrokeStyle(this.grosor_linea + 2).moveTo(posicion.x - size, posicion.y - size).lineTo(posicion.x + size, posicion.y + size).endStroke();
+            this.shape.graphics.beginStroke("#000").setStrokeStyle(this.grosor_linea + 2).moveTo(posicion.x - size, posicion.y + size).lineTo(posicion.x + size, posicion.y - size).endStroke();
+
+            // Dibuja una cruz blanca
+            size = 3;
             this.shape.graphics.beginStroke("#FFF").setStrokeStyle(this.grosor_linea).moveTo(posicion.x - size, posicion.y - size).lineTo(posicion.x + size, posicion.y + size).endStroke();
             this.shape.graphics.beginStroke("#FFF").setStrokeStyle(this.grosor_linea).moveTo(posicion.x - size, posicion.y + size).lineTo(posicion.x + size, posicion.y - size).endStroke();
         }
@@ -15498,7 +15591,7 @@ var Grilla = (function (_super) {
         };
         var spritesheet = new createjs.SpriteSheet(data);
 
-        this.sprite = new createjs.BitmapAnimation(spritesheet);
+        this.sprite = new createjs.Sprite(spritesheet);
         this.definir_cuadro(0);
         return this.sprite;
     };
@@ -15712,7 +15805,7 @@ var Pilas = (function () {
     */
     Pilas.prototype.iniciar = function (opciones) {
         this.inicializar_opciones(opciones);
-        this.actores = new Actores();
+        this.actores = new Actores(this);
         this.habilidades = new Habilidades();
         this.comportamientos = new Comportamientos();
         this.obtener_canvas();
@@ -15997,6 +16090,7 @@ var Sonidos = (function () {
         this.cargar_recurso('smile.ogg');
         this.cargar_recurso('shout.ogg');
         this.cargar_recurso('saltar.wav');
+        this.cargar_recurso('blabla.wav');
         this.preload.loadManifest(this.recursos);
     };
 

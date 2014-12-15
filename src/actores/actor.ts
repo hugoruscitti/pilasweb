@@ -65,12 +65,10 @@ class Actor extends Estudiante {
     this.vivo = true;
     this.radio_de_colision = 10;
     this.id = pilas.utils.obtener_uuid();
-    this.crear_sprite();
     this.x = x || 0;
     this.y = y || 0;
     this.espejado = false;
-    this.centro_x = 0;
-    this.centro_y = 0;
+    this.centro = ['centro', 'centro'];
 
     if (atributos['rotacion'])
       this.rotacion = atributos['rotacion'];
@@ -90,14 +88,26 @@ class Actor extends Estudiante {
 
     this.callbacks_cuando_hace_click = [];
     this.callbacks_cuando_mueve_mouse = [];
+    this.iniciar();
+  }
+
+  public iniciar() {
   }
 
   public tiene_fisica() {
     return (this.figura !== undefined);
   }
 
-  public crear_sprite() {
-    this.sprite = this._imagen.instanciar();
+  private _crear_sprite() {
+    /* Si el actor ya tenía imagen, entonces se encarga de reemplazar
+    la imagen actual, y vuelve a definir el punto de control en el
+    centro. */
+
+    if (this.sprite !== undefined) {
+      this.sprite.image = this._imagen.instanciar().image;
+    } else {
+      this.sprite = this._imagen.instanciar();
+    }
   }
 
   eliminar() {
@@ -158,11 +168,55 @@ class Actor extends Estudiante {
     }
   }
 
+  get centro() {
+    return [this.centro_x, this.centro_y];
+  }
+  set centro(_valor) {
+    if (typeof _valor === 'object' && _valor.length) {
+      var x = _valor[0];
+      var y = _valor[1];
+      this.centro_x = x;
+      this.centro_y = y;
+    } else {
+      throw Error("Solo se permite centrar usando un array de dos elementos.")
+    }
+  }
+
   get centro_x() {return this.sprite.regX}
-  set centro_x(_x) {this.sprite.regX = (this.ancho/2) + _x}
+  set centro_x(_x) {
+
+    if (_x === 'centro')
+      _x = this.ancho / 2;
+
+    if (_x === 'derecha')
+      _x = this.ancho;
+
+    if (_x === 'izquierda')
+      _x = 0;
+
+    if (typeof _x !== 'number')
+      throw new Error("Solo se permite asignar números o las cadenas 'centro', 'izquierda' y 'derecha'");
+
+    this.sprite.regX = _x;
+  }
 
   get centro_y() {return this.sprite.regY}
-  set centro_y(_y) {this.sprite.regY = (this.alto/2) + _y}
+  set centro_y(_y) {
+
+    if (_y === 'centro')
+      _y = this.alto / 2;
+
+    if (_y === 'abajo')
+      _y = this.alto;
+
+    if (_y === 'arriba')
+      _y = 0;
+
+    if (typeof _y !== 'number')
+      throw new Error("Solo se permite asignar números o las cadenas 'centro', 'abajo' y 'arriba'");
+
+    this.sprite.regY = _y;
+  }
 
   get escala_x() {return this.sprite.scaleX}
   set escala_x(valor) {
@@ -237,14 +291,8 @@ class Actor extends Estudiante {
     else
       this._imagen = _i;
 
-    /* Si el actor ya tenía imagen, entonces se encarga de reemplazar
-       la imagen actual, y vuelve a definir el punto de control en el
-       centro. */
-    if (this.sprite !== undefined) {
-      this.sprite.image = this._imagen.instanciar().image;
-      this.centro_x = 0;
-      this.centro_y = 0;
-    }
+    this._crear_sprite();
+    this.centro = ['centro', 'centro'];
   }
 
   /* TODO: hacer que se puedan interpolar

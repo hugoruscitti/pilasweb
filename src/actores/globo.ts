@@ -7,10 +7,8 @@ class Globo extends Actor {
   constructor(x, y, mensaje) {
     var imagen = "globo.png";
     super(imagen, x, y);
-    this.centro_x = 25;
-    this.centro_y = 20;
     this.mensaje = mensaje;
-    this.actor_texto = new pilas.actores.Texto(x-20, y+20, mensaje);
+    this.actor_texto = new pilas.actores.Texto(x-20, y, mensaje);
 
     pilas.mundo.agregar_tarea_una_vez(3, this.eliminar, {}, this);
   }
@@ -21,4 +19,3 @@ class Globo extends Actor {
   }
 
 }
-
