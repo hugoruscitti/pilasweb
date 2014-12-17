@@ -38,6 +38,7 @@ class Actores {
   Pizarra;
   Pingu;
   Alien;
+  Tuerca;
   Sombra;
 
 
@@ -70,6 +71,7 @@ class Actores {
     this.Pizarra = Pizarra;
     this.Pingu = Pingu;
     this.Alien = Alien;
+    this.Tuerca = Tuerca;
     this.Sombra = Sombra;
   }
 }

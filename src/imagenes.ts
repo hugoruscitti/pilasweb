@@ -42,6 +42,7 @@ class Imagenes {
 
     this.cargar_recurso('plano.png');
     this.cargar_recurso('alien.png');
+    this.cargar_recurso('tuerca.png');
     this.cargar_recurso('nave.png');
 
     this.cargar_recurso('piedra_chica.png');
@@ -73,6 +74,7 @@ class Imagenes {
     this.cargar_recurso('monkey_smile.png');
     this.cargar_recurso('monkey_shout.png');
     this.cargar_recurso('tortuga.png');
+
 
     this.cargar_recurso('pingu.png');
     this.cargar_recurso('sombra.png');
