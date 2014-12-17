@@ -315,13 +315,49 @@ class Pilas {
     return "Ocultando fisica";
   }
 
-  obtener_actores_en(x, y) {
+  /**
+   * @method obtener_actores_en
+   * Se ejecuta para conseguir una lista de todos los actores que estén en una
+   * coordenanda determinada de la pantalla.
+   *
+   * Opcionalmente se puede espeficiar una etiqueta a modo de filtro, con el
+   * parámetro "con_etiqueta".
+   *
+   * ejemplos de invocaciones:
+   *
+   *     >>> pilas.obtener_actores_en(0, 0)
+   *     [Actor, Mono, Fondo]
+   *
+   *     >>> pilas.obtener_actores_en(0, 0, 'Mono')
+   *     [Mono]
+   *
+   */
+  obtener_actores_en(x, y, con_etiqueta=undefined) {
     var actores = [];
 
     for (var i in this.escena_actual().actores) {
       var actor = this.escena_actual().actores[i];
 
-      if (actor.colisiona_con_un_punto(x, y))
+      if (actor.colisiona_con_un_punto(x, y)) {
+        if (con_etiqueta) {
+          if (actor.tiene_etiqueta(con_etiqueta))
+            actores.push(actor);
+        } else {
+          actores.push(actor);
+        }
+      }
+    }
+
+    return actores;
+  }
+
+  obtener_actores_con_etiqueta(etiqueta) {
+    var actores = [];
+
+    for (var i in this.escena_actual().actores) {
+      var actor = this.escena_actual().actores[i];
+
+      if (actor.tiene_etiqueta(etiqueta))
         actores.push(actor);
     }
 
