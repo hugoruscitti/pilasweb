@@ -12158,8 +12158,8 @@ var Alien = (function (_super) {
         window['alien'] = this;
 
         imagen.definir_animacion("parado", [11, 11], 5);
-        imagen.definir_animacion("hablar", [12, 13, 11, 12, 11, 13], 20);
-        imagen.definir_animacion("recoger", [11, 12, 10, 12, 11], 1);
+        imagen.definir_animacion("hablar", [12, 13, 11, 12, 11, 13], 15);
+        imagen.definir_animacion("recoger", [12, 10, 10, 10, 10, 12], 5);
         imagen.definir_animacion("camina", [0, 1, 2, 3, 4, 3, 2, 1], 15);
         imagen.cargar_animacion("parado");
         this.sonido_blabla = pilas.sonidos.cargar('blabla.wav');
@@ -12183,7 +12183,6 @@ var Alien = (function (_super) {
     };
 
     Alien.prototype.actualizar = function () {
-        this._imagen.avanzar();
         this.z = this.y;
 
         this.sombra.x = this.x;
@@ -12191,32 +12190,24 @@ var Alien = (function (_super) {
         this.sombra.z = this.z + 1;
     };
 
+    Alien.prototype.avanzar_animacion = function () {
+        return this._imagen.avanzar();
+    };
+
     Alien.prototype.ir_derecha = function () {
-        if (this.x < 176)
-            this.hacer_luego(MoverHaciaDerecha, { cantidad: 68, tiempo: 1 });
-        else
-            this.decir("no puedo ir ahí");
+        this.hacer_luego(MoverHaciaDerecha, { cantidad: 68, tiempo: 1 });
     };
 
     Alien.prototype.ir_izquierda = function () {
-        if (this.x > -175)
-            this.hacer_luego(MoverHaciaIzquierda, { cantidad: 68, tiempo: 1 });
-        else
-            this.decir("no puedo ir ahí");
+        this.hacer_luego(MoverHaciaIzquierda, { cantidad: 68, tiempo: 1 });
     };
 
     Alien.prototype.ir_arriba = function () {
-        if (this.y < 150)
-            this.hacer_luego(MoverHaciaArriba, { cantidad: 80, tiempo: 1 });
-        else
-            this.decir("no puedo ir ahí");
+        this.hacer_luego(MoverHaciaArriba, { cantidad: 80, tiempo: 1 });
     };
 
     Alien.prototype.ir_abajo = function () {
-        if (this.y > -180)
-            this.hacer_luego(MoverHaciaAbajo, { cantidad: 80, tiempo: 1 });
-        else
-            this.decir("no puedo ir ahí");
+        this.hacer_luego(MoverHaciaAbajo, { cantidad: 80, tiempo: 1 });
     };
 
     Alien.prototype.esperar = function (tiempo) {
@@ -12271,6 +12262,7 @@ var MoverHaciaDerecha = (function (_super) {
     };
 
     MoverHaciaDerecha.prototype.actualizar = function () {
+        this.receptor.avanzar_animacion();
         this.realizar_movimiento();
 
         if (this.supero_el_tiempo()) {
@@ -12358,14 +12350,16 @@ var Recoger = (function (_super) {
         this.receptor._imagen.cargar_animacion("recoger");
     };
 
-    Recoger.prototype.realizar_movimiento = function () {
-    };
+    Recoger.prototype.actualizar = function () {
+        if (this.receptor.avanzar_animacion() === false) {
+            this.receptor._imagen.cargar_animacion('parado');
+            return true;
+        }
 
-    Recoger.prototype.al_terminar = function () {
-        this.receptor._imagen.cargar_animacion("parado");
+        return false;
     };
     return Recoger;
-})(MoverHaciaDerecha);
+})(Movimiento);
 
 var Hablar = (function (_super) {
     __extends(Hablar, _super);
@@ -12375,6 +12369,7 @@ var Hablar = (function (_super) {
     Hablar.prototype.iniciar_animacion = function () {
         this.receptor._imagen.cargar_animacion("hablar");
         this.receptor.super_decir(this.argumentos.mensaje);
+        this.contador = 0;
     };
 
     Hablar.prototype.realizar_movimiento = function () {

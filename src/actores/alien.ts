@@ -12,8 +12,8 @@ class Alien extends Actor {
     window['alien'] = this;
 
     imagen.definir_animacion("parado", [11, 11], 5);
-    imagen.definir_animacion("hablar", [12, 13, 11, 12, 11, 13], 20);
-    imagen.definir_animacion("recoger", [11, 12, 10, 12, 11], 1);
+    imagen.definir_animacion("hablar", [12, 13, 11, 12, 11, 13], 15);
+    imagen.definir_animacion("recoger", [12, 10, 10, 10, 10, 12], 5);
     imagen.definir_animacion("camina", [0, 1, 2, 3, 4, 3, 2, 1], 15);
     imagen.cargar_animacion("parado");
     this.sonido_blabla = pilas.sonidos.cargar('blabla.wav');
@@ -38,7 +38,6 @@ class Alien extends Actor {
   }
 
   actualizar() {
-    this._imagen.avanzar();
     this.z = this.y;
 
     this.sombra.x = this.x;
@@ -46,32 +45,25 @@ class Alien extends Actor {
     this.sombra.z = this.z + 1;
   }
 
+  avanzar_animacion() {
+    return this._imagen.avanzar();
+  }
+
+
   ir_derecha() {
-    if (this.x < 176)
-      this.hacer_luego(MoverHaciaDerecha, {cantidad: 68, tiempo: 1});
-    else
-      this.decir("no puedo ir ahí");
+    this.hacer_luego(MoverHaciaDerecha, {cantidad: 68, tiempo: 1});
   }
 
   ir_izquierda() {
-    if (this.x > -175)
-      this.hacer_luego(MoverHaciaIzquierda, {cantidad: 68, tiempo: 1});
-    else
-      this.decir("no puedo ir ahí");
+    this.hacer_luego(MoverHaciaIzquierda, {cantidad: 68, tiempo: 1});
   }
 
   ir_arriba() {
-    if (this.y < 150)
-      this.hacer_luego(MoverHaciaArriba, {cantidad: 80, tiempo: 1});
-    else
-      this.decir("no puedo ir ahí");
+    this.hacer_luego(MoverHaciaArriba, {cantidad: 80, tiempo: 1});
   }
 
   ir_abajo() {
-    if (this.y > -180)
-      this.hacer_luego(MoverHaciaAbajo, {cantidad: 80, tiempo: 1});
-    else
-      this.decir("no puedo ir ahí");
+    this.hacer_luego(MoverHaciaAbajo, {cantidad: 80, tiempo: 1});
   }
 
   esperar(tiempo=2) {
@@ -130,6 +122,7 @@ class MoverHaciaDerecha extends Movimiento {
   }
 
   actualizar() {
+    this.receptor.avanzar_animacion();
     this.realizar_movimiento();
 
     if (this.supero_el_tiempo()) {
@@ -194,25 +187,29 @@ class Esperar extends MoverHaciaDerecha {
 
 
 
-class Recoger extends MoverHaciaDerecha {
+class Recoger extends Movimiento {
 
   iniciar_animacion() {
     this.receptor._imagen.cargar_animacion("recoger");
   }
 
-  realizar_movimiento() {
-  }
+  actualizar() {
+    if (this.receptor.avanzar_animacion() === false) {
+      this.receptor._imagen.cargar_animacion('parado');
+      return true;
+    }
 
-  al_terminar() {
-    this.receptor._imagen.cargar_animacion("parado");
+    return false;
   }
 }
 
 class Hablar extends MoverHaciaDerecha {
+  contador;
 
   iniciar_animacion() {
     this.receptor._imagen.cargar_animacion("hablar");
     this.receptor.super_decir(this.argumentos.mensaje);
+    this.contador = 0;
   }
 
   realizar_movimiento() {
