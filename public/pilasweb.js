@@ -12701,14 +12701,12 @@ var Globo = (function (_super) {
         this.mensaje = mensaje;
         this.x = x;
         this.y = y;
-
-        var x = this.x;
-        var y = this.y;
         var mensaje = this.mensaje;
 
         this.actor_texto = new pilas.actores.Texto(x, y, mensaje);
         this.actor_texto.z = -1000;
-        //pilas.mundo.agregar_tarea_una_vez(3, this.eliminar, {}, this);
+
+        pilas.mundo.agregar_tarea_una_vez(3, this.eliminar, {}, this);
     }
     Globo.prototype.eliminar = function () {
         this.actor_texto.eliminar();
