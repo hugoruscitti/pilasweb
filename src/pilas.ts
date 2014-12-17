@@ -335,7 +335,7 @@ class Pilas {
   obtener_actores_en(x, y, con_etiqueta=undefined) {
     var actores = [];
 
-    for (var i in this.escena_actual().actores) {
+    for (var i=0; i<this.escena_actual().actores.length; i++) {
       var actor = this.escena_actual().actores[i];
 
       if (actor.colisiona_con_un_punto(x, y)) {
@@ -354,7 +354,7 @@ class Pilas {
   obtener_actores_con_etiqueta(etiqueta) {
     var actores = [];
 
-    for (var i in this.escena_actual().actores) {
+    for (var i=0; i<this.escena_actual().actores.length; i++) {
       var actor = this.escena_actual().actores[i];
 
       if (actor.tiene_etiqueta(etiqueta))

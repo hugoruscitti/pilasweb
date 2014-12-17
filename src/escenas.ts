@@ -65,7 +65,7 @@ class Base {
   necesita_ordenar_actores() {
     var ultimo_z =  300000000;
 
-    for (var i in this.stage.children) {
+    for (var i=0; i<this.stage.children.length; i++) {
 
       if (this.stage.children[i].z > ultimo_z) {
         console.log("necesita actualizar!");
