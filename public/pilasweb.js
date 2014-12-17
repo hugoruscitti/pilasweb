@@ -11528,6 +11528,7 @@ var Actores = (function () {
         this.Pizarra = Pizarra;
         this.Pingu = Pingu;
         this.Alien = Alien;
+        this.Tuerca = Tuerca;
         this.Sombra = Sombra;
     }
     return Actores;
@@ -11671,6 +11672,7 @@ var Actor = (function (_super) {
         this.y = y || 0;
         this.espejado = false;
         this.centro = ['centro', 'centro'];
+
         this.etiquetas = [];
         this.etiquetas.push(this.getClassName());
 
@@ -12119,6 +12121,10 @@ var Actor = (function (_super) {
         var area_visible = pilas.escena_actual().camara.obtener_area_visible();
         return this.derecha < area_visible.izquierda || this.izquierda > area_visible.derecha || this.abajo > area_visible.arriba || this.arriba < area_visible.abajo;
     };
+
+    Actor.prototype.tiene_etiqueta = function (etiqueta) {
+        return this.etiquetas.indexOf(etiqueta) > -1;
+    };
     return Actor;
 })(Estudiante);
 /// <reference path="actor.ts"/>
@@ -12170,7 +12176,9 @@ var Alien = (function (_super) {
         imagen.definir_animacion("recoger", [12, 10, 10, 10, 10, 12], 5);
         imagen.definir_animacion("camina", [0, 1, 2, 3, 4, 3, 2, 1], 15);
         imagen.cargar_animacion("parado");
+
         this.sonido_blabla = pilas.sonidos.cargar('blabla.wav');
+        this.cuando_busca_recoger = undefined;
     }
     Alien.prototype.iniciar = function () {
         this.sombra = new pilas.actores.Sombra();
@@ -12361,6 +12369,11 @@ var Recoger = (function (_super) {
     Recoger.prototype.actualizar = function () {
         if (this.receptor.avanzar_animacion() === false) {
             this.receptor._imagen.cargar_animacion('parado');
+
+            if (this.receptor.cuando_busca_recoger) {
+                this.receptor.cuando_busca_recoger.call(this);
+            }
+
             return true;
         }
 
@@ -13405,6 +13418,28 @@ var Tortuga = (function (_super) {
         configurable: true
     });
     return Tortuga;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Tuerca = (function (_super) {
+    __extends(Tuerca, _super);
+    function Tuerca(x, y) {
+        var imagen = "tuerca.png";
+        _super.call(this, imagen, x, y);
+        this.radio_de_colision = 11;
+        this.y_original = y + 20;
+        this.x = x + 10;
+        this.contador = Math.random() * 3;
+        this.sombra = new pilas.actores.Sombra();
+        this.sombra.escala = 0.25;
+    }
+    Tuerca.prototype.actualizar = function () {
+        this.contador += 0.025;
+        this.y = this.y_original + Math.sin(this.contador) * 5;
+        this.sombra.x = this.x;
+        this.sombra.y = this.y_original - 20;
+        this.sombra.z = this.z + 1;
+    };
+    return Tuerca;
 })(Actor);
 /// <reference path="actor.ts"/>
 var Zanahoria = (function (_super) {
@@ -15476,6 +15511,7 @@ var Imagenes = (function () {
 
         this.cargar_recurso('plano.png');
         this.cargar_recurso('alien.png');
+        this.cargar_recurso('tuerca.png');
         this.cargar_recurso('nave.png');
 
         this.cargar_recurso('piedra_chica.png');
@@ -16042,13 +16078,50 @@ var Pilas = (function () {
         return "Ocultando fisica";
     };
 
-    Pilas.prototype.obtener_actores_en = function (x, y) {
+    /**
+    * @method obtener_actores_en
+    * Se ejecuta para conseguir una lista de todos los actores que estén en una
+    * coordenanda determinada de la pantalla.
+    *
+    * Opcionalmente se puede espeficiar una etiqueta a modo de filtro, con el
+    * parámetro "con_etiqueta".
+    *
+    * ejemplos de invocaciones:
+    *
+    *     >>> pilas.obtener_actores_en(0, 0)
+    *     [Actor, Mono, Fondo]
+    *
+    *     >>> pilas.obtener_actores_en(0, 0, 'Mono')
+    *     [Mono]
+    *
+    */
+    Pilas.prototype.obtener_actores_en = function (x, y, con_etiqueta) {
+        if (typeof con_etiqueta === "undefined") { con_etiqueta = undefined; }
         var actores = [];
 
         for (var i in this.escena_actual().actores) {
             var actor = this.escena_actual().actores[i];
 
-            if (actor.colisiona_con_un_punto(x, y))
+            if (actor.colisiona_con_un_punto(x, y)) {
+                if (con_etiqueta) {
+                    if (actor.tiene_etiqueta(con_etiqueta))
+                        actores.push(actor);
+                } else {
+                    actores.push(actor);
+                }
+            }
+        }
+
+        return actores;
+    };
+
+    Pilas.prototype.obtener_actores_con_etiqueta = function (etiqueta) {
+        var actores = [];
+
+        for (var i in this.escena_actual().actores) {
+            var actor = this.escena_actual().actores[i];
+
+            if (actor.tiene_etiqueta(etiqueta))
                 actores.push(actor);
         }
 
