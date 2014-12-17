@@ -4,6 +4,7 @@ class Alien extends Actor {
   sombra;
   limitar_movimientos;
   sonido_blabla;
+  cuando_busca_recoger;
 
   constructor(x=0, y=0) {
     var imagen = pilas.imagenes.cargar_animacion('alien.png', 14);
@@ -16,7 +17,9 @@ class Alien extends Actor {
     imagen.definir_animacion("recoger", [12, 10, 10, 10, 10, 12], 5);
     imagen.definir_animacion("camina", [0, 1, 2, 3, 4, 3, 2, 1], 15);
     imagen.cargar_animacion("parado");
+
     this.sonido_blabla = pilas.sonidos.cargar('blabla.wav');
+    this.cuando_busca_recoger = undefined;
   }
 
   iniciar() {
@@ -191,11 +194,17 @@ class Recoger extends Movimiento {
 
   iniciar_animacion() {
     this.receptor._imagen.cargar_animacion("recoger");
+
   }
 
   actualizar() {
     if (this.receptor.avanzar_animacion() === false) {
       this.receptor._imagen.cargar_animacion('parado');
+
+      if (this.receptor.cuando_busca_recoger) {
+        this.receptor.cuando_busca_recoger.call(this);
+      }
+
       return true;
     }
 
