@@ -11694,6 +11694,7 @@ var Actor = (function (_super) {
 
         this.callbacks_cuando_hace_click = [];
         this.callbacks_cuando_mueve_mouse = [];
+
         this.iniciar();
     }
     Actor.prototype.getClassName = function () {
@@ -12695,13 +12696,19 @@ var Explosion = (function (_super) {
 var Globo = (function (_super) {
     __extends(Globo, _super);
     function Globo(x, y, mensaje) {
-        var imagen = "globo.png";
-        _super.call(this, imagen, x, y);
+        console.log(x, y, mensaje);
+        _super.call(this, "globo.png", 0, 0);
         this.mensaje = mensaje;
-        this.actor_texto = new pilas.actores.Texto(x - 20, y, mensaje);
-        this.actor_texto.z = this.z - 10;
+        this.x = x;
+        this.y = y;
 
-        pilas.mundo.agregar_tarea_una_vez(3, this.eliminar, {}, this);
+        var x = this.x;
+        var y = this.y;
+        var mensaje = this.mensaje;
+
+        this.actor_texto = new pilas.actores.Texto(x, y, mensaje);
+        this.actor_texto.z = -1000;
+        //pilas.mundo.agregar_tarea_una_vez(3, this.eliminar, {}, this);
     }
     Globo.prototype.eliminar = function () {
         this.actor_texto.eliminar();
@@ -14393,7 +14400,7 @@ var Base = (function () {
     Base.prototype.necesita_ordenar_actores = function () {
         var ultimo_z = 300000000;
 
-        for (var i in this.stage.children) {
+        for (var i = 0; i < this.stage.children.length; i++) {
             if (this.stage.children[i].z > ultimo_z) {
                 console.log("necesita actualizar!");
                 return true;
@@ -16115,7 +16122,7 @@ var Pilas = (function () {
         if (typeof con_etiqueta === "undefined") { con_etiqueta = undefined; }
         var actores = [];
 
-        for (var i in this.escena_actual().actores) {
+        for (var i = 0; i < this.escena_actual().actores.length; i++) {
             var actor = this.escena_actual().actores[i];
 
             if (actor.colisiona_con_un_punto(x, y)) {
@@ -16134,7 +16141,7 @@ var Pilas = (function () {
     Pilas.prototype.obtener_actores_con_etiqueta = function (etiqueta) {
         var actores = [];
 
-        for (var i in this.escena_actual().actores) {
+        for (var i = 0; i < this.escena_actual().actores.length; i++) {
             var actor = this.escena_actual().actores[i];
 
             if (actor.tiene_etiqueta(etiqueta))

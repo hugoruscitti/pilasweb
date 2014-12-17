@@ -9,7 +9,8 @@ all:
 	@echo " $(V)test_mac$(N)     Prueba la aplicacion usando nodewebkit en mac osx."
 	@echo " $(V)watch$(N)        Observa los archivos y compila pilas si es necesario."
 	@echo " $(V)install$(N)      Actualiza dependencias."
-	@echo " $(V)build$(N)        Genera las versiones compiladas."
+	@echo " $(V)build$(N)        Compila el archivo pilasengine.js."
+	@echo " $(V)nodewekbit$(N)   Genera las versiones compiladas."
 	@echo " $(V)test$(N)         Ejecuta todos los tests con mocha."
 	@echo " $(V)upload$(N)       Sube los archivos generados para publicar una release."
 	@echo " $(V)version$(N)      Informa el numero de version."
@@ -31,11 +32,13 @@ build:
 	grunt generar_docs
 	grunt concat
 	grunt copy
+
+nodewebkit: build
 	@echo "Borrando archivos de releases anteriores."
 	rm -f -r webkitbuilds/releases/
 	grunt nodewebkit
 	
-upload: build
+upload: nodewebkit
 	@mkdir -p dist
 	@echo "Limpiando el directorio dist/"
 	@rm -f dist/*

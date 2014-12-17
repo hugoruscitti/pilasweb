@@ -92,6 +92,7 @@ class Actor extends Estudiante {
 
     this.callbacks_cuando_hace_click = [];
     this.callbacks_cuando_mueve_mouse = [];
+    
     this.iniciar();
   }
 
