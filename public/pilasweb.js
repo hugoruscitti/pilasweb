@@ -11671,6 +11671,8 @@ var Actor = (function (_super) {
         this.y = y || 0;
         this.espejado = false;
         this.centro = ['centro', 'centro'];
+        this.etiquetas = [];
+        this.etiquetas.push(this.getClassName());
 
         if (atributos['rotacion'])
             this.rotacion = atributos['rotacion'];
@@ -11692,6 +11694,12 @@ var Actor = (function (_super) {
         this.callbacks_cuando_mueve_mouse = [];
         this.iniciar();
     }
+    Actor.prototype.getClassName = function () {
+        var funcNameRegex = /function (.{1,})\(/;
+        var results = (funcNameRegex).exec(this["constructor"].toString());
+        return (results && results.length > 1) ? results[1] : "";
+    };
+
     Actor.prototype.iniciar = function () {
     };
 
@@ -16032,6 +16040,19 @@ var Pilas = (function () {
         modos.fisica = false;
         this.definir_modos(modos);
         return "Ocultando fisica";
+    };
+
+    Pilas.prototype.obtener_actores_en = function (x, y) {
+        var actores = [];
+
+        for (var i in this.escena_actual().actores) {
+            var actor = this.escena_actual().actores[i];
+
+            if (actor.colisiona_con_un_punto(x, y))
+                actores.push(actor);
+        }
+
+        return actores;
     };
     return Pilas;
 })();

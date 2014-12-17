@@ -56,6 +56,7 @@ class Actor extends Estudiante {
   _espejado;
   callbacks_cuando_hace_click;
   callbacks_cuando_mueve_mouse;
+  etiquetas;
 
   constructor(imagen, x, y, atributos = {}) {
 
@@ -69,6 +70,9 @@ class Actor extends Estudiante {
     this.y = y || 0;
     this.espejado = false;
     this.centro = ['centro', 'centro'];
+    
+    this.etiquetas = [];
+    this.etiquetas.push(this.getClassName());
 
     if (atributos['rotacion'])
       this.rotacion = atributos['rotacion'];
@@ -89,6 +93,12 @@ class Actor extends Estudiante {
     this.callbacks_cuando_hace_click = [];
     this.callbacks_cuando_mueve_mouse = [];
     this.iniciar();
+  }
+
+  public getClassName() {
+    var funcNameRegex = /function (.{1,})\(/;
+      var results  = (funcNameRegex).exec(this["constructor"].toString());
+      return (results && results.length > 1) ? results[1] : "";
   }
 
   public iniciar() {

@@ -315,6 +315,19 @@ class Pilas {
     return "Ocultando fisica";
   }
 
+  obtener_actores_en(x, y) {
+    var actores = [];
+
+    for (var i in this.escena_actual().actores) {
+      var actor = this.escena_actual().actores[i];
+
+      if (actor.colisiona_con_un_punto(x, y))
+        actores.push(actor);
+    }
+
+    return actores;
+  }
+
 }
 
 pilas = new Pilas();
