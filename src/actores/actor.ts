@@ -70,7 +70,7 @@ class Actor extends Estudiante {
     this.y = y || 0;
     this.espejado = false;
     this.centro = ['centro', 'centro'];
-    
+
     this.etiquetas = [];
     this.etiquetas.push(this.getClassName());
 
@@ -429,4 +429,7 @@ class Actor extends Estudiante {
       this.abajo > area_visible.arriba || this.arriba < area_visible.abajo;
   }
 
+  tiene_etiqueta(etiqueta) {
+    return this.etiquetas.indexOf(etiqueta) > -1;
+  }
 }
