@@ -53,22 +53,39 @@ class Base {
       this.actores[i].actualizar();
     }
 
-    this.ordenar_actores_por_valor_z();
     this.actualiza.emitir();
     pilas.colisiones.verificar_colisiones();
+
     this.stage.update();
+
+    if (this.necesita_ordenar_actores())
+      this.ordenar_actores_por_valor_z();
   }
 
+  necesita_ordenar_actores() {
+    var ultimo_z =  300000000;
+
+    for (var i in this.stage.children) {
+
+      if (this.stage.children[i].z > ultimo_z) {
+        console.log("necesita actualizar!");
+        return true;
+      }
+
+      ultimo_z = this.stage.children[i].z;
+    }
+
+  }
+
+
   ordenar_actores_por_valor_z() {
-    var sortFunction = function(item1, item2, options) {
-      if (item1.z < item2.z)
-        return 1;
 
-      if (item1.z > item2.z)
-        return -1;
-
+    var sortFunction = function(a, b) {
+      if (a.z < b.z) return 1;
+      if (a.z > b.z) return -1;
       return 0;
     }
+
     this.stage.sortChildren(sortFunction);
   }
 

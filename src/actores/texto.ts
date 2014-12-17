@@ -72,4 +72,3 @@ class Texto extends Actor {
     this.escala_y = valor;
   }
 }
-

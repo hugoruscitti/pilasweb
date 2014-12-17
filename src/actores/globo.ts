@@ -9,6 +9,7 @@ class Globo extends Actor {
     super(imagen, x, y);
     this.mensaje = mensaje;
     this.actor_texto = new pilas.actores.Texto(x-20, y, mensaje);
+    this.actor_texto.z = this.z - 10;
 
     pilas.mundo.agregar_tarea_una_vez(3, this.eliminar, {}, this);
   }

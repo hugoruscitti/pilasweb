@@ -12699,6 +12699,7 @@ var Globo = (function (_super) {
         _super.call(this, imagen, x, y);
         this.mensaje = mensaje;
         this.actor_texto = new pilas.actores.Texto(x - 20, y, mensaje);
+        this.actor_texto.z = this.z - 10;
 
         pilas.mundo.agregar_tarea_una_vez(3, this.eliminar, {}, this);
     }
@@ -14380,22 +14381,37 @@ var Base = (function () {
             this.actores[i].actualizar();
         }
 
-        this.ordenar_actores_por_valor_z();
         this.actualiza.emitir();
         pilas.colisiones.verificar_colisiones();
+
         this.stage.update();
+
+        if (this.necesita_ordenar_actores())
+            this.ordenar_actores_por_valor_z();
+    };
+
+    Base.prototype.necesita_ordenar_actores = function () {
+        var ultimo_z = 300000000;
+
+        for (var i in this.stage.children) {
+            if (this.stage.children[i].z > ultimo_z) {
+                console.log("necesita actualizar!");
+                return true;
+            }
+
+            ultimo_z = this.stage.children[i].z;
+        }
     };
 
     Base.prototype.ordenar_actores_por_valor_z = function () {
-        var sortFunction = function (item1, item2, options) {
-            if (item1.z < item2.z)
+        var sortFunction = function (a, b) {
+            if (a.z < b.z)
                 return 1;
-
-            if (item1.z > item2.z)
+            if (a.z > b.z)
                 return -1;
-
             return 0;
         };
+
         this.stage.sortChildren(sortFunction);
     };
 
