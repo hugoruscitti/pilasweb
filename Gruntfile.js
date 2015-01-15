@@ -41,6 +41,7 @@ module.exports = function(grunt) {
             'public/libs/easeljs-0.7.1.min.js',
             'public/libs/tweenjs-0.5.1.min.js',
             'public/libs/uuid.js',
+            'public/libs/rsvp-latest.js',
             'public/pilasweb.js',
         ],
         dest: 'public/pilasweb.js',
