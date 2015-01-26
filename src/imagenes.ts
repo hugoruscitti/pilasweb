@@ -42,6 +42,7 @@ class Imagenes {
 
     this.cargar_recurso('plano.png');
     this.cargar_recurso('alien.png');
+    this.cargar_recurso('alien_marron.png');
     this.cargar_recurso('tuerca.png');
     this.cargar_recurso('nave.png');
 

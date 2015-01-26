@@ -1239,10 +1239,12 @@
       var nextTick = process.nextTick;
       // node version 0.10.x displays a deprecation warning when nextTick is used recursively
       // setImmediate should be used instead instead
+      
       var version = process.versions.node.match(/^(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)$/);
-      if (Array.isArray(version) && version[1] === '0' && version[2] === '10') {
-        nextTick = setImmediate;
-      }
+      //if (Array.isArray(version) && version[1] === '0' && version[2] === '10') {
+      //  nextTick = setImmediate;
+      //}
+      
       return function() {
         nextTick(lib$rsvp$asap$$flush);
       };

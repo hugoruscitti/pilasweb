@@ -1,5 +1,4 @@
 
-
 /**
  * @class Actores
  *
@@ -38,6 +37,7 @@ class Actores {
   Pizarra;
   Pingu;
   Alien;
+  AlienMarron;
   Tuerca;
   Sombra;
 
@@ -71,6 +71,7 @@ class Actores {
     this.Pizarra = Pizarra;
     this.Pingu = Pingu;
     this.Alien = Alien;
+    this.AlienMarron = AlienMarron;
     this.Tuerca = Tuerca;
     this.Sombra = Sombra;
   }

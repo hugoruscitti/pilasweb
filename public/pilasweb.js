@@ -12731,10 +12731,12 @@ Dual licensed under the MIT and GPL licenses.
       var nextTick = process.nextTick;
       // node version 0.10.x displays a deprecation warning when nextTick is used recursively
       // setImmediate should be used instead instead
+      
       var version = process.versions.node.match(/^(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)$/);
-      if (Array.isArray(version) && version[1] === '0' && version[2] === '10') {
-        nextTick = setImmediate;
-      }
+      //if (Array.isArray(version) && version[1] === '0' && version[2] === '10') {
+      //  nextTick = setImmediate;
+      //}
+      
       return function() {
         nextTick(lib$rsvp$asap$$flush);
       };
@@ -13198,6 +13200,7 @@ var Actores = (function () {
         this.Pizarra = Pizarra;
         this.Pingu = Pingu;
         this.Alien = Alien;
+        this.AlienMarron = AlienMarron;
         this.Tuerca = Tuerca;
         this.Sombra = Sombra;
     }
@@ -13864,11 +13867,6 @@ var Alien = (function (_super) {
         this.hacer_luego(Hablar, { mensaje: mensaje, tiempo: 1 });
     };
 
-    Alien.prototype.definir_posicion = function (x, y) {
-        this.hacer_luego(DefinirPosicion, { x: x, y: y });
-        return this;
-    };
-
     Alien.prototype.super_decir = function (mensaje) {
         _super.prototype.decir.call(this, mensaje);
         this.sonido_blabla.reproducir();
@@ -14073,19 +14071,86 @@ var Hablar = (function (_super) {
     };
     return Hablar;
 })(MoverHaciaDerecha);
+// <reference path="comportamientos.ts />
+var AlienMarron = (function (_super) {
+    __extends(AlienMarron, _super);
+    function AlienMarron(x, y) {
+        if (typeof x === "undefined") { x = 0; }
+        if (typeof y === "undefined") { y = 0; }
+        var imagen = pilas.imagenes.cargar_animacion('alien_marron.png', 14);
+        _super.call(this, imagen, x, y);
 
-var DefinirPosicion = (function (_super) {
-    __extends(DefinirPosicion, _super);
-    function DefinirPosicion() {
-        _super.apply(this, arguments);
+        window['alien'] = this;
+
+        imagen.definir_animacion("parado", [11, 11], 5);
+        imagen.definir_animacion("hablar", [12, 13, 11, 12, 11, 13], 15);
+        imagen.definir_animacion("recoger", [12, 10, 10, 10, 10, 12], 5);
+        imagen.definir_animacion("camina", [0, 1, 2, 3, 4, 3, 2, 1], 15);
+        imagen.cargar_animacion("parado");
+
+        this.sonido_blabla = pilas.sonidos.cargar('blabla.wav');
+        this.cuando_busca_recoger = undefined;
     }
-    DefinirPosicion.prototype.actualizar = function () {
-        this.receptor.x = this.argumentos.x;
-        this.receptor.y = this.argumentos.x;
-        return true;
+    AlienMarron.prototype.iniciar = function () {
+        this.sombra = new pilas.actores.Sombra();
+        this.sombra.escala = 0.5;
+        this.limitar_movimientos = true;
+
+        this.centro_y = 'abajo';
+        this.centro_y -= 10;
     };
-    return DefinirPosicion;
-})(Movimiento);
+
+    AlienMarron.prototype.decir = function (mensaje) {
+        //this.hacer_luego(Hablar, {mensaje: mensaje, tiempo: 1});
+    };
+
+    AlienMarron.prototype.super_decir = function (mensaje) {
+        _super.prototype.decir.call(this, mensaje);
+        this.sonido_blabla.reproducir();
+    };
+
+    AlienMarron.prototype.actualizar = function () {
+        this.z = this.y;
+
+        this.sombra.x = this.x;
+        this.sombra.y = this.y;
+        this.sombra.z = this.z + 1;
+    };
+
+    AlienMarron.prototype.avanzar_animacion = function () {
+        return this._imagen.avanzar();
+    };
+
+    AlienMarron.prototype.ir_derecha = function () {
+        //this.hacer_luego(MoverHaciaDerecha, {cantidad: 68, tiempo: 1});
+    };
+
+    AlienMarron.prototype.ir_izquierda = function () {
+        //this.hacer_luego(MoverHaciaIzquierda, {cantidad: 68, tiempo: 1});
+    };
+
+    AlienMarron.prototype.ir_arriba = function () {
+        //this.hacer_luego(MoverHaciaArriba, {cantidad: 80, tiempo: 1});
+    };
+
+    AlienMarron.prototype.ir_abajo = function () {
+        //this.hacer_luego(MoverHaciaAbajo, {cantidad: 80, tiempo: 1});
+    };
+
+    AlienMarron.prototype.esperar = function (tiempo) {
+        if (typeof tiempo === "undefined") { tiempo = 2; }
+        //this.hacer_luego(Esperar, {tiempo: tiempo});
+    };
+
+    AlienMarron.prototype.detener = function () {
+        //this.esperar(0);
+    };
+
+    AlienMarron.prototype.recoger = function () {
+        //this.hacer_luego(Recoger, {tiempo: 1});
+    };
+    return AlienMarron;
+})(Actor);
 var Banana = (function (_super) {
     __extends(Banana, _super);
     function Banana(x, y) {
@@ -17220,6 +17285,7 @@ var Imagenes = (function () {
 
         this.cargar_recurso('plano.png');
         this.cargar_recurso('alien.png');
+        this.cargar_recurso('alien_marron.png');
         this.cargar_recurso('tuerca.png');
         this.cargar_recurso('nave.png');
 
@@ -17571,6 +17637,7 @@ var Pilas = (function () {
         this.sonidos = new Sonidos(this.opciones.data_path);
         this.escena = new escena();
         this.tareas = new tareas();
+        this.rutinas = new Rutinas();
 
         this.mundo.gestor_escenas.cambiar_escena(new Normal());
 
@@ -17581,6 +17648,10 @@ var Pilas = (function () {
         ctx.imageSmoothingEnabled = false;
 
         this.ready = false;
+    };
+
+    Pilas.prototype.observar_tareas = function (elemento_id, intervalo) {
+        this.rutinas.observar_tareas(elemento_id, intervalo);
     };
 
     Pilas.prototype.reiniciar = function () {
@@ -17749,6 +17820,7 @@ var Pilas = (function () {
     */
     Pilas.prototype.actualizar = function () {
         this.mundo.actualizar();
+        this.rutinas.actualizar();
     };
 
     Pilas.prototype.interpolar = function (objeto, atributo, valor_o_valores, tiempo) {
@@ -17849,6 +17921,67 @@ pilasengine = {
         return window['pilas'];
     }
 };
+var Rutinas = (function () {
+    function Rutinas() {
+        this.lista_de_rutinas = [];
+    }
+    Rutinas.prototype.observar_tareas = function (elemento_id, intervalo) {
+        var el = document.getElementById(elemento_id);
+        var ctx = this;
+
+        function cargar_contenido() {
+            var buffer = "";
+
+            ctx.lista_de_rutinas.forEach(function (e) {
+                buffer += e.nombre + " - contador: " + e.contador + "\n";
+            });
+
+            el.innerHTML = buffer;
+            setTimeout(cargar_contenido, intervalo);
+        }
+
+        cargar_contenido();
+    };
+
+    Rutinas.prototype.agregar = function (nombre, actor, init, update) {
+        var time = new Date();
+
+        var rutina = {
+            id: Math.random(),
+            nombre: nombre,
+            init: init,
+            update: update,
+            tiempo: time,
+            actor: actor,
+            contador: 0,
+            contexto: { actor: actor },
+            eliminada: false
+        };
+
+        console.log(rutina);
+
+        init.call(rutina.contexto);
+        this.lista_de_rutinas.push(rutina);
+    };
+
+    Rutinas.prototype.actualizar = function () {
+        var a_eliminar = [];
+
+        this.lista_de_rutinas.forEach(function (e) {
+            e.contador += 1;
+            var retorno = e.update.call(e.contexto);
+
+            if (retorno === true) {
+                e.eliminada = true;
+            }
+        });
+
+        this.lista_de_rutinas = this.lista_de_rutinas.filter(function (item) {
+            return (!item.eliminada);
+        });
+    };
+    return Rutinas;
+})();
 var simbolos = {
     IZQUIERDA: 37,
     DERECHA: 39,

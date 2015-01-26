@@ -52,6 +52,7 @@ class Pilas {
   grupo;            // acceso a módulo.
 
   tareas;           // acceso a módulo.
+  rutinas;          // acceso a módulo.
 
   interpolaciones;  // acceso al módulo.
   colisiones;       // acceso al módulo.
@@ -97,6 +98,7 @@ class Pilas {
     this.sonidos = new Sonidos(this.opciones.data_path);
     this.escena = new escena();
     this.tareas = new tareas();
+    this.rutinas = new Rutinas();
 
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
 
@@ -107,6 +109,10 @@ class Pilas {
     ctx.imageSmoothingEnabled = false;
 
     this.ready  = false;
+  }
+
+  observar_tareas(elemento_id, intervalo) {
+    this.rutinas.observar_tareas(elemento_id, intervalo);
   }
 
 	reiniciar() {
@@ -277,6 +283,7 @@ class Pilas {
    */
   actualizar() {
     this.mundo.actualizar()
+    this.rutinas.actualizar();
   }
 
   interpolar(objeto, atributo, valor_o_valores, tiempo) {
