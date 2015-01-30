@@ -15827,7 +15827,7 @@ var Programa = (function (_super) {
     __extends(Programa, _super);
     function Programa(argumentos) {
         _super.call(this, argumentos);
-        this.stack_secuencias = [[]];
+        this.stack_secuencias = [];
     }
     Programa.prototype.empezar_secuencia = function () {
         this.stack_secuencias.push([]);

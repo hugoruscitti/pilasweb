@@ -383,7 +383,7 @@ class Programa extends Comportamiento {
   
   constructor(argumentos) {
     super(argumentos);
-    this.stack_secuencias = [[]];
+    this.stack_secuencias = [];
   }
   
   empezar_secuencia() {
