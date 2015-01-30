@@ -390,8 +390,8 @@ class Programa extends Comportamiento {
     this.stack_secuencias.push([]);
   }
   
-  agregar_a_secuencia(x) {
-    this.stack_secuencias[this.stack_secuencias.length - 1].push(x);
+  agregar_a_secuencia(comportamiento, argumentos) {
+    this.stack_secuencias[this.stack_secuencias.length - 1].push(new comportamiento(argumentos));
   }
 
   terminar_secuencia() {
@@ -402,21 +402,21 @@ class Programa extends Comportamiento {
   terminar_repetir_hasta(c) {
     this.terminar_secuencia();
     var s = this.stack_secuencias.pop();
-    this.agregar_a_secuencia(new RepetirHasta({ secuencia: s, condicion: c }));  
+    this.agregar_a_secuencia(RepetirHasta, { secuencia: s, condicion: c });  
   }
   
   terminar_alternativa_si(c) {
     this.terminar_secuencia();
     var s = this.stack_secuencias.pop();
-    this.agregar_a_secuencia(new Alternativa({ entonces: s, sino: [], condicion: c }));  
+    this.agregar_a_secuencia(Alternativa, { entonces: s, sino: [], condicion: c });  
   }
   
   terminar_alternativa_sino(c) {
     var s2 = this.stack_secuencias.pop();
     var s1 = this.stack_secuencias.pop();
-    this.agregar_a_secuencia(new Alternativa({ entonces: s1, sino: s2, condicion: c }));
+    this.agregar_a_secuencia(Alternativa, { entonces: s1, sino: s2, condicion: c });
   }
-
+  
   iniciar(receptor) {
     super.iniciar(receptor);
     this.programa = this.stack_secuencias.pop();

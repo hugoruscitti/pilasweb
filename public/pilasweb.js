@@ -15833,8 +15833,8 @@ var Programa = (function (_super) {
         this.stack_secuencias.push([]);
     };
 
-    Programa.prototype.agregar_a_secuencia = function (x) {
-        this.stack_secuencias[this.stack_secuencias.length - 1].push(x);
+    Programa.prototype.agregar_a_secuencia = function (comportamiento, argumentos) {
+        this.stack_secuencias[this.stack_secuencias.length - 1].push(new comportamiento(argumentos));
     };
 
     Programa.prototype.terminar_secuencia = function () {
@@ -15845,19 +15845,19 @@ var Programa = (function (_super) {
     Programa.prototype.terminar_repetir_hasta = function (c) {
         this.terminar_secuencia();
         var s = this.stack_secuencias.pop();
-        this.agregar_a_secuencia(new RepetirHasta({ secuencia: s, condicion: c }));
+        this.agregar_a_secuencia(RepetirHasta, { secuencia: s, condicion: c });
     };
 
     Programa.prototype.terminar_alternativa_si = function (c) {
         this.terminar_secuencia();
         var s = this.stack_secuencias.pop();
-        this.agregar_a_secuencia(new Alternativa({ entonces: s, sino: [], condicion: c }));
+        this.agregar_a_secuencia(Alternativa, { entonces: s, sino: [], condicion: c });
     };
 
     Programa.prototype.terminar_alternativa_sino = function (c) {
         var s2 = this.stack_secuencias.pop();
         var s1 = this.stack_secuencias.pop();
-        this.agregar_a_secuencia(new Alternativa({ entonces: s1, sino: s2, condicion: c }));
+        this.agregar_a_secuencia(Alternativa, { entonces: s1, sino: s2, condicion: c });
     };
 
     Programa.prototype.iniciar = function (receptor) {
