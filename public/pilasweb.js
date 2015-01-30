@@ -15731,22 +15731,30 @@ var Secuencia = (function (_super) {
     }
     Secuencia.prototype.iniciar = function (receptor) {
         _super.prototype.iniciar.call(this, receptor);
-        this.secuencia = this.argumentos.secuencia || [];
-        this.comando_actual = 0;
-        if (this.secuencia.length > 0) {
-            this.secuencia[0].iniciar(receptor);
-        }
+        this.secuencia = this.argumentos.secuencia;
+        this.reiniciar = true;
     };
 
     Secuencia.prototype.actualizar = function () {
-        var finished = this.secuencia[this.comando_actual].actualizar();
-        if (finished) {
-            this.comando_actual++;
-            if (this.comando_actual > this.secuencia.length) {
-                return true;
-            } else {
-                this.secuencia[this.comando_actual].iniciar(this.receptor);
+        if (this.reiniciar) {
+            this.reiniciar = false;
+            this.comando_actual = 0;
+            if (this.secuencia.length > 0) {
+                this.secuencia[0].iniciar(this.receptor);
             }
+        }
+
+        if (this.secuencia.length > 0 && this.comando_actual < this.secuencia.length) {
+            var finished = this.secuencia[this.comando_actual].actualizar();
+            if (finished) {
+                this.comando_actual++;
+                if (this.comando_actual < this.secuencia.length) {
+                    this.secuencia[this.comando_actual].iniciar(this.receptor);
+                }
+            }
+        } else {
+            this.reiniciar = true; // para reiniciar la secuencia en la proxima ejecucion
+            return true;
         }
     };
     return Secuencia;
@@ -15767,7 +15775,7 @@ var Alternativa = (function (_super) {
     Alternativa.prototype.iniciar = function (receptor) {
         _super.prototype.iniciar.call(this, receptor);
         this.rama_entonces = this.argumentos.entonces;
-        this.rama_sino = this.argumentos.sino || new Secuencia([]);
+        this.rama_sino = this.argumentos.sino;
         this.condicion = this.argumentos.condicion;
         this.ejecutado = false;
     };
@@ -15783,7 +15791,13 @@ var Alternativa = (function (_super) {
             this.rama_elegida.iniciar(this.receptor);
         }
 
-        this.rama_elegida.actualizar();
+        var finished = this.rama_elegida.actualizar();
+        if (finished) {
+            // para que se vuelva a evaluar la condicion si vuelven a llamar a este comportamiento
+            this.ejecutado = false;
+
+            return true;
+        }
     };
     return Alternativa;
 })(Comportamiento);
@@ -15805,16 +15819,89 @@ var RepetirHasta = (function (_super) {
         this.secuencia = this.argumentos.secuencia;
         this.condicion = this.argumentos.condicion;
         this.secuencia.iniciar(receptor);
+        this.evaluar_condicion = true;
     };
 
     RepetirHasta.prototype.actualizar = function () {
-        if (this.condicion(this.receptor)) {
-            return true;
-        } else {
-            this.secuencia.actualizar();
+        if (this.evaluar_condicion) {
+            this.evaluar_condicion = false;
+            if (this.condicion(this.receptor)) {
+                this.evaluar_condicion = true; // se resetea antes de salir, para volvese a evaluar
+                return true;
+            }
+        }
+
+        var termino = this.secuencia.actualizar();
+
+        if (termino) {
+            this.evaluar_condicion = true;
         }
     };
     return RepetirHasta;
+})(Comportamiento);
+
+/**
+* @class RepetirN
+*
+* Representa un bucle que repite una cierta cantidad de veces un comportamiento
+*
+* Recibe como argumento un comportamiento de tipo Secuencia y una funcion booleana a evaluar.
+*/
+var RepetirN = (function (_super) {
+    __extends(RepetirN, _super);
+    function RepetirN() {
+        _super.apply(this, arguments);
+    }
+    RepetirN.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.secuencia = this.argumentos.secuencia;
+        this.cantidad = this.argumentos.cantidad;
+        this.secuencia.iniciar(receptor);
+        this.volver_a_evaluar = true;
+    };
+
+    RepetirN.prototype.actualizar = function () {
+        if (this.volver_a_evaluar) {
+            this.volver_a_evaluar = false;
+            this.cantidad_actual = this.cantidad(this.receptor);
+        }
+
+        if (this.cantidad_actual == 0) {
+            this.volver_a_evaluar = true;
+            return true;
+        }
+
+        var termino = this.secuencia.actualizar();
+        if (termino) {
+            this.cantidad_actual--;
+        }
+    };
+    return RepetirN;
+})(Comportamiento);
+
+/**
+* @class CambiarAtributo
+*
+* Representa el cambio de un atributo del actor
+*
+* Recibe como argumento una funcion cuyo resultado sera guardado como valor del atributo
+*/
+var CambiarAtributo = (function (_super) {
+    __extends(CambiarAtributo, _super);
+    function CambiarAtributo() {
+        _super.apply(this, arguments);
+    }
+    CambiarAtributo.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.nombre = this.argumentos.nombre;
+        this.funcion_valor = this.argumentos.valor;
+    };
+
+    CambiarAtributo.prototype.actualizar = function () {
+        this.receptor[this.nombre] = this.funcion_valor(this.receptor);
+        return true;
+    };
+    return CambiarAtributo;
 })(Comportamiento);
 
 /**
@@ -15831,39 +15918,49 @@ var ConstructorDePrograma = (function () {
         this.stack_secuencias.push([]);
     };
 
-    ConstructorDePrograma.prototype.agregar_a_secuencia = function (comportamiento, argumentos) {
+    ConstructorDePrograma.prototype.hacer = function (comportamiento, argumentos) {
         this.stack_secuencias[this.stack_secuencias.length - 1].push(new comportamiento(argumentos));
     };
 
     ConstructorDePrograma.prototype.terminar_secuencia = function () {
         var s = this.stack_secuencias.pop();
-        this.stack_secuencias.push(new Secuencia({ entonces: s }));
+        this.stack_secuencias.push(new Secuencia({ secuencia: s }));
     };
 
-    ConstructorDePrograma.prototype.terminar_repetir_hasta = function (c) {
+    ConstructorDePrograma.prototype.repetir_hasta = function (c) {
         this.terminar_secuencia();
         var s = this.stack_secuencias.pop();
-        this.agregar_a_secuencia(RepetirHasta, { secuencia: s, condicion: c });
+        this.hacer(RepetirHasta, { secuencia: s, condicion: c });
     };
 
-    ConstructorDePrograma.prototype.terminar_alternativa_si = function (c) {
+    ConstructorDePrograma.prototype.alternativa_si = function (c) {
         this.terminar_secuencia();
         var s = this.stack_secuencias.pop();
-        this.agregar_a_secuencia(Alternativa, { entonces: s, sino: [], condicion: c });
+        this.hacer(Alternativa, { entonces: s, sino: new Secuencia({ secuencia: [] }), condicion: c });
     };
 
-    ConstructorDePrograma.prototype.terminar_alternativa_sino = function (c) {
+    ConstructorDePrograma.prototype.alternativa_sino = function (c) {
+        this.terminar_secuencia();
         var s2 = this.stack_secuencias.pop();
-        var s1 = this.stack_secuencias.pop();
-        this.agregar_a_secuencia(Alternativa, { entonces: s1, sino: s2, condicion: c });
-    };
-
-    ConstructorDePrograma.prototype.empezar_programa = function () {
-        this.empezar_secuencia();
-    };
-
-    ConstructorDePrograma.prototype.terminar_programa = function () {
         this.terminar_secuencia();
+        var s1 = this.stack_secuencias.pop();
+        this.hacer(Alternativa, { entonces: s1, sino: s2, condicion: c });
+    };
+
+    ConstructorDePrograma.prototype.repetirN = function (n) {
+        this.terminar_secuencia();
+        var s = this.stack_secuencias.pop();
+        this.hacer(RepetirN, { secuencia: s, cantidad: n });
+    };
+
+    ConstructorDePrograma.prototype.cambio_atributo = function (n, f) {
+        this.hacer(CambiarAtributo, { nombre: n, valor: f });
+    };
+
+    ConstructorDePrograma.prototype.ejecutar = function (actor) {
+        this.terminar_secuencia();
+        var p = this.obtener_programa();
+        actor.hacer_luego(Programa, { programa: p });
     };
 
     ConstructorDePrograma.prototype.obtener_programa = function () {
@@ -15880,6 +15977,7 @@ var Programa = (function (_super) {
     Programa.prototype.iniciar = function (receptor) {
         _super.prototype.iniciar.call(this, receptor);
         this.programa = this.argumentos.programa;
+        this.programa.iniciar(this.receptor);
     };
 
     Programa.prototype.actualizar = function () {
@@ -15913,6 +16011,7 @@ var Comportamientos = (function () {
         this.Secuencia = Secuencia;
         this.Alternativa = Alternativa;
         this.RepetirHasta = RepetirHasta;
+        this.RepetirN = RepetirN;
         this.ConstructorDePrograma = ConstructorDePrograma;
         this.Programa = Programa;
     }
