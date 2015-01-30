@@ -370,6 +370,67 @@ class RepetirHasta extends Comportamiento {
   }
 }
 
+/**
+ * @class Programa
+ *
+ * Representa un actor que construye un programa y lo ejecuta
+ *
+**/
+class Programa extends Comportamiento {
+
+  stack_secuencias;
+  programa;
+  
+  constructor(argumentos) {
+    super(argumentos);
+    this.stack_secuencias = [[]];
+  }
+  
+  empezar_secuencia() {
+    this.stack_secuencias.push([]);
+  }
+  
+  agregar_a_secuencia(x) {
+    this.stack_secuencias[this.stack_secuencias.length - 1].push(x);
+  }
+
+  terminar_secuencia() {
+    var s = this.stack_secuencias.pop();
+    this.stack_secuencias.push(new Secuencia({ entonces: s }));
+  }
+  
+  terminar_repetir_hasta(c) {
+    this.terminar_secuencia();
+    var s = this.stack_secuencias.pop();
+    this.agregar_a_secuencia(new RepetirHasta({ secuencia: s, condicion: c }));  
+  }
+  
+  terminar_alternativa_si(c) {
+    this.terminar_secuencia();
+    var s = this.stack_secuencias.pop();
+    this.agregar_a_secuencia(new Alternativa({ entonces: s, sino: [], condicion: c }));  
+  }
+  
+  terminar_alternativa_sino(c) {
+    var s2 = this.stack_secuencias.pop();
+    var s1 = this.stack_secuencias.pop();
+    this.agregar_a_secuencia(new Alternativa({ entonces: s1, sino: s2, condicion: c }));
+  }
+
+  iniciar(receptor) {
+    super.iniciar(receptor);
+    this.programa = this.stack_secuencias.pop();
+  }
+  
+  actualizar() {
+    var programa_terminado = this.programa.actualizar()
+    if(programa_terminado) {
+      return true;
+    }
+  }
+
+}
+
 
 /**
  * @class Comportamientos
@@ -393,6 +454,7 @@ class Comportamientos {
   Secuencia;
   Alternativa;
   RepetirHasta;
+  Programa;
 
   constructor() {
     this.CaminarBase = CaminarBase;
@@ -410,5 +472,6 @@ class Comportamientos {
     this.Secuencia = Secuencia;
     this.Alternativa = Alternativa;
     this.RepetirHasta = RepetirHasta;
+    this.Programa = Programa;
   }
 }

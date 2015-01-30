@@ -15818,6 +15818,63 @@ var RepetirHasta = (function (_super) {
 })(Comportamiento);
 
 /**
+* @class Programa
+*
+* Representa un actor que construye un programa y lo ejecuta
+*
+**/
+var Programa = (function (_super) {
+    __extends(Programa, _super);
+    function Programa(argumentos) {
+        _super.call(this, argumentos);
+        this.stack_secuencias = [[]];
+    }
+    Programa.prototype.empezar_secuencia = function () {
+        this.stack_secuencias.push([]);
+    };
+
+    Programa.prototype.agregar_a_secuencia = function (x) {
+        this.stack_secuencias[this.stack_secuencias.length - 1].push(x);
+    };
+
+    Programa.prototype.terminar_secuencia = function () {
+        var s = this.stack_secuencias.pop();
+        this.stack_secuencias.push(new Secuencia({ entonces: s }));
+    };
+
+    Programa.prototype.terminar_repetir_hasta = function (c) {
+        this.terminar_secuencia();
+        var s = this.stack_secuencias.pop();
+        this.agregar_a_secuencia(new RepetirHasta({ secuencia: s, condicion: c }));
+    };
+
+    Programa.prototype.terminar_alternativa_si = function (c) {
+        this.terminar_secuencia();
+        var s = this.stack_secuencias.pop();
+        this.agregar_a_secuencia(new Alternativa({ entonces: s, sino: [], condicion: c }));
+    };
+
+    Programa.prototype.terminar_alternativa_sino = function (c) {
+        var s2 = this.stack_secuencias.pop();
+        var s1 = this.stack_secuencias.pop();
+        this.agregar_a_secuencia(new Alternativa({ entonces: s1, sino: s2, condicion: c }));
+    };
+
+    Programa.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.programa = this.stack_secuencias.pop();
+    };
+
+    Programa.prototype.actualizar = function () {
+        var programa_terminado = this.programa.actualizar();
+        if (programa_terminado) {
+            return true;
+        }
+    };
+    return Programa;
+})(Comportamiento);
+
+/**
 * @class Comportamientos
 *
 * Representa todos los comportamientos que puede hacer un actor en pilas-engine.
@@ -15839,6 +15896,7 @@ var Comportamientos = (function () {
         this.Secuencia = Secuencia;
         this.Alternativa = Alternativa;
         this.RepetirHasta = RepetirHasta;
+        this.Programa = Programa;
     }
     return Comportamientos;
 })();
