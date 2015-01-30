@@ -358,7 +358,6 @@ class RepetirHasta extends Comportamiento {
     super.iniciar(receptor);
     this.secuencia = this.argumentos.secuencia;
     this.condicion = this.argumentos.condicion;
-    this.ejecutado = false;
     this.secuencia.iniciar(receptor);
   }
 

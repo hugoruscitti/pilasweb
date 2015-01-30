@@ -15718,6 +15718,106 @@ var CaminaDerecha = (function (_super) {
 })(CaminarBase);
 
 /**
+* @class Secuencia
+*
+* Representa una secuencia de comportamientos que un actor realiza de forma ordenada.
+*
+* Espera una lista de comportamientos.
+*/
+var Secuencia = (function (_super) {
+    __extends(Secuencia, _super);
+    function Secuencia() {
+        _super.apply(this, arguments);
+    }
+    Secuencia.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.secuencia = this.argumentos.secuencia || [];
+        this.comando_actual = 0;
+        if (this.secuencia.length > 0) {
+            this.secuencia[0].iniciar(receptor);
+        }
+    };
+
+    Secuencia.prototype.actualizar = function () {
+        var finished = this.secuencia[this.comando_actual].actualizar();
+        if (finished) {
+            this.comando_actual++;
+            if (this.comando_actual > this.secuencia.length) {
+                return true;
+            } else {
+                this.secuencia[this.comando_actual].iniciar(this.receptor);
+            }
+        }
+    };
+    return Secuencia;
+})(Comportamiento);
+
+/**
+* @class Alternativa
+*
+* Representa un if-then-else entre dos comportamientos. Se ejecuta uno u otro dependiendo de una condicion.
+*
+* Recibe como argumentos dos comportamientos de tipo Secuencia y una funcion booleana a evaluar.
+*/
+var Alternativa = (function (_super) {
+    __extends(Alternativa, _super);
+    function Alternativa() {
+        _super.apply(this, arguments);
+    }
+    Alternativa.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.rama_entonces = this.argumentos.rama_entonces;
+        this.rama_sino = this.argumentos.rama_sino;
+        this.condicion = this.argumentos.condicion;
+        this.ejecutado = false;
+    };
+
+    Alternativa.prototype.actualizar = function () {
+        if (!this.ejecutado) {
+            this.ejecutado = true;
+            if (this.condicion(this.receptor)) {
+                this.rama_elegida = this.rama_entonces;
+            } else {
+                this.rama_elegida = this.rama_sino;
+            }
+            this.rama_elegida.iniciar(this.receptor);
+        }
+
+        this.rama_elegida.actualizar();
+    };
+    return Alternativa;
+})(Comportamiento);
+
+/**
+* @class RepetirHasta
+*
+* Representa un bucle condicional que repite un comportamiento hasta que se cumple cierta condicion.
+*
+* Recibe como argumento un comportamiento de tipo Secuencia y una funcion booleana a evaluar.
+*/
+var RepetirHasta = (function (_super) {
+    __extends(RepetirHasta, _super);
+    function RepetirHasta() {
+        _super.apply(this, arguments);
+    }
+    RepetirHasta.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.secuencia = this.argumentos.secuencia;
+        this.condicion = this.argumentos.condicion;
+        this.secuencia.iniciar(receptor);
+    };
+
+    RepetirHasta.prototype.actualizar = function () {
+        if (this.condicion(this.receptor)) {
+            return true;
+        } else {
+            this.secuencia.actualizar();
+        }
+    };
+    return RepetirHasta;
+})(Comportamiento);
+
+/**
 * @class Comportamientos
 *
 * Representa todos los comportamientos que puede hacer un actor en pilas-engine.
@@ -15736,6 +15836,9 @@ var Comportamientos = (function () {
         this.Avanzar = Avanzar;
         this.AvanzarComoProyectil = AvanzarComoProyectil;
         this.Saltando = Saltando;
+        this.Secuencia = Secuencia;
+        this.Alternativa = Alternativa;
+        this.RepetirHasta = RepetirHasta;
     }
     return Comportamientos;
 })();
