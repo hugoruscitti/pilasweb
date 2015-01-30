@@ -15718,6 +15718,278 @@ var CaminaDerecha = (function (_super) {
 })(CaminarBase);
 
 /**
+* @class Secuencia
+*
+* Representa una secuencia de comportamientos que un actor realiza de forma ordenada.
+*
+* Espera una lista de comportamientos.
+*/
+var Secuencia = (function (_super) {
+    __extends(Secuencia, _super);
+    function Secuencia() {
+        _super.apply(this, arguments);
+    }
+    Secuencia.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.secuencia = this.argumentos.secuencia;
+        this.reiniciar = true;
+    };
+
+    Secuencia.prototype.actualizar = function () {
+        if (this.reiniciar) {
+            this.reiniciar = false;
+            this.comando_actual = 0;
+            if (this.secuencia.length > 0) {
+                this.secuencia[0].iniciar(this.receptor);
+            }
+        }
+
+        if (this.secuencia.length > 0 && this.comando_actual < this.secuencia.length) {
+            var finished = this.secuencia[this.comando_actual].actualizar();
+            if (finished) {
+                this.comando_actual++;
+                if (this.comando_actual < this.secuencia.length) {
+                    this.secuencia[this.comando_actual].iniciar(this.receptor);
+                }
+            }
+        } else {
+            this.reiniciar = true; // para reiniciar la secuencia en la proxima ejecucion
+            return true;
+        }
+    };
+    return Secuencia;
+})(Comportamiento);
+
+/**
+* @class Alternativa
+*
+* Representa un if-then-else entre dos comportamientos. Se ejecuta uno u otro dependiendo de una condicion.
+*
+* Recibe como argumentos dos comportamientos de tipo Secuencia y una funcion booleana a evaluar.
+*/
+var Alternativa = (function (_super) {
+    __extends(Alternativa, _super);
+    function Alternativa() {
+        _super.apply(this, arguments);
+    }
+    Alternativa.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.rama_entonces = this.argumentos.entonces;
+        this.rama_sino = this.argumentos.sino;
+        this.condicion = this.argumentos.condicion;
+        this.ejecutado = false;
+    };
+
+    Alternativa.prototype.actualizar = function () {
+        if (!this.ejecutado) {
+            this.ejecutado = true;
+            if (this.condicion(this.receptor)) {
+                this.rama_elegida = this.rama_entonces;
+            } else {
+                this.rama_elegida = this.rama_sino;
+            }
+            this.rama_elegida.iniciar(this.receptor);
+        }
+
+        var finished = this.rama_elegida.actualizar();
+        if (finished) {
+            // para que se vuelva a evaluar la condicion si vuelven a llamar a este comportamiento
+            this.ejecutado = false;
+
+            return true;
+        }
+    };
+    return Alternativa;
+})(Comportamiento);
+
+/**
+* @class RepetirHasta
+*
+* Representa un bucle condicional que repite un comportamiento hasta que se cumple cierta condicion.
+*
+* Recibe como argumento un comportamiento de tipo Secuencia y una funcion booleana a evaluar.
+*/
+var RepetirHasta = (function (_super) {
+    __extends(RepetirHasta, _super);
+    function RepetirHasta() {
+        _super.apply(this, arguments);
+    }
+    RepetirHasta.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.secuencia = this.argumentos.secuencia;
+        this.condicion = this.argumentos.condicion;
+        this.secuencia.iniciar(receptor);
+        this.evaluar_condicion = true;
+    };
+
+    RepetirHasta.prototype.actualizar = function () {
+        if (this.evaluar_condicion) {
+            this.evaluar_condicion = false;
+            if (this.condicion(this.receptor)) {
+                this.evaluar_condicion = true; // se resetea antes de salir, para volvese a evaluar
+                return true;
+            }
+        }
+
+        var termino = this.secuencia.actualizar();
+
+        if (termino) {
+            this.evaluar_condicion = true;
+        }
+    };
+    return RepetirHasta;
+})(Comportamiento);
+
+/**
+* @class RepetirN
+*
+* Representa un bucle que repite una cierta cantidad de veces un comportamiento
+*
+* Recibe como argumento un comportamiento de tipo Secuencia y una funcion booleana a evaluar.
+*/
+var RepetirN = (function (_super) {
+    __extends(RepetirN, _super);
+    function RepetirN() {
+        _super.apply(this, arguments);
+    }
+    RepetirN.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.secuencia = this.argumentos.secuencia;
+        this.cantidad = this.argumentos.cantidad;
+        this.secuencia.iniciar(receptor);
+        this.volver_a_evaluar = true;
+    };
+
+    RepetirN.prototype.actualizar = function () {
+        if (this.volver_a_evaluar) {
+            this.volver_a_evaluar = false;
+            this.cantidad_actual = this.cantidad(this.receptor);
+        }
+
+        if (this.cantidad_actual == 0) {
+            this.volver_a_evaluar = true;
+            return true;
+        }
+
+        var termino = this.secuencia.actualizar();
+        if (termino) {
+            this.cantidad_actual--;
+        }
+    };
+    return RepetirN;
+})(Comportamiento);
+
+/**
+* @class CambiarAtributo
+*
+* Representa el cambio de un atributo del actor
+*
+* Recibe como argumento una funcion cuyo resultado sera guardado como valor del atributo
+*/
+var CambiarAtributo = (function (_super) {
+    __extends(CambiarAtributo, _super);
+    function CambiarAtributo() {
+        _super.apply(this, arguments);
+    }
+    CambiarAtributo.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.nombre = this.argumentos.nombre;
+        this.funcion_valor = this.argumentos.valor;
+    };
+
+    CambiarAtributo.prototype.actualizar = function () {
+        this.receptor[this.nombre] = this.funcion_valor(this.receptor);
+        return true;
+    };
+    return CambiarAtributo;
+})(Comportamiento);
+
+/**
+* @class ConstructorDePrograma
+*
+* Permite construir un comportamiento que representa un programa
+*
+**/
+var ConstructorDePrograma = (function () {
+    function ConstructorDePrograma() {
+        this.stack_secuencias = [];
+    }
+    ConstructorDePrograma.prototype.empezar_secuencia = function () {
+        this.stack_secuencias.push([]);
+    };
+
+    ConstructorDePrograma.prototype.hacer = function (comportamiento, argumentos) {
+        this.stack_secuencias[this.stack_secuencias.length - 1].push(new comportamiento(argumentos));
+    };
+
+    ConstructorDePrograma.prototype.terminar_secuencia = function () {
+        var s = this.stack_secuencias.pop();
+        this.stack_secuencias.push(new Secuencia({ secuencia: s }));
+    };
+
+    ConstructorDePrograma.prototype.repetir_hasta = function (c) {
+        this.terminar_secuencia();
+        var s = this.stack_secuencias.pop();
+        this.hacer(RepetirHasta, { secuencia: s, condicion: c });
+    };
+
+    ConstructorDePrograma.prototype.alternativa_si = function (c) {
+        this.terminar_secuencia();
+        var s = this.stack_secuencias.pop();
+        this.hacer(Alternativa, { entonces: s, sino: new Secuencia({ secuencia: [] }), condicion: c });
+    };
+
+    ConstructorDePrograma.prototype.alternativa_sino = function (c) {
+        this.terminar_secuencia();
+        var s2 = this.stack_secuencias.pop();
+        this.terminar_secuencia();
+        var s1 = this.stack_secuencias.pop();
+        this.hacer(Alternativa, { entonces: s1, sino: s2, condicion: c });
+    };
+
+    ConstructorDePrograma.prototype.repetirN = function (n) {
+        this.terminar_secuencia();
+        var s = this.stack_secuencias.pop();
+        this.hacer(RepetirN, { secuencia: s, cantidad: n });
+    };
+
+    ConstructorDePrograma.prototype.cambio_atributo = function (n, f) {
+        this.hacer(CambiarAtributo, { nombre: n, valor: f });
+    };
+
+    ConstructorDePrograma.prototype.ejecutar = function (actor) {
+        this.terminar_secuencia();
+        var p = this.obtener_programa();
+        actor.hacer_luego(Programa, { programa: p });
+    };
+
+    ConstructorDePrograma.prototype.obtener_programa = function () {
+        return this.stack_secuencias.pop();
+    };
+    return ConstructorDePrograma;
+})();
+
+var Programa = (function (_super) {
+    __extends(Programa, _super);
+    function Programa() {
+        _super.apply(this, arguments);
+    }
+    Programa.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.programa = this.argumentos.programa;
+        this.programa.iniciar(this.receptor);
+    };
+
+    Programa.prototype.actualizar = function () {
+        var programa_terminado = this.programa.actualizar();
+        if (programa_terminado) {
+            return true;
+        }
+    };
+    return Programa;
+})(Comportamiento);
+
+/**
 * @class Comportamientos
 *
 * Representa todos los comportamientos que puede hacer un actor en pilas-engine.
@@ -15736,6 +16008,12 @@ var Comportamientos = (function () {
         this.Avanzar = Avanzar;
         this.AvanzarComoProyectil = AvanzarComoProyectil;
         this.Saltando = Saltando;
+        this.Secuencia = Secuencia;
+        this.Alternativa = Alternativa;
+        this.RepetirHasta = RepetirHasta;
+        this.RepetirN = RepetirN;
+        this.ConstructorDePrograma = ConstructorDePrograma;
+        this.Programa = Programa;
     }
     return Comportamientos;
 })();
