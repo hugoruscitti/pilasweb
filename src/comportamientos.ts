@@ -270,6 +270,107 @@ class CaminaDerecha extends CaminarBase {
   }
 }
 
+/**
+ * @class Secuencia
+ *
+ * Representa una secuencia de comportamientos que un actor realiza de forma ordenada.
+ * 
+ * Espera una lista de comportamientos.
+ */
+class Secuencia extends Comportamiento {
+
+  secuencia;
+  comando_actual;
+
+  iniciar(receptor) {
+    super.iniciar(receptor);
+    this.secuencia = this.argumentos.secuencia || [];
+    this.comando_actual = 0;
+    if(this.secuencia.length > 0) {
+      this.secuencia[0].iniciar(receptor);
+    }
+  }
+
+  actualizar() {
+    var finished = this.secuencia[this.comando_actual].actualizar();
+    if(finished) {
+      this.comando_actual++;
+      if(this.comando_actual > this.secuencia.length) {
+        return true;       
+      } else {
+        this.secuencia[this.comando_actual].iniciar(this.receptor);
+      }
+    }
+  }
+}
+
+/**
+ * @class Alternativa
+ *
+ * Representa un if-then-else entre dos comportamientos. Se ejecuta uno u otro dependiendo de una condicion.
+ *
+ * Recibe como argumentos dos comportamientos de tipo Secuencia y una funcion booleana a evaluar.
+ */
+class Alternativa extends Comportamiento {
+
+  rama_entonces;
+  rama_sino;
+  condicion;
+  rama_elegida;
+  ejecutado;
+
+  iniciar(receptor) {
+    super.iniciar(receptor);
+    this.rama_entonces = this.argumentos.rama_entonces;
+    this.rama_sino = this.argumentos.rama_sino;
+    this.condicion = this.argumentos.condicion;
+    this.ejecutado = false;
+  }
+
+  actualizar() {
+    if(!this.ejecutado) {
+      this.ejecutado = true;
+      if(this.condicion(this.receptor)) {
+        this.rama_elegida = this.rama_entonces;      
+      } else {
+        this.rama_elegida = this.rama_sino;
+      }
+      this.rama_elegida.iniciar(this.receptor);
+    }
+    
+    this.rama_elegida.actualizar();
+  }
+}
+
+/**
+ * @class RepetirHasta
+ *
+ * Representa un bucle condicional que repite un comportamiento hasta que se cumple cierta condicion.
+ *
+ * Recibe como argumento un comportamiento de tipo Secuencia y una funcion booleana a evaluar.
+ */
+class RepetirHasta extends Comportamiento {
+
+  secuencia;
+  condicion;
+
+  iniciar(receptor) {
+    super.iniciar(receptor);
+    this.secuencia = this.argumentos.secuencia;
+    this.condicion = this.argumentos.condicion;
+    this.ejecutado = false;
+    this.secuencia.iniciar(receptor);
+  }
+
+  actualizar() {
+    if(this.condicion(this.receptor)) {
+      return true;
+    } else {
+      this.secuencia.actualizar();
+    }
+  }
+}
+
 
 /**
  * @class Comportamientos
@@ -290,6 +391,9 @@ class Comportamientos {
   Avanzar;
   AvanzarComoProyectil;
   Saltando;
+  Secuencia;
+  Alternativa;
+  RepetirHasta;
 
   constructor() {
     this.CaminarBase = CaminarBase;
@@ -304,5 +408,8 @@ class Comportamientos {
     this.Avanzar = Avanzar;
     this.AvanzarComoProyectil = AvanzarComoProyectil;
     this.Saltando = Saltando;
+    this.Secuencia = Secuencia;
+    this.Alternativa = Alternativa;
+    this.RepetirHasta = RepetirHasta;
   }
 }
