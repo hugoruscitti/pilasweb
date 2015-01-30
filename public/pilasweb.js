@@ -15766,8 +15766,8 @@ var Alternativa = (function (_super) {
     }
     Alternativa.prototype.iniciar = function (receptor) {
         _super.prototype.iniciar.call(this, receptor);
-        this.rama_entonces = this.argumentos.rama_entonces;
-        this.rama_sino = this.argumentos.rama_sino;
+        this.rama_entonces = this.argumentos.entonces;
+        this.rama_sino = this.argumentos.sino || new Secuencia([]);
         this.condicion = this.argumentos.condicion;
         this.ejecutado = false;
     };

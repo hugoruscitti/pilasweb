@@ -321,8 +321,8 @@ class Alternativa extends Comportamiento {
 
   iniciar(receptor) {
     super.iniciar(receptor);
-    this.rama_entonces = this.argumentos.rama_entonces;
-    this.rama_sino = this.argumentos.rama_sino;
+    this.rama_entonces = this.argumentos.entonces;
+    this.rama_sino = this.argumentos.sino || new Secuencia([]);
     this.condicion = this.argumentos.condicion;
     this.ejecutado = false;
   }
