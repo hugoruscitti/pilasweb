@@ -371,18 +371,16 @@ class RepetirHasta extends Comportamiento {
 }
 
 /**
- * @class Programa
+ * @class ConstructorDePrograma
  *
- * Representa un actor que construye un programa y lo ejecuta
+ * Permite construir un comportamiento que representa un programa
  *
 **/
-class Programa extends Comportamiento {
+class ConstructorDePrograma {
 
   stack_secuencias;
-  programa;
   
-  constructor(argumentos) {
-    super(argumentos);
+  constructor() {
     this.stack_secuencias = [];
   }
   
@@ -417,9 +415,27 @@ class Programa extends Comportamiento {
     this.agregar_a_secuencia(Alternativa, { entonces: s1, sino: s2, condicion: c });
   }
   
+  empezar_programa() {
+    this.empezar_secuencia();
+  }
+  
+  terminar_programa() {
+    this.terminar_secuencia();
+  }
+  
+  obtener_programa() {
+    return this.stack_secuencias.pop();
+  }
+
+}
+
+class Programa extends Comportamiento {
+
+  programa;
+
   iniciar(receptor) {
     super.iniciar(receptor);
-    this.programa = this.stack_secuencias.pop();
+    this.programa = this.argumentos.programa;
   }
   
   actualizar() {
@@ -428,9 +444,8 @@ class Programa extends Comportamiento {
       return true;
     }
   }
-
+  
 }
-
 
 /**
  * @class Comportamientos
@@ -454,6 +469,7 @@ class Comportamientos {
   Secuencia;
   Alternativa;
   RepetirHasta;
+  ConstructorDePrograma;
   Programa;
 
   constructor() {
@@ -472,6 +488,7 @@ class Comportamientos {
     this.Secuencia = Secuencia;
     this.Alternativa = Alternativa;
     this.RepetirHasta = RepetirHasta;
+    this.ConstructorDePrograma = ConstructorDePrograma;
     this.Programa = Programa;
   }
 }

@@ -15818,51 +15818,68 @@ var RepetirHasta = (function (_super) {
 })(Comportamiento);
 
 /**
-* @class Programa
+* @class ConstructorDePrograma
 *
-* Representa un actor que construye un programa y lo ejecuta
+* Permite construir un comportamiento que representa un programa
 *
 **/
-var Programa = (function (_super) {
-    __extends(Programa, _super);
-    function Programa(argumentos) {
-        _super.call(this, argumentos);
+var ConstructorDePrograma = (function () {
+    function ConstructorDePrograma() {
         this.stack_secuencias = [];
     }
-    Programa.prototype.empezar_secuencia = function () {
+    ConstructorDePrograma.prototype.empezar_secuencia = function () {
         this.stack_secuencias.push([]);
     };
 
-    Programa.prototype.agregar_a_secuencia = function (comportamiento, argumentos) {
+    ConstructorDePrograma.prototype.agregar_a_secuencia = function (comportamiento, argumentos) {
         this.stack_secuencias[this.stack_secuencias.length - 1].push(new comportamiento(argumentos));
     };
 
-    Programa.prototype.terminar_secuencia = function () {
+    ConstructorDePrograma.prototype.terminar_secuencia = function () {
         var s = this.stack_secuencias.pop();
         this.stack_secuencias.push(new Secuencia({ entonces: s }));
     };
 
-    Programa.prototype.terminar_repetir_hasta = function (c) {
+    ConstructorDePrograma.prototype.terminar_repetir_hasta = function (c) {
         this.terminar_secuencia();
         var s = this.stack_secuencias.pop();
         this.agregar_a_secuencia(RepetirHasta, { secuencia: s, condicion: c });
     };
 
-    Programa.prototype.terminar_alternativa_si = function (c) {
+    ConstructorDePrograma.prototype.terminar_alternativa_si = function (c) {
         this.terminar_secuencia();
         var s = this.stack_secuencias.pop();
         this.agregar_a_secuencia(Alternativa, { entonces: s, sino: [], condicion: c });
     };
 
-    Programa.prototype.terminar_alternativa_sino = function (c) {
+    ConstructorDePrograma.prototype.terminar_alternativa_sino = function (c) {
         var s2 = this.stack_secuencias.pop();
         var s1 = this.stack_secuencias.pop();
         this.agregar_a_secuencia(Alternativa, { entonces: s1, sino: s2, condicion: c });
     };
 
+    ConstructorDePrograma.prototype.empezar_programa = function () {
+        this.empezar_secuencia();
+    };
+
+    ConstructorDePrograma.prototype.terminar_programa = function () {
+        this.terminar_secuencia();
+    };
+
+    ConstructorDePrograma.prototype.obtener_programa = function () {
+        return this.stack_secuencias.pop();
+    };
+    return ConstructorDePrograma;
+})();
+
+var Programa = (function (_super) {
+    __extends(Programa, _super);
+    function Programa() {
+        _super.apply(this, arguments);
+    }
     Programa.prototype.iniciar = function (receptor) {
         _super.prototype.iniciar.call(this, receptor);
-        this.programa = this.stack_secuencias.pop();
+        this.programa = this.argumentos.programa;
     };
 
     Programa.prototype.actualizar = function () {
@@ -15896,6 +15913,7 @@ var Comportamientos = (function () {
         this.Secuencia = Secuencia;
         this.Alternativa = Alternativa;
         this.RepetirHasta = RepetirHasta;
+        this.ConstructorDePrograma = ConstructorDePrograma;
         this.Programa = Programa;
     }
     return Comportamientos;
