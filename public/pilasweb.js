@@ -13851,6 +13851,8 @@ var Alien = (function (_super) {
         imagen.definir_animacion("camina", [0, 1, 2, 3, 4, 3, 2, 1], 15);
         imagen.cargar_animacion("parado");
 
+        this.radio_de_colision = 30;
+
         this.sonido_blabla = pilas.sonidos.cargar('blabla.wav');
         this.cuando_busca_recoger = undefined;
     }
@@ -13911,6 +13913,15 @@ var Alien = (function (_super) {
 
     Alien.prototype.recoger = function () {
         this.hacer_luego(Recoger, { tiempo: 1 });
+    };
+
+    Alien.prototype.colisiona_con_item = function (item_name) {
+        var _this = this;
+        return pilas.escena_actual().actores.filter(function (i) {
+            return i.getClassName() === item_name;
+        }).some(function (i) {
+            return _this.colisiona_con(i);
+        });
     };
     return Alien;
 })(Actor);

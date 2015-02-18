@@ -18,6 +18,8 @@ class Alien extends Actor {
     imagen.definir_animacion("camina", [0, 1, 2, 3, 4, 3, 2, 1], 15);
     imagen.cargar_animacion("parado");
 
+    this.radio_de_colision = 30;
+
     this.sonido_blabla = pilas.sonidos.cargar('blabla.wav');
     this.cuando_busca_recoger = undefined;
   }
@@ -79,6 +81,11 @@ class Alien extends Actor {
 
   recoger() {
     this.hacer_luego(Recoger, {tiempo: 1});
+  }
+
+  colisiona_con_item(item_name) {
+    var _this = this;
+    return pilas.escena_actual().actores.filter(function(i) { return i.getClassName() === item_name; }).some(function(i) { return _this.colisiona_con(i); });
   }
 
 }
