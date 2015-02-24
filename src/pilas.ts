@@ -87,7 +87,7 @@ class Pilas {
     this.definir_tamano_del_canvas();
     this.conectar_eventos();
 
-    this.imagenes = new Imagenes(this.onready, this.opciones.data_path);
+    this.imagenes = new Imagenes(this.onready, this.opciones);
     this.fondos = new Fondos();
     this.mundo = new Mundo();
     this.interpolaciones = new Interpolaciones();
@@ -150,6 +150,7 @@ class Pilas {
     this.opciones.data_path = this.opciones.data_path || 'data';
     this.opciones.canvas_id = this.opciones.canvas_id || 'canvas';
     this.opciones.canvas = this.opciones.canvas || null;
+    this.opciones.imagenesExtra = this.opciones.imagenesExtra || [];
   }
 
 
