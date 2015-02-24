@@ -13162,51 +13162,7 @@ Dual licensed under the MIT and GPL licenses.
       this['RSVP'] = lib$rsvp$umd$$RSVP;
     }
 }).call(this);
-;/**
-* @class Actores
-*
-* Módulo Actores
-* ==============
-*
-* Representa todos los actores conocidos en pilas-engine.
-*/
-var Actores = (function () {
-    function Actores(pilas) {
-        this.pilas = pilas;
-        this.Aceituna = Aceituna;
-        this.Actor = Actor;
-        this.Bomba = Bomba;
-        this.Nave = Nave;
-        this.Explosion = Explosion;
-        this.Proyectil = Proyectil;
-        this.Piedra = Piedra;
-        this.Eje = Eje;
-        this.Maton = Maton;
-        this.Globo = Globo;
-        this.Texto = Texto;
-        this.Bloque = Bloque; // TODO: eliminar, es solo para implementar tutorial.
-        this.Manzana = Manzana;
-        this.Cofre = Cofre;
-        this.Llave = Llave;
-        this.Caja = Caja;
-        this.Cesto = Cesto;
-        this.Pelota = Pelota;
-        this.Zanahoria = Zanahoria;
-        this.Boton = Boton;
-        this.Puntaje = Puntaje;
-        this.Mono = Mono;
-        this.Banana = Banana;
-        this.Tortuga = Tortuga;
-        this.Pizarra = Pizarra;
-        this.Pingu = Pingu;
-        this.Alien = Alien;
-        this.AlienMarron = AlienMarron;
-        this.Tuerca = Tuerca;
-        this.Sombra = Sombra;
-    }
-    return Actores;
-})();
-var Estudiante = (function () {
+;var Estudiante = (function () {
     function Estudiante() {
         this.habilidades = [];
         this.comportamientos = [];
@@ -13834,6 +13790,1053 @@ var Aceituna = (function (_super) {
     };
     return Aceituna;
 })(Actor);
+/// <reference path="actor.ts"/>
+var Bomba = (function (_super) {
+    __extends(Bomba, _super);
+    function Bomba(x, y) {
+        var imagen = pilas.imagenes.cargar_grilla("bomba.png", 2);
+        _super.call(this, imagen, x, y);
+        this.radio_de_colision = 25;
+        this.paso = 0;
+        this.aprender(pilas.habilidades.PuedeExplotar);
+    }
+    Bomba.prototype.actualizar = function () {
+        this.paso += 0.1;
+        this._imagen.definir_cuadro(parseInt(this.paso) % 2);
+    };
+    return Bomba;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Nave = (function (_super) {
+    __extends(Nave, _super);
+    function Nave(x, y) {
+        var imagen = pilas.imagenes.cargar_grilla("nave.png", 2);
+        _super.call(this, imagen, x, y);
+        this.paso = 0;
+        this.enemigos = [];
+        this.teclado_habilitado = false;
+        this.aprender(pilas.habilidades.PuedeExplotar);
+        this.aprender(pilas.habilidades.SeMantieneEnPantalla);
+    }
+    Nave.prototype.habilitar_teclado = function () {
+        if (this.teclado_habilitado === false) {
+            this.aprender(pilas.habilidades.MoverseConElTecladoConRotacion);
+            this.aprender(pilas.habilidades.Disparar);
+            this.teclado_habilitado = true;
+            return "Habilitando el teclado";
+        } else {
+            return "El teclado ya estaba habilitado.";
+        }
+    };
+
+    Nave.prototype.actualizar = function () {
+        this.paso += 0.1;
+        this._imagen.definir_cuadro(parseInt(this.paso) % 2);
+        var control = pilas.escena_actual().control;
+    };
+
+    Nave.prototype.disparar = function () {
+        var disparo = new pilas.actores.Proyectil(this.x, this.y, { rotacion: this.rotacion - 90 });
+        disparo.enemigos = this.enemigos;
+        return "Disparando ...";
+    };
+
+    Nave.prototype.avanzar = function (velocidad) {
+        var rotacion_en_radianes;
+        var dx;
+        var dy;
+
+        if (velocidad === undefined)
+            velocidad = 10;
+
+        var rotacion_en_radianes = pilas.utils.convertir_a_radianes(-this.rotacion + 90);
+
+        dx = Math.cos(rotacion_en_radianes) * velocidad;
+        dy = Math.sin(rotacion_en_radianes) * velocidad;
+
+        this.x += dx;
+        this.y += dy;
+    };
+
+    Nave.prototype.definir_enemigos = function (enemigos) {
+        this.enemigos = enemigos;
+        return "Definiendo enemigos.";
+    };
+    return Nave;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Explosion = (function (_super) {
+    __extends(Explosion, _super);
+    function Explosion(x, y) {
+        var imagen = pilas.imagenes.cargar_grilla("explosion.png", 7);
+        _super.call(this, imagen, x, y);
+        this.paso = 0;
+    }
+    Explosion.prototype.actualizar = function () {
+        this.paso += 0.1;
+
+        if (this.paso > 1) {
+            if (!this._imagen.avanzar())
+                this.eliminar();
+            this.paso = 0;
+        }
+    };
+    return Explosion;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Proyectil = (function (_super) {
+    __extends(Proyectil, _super);
+    function Proyectil(x, y, atributos) {
+        var imagen = pilas.imagenes.cargar_grilla("disparos/misil.png", 3);
+        _super.call(this, imagen, x, y, atributos);
+        this.hacer(pilas.comportamientos.AvanzarComoProyectil);
+        this.paso = 0;
+        this.enemigos = [];
+    }
+    Proyectil.prototype.actualizar = function () {
+        this.paso += 0.1;
+        this._imagen.definir_cuadro(parseInt(this.paso) % 2);
+
+        this.analizar_colisiones();
+    };
+
+    Proyectil.prototype.analizar_colisiones = function () {
+        for (var i = 0; i < this.enemigos.length; i++) {
+            var enemigo = this.enemigos[i];
+
+            if (enemigo.vivo && enemigo.colisiona_con_un_punto(this.x, this.y)) {
+                enemigo.eliminar();
+                this.eliminar();
+            }
+        }
+    };
+    return Proyectil;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Piedra = (function (_super) {
+    __extends(Piedra, _super);
+    function Piedra(x, y, tamano, dx, dy) {
+        this.dx = dx || 0;
+        this.dy = dy || 0;
+
+        var tamano = tamano || "grande";
+        var imagen = "piedra_" + tamano + ".png";
+
+        _super.call(this, imagen, x, y);
+
+        switch (tamano) {
+            case 'chica':
+                this.radio_de_colision = 10;
+                break;
+
+            case 'media':
+                this.radio_de_colision = 15;
+                break;
+
+            case 'grande':
+                this.radio_de_colision = 20;
+                break;
+
+            default:
+                throw "El tamaño " + tamano + "no está permitido. Use 'chica', 'media' o 'grande'.";
+                break;
+        }
+
+        this.rotacion = 0;
+        this.aprender(pilas.habilidades.SeMantieneEnPantalla);
+        this.aprender(pilas.habilidades.PuedeExplotar);
+    }
+    Piedra.prototype.actualizar = function () {
+        this.x += this.dx;
+        this.y += this.dy;
+        this.rotacion += 1;
+    };
+
+    Piedra.prototype.empujar = function (dx, dy) {
+        dx = dx || 0;
+        dy = dy || 0;
+
+        this.dx = dx / 10;
+        this.dy = dy / 10;
+        return "Empujando al actor";
+    };
+
+    Piedra.prototype.clonar = function (veces) {
+        veces = veces || 0;
+        veces = Math.min(veces, 5);
+
+        for (var i = 0; i < veces; i++) {
+            var dx = (Math.random() * 2) - 1;
+            var dy = (Math.random() * 2) - 1;
+            var tamano = this.obtener_tamano_al_azar();
+
+            var tmp = new Piedra(this.x, this.y, tamano, 0, 0);
+            tmp.empujar(dx, dy);
+
+            if (window['enemigos'] === undefined) {
+                window['enemigos'] = [this];
+            }
+
+            window['enemigos'].push(tmp);
+        }
+
+        return "Clonando el actor piedra.";
+    };
+
+    Piedra.prototype.obtener_tamano_al_azar = function () {
+        var valores = ['chica', 'media', 'grande'];
+        var max = 2;
+        var min = 0;
+        var indice = Math.floor((Math.random() * ((max + 1) - min)) + min);
+
+        return valores[indice];
+    };
+    return Piedra;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Eje = (function (_super) {
+    __extends(Eje, _super);
+    function Eje(x, y) {
+        var imagen = "ejes.png";
+        _super.call(this, imagen, x, y);
+    }
+    return Eje;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Maton = (function (_super) {
+    __extends(Maton, _super);
+    function Maton(x, y) {
+        var imagen = pilas.imagenes.cargar_grilla("rpg/maton.png", 3 * 4, 1);
+        _super.call(this, imagen, x, y);
+        this.paso = 0;
+        this.aprender(pilas.habilidades.PuedeExplotar);
+        this.cuadros = [
+            [1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2],
+            [4, 4, 4, 4, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5],
+            [7, 7, 7, 7, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8],
+            [10, 10, 10, 10, 9, 9, 9, 9, 10, 10, 10, 10, 11, 11, 11, 11]
+        ];
+        this.direccion = 0;
+        this.velocidad = 1;
+        window['maton'] = this;
+        this.animar = false;
+        this._imagen.definir_cuadro(7);
+        this.obstaculos = [];
+        this.teclado_habilitado = false;
+    }
+    Maton.prototype.actualizar = function () {
+        if (this.animar)
+            this.avanzar_animacion();
+    };
+
+    Maton.prototype.iniciar_animacion = function () {
+        this.animar = true;
+    };
+
+    Maton.prototype.detener_animacion = function () {
+        this.animar = false;
+        this.paso = 0;
+        this.avanzar_animacion();
+    };
+
+    Maton.prototype.avanzar_animacion = function () {
+        this.paso += 0.3;
+
+        if (this.paso >= this.cuadros[this.direccion].length) {
+            this.paso = 0;
+        }
+
+        var cuadro_a_mostrar = this.cuadros[this.direccion][parseInt(this.paso, 10)];
+
+        this._imagen.definir_cuadro(cuadro_a_mostrar);
+    };
+
+    Maton.prototype.mover = function (x, y) {
+        if (x < 0)
+            this.direccion = 3;
+
+        if (x > 0)
+            this.direccion = 1;
+
+        if (y > 0)
+            this.direccion = 0;
+
+        if (y < 0)
+            this.direccion = 2;
+
+        if (this.puede_moverse_a(this.x + x * this.velocidad, this.y))
+            this.x += x * this.velocidad;
+
+        if (this.puede_moverse_a(this.x, this.y + y * this.velocidad))
+            this.y += y * this.velocidad;
+
+        this.avanzar_animacion(); // TODO:
+        this.z = this.y;
+    };
+
+    Maton.prototype.puede_moverse_a = function (x, y) {
+        for (var i = 0; i < this.obstaculos.length; i++) {
+            if (this.obstaculos[i].colisiona_con_un_punto(x, y))
+                return false;
+        }
+
+        return true;
+    };
+
+    Maton.prototype.caminar_arriba = function (pasos) {
+        this.hacer(pilas.comportamientos.CaminaArriba, { pasos: pasos });
+        return "caminando " + pasos + " pasos";
+    };
+
+    Maton.prototype.caminar_abajo = function (pasos) {
+        this.hacer(pilas.comportamientos.CaminaAbajo, { pasos: pasos });
+        return "caminando " + pasos + " pasos";
+    };
+
+    Maton.prototype.caminar_izquierda = function (pasos) {
+        this.hacer(pilas.comportamientos.CaminaIzquierda, { pasos: pasos });
+        return "caminando " + pasos + " pasos";
+    };
+
+    Maton.prototype.caminar_derecha = function (pasos) {
+        this.hacer(pilas.comportamientos.CaminaDerecha, { pasos: pasos });
+        return "caminando " + pasos + " pasos";
+    };
+
+    Maton.prototype.saludar = function () {
+        this.decir("¡ Hola !");
+        return "saludando ...";
+    };
+
+    Maton.prototype.habilitar_teclado = function () {
+        if (this.teclado_habilitado === false) {
+            this.aprender(pilas.habilidades.MoverseConElTeclado);
+            this.teclado_habilitado = true;
+            return "Habilitando el teclado";
+        } else {
+            return "El teclado ya estaba habilitado.";
+        }
+    };
+
+    Maton.prototype.inspeccionar = function () {
+        console.log("inspeccionando ...");
+
+        return "Métodos del actor Maton: \n" + "\n" + "- saludar() \n" + "- caminar_arriba(pasos) \n" + "- caminar_abajo(pasos) \n" + "- caminar_izquierda(pasos) \n" + "- caminar_derecha(pasos) \n" + "- mover(x, y) \n" + "- habilitar_teclado() \n" + "";
+    };
+    return Maton;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Globo = (function (_super) {
+    __extends(Globo, _super);
+    function Globo(x, y, mensaje) {
+        console.log(x, y, mensaje);
+        _super.call(this, "globo.png", 0, 0);
+        this.mensaje = mensaje;
+        this.x = x;
+        this.y = y;
+        var mensaje = this.mensaje;
+
+        this.actor_texto = new pilas.actores.Texto(x, y, mensaje);
+        this.actor_texto.z = -1000;
+
+        pilas.mundo.agregar_tarea_una_vez(3, this.eliminar, {}, this);
+    }
+    Globo.prototype.eliminar = function () {
+        this.actor_texto.eliminar();
+        _super.prototype.eliminar.call(this);
+    };
+    return Globo;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Texto = (function (_super) {
+    __extends(Texto, _super);
+    function Texto(x, y, texto, color) {
+        var imagen = "invisible.png";
+        _super.call(this, imagen, x, y);
+        this.texto = texto || "Sin texto";
+        this.color = color || "black";
+        this.crear_texto();
+        this.transparencia = 100;
+    }
+    Texto.prototype.crear_texto = function () {
+        var s = new createjs.Text(this.texto, "12px Arial", this.color);
+        var pos = pilas.escena_actual().obtener_posicion_pantalla(this.x, this.y);
+        s.x = pos.x;
+        s.y = pos.y;
+        s.textBaseline = "bottom";
+        s.textAlign = "center";
+        pilas.escena_actual().stage.addChild(s);
+        this.sprite_texto = s;
+    };
+
+    Texto.prototype.eliminar_texto = function () {
+        pilas.escena_actual().stage.removeChild(this.sprite_texto);
+    };
+
+    Texto.prototype.eliminar = function () {
+        this.eliminar_texto();
+        _super.prototype.eliminar.call(this);
+    };
+
+    Object.defineProperty(Texto.prototype, "escala_x", {
+        //TODO: hacer que pueda utilizar los metodos propios de la clase padre Actor
+        get: function () {
+            return this.sprite_texto.scaleX;
+        },
+        set: function (valor) {
+            if (valor instanceof Array)
+                pilas.interpolar(this.sprite_texto, 'scaleX', valor, 1000);
+            else
+                this.sprite_texto.scaleX = valor;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    Object.defineProperty(Texto.prototype, "escala_y", {
+        get: function () {
+            return this.sprite_texto.scaleY;
+        },
+        set: function (valor) {
+            if (valor instanceof Array)
+                pilas.interpolar(this.sprite_texto, 'scaleY', valor, 1000);
+            else
+                this.sprite_texto.scaleY = valor;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    Object.defineProperty(Texto.prototype, "escala", {
+        get: function () {
+            return this.escala_x;
+        },
+        set: function (valor) {
+            if (valor instanceof Array) {
+                var nuevo_radio_de_colision = [];
+                for (var i = 0; i < valor.length; i++) {
+                    nuevo_radio_de_colision.push((this.radio_de_colision * valor[i]) / this.escala);
+                }
+                pilas.interpolar(this, 'radio_de_colision', nuevo_radio_de_colision, 1000);
+                this.radio_de_colision = nuevo_radio_de_colision[0];
+            } else {
+                this.radio_de_colision = (this.radio_de_colision * valor) / this.escala;
+            }
+
+            this.escala_x = valor;
+            this.escala_y = valor;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return Texto;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Bloque = (function (_super) {
+    __extends(Bloque, _super);
+    function Bloque(x, y, nombre_imagen) {
+        var imagen = nombre_imagen || "bloque.png";
+        _super.call(this, imagen, x, y);
+        this.z = y;
+    }
+    return Bloque;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Manzana = (function (_super) {
+    __extends(Manzana, _super);
+    function Manzana(x, y) {
+        var imagen = "manzana_chica.png";
+        _super.call(this, imagen, x, y);
+        this.radio_de_colision = 11;
+    }
+    return Manzana;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Cofre = (function (_super) {
+    __extends(Cofre, _super);
+    function Cofre(x, y) {
+        var imagen = pilas.imagenes.cargar_grilla("cofre.png", 4);
+        _super.call(this, imagen, x, y);
+        this.z = y;
+        this._imagen.definir_cuadro(0);
+        this.paso = 0;
+        this.esta_abierto = false;
+    }
+    Cofre.prototype.abrir = function () {
+        this.esta_abierto = true;
+    };
+
+    Cofre.prototype.actualizar = function () {
+        // TODO: temporal para el tutorial
+        if (this.esta_abierto) {
+            this.paso += 0.1;
+
+            if (this.paso > 3)
+                this.paso = 3;
+
+            this._imagen.definir_cuadro(parseInt(this.paso));
+        }
+    };
+    return Cofre;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Llave = (function (_super) {
+    __extends(Llave, _super);
+    function Llave(x, y) {
+        var imagen = "llave.png";
+        _super.call(this, imagen, x, y);
+        this.z = y;
+    }
+    return Llave;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Caja = (function (_super) {
+    __extends(Caja, _super);
+    function Caja(x, y) {
+        var imagen = "caja.png";
+        _super.call(this, imagen, x, y);
+        this.radio_de_colision = 25;
+
+        this.aprender(pilas.habilidades.RebotarComoCaja);
+    }
+    return Caja;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Cesto = (function (_super) {
+    __extends(Cesto, _super);
+    function Cesto(x, y) {
+        if (typeof x === "undefined") { x = 120; }
+        if (typeof y === "undefined") { y = 0; }
+        var ancho = 40;
+        var imagen = "cesto.png";
+        _super.call(this, imagen, x, y);
+        this.centro_x = ancho;
+        this.centro_y = ancho;
+        this.radio_de_colision = 20;
+
+        var fisica = pilas.escena_actual().fisica;
+
+        this.figura1 = fisica.crear_rectangulo(x - ancho, 0, y + 10, 30, { dinamico: false });
+        this.figura2 = fisica.crear_rectangulo(x + ancho - 15, y + 0, 20, 20, { dinamico: false });
+        this.figura3 = fisica.crear_rectangulo(x + ancho - 5, y + 20, 5, 40, { dinamico: false });
+    }
+    return Cesto;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Pelota = (function (_super) {
+    __extends(Pelota, _super);
+    function Pelota(x, y) {
+        var imagen = "pelota.png";
+        _super.call(this, imagen, x, y);
+        this.radio_de_colision = 25;
+
+        this.aprender(pilas.habilidades.RebotarComoPelota);
+    }
+    Pelota.prototype.empujar = function (dx, dy) {
+        this.figura.empujar(dx * 100, -dy * 100);
+        return "empujando hacia (" + dx + ", " + dy + ") ...";
+    };
+
+    Pelota.prototype.posicion = function (x, y) {
+        if (this.figura !== undefined) {
+            this.figura.definir_posicion(x, y);
+        } else {
+            this.x = x;
+            this.y = y;
+        }
+    };
+    return Pelota;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Zanahoria = (function (_super) {
+    __extends(Zanahoria, _super);
+    function Zanahoria(x, y) {
+        this.cuadro_normal = "zanahoria_normal.png";
+        this.cuadro_sonrie = "zanahoria_sonrie.png";
+        _super.call(this, this.cuadro_normal, x, y);
+        this.radio_de_colision = 25;
+    }
+    Zanahoria.prototype.normal = function () {
+        this.imagen = this.cuadro_normal;
+    };
+
+    Zanahoria.prototype.sonreir = function () {
+        this.imagen = this.cuadro_sonrie;
+    };
+
+    Zanahoria.prototype.saltar = function () {
+        this.sonreir();
+        this.hacer(pilas.comportamientos.Saltar, { cuando_termina: this.normal });
+    };
+
+    Zanahoria.prototype.decir = function () {
+        this.sonreir();
+        _super.prototype.decir.call(this, "hola");
+        pilas.mundo.agregar_tarea_una_vez(1, this.normal, {}, this);
+    };
+    return Zanahoria;
+})(Actor);
+var Boton = (function (_super) {
+    __extends(Boton, _super);
+    function Boton(x, y, ruta_normal, ruta_press, ruta_over) {
+        if (typeof ruta_normal === "undefined") { ruta_normal = 'boton/boton_normal.png'; }
+        if (typeof ruta_press === "undefined") { ruta_press = 'boton/boton_press.png'; }
+        if (typeof ruta_over === "undefined") { ruta_over = 'boton/boton_over.png'; }
+        this.ruta_normal = ruta_normal;
+        this.ruta_press = ruta_press;
+        this.ruta_over = ruta_over;
+
+        this.funciones_normal = [];
+        this.funciones_press = [];
+        this.funciones_over = [];
+
+        this.estado = true;
+
+        _super.call(this, ruta_normal, x, y);
+
+        pilas.escena_actual().click_de_mouse.conectar(this);
+        pilas.escena_actual().mueve_mouse.conectar(this);
+    }
+    Boton.prototype.recibir = function (evento, tipo) {
+        if (tipo == pilas.escena_actual().click_de_mouse) {
+            this.detectar_clic(evento);
+        }
+        if (tipo == pilas.escena_actual().mueve_mouse) {
+            this.detectar_movimiento(evento);
+        }
+    };
+
+    Boton.prototype.conectar_normal = function (funcion, args) {
+        if (typeof args === "undefined") { args = undefined; }
+        var temp = [funcion, args];
+        this.funciones_normal.push(temp);
+    };
+
+    Boton.prototype.conectar_presionado = function (funcion, args) {
+        if (typeof args === "undefined") { args = undefined; }
+        var temp = [funcion, args];
+        this.funciones_press.push(temp);
+    };
+
+    Boton.prototype.conectar_sobre = function (funcion, args) {
+        if (typeof args === "undefined") { args = undefined; }
+        var temp = [funcion, args];
+        this.funciones_over.push(temp);
+    };
+
+    Boton.prototype.desconectar_normal_todo = function () {
+        this.funciones_normal = [];
+    };
+
+    Boton.prototype.desconectar_presionado_todo = function () {
+        this.funciones_press = [];
+    };
+
+    Boton.prototype.desconectar_sobre_todo = function () {
+        this.funciones_over = [];
+    };
+
+    Boton.prototype.desconectar_normal = function (funcion, args) {
+        for (var i = 0; i < this.funciones_normal.length; i++) {
+            if (this.funciones_normal[i][0] == funcion) {
+                if (this.funciones_normal[i][1] == args) {
+                    this.funciones_normal.splice(i, 1);
+                }
+            }
+        }
+    };
+
+    Boton.prototype.desconectar_presionado = function (funcion, args) {
+        for (var i = 0; i < this.funciones_press.length; i++) {
+            if (this.funciones_press[i][0] == funcion) {
+                if (this.funciones_press[i][1] == args) {
+                    this.funciones_press.splice(i, 1);
+                }
+            }
+        }
+    };
+
+    Boton.prototype.desconectar_sobre = function (funcion, args) {
+        for (var i = 0; i < this.funciones_over.length; i++) {
+            if (this.funciones_over[i][0] == funcion) {
+                if (this.funciones_over[i][1] == args) {
+                    this.funciones_over.splice(i, 1);
+                }
+            }
+        }
+    };
+
+    Boton.prototype.ejecutar_funciones_normal = function () {
+        if (this.estado) {
+            for (var i = 0; i < this.funciones_normal.length; i++) {
+                if (this.funciones_normal[i][1] == undefined) {
+                    this.funciones_normal[i][0]();
+                } else {
+                    this.funciones_press[i][0](this.funciones_normal[i][1]);
+                }
+            }
+        }
+    };
+
+    Boton.prototype.ejecutar_funciones_press = function () {
+        if (this.estado) {
+            for (var i = 0; i < this.funciones_press.length; i++) {
+                if (this.funciones_press[i][1] == undefined) {
+                    this.funciones_press[i][0]();
+                } else {
+                    this.funciones_press[i][0](this.funciones_press[i][1]);
+                }
+            }
+        }
+    };
+
+    Boton.prototype.ejecutar_funciones_over = function () {
+        if (this.estado) {
+            for (var i = 0; i < this.funciones_over.length; i++) {
+                if (this.funciones_over[i][1] == undefined) {
+                    this.funciones_over[i][0]();
+                } else {
+                    this.funciones_over[i][0](this.funciones_over[i][1]);
+                }
+            }
+        }
+    };
+
+    Boton.prototype.activar = function () {
+        this.estado = true;
+    };
+
+    Boton.prototype.desactivar = function () {
+        this.estado = false;
+    };
+
+    Boton.prototype.pintar_normal = function () {
+        this.imagen = this.ruta_normal;
+    };
+
+    Boton.prototype.pintar_presionado = function () {
+        this.imagen = this.ruta_press;
+    };
+
+    Boton.prototype.pintar_sobre = function () {
+        this.imagen = this.ruta_over;
+    };
+
+    Boton.prototype.detectar_clic = function (click) {
+        if (this.colisiona_con_un_punto(click.x, click.y)) {
+            this.ejecutar_funciones_press();
+        }
+    };
+
+    Boton.prototype.detectar_movimiento = function (evento) {
+        if (this.colisiona_con_un_punto(evento.x, evento.y)) {
+            this.ejecutar_funciones_over();
+        } else {
+            this.ejecutar_funciones_normal();
+        }
+    };
+    return Boton;
+})(Actor);
+/// <reference path="actor.ts"/>
+/// <reference path="texto.ts"/>
+var Puntaje = (function (_super) {
+    __extends(Puntaje, _super);
+    function Puntaje(x, y, puntaje, color) {
+        this.valor = puntaje || 0;
+        _super.call(this, x, y, this.valor.toString(), color);
+    }
+    Puntaje.prototype.aumentar = function (aumento) {
+        this.valor += aumento;
+        this.texto = this.valor.toString();
+
+        //Conservar la escala y el radio de colisión
+        //TODO: es necesario mejorar el actor Texto
+        var escala = this.escala;
+        var radio_de_colision = this.radio_de_colision;
+
+        this.eliminar_texto();
+        this.crear_texto();
+        this.escala = escala;
+        this.radio_de_colision = radio_de_colision;
+    };
+
+    Puntaje.prototype.obtener = function () {
+        return this.valor;
+    };
+    return Puntaje;
+})(Texto);
+/// <reference path="actor.ts"/>
+var Mono = (function (_super) {
+    __extends(Mono, _super);
+    function Mono(x, y) {
+        this.image_normal = 'monkey_normal.png';
+        this.image_smile = 'monkey_smile.png';
+        this.image_shout = 'monkey_shout.png';
+
+        this.sound_smile = pilas.sonidos.cargar('smile.ogg');
+        this.sound_shout = pilas.sonidos.cargar('shout.ogg');
+        _super.call(this, this.image_normal, x, y);
+
+        this.radio_de_colision = 50;
+    }
+    Mono.prototype.sonreir = function () {
+        this.sound_smile.reproducir();
+        this.imagen = this.image_smile;
+        pilas.mundo.agregar_tarea_una_vez(1, this.normal, {}, this);
+    };
+
+    Mono.prototype.gritar = function () {
+        this.sound_shout.reproducir();
+        this.imagen = this.image_shout;
+        pilas.mundo.agregar_tarea_una_vez(1, this.normal, {}, this);
+    };
+
+    Mono.prototype.normal = function () {
+        this.imagen = this.image_normal;
+    };
+
+    Mono.prototype.decir = function (mensaje) {
+        this.sonreir;
+        _super.prototype.decir.call(this, mensaje);
+    };
+
+    Mono.prototype.saltar = function () {
+        this.sonreir();
+        this.hacer(pilas.comportamientos.Saltar);
+    };
+    return Mono;
+})(Actor);
+var Banana = (function (_super) {
+    __extends(Banana, _super);
+    function Banana(x, y) {
+        if (typeof x === "undefined") { x = 0; }
+        if (typeof y === "undefined") { y = 0; }
+        var imagen = pilas.imagenes.cargar_grilla('banana.png', 2);
+        _super.call(this, imagen, x, y);
+        this._imagen.definir_cuadro(0);
+    }
+    Banana.prototype.cerrar = function () {
+        this._imagen.definir_cuadro(0);
+    };
+
+    Banana.prototype.abrir = function () {
+        this._imagen.definir_cuadro(1);
+    };
+    return Banana;
+})(Actor);
+var Tortuga = (function (_super) {
+    __extends(Tortuga, _super);
+    function Tortuga(x, y, dibuja) {
+        if (typeof x === "undefined") { x = 0; }
+        if (typeof y === "undefined") { y = 0; }
+        if (typeof dibuja === "undefined") { dibuja = true; }
+        var imagen = 'tortuga.png';
+        _super.call(this, imagen, x, y);
+
+        this.pizarra = new pilas.actores.Pizarra();
+
+        if (dibuja)
+            this.bajalapiz();
+        else
+            this.subelapiz();
+
+        this.color = pilas.colores.negro;
+    }
+    Tortuga.prototype.avanzar = function (pasos) {
+        this.hacer_luego(pilas.comportamientos.Avanzar, { pasos: pasos, velocidad: 2 });
+    };
+
+    Tortuga.prototype.girarderecha = function (delta) {
+        this.hacer_luego(pilas.comportamientos.Girar, { angulo: delta, tiempo: .5 });
+    };
+
+    Tortuga.prototype.girarizquierda = function (delta) {
+        this.hacer_luego(pilas.comportamientos.Girar, { angulo: -delta, tiempo: .5 });
+    };
+
+    Tortuga.prototype.actualizar = function () {
+        if (this.x != this.anterior_x || this.y != this.anterior_y) {
+            if (this.lapiz_bajo) {
+                this.pizarra.linea(this.anterior_x, this.anterior_y, this.x, this.y, this.color, 4);
+            }
+
+            this.anterior_x = this.x;
+            this.anterior_y = this.y;
+        }
+    };
+
+    Tortuga.prototype.bajalapiz = function () {
+        this.lapiz_bajo = true;
+    };
+
+    Tortuga.prototype.subelapiz = function () {
+        this.lapiz_bajo = false;
+    };
+
+    Tortuga.prototype.crear_poligono = function (lados, escala, sentido) {
+        if (typeof lados === "undefined") { lados = 3; }
+        if (typeof escala === "undefined") { escala = 100; }
+        if (typeof sentido === "undefined") { sentido = -1; }
+        var rotacion = 360 / lados;
+
+        for (var i = 0; i < lados; i++) {
+            this.avanzar(escala);
+
+            if (sentido == 1)
+                this.girarderecha(rotacion);
+            else
+                this.girarizquierda(rotacion);
+        }
+    };
+
+    Tortuga.prototype.crear_circulo = function (radio, sentido) {
+        if (typeof sentido === "undefined") { sentido = -1; }
+        for (var i = 0; i < 36; i++) {
+            this.avanzar(radio);
+            if (sentido == 1)
+                this.girarderecha(10);
+            else
+                this.girarizquierda(10);
+        }
+    };
+
+
+    Object.defineProperty(Tortuga.prototype, "color", {
+        get: function () {
+            return this._color;
+        },
+        set: function (_color) {
+            this._color = _color;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return Tortuga;
+})(Actor);
+var Pizarra = (function (_super) {
+    __extends(Pizarra, _super);
+    function Pizarra(x, y) {
+        if (typeof x === "undefined") { x = 0; }
+        if (typeof y === "undefined") { y = 0; }
+        var imagen = 'invisible.png';
+        _super.call(this, imagen, x, y);
+
+        this._ancho = pilas.opciones.ancho;
+        this._alto = pilas.opciones.alto;
+
+        //crear lienzo
+        this.container = new createjs.Container();
+        this.lienzo = new createjs.Shape(this.x, this.y); // TODO: Permitir que acepte ancho y alto de la pizarra
+        this.container.addChild(this.lienzo);
+        pilas.escena_actual().stage.addChild(this.container);
+    }
+    Pizarra.prototype.dibujar_punto = function (x, y, color) {
+        if (typeof color === "undefined") { color = pilas.colores.negro; }
+        var pos = pilas.escena_actual().obtener_posicion_pantalla(x, y);
+
+        this.lienzo.graphics.beginStroke(color);
+        this.lienzo.graphics.beginFill(color);
+        this.lienzo.graphics.drawCircle(pos.x, pos.y, 3).endStroke();
+    };
+
+    Pizarra.prototype.linea = function (x, y, x2, y2, color, grosor) {
+        if (typeof color === "undefined") { color = pilas.colores.negro; }
+        if (typeof grosor === "undefined") { grosor = 1; }
+        var pos = pilas.escena_actual().obtener_posicion_pantalla(x, y);
+        var pos2 = pilas.escena_actual().obtener_posicion_pantalla(x2, y2);
+
+        this.lienzo.graphics.setStrokeStyle(grosor);
+        this.lienzo.graphics.beginStroke(color);
+        this.lienzo.graphics.moveTo(pos.x, pos.y);
+        this.lienzo.graphics.lineTo(pos2.x, pos2.y).endStroke();
+    };
+
+    Pizarra.prototype.rectangulo = function (x, y, ancho, alto, color, relleno, grosor) {
+        if (typeof color === "undefined") { color = pilas.colores.negro; }
+        if (typeof relleno === "undefined") { relleno = false; }
+        if (typeof grosor === "undefined") { grosor = 1; }
+        if (!relleno)
+            var color_relleno = createjs.Graphics.getRGB(255, 255, 255, 0);
+        else
+            var color_relleno = relleno;
+
+        var pos = pilas.escena_actual().obtener_posicion_pantalla(x, y);
+
+        this.lienzo.graphics.setStrokeStyle(grosor);
+        this.lienzo.graphics.beginStroke(color);
+        this.lienzo.graphics.beginFill(color_relleno);
+        this.lienzo.graphics.drawRect(pos.x, pos.y, ancho, alto).endStroke();
+    };
+
+    Pizarra.prototype.poligono = function (puntos, color, grosor) {
+        if (typeof color === "undefined") { color = pilas.colores.negro; }
+        if (typeof grosor === "undefined") { grosor = 1; }
+        for (var i = 1; i < puntos.length; i++) {
+            this.linea(puntos[i - 1][0], puntos[i - 1][1], puntos[i][0], puntos[i][1], color = color, grosor = grosor);
+        }
+    };
+
+    Pizarra.prototype.limpiar = function () {
+        this.lienzo.graphics.clear();
+    };
+
+    Pizarra.prototype.pintar = function (color) {
+        this.rectangulo(this.x - 320, this.y + 240, this._ancho, this._alto, color, color, 1);
+    };
+    return Pizarra;
+})(Actor);
+var Pingu = (function (_super) {
+    __extends(Pingu, _super);
+    function Pingu(x, y) {
+        if (typeof x === "undefined") { x = 0; }
+        if (typeof y === "undefined") { y = 0; }
+        var imagen = pilas.imagenes.cargar_grilla('pingu.png', 10);
+        _super.call(this, imagen, x, y);
+        this._imagen.definir_cuadro(4);
+        this.paso = 0;
+        this.centro_y = 50;
+        this.cuadros_correr = [5, 6, 7, 8, 9];
+        this.saltando = false;
+    }
+    Pingu.prototype.actualizar = function () {
+        if (!this.saltando) {
+            if (pilas.escena_actual().control.derecha) {
+                this.hacer(pilas.comportamientos.CaminaDerecha);
+            } else if (pilas.escena_actual().control.izquierda) {
+                this.hacer(pilas.comportamientos.CaminaIzquierda);
+            }
+
+            if (pilas.escena_actual().control.arriba) {
+                this.saltando = true;
+                this.hacer(pilas.comportamientos.Saltando, { cuando_termina: this.puede_saltar });
+                this._imagen.definir_cuadro(0);
+            }
+        }
+    };
+
+    Pingu.prototype.puede_saltar = function () {
+        this.saltando = false;
+        this.detener_animacion();
+    };
+
+    Pingu.prototype.mover = function (x, y) {
+        this.x += x;
+        this.animacion_correr();
+    };
+
+    Pingu.prototype.animacion_correr = function () {
+        this.paso += .3;
+        if (this.paso > this.cuadros_correr.length) {
+            this.paso = 0;
+        }
+        this._imagen.definir_cuadro(this.cuadros_correr[parseInt(this.paso)]);
+    };
+
+    Pingu.prototype.detener_animacion = function () {
+        this._imagen.definir_cuadro(4);
+    };
+    return Pingu;
+})(Actor);
 // <reference path="comportamientos.ts />
 var Alien = (function (_super) {
     __extends(Alien, _super);
@@ -14151,1033 +15154,6 @@ var AlienMarron = (function (_super) {
     };
     return AlienMarron;
 })(Actor);
-var Banana = (function (_super) {
-    __extends(Banana, _super);
-    function Banana(x, y) {
-        if (typeof x === "undefined") { x = 0; }
-        if (typeof y === "undefined") { y = 0; }
-        var imagen = pilas.imagenes.cargar_grilla('banana.png', 2);
-        _super.call(this, imagen, x, y);
-        this._imagen.definir_cuadro(0);
-    }
-    Banana.prototype.cerrar = function () {
-        this._imagen.definir_cuadro(0);
-    };
-
-    Banana.prototype.abrir = function () {
-        this._imagen.definir_cuadro(1);
-    };
-    return Banana;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Bloque = (function (_super) {
-    __extends(Bloque, _super);
-    function Bloque(x, y, nombre_imagen) {
-        var imagen = nombre_imagen || "bloque.png";
-        _super.call(this, imagen, x, y);
-        this.z = y;
-    }
-    return Bloque;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Bomba = (function (_super) {
-    __extends(Bomba, _super);
-    function Bomba(x, y) {
-        var imagen = pilas.imagenes.cargar_grilla("bomba.png", 2);
-        _super.call(this, imagen, x, y);
-        this.radio_de_colision = 25;
-        this.paso = 0;
-        this.aprender(pilas.habilidades.PuedeExplotar);
-    }
-    Bomba.prototype.actualizar = function () {
-        this.paso += 0.1;
-        this._imagen.definir_cuadro(parseInt(this.paso) % 2);
-    };
-    return Bomba;
-})(Actor);
-var Boton = (function (_super) {
-    __extends(Boton, _super);
-    function Boton(x, y, ruta_normal, ruta_press, ruta_over) {
-        if (typeof ruta_normal === "undefined") { ruta_normal = 'boton/boton_normal.png'; }
-        if (typeof ruta_press === "undefined") { ruta_press = 'boton/boton_press.png'; }
-        if (typeof ruta_over === "undefined") { ruta_over = 'boton/boton_over.png'; }
-        this.ruta_normal = ruta_normal;
-        this.ruta_press = ruta_press;
-        this.ruta_over = ruta_over;
-
-        this.funciones_normal = [];
-        this.funciones_press = [];
-        this.funciones_over = [];
-
-        this.estado = true;
-
-        _super.call(this, ruta_normal, x, y);
-
-        pilas.escena_actual().click_de_mouse.conectar(this);
-        pilas.escena_actual().mueve_mouse.conectar(this);
-    }
-    Boton.prototype.recibir = function (evento, tipo) {
-        if (tipo == pilas.escena_actual().click_de_mouse) {
-            this.detectar_clic(evento);
-        }
-        if (tipo == pilas.escena_actual().mueve_mouse) {
-            this.detectar_movimiento(evento);
-        }
-    };
-
-    Boton.prototype.conectar_normal = function (funcion, args) {
-        if (typeof args === "undefined") { args = undefined; }
-        var temp = [funcion, args];
-        this.funciones_normal.push(temp);
-    };
-
-    Boton.prototype.conectar_presionado = function (funcion, args) {
-        if (typeof args === "undefined") { args = undefined; }
-        var temp = [funcion, args];
-        this.funciones_press.push(temp);
-    };
-
-    Boton.prototype.conectar_sobre = function (funcion, args) {
-        if (typeof args === "undefined") { args = undefined; }
-        var temp = [funcion, args];
-        this.funciones_over.push(temp);
-    };
-
-    Boton.prototype.desconectar_normal_todo = function () {
-        this.funciones_normal = [];
-    };
-
-    Boton.prototype.desconectar_presionado_todo = function () {
-        this.funciones_press = [];
-    };
-
-    Boton.prototype.desconectar_sobre_todo = function () {
-        this.funciones_over = [];
-    };
-
-    Boton.prototype.desconectar_normal = function (funcion, args) {
-        for (var i = 0; i < this.funciones_normal.length; i++) {
-            if (this.funciones_normal[i][0] == funcion) {
-                if (this.funciones_normal[i][1] == args) {
-                    this.funciones_normal.splice(i, 1);
-                }
-            }
-        }
-    };
-
-    Boton.prototype.desconectar_presionado = function (funcion, args) {
-        for (var i = 0; i < this.funciones_press.length; i++) {
-            if (this.funciones_press[i][0] == funcion) {
-                if (this.funciones_press[i][1] == args) {
-                    this.funciones_press.splice(i, 1);
-                }
-            }
-        }
-    };
-
-    Boton.prototype.desconectar_sobre = function (funcion, args) {
-        for (var i = 0; i < this.funciones_over.length; i++) {
-            if (this.funciones_over[i][0] == funcion) {
-                if (this.funciones_over[i][1] == args) {
-                    this.funciones_over.splice(i, 1);
-                }
-            }
-        }
-    };
-
-    Boton.prototype.ejecutar_funciones_normal = function () {
-        if (this.estado) {
-            for (var i = 0; i < this.funciones_normal.length; i++) {
-                if (this.funciones_normal[i][1] == undefined) {
-                    this.funciones_normal[i][0]();
-                } else {
-                    this.funciones_press[i][0](this.funciones_normal[i][1]);
-                }
-            }
-        }
-    };
-
-    Boton.prototype.ejecutar_funciones_press = function () {
-        if (this.estado) {
-            for (var i = 0; i < this.funciones_press.length; i++) {
-                if (this.funciones_press[i][1] == undefined) {
-                    this.funciones_press[i][0]();
-                } else {
-                    this.funciones_press[i][0](this.funciones_press[i][1]);
-                }
-            }
-        }
-    };
-
-    Boton.prototype.ejecutar_funciones_over = function () {
-        if (this.estado) {
-            for (var i = 0; i < this.funciones_over.length; i++) {
-                if (this.funciones_over[i][1] == undefined) {
-                    this.funciones_over[i][0]();
-                } else {
-                    this.funciones_over[i][0](this.funciones_over[i][1]);
-                }
-            }
-        }
-    };
-
-    Boton.prototype.activar = function () {
-        this.estado = true;
-    };
-
-    Boton.prototype.desactivar = function () {
-        this.estado = false;
-    };
-
-    Boton.prototype.pintar_normal = function () {
-        this.imagen = this.ruta_normal;
-    };
-
-    Boton.prototype.pintar_presionado = function () {
-        this.imagen = this.ruta_press;
-    };
-
-    Boton.prototype.pintar_sobre = function () {
-        this.imagen = this.ruta_over;
-    };
-
-    Boton.prototype.detectar_clic = function (click) {
-        if (this.colisiona_con_un_punto(click.x, click.y)) {
-            this.ejecutar_funciones_press();
-        }
-    };
-
-    Boton.prototype.detectar_movimiento = function (evento) {
-        if (this.colisiona_con_un_punto(evento.x, evento.y)) {
-            this.ejecutar_funciones_over();
-        } else {
-            this.ejecutar_funciones_normal();
-        }
-    };
-    return Boton;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Caja = (function (_super) {
-    __extends(Caja, _super);
-    function Caja(x, y) {
-        var imagen = "caja.png";
-        _super.call(this, imagen, x, y);
-        this.radio_de_colision = 25;
-
-        this.aprender(pilas.habilidades.RebotarComoCaja);
-    }
-    return Caja;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Cesto = (function (_super) {
-    __extends(Cesto, _super);
-    function Cesto(x, y) {
-        if (typeof x === "undefined") { x = 120; }
-        if (typeof y === "undefined") { y = 0; }
-        var ancho = 40;
-        var imagen = "cesto.png";
-        _super.call(this, imagen, x, y);
-        this.centro_x = ancho;
-        this.centro_y = ancho;
-        this.radio_de_colision = 20;
-
-        var fisica = pilas.escena_actual().fisica;
-
-        this.figura1 = fisica.crear_rectangulo(x - ancho, 0, y + 10, 30, { dinamico: false });
-        this.figura2 = fisica.crear_rectangulo(x + ancho - 15, y + 0, 20, 20, { dinamico: false });
-        this.figura3 = fisica.crear_rectangulo(x + ancho - 5, y + 20, 5, 40, { dinamico: false });
-    }
-    return Cesto;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Cofre = (function (_super) {
-    __extends(Cofre, _super);
-    function Cofre(x, y) {
-        var imagen = pilas.imagenes.cargar_grilla("cofre.png", 4);
-        _super.call(this, imagen, x, y);
-        this.z = y;
-        this._imagen.definir_cuadro(0);
-        this.paso = 0;
-        this.esta_abierto = false;
-    }
-    Cofre.prototype.abrir = function () {
-        this.esta_abierto = true;
-    };
-
-    Cofre.prototype.actualizar = function () {
-        // TODO: temporal para el tutorial
-        if (this.esta_abierto) {
-            this.paso += 0.1;
-
-            if (this.paso > 3)
-                this.paso = 3;
-
-            this._imagen.definir_cuadro(parseInt(this.paso));
-        }
-    };
-    return Cofre;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Eje = (function (_super) {
-    __extends(Eje, _super);
-    function Eje(x, y) {
-        var imagen = "ejes.png";
-        _super.call(this, imagen, x, y);
-    }
-    return Eje;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Explosion = (function (_super) {
-    __extends(Explosion, _super);
-    function Explosion(x, y) {
-        var imagen = pilas.imagenes.cargar_grilla("explosion.png", 7);
-        _super.call(this, imagen, x, y);
-        this.paso = 0;
-    }
-    Explosion.prototype.actualizar = function () {
-        this.paso += 0.1;
-
-        if (this.paso > 1) {
-            if (!this._imagen.avanzar())
-                this.eliminar();
-            this.paso = 0;
-        }
-    };
-    return Explosion;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Globo = (function (_super) {
-    __extends(Globo, _super);
-    function Globo(x, y, mensaje) {
-        console.log(x, y, mensaje);
-        _super.call(this, "globo.png", 0, 0);
-        this.mensaje = mensaje;
-        this.x = x;
-        this.y = y;
-        var mensaje = this.mensaje;
-
-        this.actor_texto = new pilas.actores.Texto(x, y, mensaje);
-        this.actor_texto.z = -1000;
-
-        pilas.mundo.agregar_tarea_una_vez(3, this.eliminar, {}, this);
-    }
-    Globo.prototype.eliminar = function () {
-        this.actor_texto.eliminar();
-        _super.prototype.eliminar.call(this);
-    };
-    return Globo;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Llave = (function (_super) {
-    __extends(Llave, _super);
-    function Llave(x, y) {
-        var imagen = "llave.png";
-        _super.call(this, imagen, x, y);
-        this.z = y;
-    }
-    return Llave;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Manzana = (function (_super) {
-    __extends(Manzana, _super);
-    function Manzana(x, y) {
-        var imagen = "manzana_chica.png";
-        _super.call(this, imagen, x, y);
-        this.radio_de_colision = 11;
-    }
-    return Manzana;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Maton = (function (_super) {
-    __extends(Maton, _super);
-    function Maton(x, y) {
-        var imagen = pilas.imagenes.cargar_grilla("rpg/maton.png", 3 * 4, 1);
-        _super.call(this, imagen, x, y);
-        this.paso = 0;
-        this.aprender(pilas.habilidades.PuedeExplotar);
-        this.cuadros = [
-            [1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2],
-            [4, 4, 4, 4, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5],
-            [7, 7, 7, 7, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8],
-            [10, 10, 10, 10, 9, 9, 9, 9, 10, 10, 10, 10, 11, 11, 11, 11]
-        ];
-        this.direccion = 0;
-        this.velocidad = 1;
-        window['maton'] = this;
-        this.animar = false;
-        this._imagen.definir_cuadro(7);
-        this.obstaculos = [];
-        this.teclado_habilitado = false;
-    }
-    Maton.prototype.actualizar = function () {
-        if (this.animar)
-            this.avanzar_animacion();
-    };
-
-    Maton.prototype.iniciar_animacion = function () {
-        this.animar = true;
-    };
-
-    Maton.prototype.detener_animacion = function () {
-        this.animar = false;
-        this.paso = 0;
-        this.avanzar_animacion();
-    };
-
-    Maton.prototype.avanzar_animacion = function () {
-        this.paso += 0.3;
-
-        if (this.paso >= this.cuadros[this.direccion].length) {
-            this.paso = 0;
-        }
-
-        var cuadro_a_mostrar = this.cuadros[this.direccion][parseInt(this.paso, 10)];
-
-        this._imagen.definir_cuadro(cuadro_a_mostrar);
-    };
-
-    Maton.prototype.mover = function (x, y) {
-        if (x < 0)
-            this.direccion = 3;
-
-        if (x > 0)
-            this.direccion = 1;
-
-        if (y > 0)
-            this.direccion = 0;
-
-        if (y < 0)
-            this.direccion = 2;
-
-        if (this.puede_moverse_a(this.x + x * this.velocidad, this.y))
-            this.x += x * this.velocidad;
-
-        if (this.puede_moverse_a(this.x, this.y + y * this.velocidad))
-            this.y += y * this.velocidad;
-
-        this.avanzar_animacion(); // TODO:
-        this.z = this.y;
-    };
-
-    Maton.prototype.puede_moverse_a = function (x, y) {
-        for (var i = 0; i < this.obstaculos.length; i++) {
-            if (this.obstaculos[i].colisiona_con_un_punto(x, y))
-                return false;
-        }
-
-        return true;
-    };
-
-    Maton.prototype.caminar_arriba = function (pasos) {
-        this.hacer(pilas.comportamientos.CaminaArriba, { pasos: pasos });
-        return "caminando " + pasos + " pasos";
-    };
-
-    Maton.prototype.caminar_abajo = function (pasos) {
-        this.hacer(pilas.comportamientos.CaminaAbajo, { pasos: pasos });
-        return "caminando " + pasos + " pasos";
-    };
-
-    Maton.prototype.caminar_izquierda = function (pasos) {
-        this.hacer(pilas.comportamientos.CaminaIzquierda, { pasos: pasos });
-        return "caminando " + pasos + " pasos";
-    };
-
-    Maton.prototype.caminar_derecha = function (pasos) {
-        this.hacer(pilas.comportamientos.CaminaDerecha, { pasos: pasos });
-        return "caminando " + pasos + " pasos";
-    };
-
-    Maton.prototype.saludar = function () {
-        this.decir("¡ Hola !");
-        return "saludando ...";
-    };
-
-    Maton.prototype.habilitar_teclado = function () {
-        if (this.teclado_habilitado === false) {
-            this.aprender(pilas.habilidades.MoverseConElTeclado);
-            this.teclado_habilitado = true;
-            return "Habilitando el teclado";
-        } else {
-            return "El teclado ya estaba habilitado.";
-        }
-    };
-
-    Maton.prototype.inspeccionar = function () {
-        console.log("inspeccionando ...");
-
-        return "Métodos del actor Maton: \n" + "\n" + "- saludar() \n" + "- caminar_arriba(pasos) \n" + "- caminar_abajo(pasos) \n" + "- caminar_izquierda(pasos) \n" + "- caminar_derecha(pasos) \n" + "- mover(x, y) \n" + "- habilitar_teclado() \n" + "";
-    };
-    return Maton;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Mono = (function (_super) {
-    __extends(Mono, _super);
-    function Mono(x, y) {
-        this.image_normal = 'monkey_normal.png';
-        this.image_smile = 'monkey_smile.png';
-        this.image_shout = 'monkey_shout.png';
-
-        this.sound_smile = pilas.sonidos.cargar('smile.ogg');
-        this.sound_shout = pilas.sonidos.cargar('shout.ogg');
-        _super.call(this, this.image_normal, x, y);
-
-        this.radio_de_colision = 50;
-    }
-    Mono.prototype.sonreir = function () {
-        this.sound_smile.reproducir();
-        this.imagen = this.image_smile;
-        pilas.mundo.agregar_tarea_una_vez(1, this.normal, {}, this);
-    };
-
-    Mono.prototype.gritar = function () {
-        this.sound_shout.reproducir();
-        this.imagen = this.image_shout;
-        pilas.mundo.agregar_tarea_una_vez(1, this.normal, {}, this);
-    };
-
-    Mono.prototype.normal = function () {
-        this.imagen = this.image_normal;
-    };
-
-    Mono.prototype.decir = function (mensaje) {
-        this.sonreir;
-        _super.prototype.decir.call(this, mensaje);
-    };
-
-    Mono.prototype.saltar = function () {
-        this.sonreir();
-        this.hacer(pilas.comportamientos.Saltar);
-    };
-    return Mono;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Nave = (function (_super) {
-    __extends(Nave, _super);
-    function Nave(x, y) {
-        var imagen = pilas.imagenes.cargar_grilla("nave.png", 2);
-        _super.call(this, imagen, x, y);
-        this.paso = 0;
-        this.enemigos = [];
-        this.teclado_habilitado = false;
-        this.aprender(pilas.habilidades.PuedeExplotar);
-        this.aprender(pilas.habilidades.SeMantieneEnPantalla);
-    }
-    Nave.prototype.habilitar_teclado = function () {
-        if (this.teclado_habilitado === false) {
-            this.aprender(pilas.habilidades.MoverseConElTecladoConRotacion);
-            this.aprender(pilas.habilidades.Disparar);
-            this.teclado_habilitado = true;
-            return "Habilitando el teclado";
-        } else {
-            return "El teclado ya estaba habilitado.";
-        }
-    };
-
-    Nave.prototype.actualizar = function () {
-        this.paso += 0.1;
-        this._imagen.definir_cuadro(parseInt(this.paso) % 2);
-        var control = pilas.escena_actual().control;
-    };
-
-    Nave.prototype.disparar = function () {
-        var disparo = new pilas.actores.Proyectil(this.x, this.y, { rotacion: this.rotacion - 90 });
-        disparo.enemigos = this.enemigos;
-        return "Disparando ...";
-    };
-
-    Nave.prototype.avanzar = function (velocidad) {
-        var rotacion_en_radianes;
-        var dx;
-        var dy;
-
-        if (velocidad === undefined)
-            velocidad = 10;
-
-        var rotacion_en_radianes = pilas.utils.convertir_a_radianes(-this.rotacion + 90);
-
-        dx = Math.cos(rotacion_en_radianes) * velocidad;
-        dy = Math.sin(rotacion_en_radianes) * velocidad;
-
-        this.x += dx;
-        this.y += dy;
-    };
-
-    Nave.prototype.definir_enemigos = function (enemigos) {
-        this.enemigos = enemigos;
-        return "Definiendo enemigos.";
-    };
-    return Nave;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Pelota = (function (_super) {
-    __extends(Pelota, _super);
-    function Pelota(x, y) {
-        var imagen = "pelota.png";
-        _super.call(this, imagen, x, y);
-        this.radio_de_colision = 25;
-
-        this.aprender(pilas.habilidades.RebotarComoPelota);
-    }
-    Pelota.prototype.empujar = function (dx, dy) {
-        this.figura.empujar(dx * 100, -dy * 100);
-        return "empujando hacia (" + dx + ", " + dy + ") ...";
-    };
-
-    Pelota.prototype.posicion = function (x, y) {
-        if (this.figura !== undefined) {
-            this.figura.definir_posicion(x, y);
-        } else {
-            this.x = x;
-            this.y = y;
-        }
-    };
-    return Pelota;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Piedra = (function (_super) {
-    __extends(Piedra, _super);
-    function Piedra(x, y, tamano, dx, dy) {
-        this.dx = dx || 0;
-        this.dy = dy || 0;
-
-        var tamano = tamano || "grande";
-        var imagen = "piedra_" + tamano + ".png";
-
-        _super.call(this, imagen, x, y);
-
-        switch (tamano) {
-            case 'chica':
-                this.radio_de_colision = 10;
-                break;
-
-            case 'media':
-                this.radio_de_colision = 15;
-                break;
-
-            case 'grande':
-                this.radio_de_colision = 20;
-                break;
-
-            default:
-                throw "El tamaño " + tamano + "no está permitido. Use 'chica', 'media' o 'grande'.";
-                break;
-        }
-
-        this.rotacion = 0;
-        this.aprender(pilas.habilidades.SeMantieneEnPantalla);
-        this.aprender(pilas.habilidades.PuedeExplotar);
-    }
-    Piedra.prototype.actualizar = function () {
-        this.x += this.dx;
-        this.y += this.dy;
-        this.rotacion += 1;
-    };
-
-    Piedra.prototype.empujar = function (dx, dy) {
-        dx = dx || 0;
-        dy = dy || 0;
-
-        this.dx = dx / 10;
-        this.dy = dy / 10;
-        return "Empujando al actor";
-    };
-
-    Piedra.prototype.clonar = function (veces) {
-        veces = veces || 0;
-        veces = Math.min(veces, 5);
-
-        for (var i = 0; i < veces; i++) {
-            var dx = (Math.random() * 2) - 1;
-            var dy = (Math.random() * 2) - 1;
-            var tamano = this.obtener_tamano_al_azar();
-
-            var tmp = new Piedra(this.x, this.y, tamano, 0, 0);
-            tmp.empujar(dx, dy);
-
-            if (window['enemigos'] === undefined) {
-                window['enemigos'] = [this];
-            }
-
-            window['enemigos'].push(tmp);
-        }
-
-        return "Clonando el actor piedra.";
-    };
-
-    Piedra.prototype.obtener_tamano_al_azar = function () {
-        var valores = ['chica', 'media', 'grande'];
-        var max = 2;
-        var min = 0;
-        var indice = Math.floor((Math.random() * ((max + 1) - min)) + min);
-
-        return valores[indice];
-    };
-    return Piedra;
-})(Actor);
-var Pingu = (function (_super) {
-    __extends(Pingu, _super);
-    function Pingu(x, y) {
-        if (typeof x === "undefined") { x = 0; }
-        if (typeof y === "undefined") { y = 0; }
-        var imagen = pilas.imagenes.cargar_grilla('pingu.png', 10);
-        _super.call(this, imagen, x, y);
-        this._imagen.definir_cuadro(4);
-        this.paso = 0;
-        this.centro_y = 50;
-        this.cuadros_correr = [5, 6, 7, 8, 9];
-        this.saltando = false;
-    }
-    Pingu.prototype.actualizar = function () {
-        if (!this.saltando) {
-            if (pilas.escena_actual().control.derecha) {
-                this.hacer(pilas.comportamientos.CaminaDerecha);
-            } else if (pilas.escena_actual().control.izquierda) {
-                this.hacer(pilas.comportamientos.CaminaIzquierda);
-            }
-
-            if (pilas.escena_actual().control.arriba) {
-                this.saltando = true;
-                this.hacer(pilas.comportamientos.Saltando, { cuando_termina: this.puede_saltar });
-                this._imagen.definir_cuadro(0);
-            }
-        }
-    };
-
-    Pingu.prototype.puede_saltar = function () {
-        this.saltando = false;
-        this.detener_animacion();
-    };
-
-    Pingu.prototype.mover = function (x, y) {
-        this.x += x;
-        this.animacion_correr();
-    };
-
-    Pingu.prototype.animacion_correr = function () {
-        this.paso += .3;
-        if (this.paso > this.cuadros_correr.length) {
-            this.paso = 0;
-        }
-        this._imagen.definir_cuadro(this.cuadros_correr[parseInt(this.paso)]);
-    };
-
-    Pingu.prototype.detener_animacion = function () {
-        this._imagen.definir_cuadro(4);
-    };
-    return Pingu;
-})(Actor);
-var Pizarra = (function (_super) {
-    __extends(Pizarra, _super);
-    function Pizarra(x, y) {
-        if (typeof x === "undefined") { x = 0; }
-        if (typeof y === "undefined") { y = 0; }
-        var imagen = 'invisible.png';
-        _super.call(this, imagen, x, y);
-
-        this._ancho = pilas.opciones.ancho;
-        this._alto = pilas.opciones.alto;
-
-        //crear lienzo
-        this.container = new createjs.Container();
-        this.lienzo = new createjs.Shape(this.x, this.y); // TODO: Permitir que acepte ancho y alto de la pizarra
-        this.container.addChild(this.lienzo);
-        pilas.escena_actual().stage.addChild(this.container);
-    }
-    Pizarra.prototype.dibujar_punto = function (x, y, color) {
-        if (typeof color === "undefined") { color = pilas.colores.negro; }
-        var pos = pilas.escena_actual().obtener_posicion_pantalla(x, y);
-
-        this.lienzo.graphics.beginStroke(color);
-        this.lienzo.graphics.beginFill(color);
-        this.lienzo.graphics.drawCircle(pos.x, pos.y, 3).endStroke();
-    };
-
-    Pizarra.prototype.linea = function (x, y, x2, y2, color, grosor) {
-        if (typeof color === "undefined") { color = pilas.colores.negro; }
-        if (typeof grosor === "undefined") { grosor = 1; }
-        var pos = pilas.escena_actual().obtener_posicion_pantalla(x, y);
-        var pos2 = pilas.escena_actual().obtener_posicion_pantalla(x2, y2);
-
-        this.lienzo.graphics.setStrokeStyle(grosor);
-        this.lienzo.graphics.beginStroke(color);
-        this.lienzo.graphics.moveTo(pos.x, pos.y);
-        this.lienzo.graphics.lineTo(pos2.x, pos2.y).endStroke();
-    };
-
-    Pizarra.prototype.rectangulo = function (x, y, ancho, alto, color, relleno, grosor) {
-        if (typeof color === "undefined") { color = pilas.colores.negro; }
-        if (typeof relleno === "undefined") { relleno = false; }
-        if (typeof grosor === "undefined") { grosor = 1; }
-        if (!relleno)
-            var color_relleno = createjs.Graphics.getRGB(255, 255, 255, 0);
-        else
-            var color_relleno = relleno;
-
-        var pos = pilas.escena_actual().obtener_posicion_pantalla(x, y);
-
-        this.lienzo.graphics.setStrokeStyle(grosor);
-        this.lienzo.graphics.beginStroke(color);
-        this.lienzo.graphics.beginFill(color_relleno);
-        this.lienzo.graphics.drawRect(pos.x, pos.y, ancho, alto).endStroke();
-    };
-
-    Pizarra.prototype.poligono = function (puntos, color, grosor) {
-        if (typeof color === "undefined") { color = pilas.colores.negro; }
-        if (typeof grosor === "undefined") { grosor = 1; }
-        for (var i = 1; i < puntos.length; i++) {
-            this.linea(puntos[i - 1][0], puntos[i - 1][1], puntos[i][0], puntos[i][1], color = color, grosor = grosor);
-        }
-    };
-
-    Pizarra.prototype.limpiar = function () {
-        this.lienzo.graphics.clear();
-    };
-
-    Pizarra.prototype.pintar = function (color) {
-        this.rectangulo(this.x - 320, this.y + 240, this._ancho, this._alto, color, color, 1);
-    };
-    return Pizarra;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Proyectil = (function (_super) {
-    __extends(Proyectil, _super);
-    function Proyectil(x, y, atributos) {
-        var imagen = pilas.imagenes.cargar_grilla("disparos/misil.png", 3);
-        _super.call(this, imagen, x, y, atributos);
-        this.hacer(pilas.comportamientos.AvanzarComoProyectil);
-        this.paso = 0;
-        this.enemigos = [];
-    }
-    Proyectil.prototype.actualizar = function () {
-        this.paso += 0.1;
-        this._imagen.definir_cuadro(parseInt(this.paso) % 2);
-
-        this.analizar_colisiones();
-    };
-
-    Proyectil.prototype.analizar_colisiones = function () {
-        for (var i = 0; i < this.enemigos.length; i++) {
-            var enemigo = this.enemigos[i];
-
-            if (enemigo.vivo && enemigo.colisiona_con_un_punto(this.x, this.y)) {
-                enemigo.eliminar();
-                this.eliminar();
-            }
-        }
-    };
-    return Proyectil;
-})(Actor);
-/// <reference path="actor.ts"/>
-var Texto = (function (_super) {
-    __extends(Texto, _super);
-    function Texto(x, y, texto, color) {
-        var imagen = "invisible.png";
-        _super.call(this, imagen, x, y);
-        this.texto = texto || "Sin texto";
-        this.color = color || "black";
-        this.crear_texto();
-        this.transparencia = 100;
-    }
-    Texto.prototype.crear_texto = function () {
-        var s = new createjs.Text(this.texto, "12px Arial", this.color);
-        var pos = pilas.escena_actual().obtener_posicion_pantalla(this.x, this.y);
-        s.x = pos.x;
-        s.y = pos.y;
-        s.textBaseline = "bottom";
-        s.textAlign = "center";
-        pilas.escena_actual().stage.addChild(s);
-        this.sprite_texto = s;
-    };
-
-    Texto.prototype.eliminar_texto = function () {
-        pilas.escena_actual().stage.removeChild(this.sprite_texto);
-    };
-
-    Texto.prototype.eliminar = function () {
-        this.eliminar_texto();
-        _super.prototype.eliminar.call(this);
-    };
-
-    Object.defineProperty(Texto.prototype, "escala_x", {
-        //TODO: hacer que pueda utilizar los metodos propios de la clase padre Actor
-        get: function () {
-            return this.sprite_texto.scaleX;
-        },
-        set: function (valor) {
-            if (valor instanceof Array)
-                pilas.interpolar(this.sprite_texto, 'scaleX', valor, 1000);
-            else
-                this.sprite_texto.scaleX = valor;
-        },
-        enumerable: true,
-        configurable: true
-    });
-
-    Object.defineProperty(Texto.prototype, "escala_y", {
-        get: function () {
-            return this.sprite_texto.scaleY;
-        },
-        set: function (valor) {
-            if (valor instanceof Array)
-                pilas.interpolar(this.sprite_texto, 'scaleY', valor, 1000);
-            else
-                this.sprite_texto.scaleY = valor;
-        },
-        enumerable: true,
-        configurable: true
-    });
-
-    Object.defineProperty(Texto.prototype, "escala", {
-        get: function () {
-            return this.escala_x;
-        },
-        set: function (valor) {
-            if (valor instanceof Array) {
-                var nuevo_radio_de_colision = [];
-                for (var i = 0; i < valor.length; i++) {
-                    nuevo_radio_de_colision.push((this.radio_de_colision * valor[i]) / this.escala);
-                }
-                pilas.interpolar(this, 'radio_de_colision', nuevo_radio_de_colision, 1000);
-                this.radio_de_colision = nuevo_radio_de_colision[0];
-            } else {
-                this.radio_de_colision = (this.radio_de_colision * valor) / this.escala;
-            }
-
-            this.escala_x = valor;
-            this.escala_y = valor;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    return Texto;
-})(Actor);
-/// <reference path="actor.ts"/>
-/// <reference path="texto.ts"/>
-var Puntaje = (function (_super) {
-    __extends(Puntaje, _super);
-    function Puntaje(x, y, puntaje, color) {
-        this.valor = puntaje || 0;
-        _super.call(this, x, y, this.valor.toString(), color);
-    }
-    Puntaje.prototype.aumentar = function (aumento) {
-        this.valor += aumento;
-        this.texto = this.valor.toString();
-
-        //Conservar la escala y el radio de colisión
-        //TODO: es necesario mejorar el actor Texto
-        var escala = this.escala;
-        var radio_de_colision = this.radio_de_colision;
-
-        this.eliminar_texto();
-        this.crear_texto();
-        this.escala = escala;
-        this.radio_de_colision = radio_de_colision;
-    };
-
-    Puntaje.prototype.obtener = function () {
-        return this.valor;
-    };
-    return Puntaje;
-})(Texto);
-/// <reference path="actor.ts"/>
-var Sombra = (function (_super) {
-    __extends(Sombra, _super);
-    function Sombra(x, y) {
-        _super.call(this, "sombra.png", x, y);
-        this.radio_de_colision = 20;
-    }
-    return Sombra;
-})(Actor);
-var Tortuga = (function (_super) {
-    __extends(Tortuga, _super);
-    function Tortuga(x, y, dibuja) {
-        if (typeof x === "undefined") { x = 0; }
-        if (typeof y === "undefined") { y = 0; }
-        if (typeof dibuja === "undefined") { dibuja = true; }
-        var imagen = 'tortuga.png';
-        _super.call(this, imagen, x, y);
-
-        this.pizarra = new pilas.actores.Pizarra();
-
-        if (dibuja)
-            this.bajalapiz();
-        else
-            this.subelapiz();
-
-        this.color = pilas.colores.negro;
-    }
-    Tortuga.prototype.avanzar = function (pasos) {
-        this.hacer_luego(pilas.comportamientos.Avanzar, { pasos: pasos, velocidad: 2 });
-    };
-
-    Tortuga.prototype.girarderecha = function (delta) {
-        this.hacer_luego(pilas.comportamientos.Girar, { angulo: delta, tiempo: .5 });
-    };
-
-    Tortuga.prototype.girarizquierda = function (delta) {
-        this.hacer_luego(pilas.comportamientos.Girar, { angulo: -delta, tiempo: .5 });
-    };
-
-    Tortuga.prototype.actualizar = function () {
-        if (this.x != this.anterior_x || this.y != this.anterior_y) {
-            if (this.lapiz_bajo) {
-                this.pizarra.linea(this.anterior_x, this.anterior_y, this.x, this.y, this.color, 4);
-            }
-
-            this.anterior_x = this.x;
-            this.anterior_y = this.y;
-        }
-    };
-
-    Tortuga.prototype.bajalapiz = function () {
-        this.lapiz_bajo = true;
-    };
-
-    Tortuga.prototype.subelapiz = function () {
-        this.lapiz_bajo = false;
-    };
-
-    Tortuga.prototype.crear_poligono = function (lados, escala, sentido) {
-        if (typeof lados === "undefined") { lados = 3; }
-        if (typeof escala === "undefined") { escala = 100; }
-        if (typeof sentido === "undefined") { sentido = -1; }
-        var rotacion = 360 / lados;
-
-        for (var i = 0; i < lados; i++) {
-            this.avanzar(escala);
-
-            if (sentido == 1)
-                this.girarderecha(rotacion);
-            else
-                this.girarizquierda(rotacion);
-        }
-    };
-
-    Tortuga.prototype.crear_circulo = function (radio, sentido) {
-        if (typeof sentido === "undefined") { sentido = -1; }
-        for (var i = 0; i < 36; i++) {
-            this.avanzar(radio);
-            if (sentido == 1)
-                this.girarderecha(10);
-            else
-                this.girarizquierda(10);
-        }
-    };
-
-
-    Object.defineProperty(Tortuga.prototype, "color", {
-        get: function () {
-            return this._color;
-        },
-        set: function (_color) {
-            this._color = _color;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    return Tortuga;
-})(Actor);
 /// <reference path="actor.ts"/>
 var Tuerca = (function (_super) {
     __extends(Tuerca, _super);
@@ -15201,34 +15177,87 @@ var Tuerca = (function (_super) {
     return Tuerca;
 })(Actor);
 /// <reference path="actor.ts"/>
-var Zanahoria = (function (_super) {
-    __extends(Zanahoria, _super);
-    function Zanahoria(x, y) {
-        this.cuadro_normal = "zanahoria_normal.png";
-        this.cuadro_sonrie = "zanahoria_sonrie.png";
-        _super.call(this, this.cuadro_normal, x, y);
-        this.radio_de_colision = 25;
+var Sombra = (function (_super) {
+    __extends(Sombra, _super);
+    function Sombra(x, y) {
+        _super.call(this, "sombra.png", x, y);
+        this.radio_de_colision = 20;
     }
-    Zanahoria.prototype.normal = function () {
-        this.imagen = this.cuadro_normal;
-    };
-
-    Zanahoria.prototype.sonreir = function () {
-        this.imagen = this.cuadro_sonrie;
-    };
-
-    Zanahoria.prototype.saltar = function () {
-        this.sonreir();
-        this.hacer(pilas.comportamientos.Saltar, { cuando_termina: this.normal });
-    };
-
-    Zanahoria.prototype.decir = function () {
-        this.sonreir();
-        _super.prototype.decir.call(this, "hola");
-        pilas.mundo.agregar_tarea_una_vez(1, this.normal, {}, this);
-    };
-    return Zanahoria;
+    return Sombra;
 })(Actor);
+/// <reference path='actores/aceituna.ts' />
+/// <reference path='actores/bomba.ts' />
+/// <reference path='actores/nave.ts' />
+/// <reference path='actores/explosion.ts' />
+/// <reference path='actores/proyectil.ts' />
+/// <reference path='actores/piedra.ts' />
+/// <reference path='actores/eje.ts' />
+/// <reference path='actores/maton.ts' />
+/// <reference path='actores/globo.ts' />
+/// <reference path='actores/texto.ts' />
+/// <reference path='actores/bloque.ts' />
+/// <reference path='actores/manzana.ts' />
+/// <reference path='actores/cofre.ts' />
+/// <reference path='actores/llave.ts' />
+/// <reference path='actores/caja.ts' />
+/// <reference path='actores/cesto.ts' />
+/// <reference path='actores/pelota.ts' />
+/// <reference path='actores/zanahoria.ts' />
+/// <reference path='actores/boton.ts' />
+/// <reference path='actores/puntaje.ts' />
+/// <reference path='actores/mono.ts' />
+/// <reference path='actores/banana.ts' />
+/// <reference path='actores/tortuga.ts' />
+/// <reference path='actores/pizarra.ts' />
+/// <reference path='actores/pingu.ts' />
+/// <reference path='actores/alien.ts' />
+/// <reference path='actores/alien_marron.ts' />
+/// <reference path='actores/tuerca.ts' />
+/// <reference path='actores/sombra.ts' />
+/**
+* @class Actores
+*
+* Módulo Actores
+* ==============
+*
+* Representa todos los actores conocidos en pilas-engine.
+*/
+var Actores = (function () {
+    function Actores(pilas) {
+        this.pilas = pilas;
+        this.Aceituna = Aceituna;
+        this.Actor = Actor;
+        this.Bomba = Bomba;
+        this.Nave = Nave;
+        this.Explosion = Explosion;
+        this.Proyectil = Proyectil;
+        this.Piedra = Piedra;
+        this.Eje = Eje;
+        this.Maton = Maton;
+        this.Globo = Globo;
+        this.Texto = Texto;
+        this.Bloque = Bloque; // TODO: eliminar, es solo para implementar tutorial.
+        this.Manzana = Manzana;
+        this.Cofre = Cofre;
+        this.Llave = Llave;
+        this.Caja = Caja;
+        this.Cesto = Cesto;
+        this.Pelota = Pelota;
+        this.Zanahoria = Zanahoria;
+        this.Boton = Boton;
+        this.Puntaje = Puntaje;
+        this.Mono = Mono;
+        this.Banana = Banana;
+        this.Tortuga = Tortuga;
+        this.Pizarra = Pizarra;
+        this.Pingu = Pingu;
+        this.Alien = Alien;
+        this.AlienMarron = AlienMarron;
+        this.Tuerca = Tuerca;
+        this.Sombra = Sombra;
+    }
+    return Actores;
+})();
 /**
 * @class Camara
 *
@@ -17527,12 +17556,24 @@ var Habilidades = (function () {
     return Habilidades;
 })();
 var Imagenes = (function () {
-    function Imagenes(callback_onready, data_path) {
+    function Imagenes(callback_onready, opciones) {
+        this.nombresImagenes = [
+            'aceituna.png', 'aceituna_grita.png', 'aceituna_risa.png', 'aceituna_burla.png',
+            'banana.png', 'bomba.png', 'caja.png', 'explosion.png',
+            'sin_imagen.png',
+            'plano.png', 'alien.png', 'alien_marron.png', 'tuerca.png', 'nave.png',
+            'piedra_chica.png', 'piedra_grande.png', 'piedra_media.png', 'ejes.png',
+            'disparos/misil.png', 'rpg/maton.png', 'pasto.png', 'pasto_cuadriculado.png', 'globo.png', 'bloque.png', 'manzana_chica.png', 'invisible.png', 'cofre.png', 'llave.png', 'cesto.png', 'pelota.png', 'zanahoria_normal.png', 'zanahoria_sonrie.png', 'boton/boton_normal.png', 'boton/boton_over.png', 'boton/boton_press.png',
+            'fondos/tarde.jpg', 'fondos/laberinto1.png', 'monkey_normal.png', 'monkey_smile.png', 'monkey_shout.png', 'tortuga.png',
+            'pingu.png', 'sombra.png',
+            'cooperativista/alerta.png', 'cooperativista/camina.png', 'cooperativista/camina_sujeta.png', 'cooperativista/ok.png', 'cooperativista/parado.png', 'cooperativista/parado_sujeta.png', 'cooperativista/trabajando.png'
+        ];
         this.recursos = {};
-        this.data_path = data_path;
+        this.data_path = opciones.data_path;
         this.loader = new PxLoader();
         this.imagenes_solicitadas = 0;
 
+        this.nombresImagenes = this.nombresImagenes.concat(opciones.imagenesExtra);
         this.cargar_recursos();
 
         //loader.addProgressListener(function (e) {
@@ -17549,63 +17590,10 @@ var Imagenes = (function () {
         this.loader.start();
     }
     Imagenes.prototype.cargar_recursos = function () {
-        this.cargar_recurso('aceituna.png');
-        this.cargar_recurso('aceituna_grita.png');
-        this.cargar_recurso('aceituna_risa.png');
-        this.cargar_recurso('aceituna_burla.png');
-
-        this.cargar_recurso('banana.png');
-        this.cargar_recurso('bomba.png');
-        this.cargar_recurso('caja.png');
-        this.cargar_recurso('explosion.png');
-
-        this.cargar_recurso('sin_imagen.png');
-
-        this.cargar_recurso('plano.png');
-        this.cargar_recurso('alien.png');
-        this.cargar_recurso('alien_marron.png');
-        this.cargar_recurso('tuerca.png');
-        this.cargar_recurso('nave.png');
-
-        this.cargar_recurso('piedra_chica.png');
-        this.cargar_recurso('piedra_grande.png');
-        this.cargar_recurso('piedra_media.png');
-        this.cargar_recurso('ejes.png');
-
-        this.cargar_recurso('disparos/misil.png');
-        this.cargar_recurso('rpg/maton.png');
-        this.cargar_recurso('pasto.png');
-        this.cargar_recurso('pasto_cuadriculado.png');
-        this.cargar_recurso('globo.png');
-        this.cargar_recurso('bloque.png');
-        this.cargar_recurso('manzana_chica.png');
-        this.cargar_recurso('invisible.png');
-        this.cargar_recurso('cofre.png');
-        this.cargar_recurso('llave.png');
-        this.cargar_recurso('cesto.png');
-        this.cargar_recurso('pelota.png');
-        this.cargar_recurso('zanahoria_normal.png');
-        this.cargar_recurso('zanahoria_sonrie.png');
-        this.cargar_recurso('boton/boton_normal.png');
-        this.cargar_recurso('boton/boton_over.png');
-        this.cargar_recurso('boton/boton_press.png');
-
-        this.cargar_recurso('fondos/tarde.jpg');
-        this.cargar_recurso('fondos/laberinto1.png');
-        this.cargar_recurso('monkey_normal.png');
-        this.cargar_recurso('monkey_smile.png');
-        this.cargar_recurso('monkey_shout.png');
-        this.cargar_recurso('tortuga.png');
-
-        this.cargar_recurso('pingu.png');
-        this.cargar_recurso('sombra.png');
-        //this.cargar_recurso('cooperativista/alerta.png');
-        //this.cargar_recurso('cooperativista/camina.png');
-        //this.cargar_recurso('cooperativista/camina_sujeta.png');
-        //this.cargar_recurso('cooperativista/ok.png');
-        //this.cargar_recurso('cooperativista/parado.png');
-        //this.cargar_recurso('cooperativista/parado_sujeta.png');
-        //this.cargar_recurso('cooperativista/trabajando.png');
+        var _this = this;
+        this.nombresImagenes.forEach(function (nombre) {
+            _this.cargar_recurso(nombre);
+        });
     };
 
     Imagenes.prototype.cargar_recurso = function (nombre) {
@@ -17904,7 +17892,7 @@ var Pilas = (function () {
         this.definir_tamano_del_canvas();
         this.conectar_eventos();
 
-        this.imagenes = new Imagenes(this.onready, this.opciones.data_path);
+        this.imagenes = new Imagenes(this.onready, this.opciones);
         this.fondos = new Fondos();
         this.mundo = new Mundo();
         this.interpolaciones = new Interpolaciones();
@@ -17966,6 +17954,7 @@ var Pilas = (function () {
         this.opciones.data_path = this.opciones.data_path || 'data';
         this.opciones.canvas_id = this.opciones.canvas_id || 'canvas';
         this.opciones.canvas = this.opciones.canvas || null;
+        this.opciones.imagenesExtra = this.opciones.imagenesExtra || [];
     };
 
     /**
