@@ -105,7 +105,7 @@ class Grilla extends Imagen {
   instanciar() {
     var data = {
        images: [this.ruta.src],
-       frames: {width: this.ancho / this.columnas, height: this.alto / this.filas},
+       frames: {width: this.ancho, height: this.alto},
     };
     var spritesheet = new createjs.SpriteSheet(data);
 
@@ -135,6 +135,9 @@ class Grilla extends Imagen {
     this.definir_cuadro(this.cuadro);
     return ha_avanzado;
   }
+
+  get ancho() {return this.imagen.width / this.columnas;}
+  get alto() {return this.imagen.height / this.filas;}
 }
 
 

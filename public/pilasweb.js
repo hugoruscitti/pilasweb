@@ -13568,22 +13568,14 @@ var Actor = (function (_super) {
 
     Object.defineProperty(Actor.prototype, "ancho", {
         get: function () {
-            if (this._imagen instanceof Grilla) {
-                return this._imagen.ancho / this._imagen.columnas;
-            } else {
-                return this._imagen.ancho;
-            }
+            return this._imagen.ancho;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Actor.prototype, "alto", {
         get: function () {
-            if (this._imagen instanceof Grilla) {
-                return this._imagen.alto / this._imagen.filas;
-            } else {
-                return this._imagen.alto;
-            }
+            return this._imagen.alto;
         },
         enumerable: true,
         configurable: true
@@ -17667,7 +17659,7 @@ var Grilla = (function (_super) {
     Grilla.prototype.instanciar = function () {
         var data = {
             images: [this.ruta.src],
-            frames: { width: this.ancho / this.columnas, height: this.alto / this.filas }
+            frames: { width: this.ancho, height: this.alto }
         };
         var spritesheet = new createjs.SpriteSheet(data);
 
@@ -17702,6 +17694,21 @@ var Grilla = (function (_super) {
         this.definir_cuadro(this.cuadro);
         return ha_avanzado;
     };
+
+    Object.defineProperty(Grilla.prototype, "ancho", {
+        get: function () {
+            return this.imagen.width / this.columnas;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Grilla.prototype, "alto", {
+        get: function () {
+            return this.imagen.height / this.filas;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Grilla;
 })(Imagen);
 
