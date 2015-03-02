@@ -371,6 +371,22 @@ class Pilas {
 
     return actores;
   }
+    
+  izquierda(){
+      return 0 - this.opciones.ancho/2;
+  }
+    
+  derecha(){
+      return this.opciones.ancho/2;
+  }
+    
+  arriba(){
+      return this.opciones.alto/2;
+  }
+    
+  abajo(){
+      return 0 - this.opciones.alto/2;
+  }
 
 }
 
