@@ -13292,6 +13292,7 @@ var Actor = (function (_super) {
     function Actor(imagen, x, y, atributos) {
         if (typeof atributos === "undefined") { atributos = {}; }
         _super.call(this);
+        this.evto_se_movio = new Evento("se_movio");
         this.imagen = imagen || 'sin_imagen.png';
         atributos = atributos || {};
         this.vivo = true;
@@ -13364,6 +13365,7 @@ var Actor = (function (_super) {
         },
         set: function (_z) {
             this.sprite.z = _z;
+            this.evto_se_movio.emitir();
         },
         enumerable: true,
         configurable: true
@@ -13398,6 +13400,7 @@ var Actor = (function (_super) {
             else {
                 var pos = pilas.escena_actual().obtener_posicion_pantalla(_x, 0);
                 this.sprite.x = pos.x;
+                this.evto_se_movio.emitir({});
             }
         },
         enumerable: true,
@@ -13416,6 +13419,7 @@ var Actor = (function (_super) {
             else {
                 var pos = pilas.escena_actual().obtener_posicion_pantalla(0, _y);
                 this.sprite.y = pos.y;
+                this.evto_se_movio.emitir({});
             }
         },
         enumerable: true,
@@ -18181,6 +18185,22 @@ var Pilas = (function () {
         }
 
         return actores;
+    };
+
+    Pilas.prototype.izquierda = function () {
+        return 0 - this.opciones.ancho / 2;
+    };
+
+    Pilas.prototype.derecha = function () {
+        return this.opciones.ancho / 2;
+    };
+
+    Pilas.prototype.arriba = function () {
+        return this.opciones.alto / 2;
+    };
+
+    Pilas.prototype.abajo = function () {
+        return 0 - this.opciones.alto / 2;
     };
     return Pilas;
 })();
