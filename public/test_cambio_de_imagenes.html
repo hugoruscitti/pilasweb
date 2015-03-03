@@ -43,8 +43,11 @@
 							<p>Nota: el actor de puede arrastrar y soltar</p>
 
 							<input type='range' id='deslizador'></input>
-							<button id='a_mono'>Cambiar imagen por mono</button>
-							<button id='a_aceituna'>Cambiar imagen por aceituna</button>
+
+							<br/><br/>
+							<button class='btn btn-warning' id='a_mono'>Cambiar imagen por mono</button>
+							<button class='btn btn-warning' id='a_aceituna'>Cambiar imagen por aceituna</button>
+							<button class='btn btn-warning' id='a_grilla'>Cambiar imagen por grilla</button>
 
     </div>
 
@@ -74,6 +77,7 @@
 		function configurar_botones(aceituna) {
 			var btn_mono = document.getElementById('a_mono');
 			var btn_aceituna = document.getElementById('a_aceituna');
+			var btn_grilla = document.getElementById('a_grilla');
 
 			btn_mono.onclick = function() {
 				aceituna.imagen = 'monkey_normal.png';
@@ -81,6 +85,12 @@
 
 			btn_aceituna.onclick = function() {
 				aceituna.imagen = 'aceituna.png';
+			};
+
+			btn_grilla.onclick = function() {
+				var imagen = pilas.imagenes.cargar_grilla("nave.png", 2);
+				aceituna.imagen = imagen;
+				aceituna._imagen.definir_cuadro(0);
 			};
 		}
 
