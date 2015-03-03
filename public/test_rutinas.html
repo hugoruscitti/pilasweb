@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8>
+	<title>pilasweb testing</title>
+
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="css/custom.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="CodeMirror3/lib/codemirror.css">
+  <link rel="stylesheet" href="CodeMirror3/theme/monokai.css">
+  <link rel="stylesheet" href="css/inlet.css" type="text/css" media="screen"  title="no title" charset="utf-8">
+  <link rel="stylesheet" href="css/editor.css" type="text/css" media="screen"  title="no title" charset="utf-8">
+
+
+
+</head>
+
+<body>
+
+
+    <div class='container'>
+
+      <style type="text/css" media="all">
+
+        canvas#canvas_id2 {
+          width: 420px;
+          height: 480px;
+        }
+
+	#tareas {
+		position: absolute;
+		right: 0;
+		top:0;
+		bottom:0;
+		width: 400px;
+		margin: 10px;
+	}
+
+      </style>
+
+              <canvas id='canvas_id2'></canvas>
+	<pre id='tareas'>
+	</pre>
+
+    </div>
+
+
+  <script src='pilasweb.js'></script>
+
+
+  <script>
+		var canvas_element = document.getElementById('canvas_id2');
+    window['canvas'] = canvas_element;
+
+    function convertir_posicion_a_coordenada(fila, columna) {
+      /*
+
+                   columnas
+                      1            2       3       4       5       6
+          filas
+
+            1    [- 175,  140]     []      []      []       []      []
+            2    [- 175,   60]
+            3    [- 175,  -20]
+            4    [- 175, -100]
+            5    [- 175, -180]
+
+      */
+
+
+      var columnas = [-175, -105, -35, 35, 105, 175];
+      var filas = [140, 60, -20, -100, -180];
+
+      return {x: columnas[columna-1], y: filas[fila-1]};
+    }
+
+
+
+
+    var obj_pilas = pilasengine.iniciar({ancho: 420, alto: 480, canvas: canvas_element, data_path: 'data'});
+
+    var pilas = obj_pilas;
+
+    pilas.observar_tareas('tareas', 100);
+
+    obj_pilas.onready = function() {
+      var fondo = new pilas.fondos.Laberinto1();
+      var alien = new obj_pilas.actores.AlienMarron(-175, -180);
+
+			function init() {
+				console.log("inicio!", this);
+				this.contador = 0;
+			}
+
+			function update() {
+				alien.x += 0.3;
+				this.contador += 1;
+
+				if (this.contador > 200) {
+					return true;
+				}
+			}
+
+			pilas.rutinas.agregar("mover a la derecha", alien, init, update);
+
+
+			/*
+			tarea = alien.hacer();
+
+			tarea.
+				then(alien.caminar_derecha).
+				then(alien.caminar_arriba).
+				then(function() {
+					if (alien.x > 100)
+						tarea.then()
+
+				})
+
+			*/
+
+
+
+      alien.cuando_busca_recoger = function() {
+        var actores = pilas.obtener_actores_en(alien.x, alien.y + 20, 'Tuerca')
+
+        if (actores.length > 0) {
+          var mensaje = "";
+          actores[0].eliminar();
+          var restantes = pilas.obtener_actores_con_etiqueta("Tuerca").length;
+
+          if (restantes > 0)
+            mensaje = "genial, aún quedan: " + restantes;
+          else
+            mensaje = "¡Nivel completado!"
+
+          alien.decir(mensaje);
+          console.log(mensaje);
+        }
+      }
+
+
+      var posicion = convertir_posicion_a_coordenada(1, 1);
+      var tuerca = new obj_pilas.actores.Tuerca(posicion.x, posicion.y);
+
+      var posicion = convertir_posicion_a_coordenada(3, 2);
+      var tuerca = new obj_pilas.actores.Tuerca(posicion.x, posicion.y);
+
+      var posicion = convertir_posicion_a_coordenada(5, 3);
+      var tuerca = new obj_pilas.actores.Tuerca(posicion.x, posicion.y);
+
+      var posicion = convertir_posicion_a_coordenada(3, 6);
+      var tuerca = new obj_pilas.actores.Tuerca(posicion.x, posicion.y);
+
+      window.tuerca = tuerca;
+    }
+
+
+    obj_pilas.ejecutar();
+  </script>
+</body>
+</html>

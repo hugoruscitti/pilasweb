@@ -20,7 +20,6 @@
             <li class="active"><a href='./index.html'>ejemplos</a></li>
             <li><a href='./interprete.html'>intérprete</a></li>
             <li><a href='./editor.html'>editor</a></li>
-            <li><a href='./acercade.html'>acerca de...</a></li>
           </ul>
           <ul class="nav pull-right">
             <li><a href='http://github.com/hugoruscitti/pilasweb'>github <i class='icon-share-alt'></i></a></li>
@@ -51,11 +50,6 @@
         <script type="text/ng-template" id="demo1.html">
             <canvas ng-init='iniciar_ejemplo(1)' id='canvas'></canvas>
         </script>
-        
-        <script type="text/ng-template" id="demo2.html">
-            <canvas ng-init='iniciar_ejemplo(2)' id='canvas'></canvas>
-        </script>
-
 
         <script type="text/ng-template" id="demo2.html">
             <canvas ng-init='iniciar_ejemplo(2)' id='canvas'></canvas>
@@ -64,7 +58,10 @@
         <script type="text/ng-template" id="demo3.html">
             <canvas ng-init='iniciar_ejemplo(3)' id='canvas'></canvas>
         </script>
-
+       
+        <script type="text/ng-template" id="demo4.html">
+            <canvas ng-init='iniciar_ejemplo(4)' id='canvas'></canvas>
+        </script>
 
         <script type="text/ng-template" id="editor.html">
             <canvas id='canvas'></canvas>
@@ -81,17 +78,12 @@
 
     </div>
     </div>
-  <script src='libs/PxLoader.js'></script>
-  <script src='libs/PxLoaderImage.js'></script>
-  <script src='libs/Box2dWeb-2.1.a.3.js'></script>
-  <script src='libs/easeljs-0.6.1.min.js'></script>
-  <script src='libs/tweenjs-0.4.1.min.js'></script>
 
+  <script src='pilasweb.js'></script>
 
   <script src='js/angular.min.js'></script>
   <script src='js/app.js'></script>
 
-  <script src='pilasweb.js'></script>
 
 <script type='demo' id='/demo1'>
 pilas = new Pilas();
@@ -99,16 +91,13 @@ pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
 
 pilas.onready = function() {
   var fondo = new pilas.fondos.Plano();
+
   window.aceituna = new pilas.actores.Aceituna();
+  window.aceituna.aprender(pilas.habilidades.SeguirAlMouse);
+
   window.bomba = new pilas.actores.Bomba();
+  window.bomba.aprender(pilas.habilidades.MoverseConElTeclado);
   window.bomba.x = 50;
-
-  var mover_aceituna = function (evento) {
-    window.aceituna.x = evento.x;
-    window.aceituna.y = evento.y;
-  }
-
-  pilas.escena_actual().mueve_mouse.conectar(mover_aceituna);
 
   //window.actor = new pilas.actores.Actor();
   //window.aceituna.x = [100, 0, 100, 0];
@@ -131,21 +120,35 @@ pilas.onready = function() {
 pilas.ejecutar();
 </script>
 
+
 <script type='demo' id='/demo3'>
 pilas = new Pilas();
 pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
 
+pilas.onready = function() {
+  var fondo = new pilas.fondos.Plano();
+
+  window.aceituna = new pilas.actores.Aceituna();
+  window.aceituna.aprender(pilas.habilidades.Arrastrable);
+  window.aceituna.escala = 2;
+
+  pilas.definir_modos({puntos_de_control: true})
+}
+pilas.ejecutar();
+</script>
+  
+<script type='demo' id='/demo4'>
+pilas = new Pilas();
+pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
 
 pilas.onready = function() {
   var fondo = new pilas.fondos.Plano();
 
-  var pelota = new pilas.actores.Pelota();
+  window.nave = new pilas.actores.Nave();
+  nave.disparar();
 
-  pelota.aprender(pilas.habilidades.RebotarComoPelota);
-
-  pilas.definir_modos({puntos_de_control: true, fisica: true})
+  pilas.definir_modos({puntos_de_control: true})
 }
-
 pilas.ejecutar();
 </script>
 

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8>
+	<title>pilasweb testing</title>
+
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="css/custom.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="CodeMirror3/lib/codemirror.css">
+  <link rel="stylesheet" href="CodeMirror3/theme/monokai.css">
+  <link rel="stylesheet" href="css/inlet.css" type="text/css" media="screen"  title="no title" charset="utf-8">
+  <link rel="stylesheet" href="css/editor.css" type="text/css" media="screen"  title="no title" charset="utf-8">
+
+
+
+</head>
+
+<body>
+
+  <div class="navbar navbar-fixed-top">
+     <div class="navbar-inner">
+       <div class="container">
+         <a class="brand" href="./index.html">pilas-web</a>
+
+         <div class="nav-collapse collapse" id="main-menu">
+          <ul class="nav" id="main-menu-left">
+            <li><a href='./index.html'>ejemplos</a></li>
+            <li><a href='./interprete.html'>intérprete</a></li>
+            <li class="active"><a href='./editor.html'>editor</a></li>
+          </ul>
+
+          <ul class="nav pull-right">
+            <li><a href='http://github.com/hugoruscitti/pilasweb'>github <i class='icon-share-alt'></i></a></li>
+            <li><a href='http://pilas-engine.com.ar'>pilas-engine <i class='icon-share-alt'></i></a></li>
+          </ul>
+
+         </div>
+       </div>
+     </div>
+   </div>
+
+    <div class='container'>
+
+      <div class="row"  style='margin-top: 70px'>
+          <div class="span12">
+              <canvas id='canvas_id'></canvas>
+          </div>
+      </div>
+
+    </div>
+
+
+  <script src='pilasweb.js'></script>
+
+
+  <script>
+		var canvas_element = document.getElementById('canvas_id');
+    window['canvas'] = canvas_element;
+    pilas = new Pilas();
+    pilas.iniciar({ancho: 320, alto: 240, canvas: canvas_element, data_path: 'data'});
+
+    pilas.onready = function() {
+      var fondo = new pilas.fondos.Tarde();
+
+      var aceituna = new pilas.actores.Aceituna(10, 100);
+      aceituna.aprender(pilas.habilidades.RebotarComoPelota);
+
+      window['figura'] = aceituna.figura;
+
+      var caja = new pilas.actores.Caja();
+      caja.aprender(pilas.habilidades.RebotarComoCaja);
+
+      var pelota = new pilas.actores.Pelota();
+      window.pelota = pelota;
+      pelota.aprender( pilas.habilidades.Arrastrable );
+
+      var cesto = new pilas.actores.Cesto();
+
+      pilas.definir_modos({
+        fisica: false,
+        puntos_de_control: false,
+        posiciones: true
+      });
+    }
+
+    pilas.ejecutar();
+  </script>
+</body>
+</html>

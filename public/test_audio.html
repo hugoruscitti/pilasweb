@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8>
+	<title>pilasweb testing</title>
+</head>
+
+<body>
+  <br>
+  <br>
+
+<canvas style=" width: 640px; height: 480px; margin: 2%;" id='canvas'></canvas>
+
+
+  <script src='pilasweb.js'></script>
+
+
+  <script>
+    pilas = new Pilas();
+    pilas.onready = function() {
+      var fondo = new pilas.fondos.Plano();
+      var mono = new pilas.actores.Mono();
+
+      var reir = function() {
+        mono.sonreir()
+      }
+
+      var gritar = function() {
+        mono.gritar()
+      }
+      mono.cuando_hace_click =reir;
+      mono.cuando_mueve_mouse = gritar;
+
+    }
+    pilas.iniciar({ancho: 640, alto: 480, data_path: 'data'});
+    pilas.ejecutar();
+  </script>
+</body>
+</html>
