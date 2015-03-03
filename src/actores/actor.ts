@@ -58,7 +58,7 @@ class Actor extends Estudiante {
   callbacks_cuando_mueve_mouse;
   etiquetas;
   evto_se_movio;
-    
+
   constructor(imagen, x, y, atributos = {}) {
 
     super();
@@ -94,8 +94,8 @@ class Actor extends Estudiante {
 
     this.callbacks_cuando_hace_click = [];
     this.callbacks_cuando_mueve_mouse = [];
-      
-    
+
+
     this.iniciar();
   }
 
