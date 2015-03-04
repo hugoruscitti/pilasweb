@@ -1,3 +1,32 @@
+/// <reference path='actores/aceituna.ts' />
+/// <reference path='actores/bomba.ts' />
+/// <reference path='actores/nave.ts' />
+/// <reference path='actores/explosion.ts' />
+/// <reference path='actores/proyectil.ts' />
+/// <reference path='actores/piedra.ts' />
+/// <reference path='actores/eje.ts' />
+/// <reference path='actores/maton.ts' />
+/// <reference path='actores/globo.ts' />
+/// <reference path='actores/texto.ts' />
+/// <reference path='actores/bloque.ts' />
+/// <reference path='actores/manzana.ts' />
+/// <reference path='actores/cofre.ts' />
+/// <reference path='actores/llave.ts' />
+/// <reference path='actores/caja.ts' />
+/// <reference path='actores/cesto.ts' />
+/// <reference path='actores/pelota.ts' />
+/// <reference path='actores/zanahoria.ts' />
+/// <reference path='actores/boton.ts' />
+/// <reference path='actores/puntaje.ts' />
+/// <reference path='actores/mono.ts' />
+/// <reference path='actores/banana.ts' />
+/// <reference path='actores/tortuga.ts' />
+/// <reference path='actores/pizarra.ts' />
+/// <reference path='actores/pingu.ts' />
+/// <reference path='actores/alien.ts' />
+/// <reference path='actores/alien_marron.ts' />
+/// <reference path='actores/tuerca.ts' />
+/// <reference path='actores/sombra.ts' />
 
 /**
  * @class Actores

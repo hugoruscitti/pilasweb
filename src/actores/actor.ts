@@ -57,10 +57,12 @@ class Actor extends Estudiante {
   callbacks_cuando_hace_click;
   callbacks_cuando_mueve_mouse;
   etiquetas;
+  evto_se_movio;
 
   constructor(imagen, x, y, atributos = {}) {
 
     super();
+    this.evto_se_movio = new Evento("se_movio");
     this.imagen = imagen || 'sin_imagen.png';
     atributos = atributos || {};
     this.vivo = true;
@@ -92,7 +94,8 @@ class Actor extends Estudiante {
 
     this.callbacks_cuando_hace_click = [];
     this.callbacks_cuando_mueve_mouse = [];
-    
+
+
     this.iniciar();
   }
 
@@ -135,6 +138,7 @@ class Actor extends Estudiante {
 
   set z(_z) {
     this.sprite.z = _z;
+    this.evto_se_movio.emitir();
   }
 
   get espejado() {
@@ -162,6 +166,7 @@ class Actor extends Estudiante {
     else {
       var pos = pilas.escena_actual().obtener_posicion_pantalla(_x, 0);
       this.sprite.x = pos.x;
+      this.evto_se_movio.emitir({});
     }
   }
 
@@ -176,6 +181,7 @@ class Actor extends Estudiante {
     else {
       var pos = pilas.escena_actual().obtener_posicion_pantalla(0, _y);
       this.sprite.y = pos.y;
+      this.evto_se_movio.emitir({});
     }
   }
 
@@ -280,20 +286,10 @@ class Actor extends Estudiante {
   set transparencia(_t) {this.sprite.alpha = (_t - 100) / -100}
 
   get ancho() {
-    if (this._imagen instanceof Grilla) {
-      return this._imagen.ancho/this._imagen.columnas
-    }
-    else {
-      return this._imagen.ancho;
-    }
+    return this._imagen.ancho;
   }
   get alto() {
-    if (this._imagen instanceof Grilla) {
-      return this._imagen.alto/this._imagen.filas
-    }
-    else {
-      return this._imagen.alto;
-    }
+    return this._imagen.alto;
   }
 
   set imagen(_i) {

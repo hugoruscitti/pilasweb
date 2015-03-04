@@ -78,4 +78,15 @@ crear_entorno:
 test:
 	./node_modules/.bin/mocha-phantomjs test/init.html
 
+web:
+	cd ../ghpages__pilasweb; git pull origin gh-pages
+	cp -r -f public/* ../ghpages__pilasweb/public/
+	cd ../ghpages__pilasweb; git add .; git commit -am 'deploy'; git push origin gh-pages
+	@echo ""
+	@echo "Los cambios se publicaron en:"
+	@echo ""
+	@echo "      http://hugoruscitti.github.io/pilasweb/public/test_cambio_de_imagenes.html"
+	@echo ""
+	@echo ""
+
 .PHONY: test

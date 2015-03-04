@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html ng-app='app'>
+<head>
+	<meta charset=utf-8>
+	<title>pilasweb testing</title>
+
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="css/custom.css" rel="stylesheet">
+</head>
+
+<body ng-controller='AppController'>
+
+  <div class="navbar navbar-fixed-top">
+     <div class="navbar-inner">
+       <div class="container">
+         <a class="brand" href="#">pilas-web</a>
+
+         <div class="nav-collapse collapse" id="main-menu">
+          <ul class="nav" id="main-menu-left">
+            <li class="active"><a href='./index.html'>ejemplos</a></li>
+            <li><a href='./interprete.html'>intérprete</a></li>
+            <li><a href='./editor.html'>editor</a></li>
+          </ul>
+          <ul class="nav pull-right">
+            <li><a href='http://github.com/hugoruscitti/pilasweb'>github <i class='icon-share-alt'></i></a></li>
+            <li><a href='http://pilas-engine.com.ar'>pilas-engine <i class='icon-share-alt'></i></a></li>
+          </ul>
+         </div>
+       </div>
+     </div>
+   </div>
+
+
+   <div class='container'>
+
+     <div class="row"  style='margin-top: 70px'>
+
+        <div class="span3 bs-docs-sidebar">
+          <ul class="nav nav-list bs-docs-sidenav affix">
+            <li ng-class='{active: $index == seleccionado}' ng-repeat='demo in demos'><a ng-click='seleccionar($index)' href='{{demo.url}}'><i class="icon-chevron-right"></i> {{demo.nombre}}</a></li>
+          </ul>
+        </div>
+
+        <div class="span9">
+            <ng-view></ng-view>
+        </div>
+
+
+        <!-- PARTIALS -->
+        <script type="text/ng-template" id="demo1.html">
+            <canvas ng-init='iniciar_ejemplo(1)' id='canvas'></canvas>
+        </script>
+
+        <script type="text/ng-template" id="demo2.html">
+            <canvas ng-init='iniciar_ejemplo(2)' id='canvas'></canvas>
+        </script>
+
+        <script type="text/ng-template" id="demo3.html">
+            <canvas ng-init='iniciar_ejemplo(3)' id='canvas'></canvas>
+        </script>
+       
+        <script type="text/ng-template" id="demo4.html">
+            <canvas ng-init='iniciar_ejemplo(4)' id='canvas'></canvas>
+        </script>
+
+        <script type="text/ng-template" id="editor.html">
+            <canvas id='canvas'></canvas>
+            <p>
+            <button ng-click='ejecutar()' class='btn'><i class='icon-play'></i> Ejecutar</button>
+            <span class='error'>{{ error }}</span>
+            <p>
+            <textarea style='width: 100%' rows=10 ng-model='codigo'>
+            </textarea>
+
+        </script>
+
+
+
+    </div>
+    </div>
+
+  <script src='pilasweb.js'></script>
+
+  <script src='js/angular.min.js'></script>
+  <script src='js/app.js'></script>
+
+
+<script type='demo' id='/demo1'>
+pilas = new Pilas();
+pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
+
+pilas.onready = function() {
+  var fondo = new pilas.fondos.Plano();
+
+  window.aceituna = new pilas.actores.Aceituna();
+  window.aceituna.aprender(pilas.habilidades.SeguirAlMouse);
+
+  window.bomba = new pilas.actores.Bomba();
+  window.bomba.aprender(pilas.habilidades.MoverseConElTeclado);
+  window.bomba.x = 50;
+
+  //window.actor = new pilas.actores.Actor();
+  //window.aceituna.x = [100, 0, 100, 0];
+
+  pilas.definir_modos({puntos_de_control: true})
+}
+pilas.ejecutar();
+</script>
+
+
+<script type='demo' id='/demo2'>
+pilas = new Pilas();
+pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
+
+pilas.onready = function() {
+  var fondo = new pilas.fondos.Plano();
+  window.bomba = new pilas.actores.Bomba();
+  window.bomba.escala = [3];
+}
+pilas.ejecutar();
+</script>
+
+
+<script type='demo' id='/demo3'>
+pilas = new Pilas();
+pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
+
+pilas.onready = function() {
+  var fondo = new pilas.fondos.Plano();
+
+  window.aceituna = new pilas.actores.Aceituna();
+  window.aceituna.aprender(pilas.habilidades.Arrastrable);
+  window.aceituna.escala = 2;
+
+  pilas.definir_modos({puntos_de_control: true})
+}
+pilas.ejecutar();
+</script>
+  
+<script type='demo' id='/demo4'>
+pilas = new Pilas();
+pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
+
+pilas.onready = function() {
+  var fondo = new pilas.fondos.Plano();
+
+  window.nave = new pilas.actores.Nave();
+  nave.disparar();
+
+  pilas.definir_modos({puntos_de_control: true})
+}
+pilas.ejecutar();
+</script>
+
+
+</body>
+</html>

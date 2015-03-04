@@ -1,15 +1,27 @@
 class Imagenes {
+    nombresImagenes = [
+        'aceituna.png', 'aceituna_grita.png', 'aceituna_risa.png', 'aceituna_burla.png',
+        'banana.png', 'bomba.png', 'caja.png', 'explosion.png',
+        'sin_imagen.png',
+        'plano.png', 'alien.png', 'alien_marron.png', 'tuerca.png', 'nave.png',
+        'piedra_chica.png', 'piedra_grande.png', 'piedra_media.png', 'ejes.png',
+        'disparos/misil.png', 'rpg/maton.png', 'pasto.png', 'pasto_cuadriculado.png', 'globo.png', 'bloque.png', 'manzana_chica.png', 'invisible.png', 'cofre.png', 'llave.png', 'cesto.png', 'pelota.png', 'zanahoria_normal.png', 'zanahoria_sonrie.png', 'boton/boton_normal.png', 'boton/boton_over.png', 'boton/boton_press.png',
+        'fondos/tarde.jpg', 'fondos/laberinto1.png', 'monkey_normal.png', 'monkey_smile.png', 'monkey_shout.png', 'tortuga.png',
+        'pingu.png', 'sombra.png',
+        'cooperativista/alerta.png', 'cooperativista/camina.png', 'cooperativista/camina_sujeta.png', 'cooperativista/ok.png', 'cooperativista/parado.png', 'cooperativista/parado_sujeta.png', 'cooperativista/trabajando.png',
+    ];
   data_path: string;
   recursos;
   imagenes_solicitadas;
   loader;
 
-  constructor(callback_onready, data_path) {
+  constructor(callback_onready, opciones) {
     this.recursos = {}
-    this.data_path = data_path;
+    this.data_path = opciones.data_path;
     this.loader = new PxLoader();
     this.imagenes_solicitadas = 0;
 
+    this.nombresImagenes = this.nombresImagenes.concat(opciones.imagenesExtra);
     this.cargar_recursos();
 
     //loader.addProgressListener(function (e) {
@@ -28,65 +40,10 @@ class Imagenes {
   }
 
   private cargar_recursos() {
-    this.cargar_recurso('aceituna.png');
-    this.cargar_recurso('aceituna_grita.png');
-    this.cargar_recurso('aceituna_risa.png');
-    this.cargar_recurso('aceituna_burla.png');
-
-    this.cargar_recurso('banana.png');
-    this.cargar_recurso('bomba.png');
-    this.cargar_recurso('caja.png');
-    this.cargar_recurso('explosion.png');
-
-    this.cargar_recurso('sin_imagen.png');
-
-    this.cargar_recurso('plano.png');
-    this.cargar_recurso('alien.png');
-    this.cargar_recurso('alien_marron.png');
-    this.cargar_recurso('tuerca.png');
-    this.cargar_recurso('nave.png');
-
-    this.cargar_recurso('piedra_chica.png');
-    this.cargar_recurso('piedra_grande.png');
-    this.cargar_recurso('piedra_media.png');
-    this.cargar_recurso('ejes.png');
-
-    this.cargar_recurso('disparos/misil.png');
-    this.cargar_recurso('rpg/maton.png');
-    this.cargar_recurso('pasto.png');
-    this.cargar_recurso('pasto_cuadriculado.png');
-    this.cargar_recurso('globo.png');
-    this.cargar_recurso('bloque.png');
-    this.cargar_recurso('manzana_chica.png');
-    this.cargar_recurso('invisible.png');
-    this.cargar_recurso('cofre.png');
-    this.cargar_recurso('llave.png');
-    this.cargar_recurso('cesto.png');
-    this.cargar_recurso('pelota.png');
-    this.cargar_recurso('zanahoria_normal.png');
-    this.cargar_recurso('zanahoria_sonrie.png');
-    this.cargar_recurso('boton/boton_normal.png');
-    this.cargar_recurso('boton/boton_over.png');
-    this.cargar_recurso('boton/boton_press.png');
-
-    this.cargar_recurso('fondos/tarde.jpg');
-    this.cargar_recurso('fondos/laberinto1.png');
-    this.cargar_recurso('monkey_normal.png');
-    this.cargar_recurso('monkey_smile.png');
-    this.cargar_recurso('monkey_shout.png');
-    this.cargar_recurso('tortuga.png');
-
-
-    this.cargar_recurso('pingu.png');
-    this.cargar_recurso('sombra.png');
-
-    //this.cargar_recurso('cooperativista/alerta.png');
-    //this.cargar_recurso('cooperativista/camina.png');
-    //this.cargar_recurso('cooperativista/camina_sujeta.png');
-    //this.cargar_recurso('cooperativista/ok.png');
-    //this.cargar_recurso('cooperativista/parado.png');
-    //this.cargar_recurso('cooperativista/parado_sujeta.png');
-    //this.cargar_recurso('cooperativista/trabajando.png');
+    var _this = this;
+    this.nombresImagenes.forEach(function(nombre){
+            _this.cargar_recurso(nombre);
+        });
   }
 
   private cargar_recurso(nombre) {
@@ -148,7 +105,7 @@ class Grilla extends Imagen {
   instanciar() {
     var data = {
        images: [this.ruta.src],
-       frames: {width: this.ancho / this.columnas, height: this.alto / this.filas},
+       frames: {width: this.ancho, height: this.alto},
     };
     var spritesheet = new createjs.SpriteSheet(data);
 
@@ -178,6 +135,9 @@ class Grilla extends Imagen {
     this.definir_cuadro(this.cuadro);
     return ha_avanzado;
   }
+
+  get ancho() {return this.imagen.width / this.columnas;}
+  get alto() {return this.imagen.height / this.filas;}
 }
 
 

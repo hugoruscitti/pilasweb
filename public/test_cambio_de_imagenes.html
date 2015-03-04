@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8>
+	<title>pilasweb testing</title>
+
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="css/custom.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="CodeMirror3/lib/codemirror.css">
+  <link rel="stylesheet" href="CodeMirror3/theme/monokai.css">
+  <link rel="stylesheet" href="css/inlet.css" type="text/css" media="screen"  title="no title" charset="utf-8">
+  <link rel="stylesheet" href="css/editor.css" type="text/css" media="screen"  title="no title" charset="utf-8">
+
+
+
+</head>
+
+<body>
+
+  <div class="navbar navbar-fixed-top">
+     <div class="navbar-inner">
+       <div class="container">
+         <a class="brand">pilas-web</a>
+       </div>
+     </div>
+   </div>
+
+    <div class='container'>
+      <style type="text/css" media="all">
+
+        canvas#canvas_id2 {
+					margin-top: 20px;
+          width: 420px;
+          height: 240px;
+					border: 1px solid #ccc;
+        }
+
+      </style>
+
+              <canvas id='canvas_id2'></canvas>
+
+							<p>Nota: el actor de puede arrastrar y soltar</p>
+
+							<input type='range' id='deslizador'></input>
+
+							<br/><br/>
+							<button class='btn btn-warning' id='a_mono'>Cambiar imagen por mono</button>
+							<button class='btn btn-warning' id='a_aceituna'>Cambiar imagen por aceituna</button>
+							<button class='btn btn-warning' id='a_grilla'>Cambiar imagen por grilla</button>
+
+    </div>
+
+
+  <script src='pilasweb.js'></script>
+
+  <script>
+		var canvas_element = document.getElementById('canvas_id2');
+    window['canvas'] = canvas_element;
+
+    var pilas = pilasengine.iniciar({ancho: 420, alto: 240, canvas: canvas_element, data_path: 'data'});
+
+    pilas.onready = function() {
+			var fondo = new pilas.fondos.Tarde();
+			var aceituna = new pilas.actores.Aceituna();
+
+			aceituna.aprender(pilas.habilidades.Arrastrable);
+
+			// Hace la aceituna global para acceder a ella desde la consola.
+			window.aceituna = aceituna;
+
+			configurar_botones(aceituna);
+			configurar_deslizador(aceituna);
+    }
+
+
+		function configurar_botones(aceituna) {
+			var btn_mono = document.getElementById('a_mono');
+			var btn_aceituna = document.getElementById('a_aceituna');
+			var btn_grilla = document.getElementById('a_grilla');
+
+			btn_mono.onclick = function() {
+				aceituna.imagen = 'monkey_normal.png';
+			};
+
+			btn_aceituna.onclick = function() {
+				aceituna.imagen = 'aceituna.png';
+			};
+
+			btn_grilla.onclick = function() {
+				var imagen = pilas.imagenes.cargar_grilla("nave.png", 2);
+				aceituna.imagen = imagen;
+				aceituna._imagen.definir_cuadro(0);
+			};
+		}
+
+
+		function configurar_deslizador(aceituna) {
+			var deslizador = document.getElementById('deslizador');
+
+			deslizador.oninput = function(v) {
+				aceituna.rotacion = (deslizador.value - 50)*2;
+			}
+
+		}
+
+    pilas.ejecutar();
+  </script>
+</body>
+</html>
