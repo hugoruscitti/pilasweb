@@ -286,10 +286,19 @@ class Actor extends Estudiante {
   set transparencia(_t) {this.sprite.alpha = (_t - 100) / -100}
 
   get ancho() {
-    return this._imagen.ancho;
+    return this._imagen.ancho * this.escala_x;
   }
+    
+  set ancho(nuevo){
+      this.escala_x = nuevo / this.ancho;
+  }
+    
   get alto() {
-    return this._imagen.alto;
+    return this._imagen.alto * this.escala_y;
+  }
+    
+  set alto(nuevo){
+      this.escala_y = nuevo / this.alto;
   }
 
   set imagen(_i) {
@@ -313,26 +322,26 @@ class Actor extends Estudiante {
   }
 
   get derecha() {
-    return this.izquierda + (this.ancho * this.escala);
+    return this.izquierda + this.ancho;
   }
   set derecha(x) {
-    this.izquierda = x - (this.ancho * this.escala);
+    this.izquierda = x - this.ancho;
   }
 
   get arriba() {
-    return this.y + (this.centro_y * this.escala);
+    return this.y + (this.centro_y * this.escala_y);
   }
 
   set arriba(y) {
-    this.y = y - (this.centro_y * this.escala);
+    this.y = y - (this.centro_y * this.escala_y);
   }
 
   get abajo() {
-    return this.arriba - (this.alto * this.escala);
+    return this.arriba - this.alto;
   }
 
   set abajo(y) {
-    this.arriba = y + (this.alto * this.escala);
+    this.arriba = y + this.alto;
   }
 
   ejecutar_callbacks_clicks() {
