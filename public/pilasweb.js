@@ -15956,16 +15956,87 @@ var LlamadaProcedimiento = (function (_super) {
     LlamadaProcedimiento.prototype.iniciar = function (receptor) {
         _super.prototype.iniciar.call(this, receptor);
         this.nombre = this.argumentos.nombre;
-        var s = this.argumentos.procedimientos[this.nombre];
-        this.secuencia = new Secuencia({ secuencia: s });
+
+        // consigue parametros y nombre de esta definicion
+        var p = this.argumentos.procedimientos[this.nombre];
+
+        // construye el scope para los argumentos
+        var args_evaluados = {};
+        for (var i = 0; i < p.parametros.length; i++) {
+            var arg_evaluado = this.argumentos.argumentos[i]();
+            args_evaluados[p.parametros[i]] = arg_evaluado;
+        }
+        this.receptor.push_identificadores(args_evaluados);
+
+        // genera una nueva secuencia a ejecutar
+        this.secuencia = new Secuencia({ secuencia: p.secuencia });
         this.secuencia.iniciar(this.receptor);
     };
 
     LlamadaProcedimiento.prototype.actualizar = function () {
-        return this.secuencia.actualizar();
+        var termino = this.secuencia.actualizar();
+        if (termino) {
+            this.receptor.pop_identificadores();
+            return true;
+        }
     };
     return LlamadaProcedimiento;
 })(Comportamiento);
+
+/**
+* @class Expresion
+*
+* Representa la evaluacion de una expresion
+*
+* Recibe como argumento la expresión a evaluar
+*/
+var Expresion = (function (_super) {
+    __extends(Expresion, _super);
+    function Expresion() {
+        _super.apply(this, arguments);
+    }
+    Expresion.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.expresion = this.argumentos.expresion;
+    };
+
+    Expresion.prototype.actualizar = function () {
+        this.resultado = this.expresion();
+        return true;
+    };
+    return Expresion;
+})(Comportamiento);
+
+/**
+* @class LlamadaFuncion
+*
+* Representa una llamada a una funcion
+*
+* Recibe como argumentos el nombre de la funcion, el contexto de
+* definiciones de funciones y la expresión a retornar
+*/
+var LlamadaFuncion = (function (_super) {
+    __extends(LlamadaFuncion, _super);
+    function LlamadaFuncion() {
+        _super.apply(this, arguments);
+    }
+    LlamadaFuncion.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.nombre = this.argumentos.nombre;
+        var s = this.argumentos.funciones[this.nombre].secuencia;
+        this.secuencia = new Secuencia({ secuencia: s });
+        this.secuencia.iniciar(this.receptor);
+    };
+
+    LlamadaFuncion.prototype.actualizar = function () {
+        var termino = this.secuencia.actualizar();
+        if (termino) {
+            this.resultado = this.expresion();
+            return true;
+        }
+    };
+    return LlamadaFuncion;
+})(Expresion);
 
 /**
 * @class ConstructorDePrograma
@@ -15977,6 +16048,7 @@ var ConstructorDePrograma = (function () {
     function ConstructorDePrograma() {
         this.stack_secuencias = [];
         this.procedimientos = {};
+        this.funciones = {};
     }
     ConstructorDePrograma.prototype.empezar_secuencia = function () {
         this.stack_secuencias.push([]);
@@ -16017,29 +16089,57 @@ var ConstructorDePrograma = (function () {
         this.hacer(RepetirN, { secuencia: s, cantidad: n });
     };
 
-    ConstructorDePrograma.prototype.def_proc = function (n) {
+    ConstructorDePrograma.prototype.def_proc = function (n, params) {
         // no creo un comportamiento de
         // tipo secuencia como en las estructuras de control
         // porque dicho objeto deberia crearse recien
         // en la llamada al procedimiento
         var s = this.stack_secuencias.pop();
-        this.procedimientos[n] = s;
+        this.procedimientos[n] = { secuencia: s, parametros: params };
     };
 
-    ConstructorDePrograma.prototype.llamada_proc = function (n) {
+    ConstructorDePrograma.prototype.llamada_proc = function (n, proc_args) {
         var procs = this.procedimientos;
-        this.hacer(LlamadaProcedimiento, { nombre: n, procedimientos: procs });
+        this.hacer(LlamadaProcedimiento, { nombre: n, procedimientos: procs, argumentos: proc_args });
+    };
+
+    ConstructorDePrograma.prototype.def_func = function (n) {
+        var s = this.stack_secuencias.pop();
+        this.funciones[n] = s;
+    };
+
+    ConstructorDePrograma.prototype.llamada_func = function (n, exp) {
+        var funcs = this.funciones;
+        this.hacer(LlamadaFuncion, { nombre: n, funciones: funcs, expresion: exp });
     };
 
     ConstructorDePrograma.prototype.cambio_atributo = function (n, f) {
         this.hacer(CambiarAtributo, { nombre: n, valor: f });
     };
 
+    ConstructorDePrograma.prototype.inyectar_scopes = function (actor) {
+        actor.scope_identificadores = [{}];
+        actor.scope_actual = {};
+
+        actor.push_identificadores = function (ids) {
+            this.scope_identificadores.push(ids);
+            this.scope_actual = ids;
+        };
+
+        actor.pop_identificadores = function () {
+            this.scope_actual = this.scope_identificadores.pop();
+        };
+
+        actor.identificador = function (n) {
+            return this.scope_actual[n];
+        };
+    };
+
     ConstructorDePrograma.prototype.ejecutar = function (actor) {
         this.terminar_secuencia();
         var p = this.obtener_programa();
-        var ps = this.procedimientos;
-        actor.hacer_luego(Programa, { programa: p, procedimientos: ps });
+        this.inyectar_scopes(actor);
+        actor.hacer_luego(Programa, { programa: p });
     };
 
     ConstructorDePrograma.prototype.obtener_programa = function () {

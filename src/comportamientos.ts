@@ -477,13 +477,83 @@ class LlamadaProcedimiento extends Comportamiento {
   iniciar(receptor) {
     super.iniciar(receptor);
     this.nombre = this.argumentos.nombre;
-    var s = this.argumentos.procedimientos[this.nombre];
+
+    // consigue parametros y nombre de esta definicion
+    var p = this.argumentos.procedimientos[this.nombre];
+
+    // construye el scope para los argumentos
+    var args_evaluados = {};
+    for(var i = 0; i < p.parametros.length; i++) {
+      var arg_evaluado = this.argumentos.argumentos[i]();
+      args_evaluados[p.parametros[i]] = arg_evaluado;
+    }
+    this.receptor.push_identificadores(args_evaluados);
+
+    // genera una nueva secuencia a ejecutar
+    this.secuencia = new Secuencia({ secuencia: p.secuencia });
+    this.secuencia.iniciar(this.receptor);
+  }
+
+  actualizar() {
+    var termino = this.secuencia.actualizar();
+    if(termino) {
+      this.receptor.pop_identificadores();
+      return true;
+    }
+  }
+}
+
+/**
+ * @class Expresion
+ *
+ * Representa la evaluacion de una expresion
+ *
+ * Recibe como argumento la expresión a evaluar
+ */
+class Expresion extends Comportamiento {
+
+  expresion;
+  resultado;
+
+  iniciar(receptor) {
+    super.iniciar(receptor);
+    this.expresion = this.argumentos.expresion;
+  }
+
+  actualizar() {
+    this.resultado = this.expresion();
+    return true;
+  }
+}
+
+/**
+ * @class LlamadaFuncion
+ *
+ * Representa una llamada a una funcion
+ *
+ * Recibe como argumentos el nombre de la funcion, el contexto de
+ * definiciones de funciones y la expresión a retornar
+ */
+class LlamadaFuncion extends Expresion {
+
+  nombre;
+  funciones;
+  secuencia;
+
+  iniciar(receptor) {
+    super.iniciar(receptor);
+    this.nombre = this.argumentos.nombre;
+    var s = this.argumentos.funciones[this.nombre].secuencia;
     this.secuencia = new Secuencia({ secuencia: s });
     this.secuencia.iniciar(this.receptor);
   }
 
   actualizar() {
-    return this.secuencia.actualizar();
+    var termino = this.secuencia.actualizar();
+    if(termino) {
+      this.resultado = this.expresion();
+      return true;
+    }
   }
 }
 
@@ -497,10 +567,12 @@ class ConstructorDePrograma {
 
   stack_secuencias;
   procedimientos;
+  funciones;
 
   constructor() {
     this.stack_secuencias = [];
     this.procedimientos = {};
+    this.funciones = {};
   }
 
   empezar_secuencia() {
@@ -542,29 +614,57 @@ class ConstructorDePrograma {
     this.hacer(RepetirN, { secuencia: s, cantidad: n });
   }
 
-  def_proc(n) {
+  def_proc(n, params) {
     // no creo un comportamiento de
     // tipo secuencia como en las estructuras de control
     // porque dicho objeto deberia crearse recien
     // en la llamada al procedimiento
     var s = this.stack_secuencias.pop();
-    this.procedimientos[n] = s;
+    this.procedimientos[n] = { secuencia: s, parametros: params };
   }
 
-  llamada_proc(n) {
+  llamada_proc(n, proc_args) {
     var procs = this.procedimientos;
-    this.hacer(LlamadaProcedimiento, { nombre: n, procedimientos: procs});
+    this.hacer(LlamadaProcedimiento, { nombre: n, procedimientos: procs, argumentos: proc_args });
+  }
+
+  def_func(n) {
+    var s = this.stack_secuencias.pop();
+    this.funciones[n] = s;
+  }
+
+  llamada_func(n, exp) {
+    var funcs = this.funciones;
+    this.hacer(LlamadaFuncion, { nombre: n, funciones: funcs, expresion: exp });
   }
 
   cambio_atributo(n, f) {
     this.hacer(CambiarAtributo, { nombre: n, valor: f });
   }
 
+  inyectar_scopes(actor) {
+    actor.scope_identificadores = [{}];
+    actor.scope_actual = {};
+
+    actor.push_identificadores = function(ids) {
+      this.scope_identificadores.push(ids);
+      this.scope_actual = ids;
+    }
+
+    actor.pop_identificadores = function() {
+      this.scope_actual = this.scope_identificadores.pop();
+    }
+
+    actor.identificador = function(n) {
+      return this.scope_actual[n];
+    }
+  }
+
   ejecutar(actor) {
     this.terminar_secuencia();
     var p = this.obtener_programa();
-    var ps = this.procedimientos;
-    actor.hacer_luego(Programa, { programa: p, procedimientos: ps });
+    this.inyectar_scopes(actor);
+    actor.hacer_luego(Programa, { programa: p });
   }
 
   obtener_programa() {
