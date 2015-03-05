@@ -290,7 +290,7 @@ class Actor extends Estudiante {
   }
     
   set ancho(nuevo){
-      this.escala_x = nuevo / this.ancho;
+      this.escala_x = nuevo / this._imagen.ancho;
   }
     
   get alto() {
@@ -298,7 +298,7 @@ class Actor extends Estudiante {
   }
     
   set alto(nuevo){
-      this.escala_y = nuevo / this.alto;
+      this.escala_y = nuevo / this._imagen.alto;
   }
 
   set imagen(_i) {

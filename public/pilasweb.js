@@ -13575,7 +13575,7 @@ var Actor = (function (_super) {
             return this._imagen.ancho * this.escala_x;
         },
         set: function (nuevo) {
-            this.escala_x = nuevo / this.ancho;
+            this.escala_x = nuevo / this._imagen.ancho;
         },
         enumerable: true,
         configurable: true
@@ -13587,7 +13587,7 @@ var Actor = (function (_super) {
             return this._imagen.alto * this.escala_y;
         },
         set: function (nuevo) {
-            this.escala_y = nuevo / this.alto;
+            this.escala_y = nuevo / this._imagen.alto;
         },
         enumerable: true,
         configurable: true
