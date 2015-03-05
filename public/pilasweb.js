@@ -13572,18 +13572,27 @@ var Actor = (function (_super) {
 
     Object.defineProperty(Actor.prototype, "ancho", {
         get: function () {
-            return this._imagen.ancho;
+            return this._imagen.ancho * this.escala_x;
+        },
+        set: function (nuevo) {
+            this.escala_x = nuevo / this.ancho;
         },
         enumerable: true,
         configurable: true
     });
+
+
     Object.defineProperty(Actor.prototype, "alto", {
         get: function () {
-            return this._imagen.alto;
+            return this._imagen.alto * this.escala_y;
+        },
+        set: function (nuevo) {
+            this.escala_y = nuevo / this.alto;
         },
         enumerable: true,
         configurable: true
     });
+
 
     Object.defineProperty(Actor.prototype, "imagen", {
         set: function (_i) {
@@ -13615,10 +13624,10 @@ var Actor = (function (_super) {
 
     Object.defineProperty(Actor.prototype, "derecha", {
         get: function () {
-            return this.izquierda + (this.ancho * this.escala);
+            return this.izquierda + this.ancho;
         },
         set: function (x) {
-            this.izquierda = x - (this.ancho * this.escala);
+            this.izquierda = x - this.ancho;
         },
         enumerable: true,
         configurable: true
@@ -13626,10 +13635,10 @@ var Actor = (function (_super) {
 
     Object.defineProperty(Actor.prototype, "arriba", {
         get: function () {
-            return this.y + (this.centro_y * this.escala);
+            return this.y + (this.centro_y * this.escala_y);
         },
         set: function (y) {
-            this.y = y - (this.centro_y * this.escala);
+            this.y = y - (this.centro_y * this.escala_y);
         },
         enumerable: true,
         configurable: true
@@ -13638,10 +13647,10 @@ var Actor = (function (_super) {
 
     Object.defineProperty(Actor.prototype, "abajo", {
         get: function () {
-            return this.arriba - (this.alto * this.escala);
+            return this.arriba - this.alto;
         },
         set: function (y) {
-            this.arriba = y + (this.alto * this.escala);
+            this.arriba = y + this.alto;
         },
         enumerable: true,
         configurable: true
