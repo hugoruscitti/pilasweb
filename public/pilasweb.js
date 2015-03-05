@@ -15808,7 +15808,7 @@ var Alternativa = (function (_super) {
     Alternativa.prototype.actualizar = function () {
         if (!this.ejecutado) {
             this.ejecutado = true;
-            if (this.condicion(this.receptor)) {
+            if (this.condicion()) {
                 this.rama_elegida = this.rama_entonces;
             } else {
                 this.rama_elegida = this.rama_sino;
@@ -15850,7 +15850,7 @@ var RepetirHasta = (function (_super) {
     RepetirHasta.prototype.actualizar = function () {
         if (this.evaluar_condicion) {
             this.evaluar_condicion = false;
-            if (this.condicion(this.receptor)) {
+            if (this.condicion()) {
                 this.evaluar_condicion = true; // se resetea antes de salir, para volvese a evaluar
                 return true;
             }
@@ -15888,7 +15888,7 @@ var RepetirN = (function (_super) {
     RepetirN.prototype.actualizar = function () {
         if (this.volver_a_evaluar) {
             this.volver_a_evaluar = false;
-            this.cantidad_actual = this.cantidad(this.receptor);
+            this.cantidad_actual = this.cantidad();
         }
 
         if (this.cantidad_actual == 0) {
@@ -15923,10 +15923,37 @@ var CambiarAtributo = (function (_super) {
     };
 
     CambiarAtributo.prototype.actualizar = function () {
-        this.receptor[this.nombre] = this.funcion_valor(this.receptor);
+        this.receptor[this.nombre] = this.funcion_valor();
         return true;
     };
     return CambiarAtributo;
+})(Comportamiento);
+
+/**
+* @class LlamadaProcedimiento
+*
+* Representa una llamada a un procedimiento
+*
+* Recibe como argumentos el nombre del procedimiento y el contexto de
+* definiciones
+*/
+var LlamadaProcedimiento = (function (_super) {
+    __extends(LlamadaProcedimiento, _super);
+    function LlamadaProcedimiento() {
+        _super.apply(this, arguments);
+    }
+    LlamadaProcedimiento.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.nombre = this.argumentos.nombre;
+        var s = this.argumentos.procedimientos[this.nombre];
+        this.secuencia = new Secuencia({ secuencia: s });
+        this.secuencia.iniciar(this.receptor);
+    };
+
+    LlamadaProcedimiento.prototype.actualizar = function () {
+        return this.secuencia.actualizar();
+    };
+    return LlamadaProcedimiento;
 })(Comportamiento);
 
 /**
@@ -15938,6 +15965,7 @@ var CambiarAtributo = (function (_super) {
 var ConstructorDePrograma = (function () {
     function ConstructorDePrograma() {
         this.stack_secuencias = [];
+        this.procedimientos = {};
     }
     ConstructorDePrograma.prototype.empezar_secuencia = function () {
         this.stack_secuencias.push([]);
@@ -15978,6 +16006,20 @@ var ConstructorDePrograma = (function () {
         this.hacer(RepetirN, { secuencia: s, cantidad: n });
     };
 
+    ConstructorDePrograma.prototype.def_proc = function (n) {
+        // no creo un comportamiento de
+        // tipo secuencia como en las estructuras de control
+        // porque dicho objeto deberia crearse recien
+        // en la llamada al procedimiento
+        var s = this.stack_secuencias.pop();
+        this.procedimientos[n] = s;
+    };
+
+    ConstructorDePrograma.prototype.llamada_proc = function (n) {
+        var procs = this.procedimientos;
+        this.hacer(LlamadaProcedimiento, { nombre: n, procedimientos: procs });
+    };
+
     ConstructorDePrograma.prototype.cambio_atributo = function (n, f) {
         this.hacer(CambiarAtributo, { nombre: n, valor: f });
     };
@@ -15985,7 +16027,8 @@ var ConstructorDePrograma = (function () {
     ConstructorDePrograma.prototype.ejecutar = function (actor) {
         this.terminar_secuencia();
         var p = this.obtener_programa();
-        actor.hacer_luego(Programa, { programa: p });
+        var ps = this.procedimientos;
+        actor.hacer_luego(Programa, { programa: p, procedimientos: ps });
     };
 
     ConstructorDePrograma.prototype.obtener_programa = function () {

@@ -50,7 +50,7 @@ class Avanzar extends Comportamiento {
   iniciar(receptor) {
     super.iniciar(receptor);
     this.pasos = Math.abs(this.argumentos.pasos);
-    this.velocidad = this.argumentos.velocidad || 5;   
+    this.velocidad = this.argumentos.velocidad || 5;
     var rotacion_en_radianes = pilas.utils.convertir_a_radianes(-this.receptor.rotacion);
     this.dx = Math.cos(rotacion_en_radianes);
     this.dy = Math.sin(rotacion_en_radianes);
@@ -174,7 +174,7 @@ class Orbitar extends Comportamiento {
 
   iniciar(receptor) {
     this.receptor = receptor;
-    this.punto_de_orbita_x = this.argumentos.punto_de_orbita_x || 0; 
+    this.punto_de_orbita_x = this.argumentos.punto_de_orbita_x || 0;
     this.punto_de_orbita_y = this.argumentos.punto_de_orbita_y || 0;
     this.radio = this.argumentos.radio || 10;
     this.velocidad = this.argumentos.velocidad || .0001;
@@ -196,10 +196,10 @@ class Orbitar extends Comportamiento {
   }
 
   mover_astro() {
-    this.receptor.x = this.punto_de_orbita_x + 
+    this.receptor.x = this.punto_de_orbita_x +
     (Math.cos(pilas.utils.convertir_a_grados(this.angulo)) * this.radio);
 
-    this.receptor.y = this.punto_de_orbita_y - 
+    this.receptor.y = this.punto_de_orbita_y -
     (Math.sin(pilas.utils.convertir_a_grados(this.angulo)) * this.radio);
   }
 
@@ -274,7 +274,7 @@ class CaminaDerecha extends CaminarBase {
  * @class Secuencia
  *
  * Representa una secuencia de comportamientos que un actor realiza de forma ordenada.
- * 
+ *
  * Espera una lista de comportamientos.
  */
 class Secuencia extends Comportamiento {
@@ -288,7 +288,7 @@ class Secuencia extends Comportamiento {
     this.secuencia = this.argumentos.secuencia;
     this.reiniciar = true;
   }
-  
+
   actualizar() {
     if(this.reiniciar) {
       this.reiniciar = false;
@@ -339,19 +339,19 @@ class Alternativa extends Comportamiento {
   actualizar() {
     if(!this.ejecutado) {
       this.ejecutado = true;
-      if(this.condicion(this.receptor)) {
-        this.rama_elegida = this.rama_entonces;      
+      if(this.condicion()) {
+        this.rama_elegida = this.rama_entonces;
       } else {
         this.rama_elegida = this.rama_sino;
       }
       this.rama_elegida.iniciar(this.receptor);
     }
-    
+
     var finished = this.rama_elegida.actualizar();
     if(finished) {
       // para que se vuelva a evaluar la condicion si vuelven a llamar a este comportamiento
       this.ejecutado = false;
-             
+
       return true;
     }
   }
@@ -378,19 +378,19 @@ class RepetirHasta extends Comportamiento {
     this.secuencia.iniciar(receptor);
     this.evaluar_condicion = true;
   }
-  
+
   actualizar() {
     if(this.evaluar_condicion) {
       this.evaluar_condicion = false;
-      if(this.condicion(this.receptor)) { // chequea si corta el bucle
+      if(this.condicion()) { // chequea si corta el bucle
         this.evaluar_condicion = true; // se resetea antes de salir, para volvese a evaluar
         return true;
       }
     }
-    
+
     var termino = this.secuencia.actualizar();
 
-    if(termino) { 
+    if(termino) {
       this.evaluar_condicion = true;
     }
   }
@@ -421,14 +421,14 @@ class RepetirN extends Comportamiento {
   actualizar() {
     if(this.volver_a_evaluar) {
       this.volver_a_evaluar = false;
-      this.cantidad_actual = this.cantidad(this.receptor);
+      this.cantidad_actual = this.cantidad();
     }
-  
+
     if(this.cantidad_actual == 0) {
       this.volver_a_evaluar = true;
       return true;
     }
-    
+
     var termino = this.secuencia.actualizar();
     if(termino) {
       this.cantidad_actual--;
@@ -455,8 +455,35 @@ class CambiarAtributo extends Comportamiento {
   }
 
   actualizar() {
-    this.receptor[this.nombre] = this.funcion_valor(this.receptor);
+    this.receptor[this.nombre] = this.funcion_valor();
     return true;
+  }
+}
+
+/**
+ * @class LlamadaProcedimiento
+ *
+ * Representa una llamada a un procedimiento
+ *
+ * Recibe como argumentos el nombre del procedimiento y el contexto de
+ * definiciones
+ */
+class LlamadaProcedimiento extends Comportamiento {
+
+  nombre;
+  procedimientos;
+  secuencia;
+
+  iniciar(receptor) {
+    super.iniciar(receptor);
+    this.nombre = this.argumentos.nombre;
+    var s = this.argumentos.procedimientos[this.nombre];
+    this.secuencia = new Secuencia({ secuencia: s });
+    this.secuencia.iniciar(this.receptor);
+  }
+
+  actualizar() {
+    return this.secuencia.actualizar();
   }
 }
 
@@ -469,15 +496,17 @@ class CambiarAtributo extends Comportamiento {
 class ConstructorDePrograma {
 
   stack_secuencias;
-  
+  procedimientos;
+
   constructor() {
     this.stack_secuencias = [];
+    this.procedimientos = {};
   }
-  
+
   empezar_secuencia() {
     this.stack_secuencias.push([]);
   }
-  
+
   hacer(comportamiento, argumentos) {
     this.stack_secuencias[this.stack_secuencias.length - 1].push(new comportamiento(argumentos));
   }
@@ -486,19 +515,19 @@ class ConstructorDePrograma {
     var s = this.stack_secuencias.pop();
     this.stack_secuencias.push(new Secuencia({ secuencia: s }));
   }
-  
+
   repetir_hasta(c) {
     this.terminar_secuencia();
     var s = this.stack_secuencias.pop();
-    this.hacer(RepetirHasta, { secuencia: s, condicion: c });  
+    this.hacer(RepetirHasta, { secuencia: s, condicion: c });
   }
-  
+
   alternativa_si(c) {
     this.terminar_secuencia();
     var s = this.stack_secuencias.pop();
-    this.hacer(Alternativa, { entonces: s, sino: new Secuencia({ secuencia: [] }), condicion: c });  
+    this.hacer(Alternativa, { entonces: s, sino: new Secuencia({ secuencia: [] }), condicion: c });
   }
-  
+
   alternativa_sino(c) {
     this.terminar_secuencia();
     var s2 = this.stack_secuencias.pop();
@@ -506,23 +535,38 @@ class ConstructorDePrograma {
     var s1 = this.stack_secuencias.pop();
     this.hacer(Alternativa, { entonces: s1, sino: s2, condicion: c });
   }
-  
+
   repetirN(n) {
     this.terminar_secuencia();
     var s = this.stack_secuencias.pop();
-    this.hacer(RepetirN, { secuencia: s, cantidad: n })
+    this.hacer(RepetirN, { secuencia: s, cantidad: n });
   }
-  
+
+  def_proc(n) {
+    // no creo un comportamiento de
+    // tipo secuencia como en las estructuras de control
+    // porque dicho objeto deberia crearse recien
+    // en la llamada al procedimiento
+    var s = this.stack_secuencias.pop();
+    this.procedimientos[n] = s;
+  }
+
+  llamada_proc(n) {
+    var procs = this.procedimientos;
+    this.hacer(LlamadaProcedimiento, { nombre: n, procedimientos: procs});
+  }
+
   cambio_atributo(n, f) {
-    this.hacer(CambiarAtributo, { nombre: n, valor: f });  
+    this.hacer(CambiarAtributo, { nombre: n, valor: f });
   }
-  
+
   ejecutar(actor) {
     this.terminar_secuencia();
     var p = this.obtener_programa();
-    actor.hacer_luego(Programa, { programa: p });
+    var ps = this.procedimientos;
+    actor.hacer_luego(Programa, { programa: p, procedimientos: ps });
   }
-  
+
   obtener_programa() {
     return this.stack_secuencias.pop();
   }
@@ -538,14 +582,14 @@ class Programa extends Comportamiento {
     this.programa = this.argumentos.programa;
     this.programa.iniciar(this.receptor);
   }
-  
+
   actualizar() {
     var programa_terminado = this.programa.actualizar()
     if(programa_terminado) {
       return true;
     }
   }
-  
+
 }
 
 /**
