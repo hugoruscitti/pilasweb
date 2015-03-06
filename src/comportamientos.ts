@@ -455,7 +455,7 @@ class CambiarAtributo extends Comportamiento {
   }
 
   actualizar() {
-    this.receptor[this.nombre] = this.funcion_valor();
+    this.receptor.set_variable(this.nombre, this.funcion_valor());
     return true;
   }
 }
@@ -660,15 +660,26 @@ class ConstructorDePrograma {
     }
   }
 
-  ejecutar(actor) {
-    this.terminar_secuencia();
-    var p = this.obtener_programa();
-    this.inyectar_scopes(actor);
-    actor.hacer_luego(Programa, { programa: p });
+  inyectar_atributos(actor) {
+    actor.variables = {};
+
+    actor.set_variable = function(v, x) {
+      actor.variables[v] = x;
+    }
+
+    actor.variable = function(v) {
+      return actor.variables[v];
+    }
   }
 
-  obtener_programa() {
-    return this.stack_secuencias.pop();
+  ejecutar(actor) {
+    // obtiene el programa
+    this.terminar_secuencia();
+    var p = this.stack_secuencias.pop();
+    // inyecta diccionarios de scopes y atributos
+    this.inyectar_scopes(actor);
+    this.inyectar_atributos(actor);
+    actor.hacer_luego(Programa, { programa: p });
   }
 
 }
