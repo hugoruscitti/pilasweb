@@ -1,24 +1,26 @@
+/// <reference path="actores.ts" />
+/// <reference path="utils.ts" />
+/// <reference path="grupo.ts" />
+/// <reference path="fondos.ts" />
+/// <reference path="imagenes.ts" />
+/// <reference path="mundo.ts" />
+/// <reference path="escenas.ts" />
+/// <reference path="interpolaciones.ts" />
+/// <reference path="habilidades.ts" />
+/// <reference path="comportamientos.ts" />
+/// <reference path="colisiones.ts" />
+/// <reference path="colores.ts" />
+/// <reference path="tareas.ts" />
+/// <reference path="sonidos.ts" />
+/// <reference path="evento.ts" />
+/// <reference path="rutinas.ts" />
+
 declare var pilas;
 declare var window: Window;
 declare var pilasengine;
 declare var PxLoader;
 declare var createjs;
 
-/// <reference path="actores.ts />
-/// <reference path="utils.ts />
-/// <reference path="grupo.ts />
-/// <reference path="fondos.ts />
-/// <reference path="imagenes.ts />
-/// <reference path="mundo.ts />
-/// <reference path="escenas.ts />
-/// <reference path="interpolaciones.ts />
-/// <reference path="habilidades.ts />
-/// <reference path="comportamientos.ts />
-/// <reference path="colisiones.ts />
-/// <reference path="colores.ts />
-/// <reference path="tareas.ts />
-/// <reference path="sonidos.ts />
-/// <reference path="evento.ts />
 
 
 /**

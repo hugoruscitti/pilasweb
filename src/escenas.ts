@@ -1,3 +1,8 @@
+/// <reference path="control.ts" />
+/// <reference path="camara.ts" />
+/// <reference path="evento.ts" />
+/// <reference path="pilas.ts" />
+	
 class escena {
   Base;
   Normal;
