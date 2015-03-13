@@ -1,4 +1,5 @@
 /// <reference path="actor.ts"/>
+/// <reference path="../pilas.ts"/>
 
 class Aceituna extends Actor {
   cuadro_normal;

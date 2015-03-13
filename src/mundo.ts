@@ -1,3 +1,7 @@
+/// <reference path="gestor_escenas.ts" />
+/// <reference path="depurador.ts" />
+/// <reference path="pilas.ts" />
+	
 class Mundo {
   gestor_escenas;
   depurador;

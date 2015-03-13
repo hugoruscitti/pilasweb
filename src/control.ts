@@ -1,3 +1,5 @@
+/// <reference path="simbolos.ts" />
+/// <reference path="pilas.ts" />
 
 /**
  * @class Control

@@ -1,3 +1,6 @@
+/// <reference path="fisica.ts" />
+/// <reference path="pilas.ts" />
+
 /**
  * @class Habilidad
  *
