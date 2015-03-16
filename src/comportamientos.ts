@@ -455,6 +455,30 @@ class CambiarAtributo extends Comportamiento {
   }
 
   actualizar() {
+    this.receptor.set_atributo(this.nombre, this.funcion_valor());
+    return true;
+  }
+}
+
+/**
+ * @class CambiarVariableLocal
+ *
+ * Representa el cambio de una variable local del procedimiento actual
+ *
+ * Recibe como argumento una funcion cuyo resultado sera guardado como valor del atributo
+ */
+class CambiarVariableLocal extends Comportamiento {
+
+  nombre;
+  funcion_valor;
+
+  iniciar(receptor) {
+    super.iniciar(receptor);
+    this.nombre = this.argumentos.nombre;
+    this.funcion_valor = this.argumentos.valor;
+  }
+
+  actualizar() {
     this.receptor.set_variable(this.nombre, this.funcion_valor());
     return true;
   }
@@ -487,7 +511,10 @@ class LlamadaProcedimiento extends Comportamiento {
       var arg_evaluado = this.argumentos.argumentos[i]();
       args_evaluados[p.parametros[i]] = arg_evaluado;
     }
-    this.receptor.push_identificadores(args_evaluados);
+    this.receptor.push_parametros(args_evaluados);
+
+    // inicializa el scope de variables locales
+    this.receptor.push_variables({});
 
     // genera una nueva secuencia a ejecutar
     this.secuencia = new Secuencia({ secuencia: p.secuencia });
@@ -497,7 +524,8 @@ class LlamadaProcedimiento extends Comportamiento {
   actualizar() {
     var termino = this.secuencia.actualizar();
     if(termino) {
-      this.receptor.pop_identificadores();
+      this.receptor.pop_parametros();
+      this.receptor.pop_variables();
       return true;
     }
   }
@@ -642,33 +670,65 @@ class ConstructorDePrograma {
     this.hacer(CambiarAtributo, { nombre: n, valor: f });
   }
 
+  cambio_variable(n, f) {
+    this.hacer(CambiarVariableLocal, { nombre: n, valor: f });
+  }
+
   inyectar_scopes(actor) {
-    actor.scope_identificadores = [{}];
-    actor.scope_actual = {};
+    this.inyectar_parametros(actor);
+    this.inyectar_atributos(actor);
+    this.inyectar_variables_locales(actor);
+  }
 
-    actor.push_identificadores = function(ids) {
-      this.scope_identificadores.push(ids);
-      this.scope_actual = ids;
+  inyectar_parametros(actor) {
+    actor.scope_parametros = [{}];
+    actor.scope_parametros_actual = {};
+
+    actor.push_parametros = function(ids) {
+      this.scope_parametros.push(ids);
+      this.scope_parametros_actual = ids;
     }
 
-    actor.pop_identificadores = function() {
-      this.scope_actual = this.scope_identificadores.pop();
+    actor.pop_parametros = function() {
+      this.scope_parametros_actual = this.scope_parametros.pop();
     }
 
-    actor.identificador = function(n) {
-      return this.scope_actual[n];
+    actor.parametro = function(n) {
+      return this.scope_parametros_actual[n];
+    }
+  }
+
+  inyectar_variables_locales(actor) {
+    actor.scope_var_locales = [{}];
+    actor.scope_var_locales_actual = {};
+
+    actor.push_variables = function(ids) {
+      this.scope_var_locales.push(ids);
+      this.scope_var_locales_actual = ids;
+    }
+
+    actor.pop_variables = function() {
+      this.scope_var_locales_actual = this.scope_var_locales.pop();
+    }
+
+    actor.set_variable = function(v, x) {
+      actor.scope_var_locales_actual[v] = x;
+    }
+
+    actor.variable = function(n) {
+      return this.scope_var_locales_actual[n];
     }
   }
 
   inyectar_atributos(actor) {
-    actor.variables = {};
+    actor.atributos_programa = {};
 
-    actor.set_variable = function(v, x) {
-      actor.variables[v] = x;
+    actor.set_atributo = function(v, x) {
+      actor.atributos_programa[v] = x;
     }
 
-    actor.variable = function(v) {
-      return actor.variables[v];
+    actor.atributo = function(v) {
+      return actor.atributos_programa[v];
     }
   }
 
@@ -676,9 +736,8 @@ class ConstructorDePrograma {
     // obtiene el programa
     this.terminar_secuencia();
     var p = this.stack_secuencias.pop();
-    // inyecta diccionarios de scopes y atributos
+    // inyecta scopes para atributos, variables locales y parametros
     this.inyectar_scopes(actor);
-    this.inyectar_atributos(actor);
     actor.hacer_luego(Programa, { programa: p });
   }
 
