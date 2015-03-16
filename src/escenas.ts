@@ -52,10 +52,12 @@ class Base {
   actualizar() {
     this.fisica.actualizar();
     this.tareas.actualizar();
+    
+    var copiaActores = this.actores.slice();
 
     for (var i=0; i<this.actores.length; i++) {
-      this.actores[i].pre_actualizar();
-      this.actores[i].actualizar();
+      copiaActores[i].pre_actualizar();
+      copiaActores[i].actualizar();
     }
 
     this.actualiza.emitir();
