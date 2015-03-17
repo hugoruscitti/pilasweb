@@ -22,6 +22,7 @@ docs/html/*
 npm-debug.log
 
 ide/public
+public/pilasweb.js
 
 dist/
 ide/docs/docs/build/html
