@@ -26,3 +26,5 @@ public/pilasweb.js
 
 dist/
 ide/docs/docs/build/html
+
+.project
