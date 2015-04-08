@@ -26,10 +26,10 @@ class Sonidos {
   }
 
   private cargar_recursos() {
-    this.cargar_recurso('smile.ogg');
-    this.cargar_recurso('shout.ogg');
-    this.cargar_recurso('saltar.wav');
-    this.cargar_recurso('blabla.wav');
+    this.cargar_recurso('audio/smile.ogg');
+    this.cargar_recurso('audio/shout.ogg');
+    this.cargar_recurso('audio/saltar.wav');
+    this.cargar_recurso('audio/blabla.wav');
     this.preload.loadManifest(this.recursos);
   }
 
