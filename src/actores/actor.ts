@@ -118,7 +118,9 @@ class Actor extends Estudiante {
     centro. */
 
     if (this.sprite !== undefined) {
-      this.sprite.image = this._imagen.instanciar().image;
+      var sprite = this._imagen.instanciar();
+      this.sprite.image = sprite.image;
+      this.sprite.sourceRect = sprite.sourceRect;
     } else {
       this.sprite = this._imagen.instanciar();
     }
@@ -288,27 +290,32 @@ class Actor extends Estudiante {
   get ancho() {
     return this._imagen.ancho * this.escala_x;
   }
-    
+
   set ancho(nuevo){
       this.escala_x = nuevo / this._imagen.ancho;
   }
-    
+
   get alto() {
     return this._imagen.alto * this.escala_y;
   }
-    
+
   set alto(nuevo){
       this.escala_y = nuevo / this._imagen.alto;
   }
 
   set imagen(_i) {
-    if (_i.substring)
+    if (_i.substring) {
       this._imagen = pilas.imagenes.cargar(_i)
+    }
     else
       this._imagen = _i;
 
     this._crear_sprite();
     this.centro = ['centro', 'centro'];
+  }
+
+  get imagen() {
+    return this._imagen;
   }
 
   /* TODO: hacer que se puedan interpolar

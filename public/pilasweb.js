@@ -13345,7 +13345,9 @@ var Actor = (function (_super) {
         la imagen actual, y vuelve a definir el punto de control en el
         centro. */
         if (this.sprite !== undefined) {
-            this.sprite.image = this._imagen.instanciar().image;
+            var sprite = this._imagen.instanciar();
+            this.sprite.image = sprite.image;
+            this.sprite.sourceRect = sprite.sourceRect;
         } else {
             this.sprite = this._imagen.instanciar();
         }
@@ -13594,11 +13596,15 @@ var Actor = (function (_super) {
     });
 
 
+
     Object.defineProperty(Actor.prototype, "imagen", {
+        get: function () {
+            return this._imagen;
+        },
         set: function (_i) {
-            if (_i.substring)
+            if (_i.substring) {
                 this._imagen = pilas.imagenes.cargar(_i);
-            else
+            } else
                 this._imagen = _i;
 
             this._crear_sprite();
@@ -13969,7 +13975,7 @@ var Fondo = (function (_super) {
 var Tarde = (function (_super) {
     __extends(Tarde, _super);
     function Tarde() {
-        _super.call(this, "fondos/tarde.jpg", 0, 0);
+        _super.call(this, "fondos.tarde.jpg", 0, 0);
         this.z = 1000;
         this.y = 120; // TODO: temporal solo para tutorial.
     }
@@ -14031,7 +14037,7 @@ var PastoCuadriculado = (function (_super) {
 var Laberinto1 = (function (_super) {
     __extends(Laberinto1, _super);
     function Laberinto1() {
-        _super.call(this, 'fondos/laberinto1.png', 0, 0);
+        _super.call(this, 'fondos.laberinto1.png', 0, 0);
     }
     Laberinto1.prototype.actualizar = function () {
     };
@@ -14050,23 +14056,12 @@ var Fondos = (function () {
 })();
 var Imagenes = (function () {
     function Imagenes(callback_onready, opciones) {
-        this.nombresImagenes = [
-            'aceituna.png', 'aceituna_grita.png', 'aceituna_risa.png', 'aceituna_burla.png',
-            'banana.png', 'bomba.png', 'caja.png', 'explosion.png',
-            'sin_imagen.png',
-            'plano.png', 'alien.png', 'alien_marron.png', 'tuerca.png', 'nave.png',
-            'piedra_chica.png', 'piedra_grande.png', 'piedra_media.png', 'ejes.png',
-            'disparos/misil.png', 'rpg/maton.png', 'pasto.png', 'pasto_cuadriculado.png', 'globo.png', 'bloque.png', 'manzana_chica.png', 'invisible.png', 'cofre.png', 'llave.png', 'cesto.png', 'pelota.png', 'zanahoria_normal.png', 'zanahoria_sonrie.png', 'boton/boton_normal.png', 'boton/boton_over.png', 'boton/boton_press.png',
-            'fondos/tarde.jpg', 'fondos/laberinto1.png', 'monkey_normal.png', 'monkey_smile.png', 'monkey_shout.png', 'tortuga.png',
-            'pingu.png', 'sombra.png',
-            'cooperativista/alerta.png', 'cooperativista/camina.png', 'cooperativista/camina_sujeta.png', 'cooperativista/ok.png', 'cooperativista/parado.png', 'cooperativista/parado_sujeta.png', 'cooperativista/trabajando.png'
-        ];
         this.recursos = {};
         this.data_path = opciones.data_path;
         this.loader = new PxLoader();
         this.imagenes_solicitadas = 0;
 
-        this.nombresImagenes = this.nombresImagenes.concat(opciones.imagenesExtra);
+        this.nombresImagenes = [].concat(opciones.imagenesExtra);
         this.cargar_recursos();
 
         //loader.addProgressListener(function (e) {
@@ -14084,28 +14079,570 @@ var Imagenes = (function () {
     }
     Imagenes.prototype.cargar_recursos = function () {
         var _this = this;
+
         this.nombresImagenes.forEach(function (nombre) {
             _this.cargar_recurso(nombre);
         });
+
+        this.cargar_recurso('fondos.tarde.jpg');
+        this.cargar_recurso('fondos.laberinto1.png');
+        this.cargar_recurso('fondos.nubes.png');
+
+        var data = {
+            "frames": [
+                {
+                    "filename": "aceituna.png",
+                    "frame": { "x": 1461, "y": 2, "w": 37, "h": 37 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 37, "h": 37 },
+                    "sourceSize": { "w": 37, "h": 37 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "aceituna_burla.png",
+                    "frame": { "x": 1588, "y": 2, "w": 38, "h": 43 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 43 },
+                    "sourceSize": { "w": 38, "h": 43 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "aceituna_grita.png",
+                    "frame": { "x": 1628, "y": 2, "w": 38, "h": 43 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 43 },
+                    "sourceSize": { "w": 38, "h": 43 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "aceituna_risa.png",
+                    "frame": { "x": 1549, "y": 2, "w": 37, "h": 37 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 37, "h": 37 },
+                    "sourceSize": { "w": 37, "h": 37 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "alien.png",
+                    "frame": { "x": 2, "y": 519, "w": 2030, "h": 129 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 2030, "h": 129 },
+                    "sourceSize": { "w": 2030, "h": 129 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "alien_camina.png",
+                    "frame": { "x": 2, "y": 150, "w": 990, "h": 97 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 990, "h": 97 },
+                    "sourceSize": { "w": 990, "h": 97 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "alien_marron.png",
+                    "frame": { "x": 2, "y": 388, "w": 2030, "h": 129 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 2030, "h": 129 },
+                    "sourceSize": { "w": 2030, "h": 129 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "banana.png",
+                    "frame": { "x": 1668, "y": 2, "w": 80, "h": 45 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 80, "h": 45 },
+                    "sourceSize": { "w": 80, "h": 45 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "bascket.png",
+                    "frame": { "x": 388, "y": 52, "w": 49, "h": 50 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 49, "h": 50 },
+                    "sourceSize": { "w": 49, "h": 50 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "bloque.png",
+                    "frame": { "x": 713, "y": 2, "w": 25, "h": 27 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 27 },
+                    "sourceSize": { "w": 25, "h": 27 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "bomba.png",
+                    "frame": { "x": 610, "y": 52, "w": 136, "h": 63 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 136, "h": 63 },
+                    "sourceSize": { "w": 136, "h": 63 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "boton.boton_normal.png",
+                    "frame": { "x": 1258, "y": 2, "w": 127, "h": 32 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 127, "h": 32 },
+                    "sourceSize": { "w": 127, "h": 32 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "boton.boton_over.png",
+                    "frame": { "x": 1095, "y": 2, "w": 127, "h": 32 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 127, "h": 32 },
+                    "sourceSize": { "w": 127, "h": 32 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "boton.pboton_press.png",
+                    "frame": { "x": 966, "y": 2, "w": 127, "h": 32 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 127, "h": 32 },
+                    "sourceSize": { "w": 127, "h": 32 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "boton.tema.png",
+                    "frame": { "x": 426, "y": 2, "w": 285, "h": 25 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 285, "h": 25 },
+                    "sourceSize": { "w": 285, "h": 25 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "caja.png",
+                    "frame": { "x": 1846, "y": 2, "w": 48, "h": 48 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 48 },
+                    "sourceSize": { "w": 48, "h": 48 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "cesto.png",
+                    "frame": { "x": 748, "y": 52, "w": 82, "h": 79 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 82, "h": 79 },
+                    "sourceSize": { "w": 82, "h": 79 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "cofre.png",
+                    "frame": { "x": 301, "y": 2, "w": 100, "h": 18 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 100, "h": 18 },
+                    "sourceSize": { "w": 100, "h": 18 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "cooperativista.alerta.png",
+                    "frame": { "x": 1028, "y": 52, "w": 200, "h": 96 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 200, "h": 96 },
+                    "sourceSize": { "w": 200, "h": 96 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "cooperativista.camina.png",
+                    "frame": { "x": 1601, "y": 150, "w": 400, "h": 106 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 400, "h": 106 },
+                    "sourceSize": { "w": 400, "h": 106 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "cooperativista.camina_sujeta.png",
+                    "frame": { "x": 2, "y": 258, "w": 412, "h": 106 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 412, "h": 106 },
+                    "sourceSize": { "w": 412, "h": 106 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "cooperativista.ok.png",
+                    "frame": { "x": 1206, "y": 150, "w": 115, "h": 105 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 115, "h": 105 },
+                    "sourceSize": { "w": 115, "h": 105 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "cooperativista.parado.png",
+                    "frame": { "x": 1098, "y": 150, "w": 106, "h": 103 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 106, "h": 103 },
+                    "sourceSize": { "w": 106, "h": 103 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "cooperativista.parado_sujeta.png",
+                    "frame": { "x": 994, "y": 150, "w": 102, "h": 103 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 102, "h": 103 },
+                    "sourceSize": { "w": 102, "h": 103 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "cooperativista.trabajando.png",
+                    "frame": { "x": 1323, "y": 150, "w": 276, "h": 106 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 276, "h": 106 },
+                    "sourceSize": { "w": 276, "h": 106 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "disparos.misil.png",
+                    "frame": { "x": 62, "y": 2, "w": 94, "h": 17 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 94, "h": 17 },
+                    "sourceSize": { "w": 94, "h": 17 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "ejes.png",
+                    "frame": { "x": 1328, "y": 650, "w": 512, "h": 512 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 512, "h": 512 },
+                    "sourceSize": { "w": 512, "h": 512 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "explosion.png",
+                    "frame": { "x": 740, "y": 2, "w": 224, "h": 32 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 224, "h": 32 },
+                    "sourceSize": { "w": 224, "h": 32 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "globo.png",
+                    "frame": { "x": 496, "y": 52, "w": 112, "h": 60 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 112, "h": 60 },
+                    "sourceSize": { "w": 112, "h": 60 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "invisible.png",
+                    "frame": { "x": 2, "y": 2, "w": 8, "h": 8 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 8, "h": 8 },
+                    "sourceSize": { "w": 8, "h": 8 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "llave.png",
+                    "frame": { "x": 24, "y": 2, "w": 19, "h": 12 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 19, "h": 12 },
+                    "sourceSize": { "w": 19, "h": 12 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "manzana.png",
+                    "frame": { "x": 1288, "y": 258, "w": 111, "h": 116 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 111, "h": 116 },
+                    "sourceSize": { "w": 111, "h": 116 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "manzana_chica.png",
+                    "frame": { "x": 403, "y": 2, "w": 21, "h": 22 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 21, "h": 22 },
+                    "sourceSize": { "w": 21, "h": 22 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "monkey_normal.png",
+                    "frame": { "x": 1719, "y": 258, "w": 157, "h": 122 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 157, "h": 122 },
+                    "sourceSize": { "w": 157, "h": 122 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "monkey_shout.png",
+                    "frame": { "x": 1401, "y": 258, "w": 157, "h": 122 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 157, "h": 122 },
+                    "sourceSize": { "w": 157, "h": 122 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "monkey_smile.png",
+                    "frame": { "x": 1560, "y": 258, "w": 157, "h": 122 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 157, "h": 122 },
+                    "sourceSize": { "w": 157, "h": 122 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "nave.png",
+                    "frame": { "x": 1750, "y": 2, "w": 94, "h": 46 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 94, "h": 46 },
+                    "sourceSize": { "w": 94, "h": 46 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "nube1.png",
+                    "frame": { "x": 324, "y": 650, "w": 500, "h": 500 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 500, "h": 500 },
+                    "sourceSize": { "w": 500, "h": 500 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "nube2.png",
+                    "frame": { "x": 826, "y": 650, "w": 500, "h": 500 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 500, "h": 500 },
+                    "sourceSize": { "w": 500, "h": 500 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "pasto.png",
+                    "frame": { "x": 1224, "y": 2, "w": 32, "h": 32 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
+                    "sourceSize": { "w": 32, "h": 32 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "pasto_cuadriculado.png",
+                    "frame": { "x": 2, "y": 650, "w": 320, "h": 240 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 320, "h": 240 },
+                    "sourceSize": { "w": 320, "h": 240 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "pelota.png",
+                    "frame": { "x": 388, "y": 52, "w": 49, "h": 50 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 49, "h": 50 },
+                    "sourceSize": { "w": 49, "h": 50 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "piedra_chica.png",
+                    "frame": { "x": 45, "y": 2, "w": 15, "h": 14 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 15, "h": 14 },
+                    "sourceSize": { "w": 15, "h": 14 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "piedra_grande.png",
+                    "frame": { "x": 439, "y": 52, "w": 55, "h": 54 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 55, "h": 54 },
+                    "sourceSize": { "w": 55, "h": 54 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "piedra_media.png",
+                    "frame": { "x": 1424, "y": 2, "w": 35, "h": 36 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 35, "h": 36 },
+                    "sourceSize": { "w": 35, "h": 36 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "pingu.png",
+                    "frame": { "x": 416, "y": 258, "w": 870, "h": 116 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 870, "h": 116 },
+                    "sourceSize": { "w": 870, "h": 116 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "plano.png",
+                    "frame": { "x": 12, "y": 2, "w": 10, "h": 10 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 10, "h": 10 },
+                    "sourceSize": { "w": 10, "h": 10 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "rpg.maton.png",
+                    "frame": { "x": 2, "y": 52, "w": 384, "h": 48 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 384, "h": 48 },
+                    "sourceSize": { "w": 384, "h": 48 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "sin_imagen.png",
+                    "frame": { "x": 1878, "y": 258, "w": 128, "h": 128 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 128 },
+                    "sourceSize": { "w": 128, "h": 128 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "sombra.png",
+                    "frame": { "x": 158, "y": 2, "w": 141, "h": 18 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 141, "h": 18 },
+                    "sourceSize": { "w": 141, "h": 18 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "tortuga.png",
+                    "frame": { "x": 1500, "y": 2, "w": 47, "h": 37 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 47, "h": 37 },
+                    "sourceSize": { "w": 47, "h": 37 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "tuerca.png",
+                    "frame": { "x": 1387, "y": 2, "w": 35, "h": 35 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 35, "h": 35 },
+                    "sourceSize": { "w": 35, "h": 35 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "zanahoria_normal.png",
+                    "frame": { "x": 832, "y": 52, "w": 96, "h": 96 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 96, "h": 96 },
+                    "sourceSize": { "w": 96, "h": 96 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                },
+                {
+                    "filename": "zanahoria_sonrie.png",
+                    "frame": { "x": 930, "y": 52, "w": 96, "h": 96 },
+                    "rotated": false,
+                    "trimmed": false,
+                    "spriteSourceSize": { "x": 0, "y": 0, "w": 96, "h": 96 },
+                    "sourceSize": { "w": 96, "h": 96 },
+                    "pivot": { "x": 0.5, "y": 0.5 }
+                }],
+            "meta": {
+                "app": "http://www.codeandweb.com/texturepacker",
+                "version": "1.0",
+                "image": "sprites.png",
+                "format": "RGBA8888",
+                "size": { "w": 2034, "h": 1164 },
+                "scale": "1",
+                "smartupdate": "$TexturePacker:SmartUpdate:3b12a58e488f41d3d297aefa24fb1bb4:4e23d6bb409f81563584b1a9842693d4:1eabdf11f75e3a4fe3147baf7b5be24b$"
+            }
+        };
+
+        this.cargar_recursos_desde_spritesheet('sprites.png', data);
     };
 
     Imagenes.prototype.cargar_recurso = function (nombre) {
+        console.log(nombre);
         var path = this.data_path + '/' + nombre;
         this.recursos[nombre] = this.loader.addImage(path);
         this.imagenes_solicitadas += 1;
     };
 
-    Imagenes.prototype.cargar = function (nombre) {
+    Imagenes.prototype.cargar_recursos_desde_spritesheet = function (ruta_archivo, data) {
+        var sheet = this.loader.addImage(this.data_path + '/' + ruta_archivo);
+
+        var self = this;
+
+        data['frames'].forEach(function (item) {
+            var nombre = item.filename;
+            var path = self.data_path + '/' + nombre;
+            self.recursos[nombre] = {
+                type: "spritesheet",
+                sheet: sheet,
+                name: nombre,
+                frame: item.frame };
+            self.imagenes_solicitadas += 1;
+        });
+    };
+
+    Imagenes.prototype.es_spritesheet = function (imagen) {
+        return (imagen.type === 'spritesheet');
+    };
+
+    Imagenes.prototype.obtener_recurso = function (nombre) {
         if (nombre in this.recursos)
-            return new Imagen(this.recursos[nombre]);
+            return this.recursos[nombre];
         else
             throw "No se puede encontrar la imagen: '" + nombre + "' ¿ha sido pre-cargada en el archivo imagenes.ts?";
+    };
+
+    Imagenes.prototype.cargar = function (nombre) {
+        var imagen = this.obtener_recurso(nombre);
+
+        if (this.es_spritesheet(imagen))
+            return new ImagenDesdeSpritesheet(imagen);
+        else
+            return new Imagen(imagen);
     };
 
     Imagenes.prototype.cargar_grilla = function (nombre, columnas, filas) {
         if (typeof columnas === "undefined") { columnas = 1; }
         if (typeof filas === "undefined") { filas = 1; }
-        return new Grilla(this.recursos[nombre], columnas, filas);
+        var imagen = this.obtener_recurso(nombre);
+
+        if (this.es_spritesheet(imagen))
+            return new GrillaDesdeSpritesheet(this.recursos[nombre], columnas, filas);
+        else
+            return new Grilla(this.recursos[nombre], columnas, filas);
     };
 
     Imagenes.prototype.cargar_animacion = function (nombre, columnas, filas) {
@@ -14118,6 +14655,7 @@ var Imagenes = (function () {
 
 var Imagen = (function () {
     function Imagen(imagen) {
+        console.log("imagen", imagen);
         this.ruta = imagen;
         this.imagen = imagen;
     }
@@ -14147,6 +14685,35 @@ var Imagen = (function () {
     return Imagen;
 })();
 
+var ImagenDesdeSpritesheet = (function (_super) {
+    __extends(ImagenDesdeSpritesheet, _super);
+    function ImagenDesdeSpritesheet(data) {
+        _super.call(this, data.sheet);
+        this.frame = data.frame;
+    }
+    ImagenDesdeSpritesheet.prototype.instanciar = function () {
+        var image = new createjs.Bitmap(this.imagen);
+        image.sourceRect = new createjs.Rectangle(this.frame.x, this.frame.y, this.frame.w, this.frame.h);
+        return image;
+    };
+
+    Object.defineProperty(ImagenDesdeSpritesheet.prototype, "ancho", {
+        get: function () {
+            return this.frame.w;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImagenDesdeSpritesheet.prototype, "alto", {
+        get: function () {
+            return this.frame.h;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return ImagenDesdeSpritesheet;
+})(Imagen);
+
 var Grilla = (function (_super) {
     __extends(Grilla, _super);
     function Grilla(imagen, columnas, filas) {
@@ -14156,12 +14723,16 @@ var Grilla = (function (_super) {
         this.columnas = columnas;
         this.filas = filas;
         this.cuadro = 0;
+        this.frame = { x: 0, y: 0, w: this.imagen.width, h: this.imagen.height };
     }
     Grilla.prototype.instanciar = function () {
         var data = {
             images: [this.ruta.src],
-            frames: { width: this.ancho, height: this.alto }
+            frames: { regX: 0, regY: 0, width: 100, height: 100 }
         };
+
+        console.log(this.frame);
+
         var spritesheet = new createjs.SpriteSheet(data);
 
         this.sprite = new createjs.Sprite(spritesheet);
@@ -14212,6 +14783,20 @@ var Grilla = (function (_super) {
     });
     return Grilla;
 })(Imagen);
+
+var GrillaDesdeSpritesheet = (function (_super) {
+    __extends(GrillaDesdeSpritesheet, _super);
+    function GrillaDesdeSpritesheet(data, columnas, filas) {
+        if (typeof columnas === "undefined") { columnas = 1; }
+        if (typeof filas === "undefined") { filas = 1; }
+        _super.call(this, data.sheet, columnas, filas);
+        this.frame = data.frame;
+    }
+    GrillaDesdeSpritesheet.prototype.instanciar = function () {
+        return _super.prototype.instanciar.call(this);
+    };
+    return GrillaDesdeSpritesheet;
+})(Grilla);
 
 var Animacion = (function (_super) {
     __extends(Animacion, _super);
@@ -16513,10 +17098,10 @@ var Sonidos = (function () {
         this.cargar_recursos();
     }
     Sonidos.prototype.cargar_recursos = function () {
-        this.cargar_recurso('smile.ogg');
-        this.cargar_recurso('shout.ogg');
-        this.cargar_recurso('saltar.wav');
-        this.cargar_recurso('blabla.wav');
+        this.cargar_recurso('audio/smile.ogg');
+        this.cargar_recurso('audio/shout.ogg');
+        this.cargar_recurso('audio/saltar.wav');
+        this.cargar_recurso('audio/blabla.wav');
         this.preload.loadManifest(this.recursos);
     };
 
