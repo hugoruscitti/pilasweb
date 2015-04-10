@@ -192,11 +192,11 @@ class Animacion extends Grilla {
       throw new Error("Tienes que definir al menos una animacion inicial.");
 
     var velocidad_de_animacion = (1000.0 / 60) * this.animacion_en_curso["velocidad"];
-    this._ticks_acumulados += velocidad_de_animacion
-    var ha_avanzado = true
+    this._ticks_acumulados += velocidad_de_animacion;
+    var ha_avanzado = true;
 
     if (this._ticks_acumulados > 1000.0) {
-      this._ticks_acumulados -= 1000.0
+      this._ticks_acumulados -= 1000.0;
 
       if (this.cuadro_en_la_animacion >= this.animacion_en_curso['cuadros'].length) {
         this.cuadro_en_la_animacion = 0;
