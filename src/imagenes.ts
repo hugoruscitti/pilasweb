@@ -1,14 +1,27 @@
 class Imagenes {
     nombresImagenes = [
-        'aceituna.png', 'aceituna_grita.png', 'aceituna_risa.png', 'aceituna_burla.png',
+        'aceituna.png', 'aceituna_grita.png', 'aceituna_risa.png',
+        'aceituna_burla.png',
+
         'banana.png', 'bomba.png', 'caja.png', 'explosion.png',
         'sin_imagen.png',
         'plano.png', 'alien.png', 'alien_marron.png', 'tuerca.png', 'nave.png',
         'piedra_chica.png', 'piedra_grande.png', 'piedra_media.png', 'ejes.png',
-        'disparos/misil.png', 'rpg/maton.png', 'pasto.png', 'pasto_cuadriculado.png', 'globo.png', 'bloque.png', 'manzana_chica.png', 'invisible.png', 'cofre.png', 'llave.png', 'cesto.png', 'pelota.png', 'zanahoria_normal.png', 'zanahoria_sonrie.png', 'boton/boton_normal.png', 'boton/boton_over.png', 'boton/boton_press.png',
-        'fondos/tarde.jpg', 'fondos/laberinto1.png', 'monkey_normal.png', 'monkey_smile.png', 'monkey_shout.png', 'tortuga.png',
+        'disparos.misil.png', 'rpg.maton.png', 'pasto.png',
+        'pasto_cuadriculado.png', 'globo.png', 'bloque.png',
+        'manzana_chica.png', 'invisible.png', 'cofre.png', 'llave.png',
+        'cesto.png', 'pelota.png', 'zanahoria_normal.png',
+        'zanahoria_sonrie.png', 'boton.boton_normal.png',
+        'boton.boton_over.png', 'boton.boton_press.png',
+        'fondos.tarde.jpg', 'fondos.laberinto1.png', 
+        'monkey_normal.png', 'monkey_smile.png', 'monkey_shout.png',
+        'tortuga.png',
         'pingu.png', 'sombra.png',
-        'cooperativista/alerta.png', 'cooperativista/camina.png', 'cooperativista/camina_sujeta.png', 'cooperativista/ok.png', 'cooperativista/parado.png', 'cooperativista/parado_sujeta.png', 'cooperativista/trabajando.png',
+
+        'cooperativista.alerta.png', 'cooperativista.camina.png',
+        'cooperativista.camina_sujeta.png', 'cooperativista.ok.png',
+        'cooperativista.parado.png', 'cooperativista.parado_sujeta.png',
+        'cooperativista.trabajando.png',
     ];
   data_path: string;
   recursos;
@@ -179,11 +192,11 @@ class Animacion extends Grilla {
       throw new Error("Tienes que definir al menos una animacion inicial.");
 
     var velocidad_de_animacion = (1000.0 / 60) * this.animacion_en_curso["velocidad"];
-    this._ticks_acumulados += velocidad_de_animacion
-    var ha_avanzado = true
+    this._ticks_acumulados += velocidad_de_animacion;
+    var ha_avanzado = true;
 
     if (this._ticks_acumulados > 1000.0) {
-      this._ticks_acumulados -= 1000.0
+      this._ticks_acumulados -= 1000.0;
 
       if (this.cuadro_en_la_animacion >= this.animacion_en_curso['cuadros'].length) {
         this.cuadro_en_la_animacion = 0;
