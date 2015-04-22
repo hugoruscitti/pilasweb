@@ -14,7 +14,7 @@ class Fondo extends Actor {
 class Tarde extends Fondo {
 
   constructor() {
-    super("fondos/tarde.jpg", 0, 0);
+    super("fondos.tarde.jpg", 0, 0);
     this.z = 1000;
     this.y = 120;   // TODO: temporal solo para tutorial.
   }
@@ -78,7 +78,7 @@ class PastoCuadriculado extends Fondo {
 class Laberinto1 extends Fondo {
 
   constructor() {
-    super('fondos/laberinto1.png', 0, 0);
+    super('fondos.laberinto1.png', 0, 0);
   }
 
   actualizar() {

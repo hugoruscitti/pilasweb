@@ -13969,7 +13969,7 @@ var Fondo = (function (_super) {
 var Tarde = (function (_super) {
     __extends(Tarde, _super);
     function Tarde() {
-        _super.call(this, "fondos/tarde.jpg", 0, 0);
+        _super.call(this, "fondos.tarde.jpg", 0, 0);
         this.z = 1000;
         this.y = 120; // TODO: temporal solo para tutorial.
     }
@@ -14031,7 +14031,7 @@ var PastoCuadriculado = (function (_super) {
 var Laberinto1 = (function (_super) {
     __extends(Laberinto1, _super);
     function Laberinto1() {
-        _super.call(this, 'fondos/laberinto1.png', 0, 0);
+        _super.call(this, 'fondos.laberinto1.png', 0, 0);
     }
     Laberinto1.prototype.actualizar = function () {
     };
@@ -14051,15 +14051,26 @@ var Fondos = (function () {
 var Imagenes = (function () {
     function Imagenes(callback_onready, opciones) {
         this.nombresImagenes = [
-            'aceituna.png', 'aceituna_grita.png', 'aceituna_risa.png', 'aceituna_burla.png',
+            'aceituna.png', 'aceituna_grita.png', 'aceituna_risa.png',
+            'aceituna_burla.png',
             'banana.png', 'bomba.png', 'caja.png', 'explosion.png',
             'sin_imagen.png',
             'plano.png', 'alien.png', 'alien_marron.png', 'tuerca.png', 'nave.png',
             'piedra_chica.png', 'piedra_grande.png', 'piedra_media.png', 'ejes.png',
-            'disparos/misil.png', 'rpg/maton.png', 'pasto.png', 'pasto_cuadriculado.png', 'globo.png', 'bloque.png', 'manzana_chica.png', 'invisible.png', 'cofre.png', 'llave.png', 'cesto.png', 'pelota.png', 'zanahoria_normal.png', 'zanahoria_sonrie.png', 'boton/boton_normal.png', 'boton/boton_over.png', 'boton/boton_press.png',
-            'fondos/tarde.jpg', 'fondos/laberinto1.png', 'monkey_normal.png', 'monkey_smile.png', 'monkey_shout.png', 'tortuga.png',
+            'disparos.misil.png', 'rpg.maton.png', 'pasto.png',
+            'pasto_cuadriculado.png', 'globo.png', 'bloque.png',
+            'manzana_chica.png', 'invisible.png', 'cofre.png', 'llave.png',
+            'cesto.png', 'pelota.png', 'zanahoria_normal.png',
+            'zanahoria_sonrie.png', 'boton.boton_normal.png',
+            'boton.boton_over.png', 'boton.boton_press.png',
+            'fondos.tarde.jpg', 'fondos.laberinto1.png',
+            'monkey_normal.png', 'monkey_smile.png', 'monkey_shout.png',
+            'tortuga.png',
             'pingu.png', 'sombra.png',
-            'cooperativista/alerta.png', 'cooperativista/camina.png', 'cooperativista/camina_sujeta.png', 'cooperativista/ok.png', 'cooperativista/parado.png', 'cooperativista/parado_sujeta.png', 'cooperativista/trabajando.png'
+            'cooperativista.alerta.png', 'cooperativista.camina.png',
+            'cooperativista.camina_sujeta.png', 'cooperativista.ok.png',
+            'cooperativista.parado.png', 'cooperativista.parado_sujeta.png',
+            'cooperativista.trabajando.png'
         ];
         this.recursos = {};
         this.data_path = opciones.data_path;
@@ -16728,10 +16739,10 @@ var Sonidos = (function () {
         this.cargar_recursos();
     }
     Sonidos.prototype.cargar_recursos = function () {
-        this.cargar_recurso('smile.ogg');
-        this.cargar_recurso('shout.ogg');
-        this.cargar_recurso('saltar.wav');
-        this.cargar_recurso('blabla.wav');
+        this.cargar_recurso('audio/smile.ogg');
+        this.cargar_recurso('audio/shout.ogg');
+        this.cargar_recurso('audio/saltar.wav');
+        this.cargar_recurso('audio/blabla.wav');
         this.preload.loadManifest(this.recursos);
     };
 
