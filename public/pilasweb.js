@@ -16125,7 +16125,7 @@ var Alternativa = (function (_super) {
     Alternativa.prototype.actualizar = function () {
         if (!this.ejecutado) {
             this.ejecutado = true;
-            if (this.condicion(this.receptor)) {
+            if (this.condicion()) {
                 this.rama_elegida = this.rama_entonces;
             } else {
                 this.rama_elegida = this.rama_sino;
@@ -16167,7 +16167,7 @@ var RepetirHasta = (function (_super) {
     RepetirHasta.prototype.actualizar = function () {
         if (this.evaluar_condicion) {
             this.evaluar_condicion = false;
-            if (this.condicion(this.receptor)) {
+            if (this.condicion()) {
                 this.evaluar_condicion = true; // se resetea antes de salir, para volvese a evaluar
                 return true;
             }
@@ -16205,7 +16205,7 @@ var RepetirN = (function (_super) {
     RepetirN.prototype.actualizar = function () {
         if (this.volver_a_evaluar) {
             this.volver_a_evaluar = false;
-            this.cantidad_actual = this.cantidad(this.receptor);
+            this.cantidad_actual = this.cantidad();
         }
 
         if (this.cantidad_actual == 0) {
@@ -16240,11 +16240,138 @@ var CambiarAtributo = (function (_super) {
     };
 
     CambiarAtributo.prototype.actualizar = function () {
-        this.receptor[this.nombre] = this.funcion_valor(this.receptor);
+        this.receptor.set_atributo(this.nombre, this.funcion_valor());
         return true;
     };
     return CambiarAtributo;
 })(Comportamiento);
+
+/**
+* @class CambiarVariableLocal
+*
+* Representa el cambio de una variable local del procedimiento actual
+*
+* Recibe como argumento una funcion cuyo resultado sera guardado como valor del atributo
+*/
+var CambiarVariableLocal = (function (_super) {
+    __extends(CambiarVariableLocal, _super);
+    function CambiarVariableLocal() {
+        _super.apply(this, arguments);
+    }
+    CambiarVariableLocal.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.nombre = this.argumentos.nombre;
+        this.funcion_valor = this.argumentos.valor;
+    };
+
+    CambiarVariableLocal.prototype.actualizar = function () {
+        this.receptor.set_variable(this.nombre, this.funcion_valor());
+        return true;
+    };
+    return CambiarVariableLocal;
+})(Comportamiento);
+
+/**
+* @class LlamadaProcedimiento
+*
+* Representa una llamada a un procedimiento
+*
+* Recibe como argumentos el nombre del procedimiento y el contexto de
+* definiciones
+*/
+var LlamadaProcedimiento = (function (_super) {
+    __extends(LlamadaProcedimiento, _super);
+    function LlamadaProcedimiento() {
+        _super.apply(this, arguments);
+    }
+    LlamadaProcedimiento.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.nombre = this.argumentos.nombre;
+
+        // consigue parametros y nombre de esta definicion
+        var p = this.argumentos.procedimientos[this.nombre];
+
+        // construye el scope para los argumentos
+        var args_evaluados = {};
+        for (var i = 0; i < p.parametros.length; i++) {
+            var arg_evaluado = this.argumentos.argumentos[i]();
+            args_evaluados[p.parametros[i]] = arg_evaluado;
+        }
+        this.receptor.push_parametros(args_evaluados);
+
+        // inicializa el scope de variables locales
+        this.receptor.push_variables({});
+
+        // genera una nueva secuencia a ejecutar
+        this.secuencia = new Secuencia({ secuencia: p.secuencia });
+        this.secuencia.iniciar(this.receptor);
+    };
+
+    LlamadaProcedimiento.prototype.actualizar = function () {
+        var termino = this.secuencia.actualizar();
+        if (termino) {
+            this.receptor.pop_parametros();
+            this.receptor.pop_variables();
+            return true;
+        }
+    };
+    return LlamadaProcedimiento;
+})(Comportamiento);
+
+/**
+* @class Expresion
+*
+* Representa la evaluacion de una expresion
+*
+* Recibe como argumento la expresión a evaluar
+*/
+var Expresion = (function (_super) {
+    __extends(Expresion, _super);
+    function Expresion() {
+        _super.apply(this, arguments);
+    }
+    Expresion.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.expresion = this.argumentos.expresion;
+    };
+
+    Expresion.prototype.actualizar = function () {
+        this.resultado = this.expresion();
+        return true;
+    };
+    return Expresion;
+})(Comportamiento);
+
+/**
+* @class LlamadaFuncion
+*
+* Representa una llamada a una funcion
+*
+* Recibe como argumentos el nombre de la funcion, el contexto de
+* definiciones de funciones y la expresión a retornar
+*/
+var LlamadaFuncion = (function (_super) {
+    __extends(LlamadaFuncion, _super);
+    function LlamadaFuncion() {
+        _super.apply(this, arguments);
+    }
+    LlamadaFuncion.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.nombre = this.argumentos.nombre;
+        var s = this.argumentos.funciones[this.nombre].secuencia;
+        this.secuencia = new Secuencia({ secuencia: s });
+        this.secuencia.iniciar(this.receptor);
+    };
+
+    LlamadaFuncion.prototype.actualizar = function () {
+        var termino = this.secuencia.actualizar();
+        if (termino) {
+            this.resultado = this.expresion();
+            return true;
+        }
+    };
+    return LlamadaFuncion;
+})(Expresion);
 
 /**
 * @class ConstructorDePrograma
@@ -16255,6 +16382,8 @@ var CambiarAtributo = (function (_super) {
 var ConstructorDePrograma = (function () {
     function ConstructorDePrograma() {
         this.stack_secuencias = [];
+        this.procedimientos = {};
+        this.funciones = {};
     }
     ConstructorDePrograma.prototype.empezar_secuencia = function () {
         this.stack_secuencias.push([]);
@@ -16295,18 +16424,104 @@ var ConstructorDePrograma = (function () {
         this.hacer(RepetirN, { secuencia: s, cantidad: n });
     };
 
+    ConstructorDePrograma.prototype.def_proc = function (n, params) {
+        // no creo un comportamiento de
+        // tipo secuencia como en las estructuras de control
+        // porque dicho objeto deberia crearse recien
+        // en la llamada al procedimiento
+        var s = this.stack_secuencias.pop();
+        this.procedimientos[n] = { secuencia: s, parametros: params };
+    };
+
+    ConstructorDePrograma.prototype.llamada_proc = function (n, proc_args) {
+        var procs = this.procedimientos;
+        this.hacer(LlamadaProcedimiento, { nombre: n, procedimientos: procs, argumentos: proc_args });
+    };
+
+    ConstructorDePrograma.prototype.def_func = function (n) {
+        var s = this.stack_secuencias.pop();
+        this.funciones[n] = s;
+    };
+
+    ConstructorDePrograma.prototype.llamada_func = function (n, exp) {
+        var funcs = this.funciones;
+        this.hacer(LlamadaFuncion, { nombre: n, funciones: funcs, expresion: exp });
+    };
+
     ConstructorDePrograma.prototype.cambio_atributo = function (n, f) {
         this.hacer(CambiarAtributo, { nombre: n, valor: f });
     };
 
-    ConstructorDePrograma.prototype.ejecutar = function (actor) {
-        this.terminar_secuencia();
-        var p = this.obtener_programa();
-        actor.hacer_luego(Programa, { programa: p });
+    ConstructorDePrograma.prototype.cambio_variable = function (n, f) {
+        this.hacer(CambiarVariableLocal, { nombre: n, valor: f });
     };
 
-    ConstructorDePrograma.prototype.obtener_programa = function () {
-        return this.stack_secuencias.pop();
+    ConstructorDePrograma.prototype.inyectar_scopes = function (actor) {
+        this.inyectar_parametros(actor);
+        this.inyectar_atributos(actor);
+        this.inyectar_variables_locales(actor);
+    };
+
+    ConstructorDePrograma.prototype.inyectar_parametros = function (actor) {
+        actor.scope_parametros = [{}];
+        actor.scope_parametros_actual = {};
+
+        actor.push_parametros = function (ids) {
+            this.scope_parametros.push(ids);
+            this.scope_parametros_actual = ids;
+        };
+
+        actor.pop_parametros = function () {
+            this.scope_parametros_actual = this.scope_parametros.pop();
+        };
+
+        actor.parametro = function (n) {
+            return this.scope_parametros_actual[n];
+        };
+    };
+
+    ConstructorDePrograma.prototype.inyectar_variables_locales = function (actor) {
+        actor.scope_var_locales = [{}];
+        actor.scope_var_locales_actual = {};
+
+        actor.push_variables = function (ids) {
+            this.scope_var_locales.push(ids);
+            this.scope_var_locales_actual = ids;
+        };
+
+        actor.pop_variables = function () {
+            this.scope_var_locales_actual = this.scope_var_locales.pop();
+        };
+
+        actor.set_variable = function (v, x) {
+            actor.scope_var_locales_actual[v] = x;
+        };
+
+        actor.variable = function (n) {
+            return this.scope_var_locales_actual[n];
+        };
+    };
+
+    ConstructorDePrograma.prototype.inyectar_atributos = function (actor) {
+        actor.atributos_programa = {};
+
+        actor.set_atributo = function (v, x) {
+            actor.atributos_programa[v] = x;
+        };
+
+        actor.atributo = function (v) {
+            return actor.atributos_programa[v];
+        };
+    };
+
+    ConstructorDePrograma.prototype.ejecutar = function (actor) {
+        // obtiene el programa
+        this.terminar_secuencia();
+        var p = this.stack_secuencias.pop();
+
+        // inyecta scopes para atributos, variables locales y parametros
+        this.inyectar_scopes(actor);
+        actor.hacer_luego(Programa, { programa: p });
     };
     return ConstructorDePrograma;
 })();
@@ -18080,6 +18295,8 @@ var Alien = (function (_super) {
         imagen.definir_animacion("camina", [0, 1, 2, 3, 4, 3, 2, 1], 15);
         imagen.cargar_animacion("parado");
 
+        this.radio_de_colision = 30;
+
         this.sonido_blabla = pilas.sonidos.cargar('blabla.wav');
         this.cuando_busca_recoger = undefined;
     }
@@ -18140,6 +18357,15 @@ var Alien = (function (_super) {
 
     Alien.prototype.recoger = function () {
         this.hacer_luego(Recoger, { tiempo: 1 });
+    };
+
+    Alien.prototype.colisiona_con_item = function (item_name) {
+        var _this = this;
+        return pilas.escena_actual().actores.filter(function (i) {
+            return i.getClassName() === item_name;
+        }).some(function (i) {
+            return _this.colisiona_con(i);
+        });
     };
     return Alien;
 })(Actor);
