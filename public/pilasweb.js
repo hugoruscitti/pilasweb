@@ -16011,11 +16011,21 @@ var CaminarBase = (function (_super) {
         this.velocidad = 1;
     };
 
+    CaminarBase.prototype.redondear = function (number) {
+        return parseFloat(number.toPrecision(8));
+    };
+
     CaminarBase.prototype.actualizar = function () {
         this.mover();
-        this.pasos -= 0.05;
+        var pasito = 0.05;
 
-        if (this.pasos <= 0.05) {
+        //this.pasos -= pasito;
+        this.pasos -= pasito;
+        this.pasos = this.redondear(this.pasos);
+
+        console.log(this.pasos);
+
+        if (this.pasos < pasito) {
             this.receptor.detener_animacion();
             return true;
         }

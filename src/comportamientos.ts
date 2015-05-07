@@ -232,12 +232,18 @@ class CaminarBase extends Comportamiento {
     this.velocidad = 1;
   }
 
+  redondear(number) {
+      return parseFloat(number.toPrecision(8));
+   }
+
   actualizar() {
     this.mover();
-    this.pasos -= 0.05;
+    var pasito = 0.05;
+    this.pasos -= pasito;
+    this.pasos = this.redondear(this.pasos); //TO DO: Esto no hay que hacerlo acá porque introduce mucho lag y estaría bueno que se haga una sola vez al principio de todo.
 
-    if (this.pasos <= 0.05) { // TODO: en realidad tendría que ser 0.0 en vez de 0.1, pero por algún motivo siempre avanza un pixel mas...
-      this.receptor.detener_animacion()
+    if (this.pasos < pasito) {
+        this.receptor.detener_animacion();
       return true;
     }
   }
