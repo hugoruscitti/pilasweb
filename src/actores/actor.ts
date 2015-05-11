@@ -271,6 +271,8 @@ class Actor extends Estudiante {
   }
   
   escalarProporcionalALimites(anchoLimite,altoLimite){
+  		this.escala = 1;
+  		
         var escalaAlto = this.alto / altoLimite;
         var escalaAncho = this.ancho / anchoLimite;
         

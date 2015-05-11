@@ -13543,6 +13543,8 @@ var Actor = (function (_super) {
     });
 
     Actor.prototype.escalarProporcionalALimites = function (anchoLimite, altoLimite) {
+        this.escala = 1;
+
         var escalaAlto = this.alto / altoLimite;
         var escalaAncho = this.ancho / anchoLimite;
 
