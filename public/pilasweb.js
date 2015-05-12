@@ -16020,19 +16020,14 @@ var CaminarBase = (function (_super) {
         this.receptor = receptor;
         this.pasos = this.argumentos.pasos || 1;
         this.velocidad = 1;
-    };
-
-    CaminarBase.prototype.redondear = function (number) {
-        return parseFloat(number.toPrecision(8));
+        var pasitos = 0.05;
+        this.cantActualizaciones = Math.round(this.pasos / pasitos);
     };
 
     CaminarBase.prototype.actualizar = function () {
         this.mover();
-        var pasito = 0.05;
-        this.pasos -= pasito;
-        this.pasos = this.redondear(this.pasos); //TO DO: Esto no hay que hacerlo acá porque introduce mucho lag y estaría bueno que se haga una sola vez al principio de todo.
-
-        if (this.pasos < pasito) {
+        this.cantActualizaciones--;
+        if (this.cantActualizaciones < 1) {
             this.receptor.detener_animacion();
             return true;
         }
