@@ -225,19 +225,21 @@ class OrbitarSobreActor extends Orbitar {
 class CaminarBase extends Comportamiento {
   pasos;
   velocidad;
+  cantActualizaciones;
 
   iniciar(receptor) {
     this.receptor = receptor;
     this.pasos = this.argumentos.pasos || 1;
     this.velocidad = 1;
+    var pasitos = 0.05; //Cuanto mas chico es el valor pasitos, mas veces se actualiza el caminar.
+    this.cantActualizaciones = Math.round(this.pasos / pasitos);
   }
 
   actualizar() {
     this.mover();
-    this.pasos -= 0.05;
-
-    if (this.pasos <= 0.05) { // TODO: en realidad tendría que ser 0.0 en vez de 0.1, pero por algún motivo siempre avanza un pixel mas...
-      this.receptor.detener_animacion()
+    this.cantActualizaciones--;
+    if(this.cantActualizaciones < 1){
+      this.receptor.detener_animacion();
       return true;
     }
   }

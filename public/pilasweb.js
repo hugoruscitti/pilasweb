@@ -13542,6 +13542,17 @@ var Actor = (function (_super) {
         configurable: true
     });
 
+    Actor.prototype.escalarProporcionalALimites = function (anchoLimite, altoLimite) {
+        this.escala = 1;
+
+        var escalaAlto = this.alto / altoLimite;
+        var escalaAncho = this.ancho / anchoLimite;
+
+        var escalaMayor = Math.max(escalaAncho, escalaAlto);
+
+        this.escala = 1.0 / escalaMayor;
+    };
+
     Object.defineProperty(Actor.prototype, "rotacion", {
         get: function () {
             return -this.sprite.rotation;
@@ -16009,13 +16020,14 @@ var CaminarBase = (function (_super) {
         this.receptor = receptor;
         this.pasos = this.argumentos.pasos || 1;
         this.velocidad = 1;
+        var pasitos = 0.05;
+        this.cantActualizaciones = Math.round(this.pasos / pasitos);
     };
 
     CaminarBase.prototype.actualizar = function () {
         this.mover();
-        this.pasos -= 0.05;
-
-        if (this.pasos <= 0.05) {
+        this.cantActualizaciones--;
+        if (this.cantActualizaciones < 1) {
             this.receptor.detener_animacion();
             return true;
         }
@@ -17612,11 +17624,14 @@ var Texto = (function (_super) {
     }
     Texto.prototype.crear_texto = function () {
         var s = new createjs.Text(this.texto, "12px Arial", this.color);
+        s.lineWidth = 2;
+
+        this.alto = s.heightscale;
         var pos = pilas.escena_actual().obtener_posicion_pantalla(this.x, this.y);
         s.x = pos.x;
         s.y = pos.y;
-        s.textBaseline = "bottom";
-        s.textAlign = "center";
+        s.textBaseline = "alphabetic";
+        s.textAlign = "right";
         pilas.escena_actual().stage.addChild(s);
         this.sprite_texto = s;
     };
@@ -17629,58 +17644,6 @@ var Texto = (function (_super) {
         this.eliminar_texto();
         _super.prototype.eliminar.call(this);
     };
-
-    Object.defineProperty(Texto.prototype, "escala_x", {
-        //TODO: hacer que pueda utilizar los metodos propios de la clase padre Actor
-        get: function () {
-            return this.sprite_texto.scaleX;
-        },
-        set: function (valor) {
-            if (valor instanceof Array)
-                pilas.interpolar(this.sprite_texto, 'scaleX', valor, 1000);
-            else
-                this.sprite_texto.scaleX = valor;
-        },
-        enumerable: true,
-        configurable: true
-    });
-
-    Object.defineProperty(Texto.prototype, "escala_y", {
-        get: function () {
-            return this.sprite_texto.scaleY;
-        },
-        set: function (valor) {
-            if (valor instanceof Array)
-                pilas.interpolar(this.sprite_texto, 'scaleY', valor, 1000);
-            else
-                this.sprite_texto.scaleY = valor;
-        },
-        enumerable: true,
-        configurable: true
-    });
-
-    Object.defineProperty(Texto.prototype, "escala", {
-        get: function () {
-            return this.escala_x;
-        },
-        set: function (valor) {
-            if (valor instanceof Array) {
-                var nuevo_radio_de_colision = [];
-                for (var i = 0; i < valor.length; i++) {
-                    nuevo_radio_de_colision.push((this.radio_de_colision * valor[i]) / this.escala);
-                }
-                pilas.interpolar(this, 'radio_de_colision', nuevo_radio_de_colision, 1000);
-                this.radio_de_colision = nuevo_radio_de_colision[0];
-            } else {
-                this.radio_de_colision = (this.radio_de_colision * valor) / this.escala;
-            }
-
-            this.escala_x = valor;
-            this.escala_y = valor;
-        },
-        enumerable: true,
-        configurable: true
-    });
     return Texto;
 })(Actor);
 /// <reference path="actor.ts"/>
