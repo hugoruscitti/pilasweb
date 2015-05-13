@@ -19,7 +19,6 @@ class Texto extends Actor {
   crear_texto() {
 
     var s = new createjs.Text(this.texto, "12px Arial", this.color);
-    s.lineWidth=2;
 
 
     this.alto=s.heightscale;
