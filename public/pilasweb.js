@@ -13344,11 +13344,42 @@ var Actor = (function (_super) {
         /* Si el actor ya tenía imagen, entonces se encarga de reemplazar
         la imagen actual, y vuelve a definir el punto de control en el
         centro. */
-        if (this.sprite !== undefined) {
-            this.sprite.image = this._imagen.instanciar().image;
+        if (this.sprite === undefined) {
+            var x = 0;
+            var y = 0;
+            var rotacion = 0;
+            var escala = 1;
         } else {
-            this.sprite = this._imagen.instanciar();
+            var x = this.x;
+            var y = this.y;
+            var rotacion = this.rotacion;
+            var escala = this.escala;
         }
+
+        if (this.sprite === undefined) {
+            this.sprite = this._imagen.instanciar();
+        } else {
+            pilas.escena_actual().eliminar_actor(this);
+            this.sprite = this._imagen.instanciar();
+            pilas.escena_actual().agregar_actor(this);
+        }
+
+        this.x = x;
+        this.y = y;
+        this.rotacion = rotacion;
+        this.escala = escala;
+        /*
+        if (this.sprite !== undefined) {
+        this.sprite.image = this._imagen.instanciar().image;
+        
+        if (! this.sprite.image) {
+        this.sprite = this._imagen.instanciar();
+        }
+        
+        } else {
+        this.sprite = this._imagen.instanciar();
+        }
+        */
     };
 
     Actor.prototype.eliminar = function () {
@@ -13612,6 +13643,7 @@ var Actor = (function (_super) {
             else
                 this._imagen = _i;
 
+            //alert(_i);
             this._crear_sprite();
             this.centro = ['centro', 'centro'];
         },
@@ -17624,7 +17656,6 @@ var Texto = (function (_super) {
     }
     Texto.prototype.crear_texto = function () {
         var s = new createjs.Text(this.texto, "12px Arial", this.color);
-        s.lineWidth = 2;
 
         this.alto = s.heightscale;
         var pos = pilas.escena_actual().obtener_posicion_pantalla(this.x, this.y);

@@ -117,11 +117,43 @@ class Actor extends Estudiante {
     la imagen actual, y vuelve a definir el punto de control en el
     centro. */
 
+    if (this.sprite === undefined) {
+      var x = 0;
+      var y = 0;
+      var rotacion = 0;
+      var escala = 1;
+    } else {
+      var x:number = this.x;
+      var y:number = this.y;
+      var rotacion:number = this.rotacion;
+      var escala: number = this.escala;
+    }
+
+    if (this.sprite === undefined) {
+      this.sprite = this._imagen.instanciar();
+    } else {
+      pilas.escena_actual().eliminar_actor(this);
+      this.sprite = this._imagen.instanciar();
+      pilas.escena_actual().agregar_actor(this);
+    }
+
+    this.x = x;
+    this.y = y;
+    this.rotacion = rotacion;
+    this.escala = escala;
+
+    /*
     if (this.sprite !== undefined) {
       this.sprite.image = this._imagen.instanciar().image;
+
+      if (! this.sprite.image) {
+        this.sprite = this._imagen.instanciar();
+      }
+
     } else {
       this.sprite = this._imagen.instanciar();
     }
+    */
   }
 
   eliminar() {
@@ -269,13 +301,13 @@ class Actor extends Estudiante {
     this.escala_x = valor;
     this.escala_y = valor;
   }
-  
+
   escalarProporcionalALimites(anchoLimite,altoLimite){
   		this.escala = 1;
-  		
+
         var escalaAlto = this.alto / altoLimite;
         var escalaAncho = this.ancho / anchoLimite;
-        
+
         var escalaMayor = Math.max(escalaAncho,escalaAlto);
 
         this.escala = 1.0 / escalaMayor;
@@ -299,15 +331,15 @@ class Actor extends Estudiante {
   get ancho() {
     return this._imagen.ancho * this.escala_x;
   }
-    
+
   set ancho(nuevo){
       this.escala_x = nuevo / this._imagen.ancho;
   }
-    
+
   get alto() {
     return this._imagen.alto * this.escala_y;
   }
-    
+
   set alto(nuevo){
       this.escala_y = nuevo / this._imagen.alto;
   }
@@ -317,6 +349,8 @@ class Actor extends Estudiante {
       this._imagen = pilas.imagenes.cargar(_i)
     else
       this._imagen = _i;
+
+    //alert(_i);
 
     this._crear_sprite();
     this.centro = ['centro', 'centro'];
