@@ -1,4 +1,6 @@
-## Pilas web engine [![Build Status](https://travis-ci.org/hugoruscitti/pilasweb.png?branch=master)](https://travis-ci.org/hugoruscitti/pilasweb)
+## Pilas web engine 
+
+[![Build Status](https://travis-ci.org/hugoruscitti/pilasweb.png?branch=master)](https://travis-ci.org/hugoruscitti/pilasweb) [![Code Climate](https://codeclimate.com/github/hugoruscitti/pilasweb/badges/gpa.svg)](https://codeclimate.com/github/hugoruscitti/pilasweb)
 
 ### ¿Qué es pilas-engine web?
 
