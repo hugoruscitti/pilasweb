@@ -3,14 +3,6 @@ var shell = require('shelljs');
 module.exports = function(grunt) {
 
   grunt.initConfig({
-    notify_hooks: {
-                    options: {
-                               enabled: true,
-                               max_jshint_notifications: 5,
-                               success: false,
-                               duration: 3
-                             }
-    },
     nodewebkit: {
                   options: {
                             //version: '0.8.3',
@@ -118,8 +110,4 @@ module.exports = function(grunt) {
   grunt.registerTask('docs', ['typescript', 'concat', 'make_docs']);
   grunt.registerTask('default', ['typescript', 'concat', 'copy']);
 
-  // Load the task
-  grunt.loadNpmTasks('grunt-notify');
-  // This is required if you use any options.
-  grunt.task.run('notify_hooks');
 };
