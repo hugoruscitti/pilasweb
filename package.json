@@ -8,7 +8,7 @@
     "url": "https://github.com/hugoruscitti/pilasweb.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jasmine-node spec/*spec.js"
   },
   "author": "http://github.com/hugoruscitti/pilasweb",
   "license": "ISC",
@@ -20,12 +20,8 @@
     "q": "~1.0.1",
     "shelljs": "~0.2.6",
     "grunt-contrib-concat": "~0.4.0",
-    "mocha": "~1.18.2",
-    "mocha-phantomjs": "~3.3.2",
-    "chai": "~1.9.1",
     "grunt-typescript": "~0.3.0",
     "phantomjs": "~1.9.7-3",
-    "grunt-mocha-phantomjs": "~0.4.3",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-cli": "~0.1.13",
     "grunt": "~0.4.4",
@@ -33,5 +29,6 @@
     "bower": "~1.3.2"
   },
   "devDependencies": {
+    "jasmine-node": "latest"
   }
 }

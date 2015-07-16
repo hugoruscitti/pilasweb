@@ -70,14 +70,10 @@ module.exports = function(grunt) {
         tasks: ['clear', 'typescript', 'concat', 'copy'],
       }
     },
-    mocha_phantomjs: {
-      all: ['test/*.html']
-    }
   });
 
   grunt.loadNpmTasks('grunt-typescript');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-mocha-phantomjs');
 
   grunt.registerTask('tags', ['tags']);
   grunt.registerTask('test', ['test']);
@@ -85,10 +81,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('tags', "create ctags files", function() {
     shell.exec('ctags src/*');
-  });
-
-  grunt.registerTask('test', "ejecuta las pruebas", function() {
-    shell.exec('./node_modules/.bin/mocha-phantomjs test/init.html');
   });
 
   grunt.registerTask('clear', "limpia la pantalla", function() {

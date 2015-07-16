@@ -76,7 +76,9 @@ crear_entorno:
 	npm install
 
 test:
-	./node_modules/.bin/mocha-phantomjs test/init.html
+	./node_modules/.bin/jasmine-node spec
+
+utest:test
 
 web:
 	cd ../ghpages__pilasweb; git pull origin gh-pages
