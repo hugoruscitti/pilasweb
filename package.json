@@ -8,27 +8,27 @@
     "url": "https://github.com/hugoruscitti/pilasweb.git"
   },
   "scripts": {
-    "test": "jasmine-node spec/*spec.js"
+    "test": "grunt test"
   },
   "author": "http://github.com/hugoruscitti/pilasweb",
   "license": "ISC",
   "dependencies": {
-    "process": "~0.6.0",
-    "grunt-contrib-copy": "~0.5.0",
-    "jsonfile": "~1.1.1",
     "async": "~0.7.0",
-    "q": "~1.0.1",
-    "shelljs": "~0.2.6",
-    "grunt-contrib-concat": "~0.4.0",
-    "grunt-typescript": "~0.3.0",
-    "phantomjs": "~1.9.7-3",
-    "grunt-contrib-watch": "~0.6.1",
-    "grunt-cli": "~0.1.13",
+    "bower": "~1.3.2",
     "grunt": "~0.4.4",
+    "grunt-cli": "~0.1.13",
+    "grunt-contrib-concat": "~0.4.0",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-qunit": "^0.7.0",
+    "grunt-contrib-watch": "~0.6.1",
     "grunt-node-webkit-builder": "~0.1.20",
-    "bower": "~1.3.2"
+    "grunt-typescript": "~0.3.0",
+    "jsonfile": "~1.1.1",
+    "process": "~0.6.0",
+    "q": "~1.0.1",
+    "qunit": "^0.7.6",
+    "qunitjs": "^1.18.0",
+    "shelljs": "~0.2.6"
   },
-  "devDependencies": {
-    "jasmine-node": "latest"
-  }
+  "devDependencies": {}
 }

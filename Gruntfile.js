@@ -19,6 +19,9 @@ module.exports = function(grunt) {
                   './node_modules/**/*',
                 ]
             },
+    qunit: {
+      files: ['test/index.html']
+    },
     concat: {
       options: {
         separator: ';',
@@ -99,7 +102,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-node-webkit-builder');
+  grunt.loadNpmTasks('grunt-contrib-qunit');
+
   grunt.registerTask('docs', ['typescript', 'concat', 'make_docs']);
   grunt.registerTask('default', ['typescript', 'concat', 'copy']);
-
+  grunt.registerTask('test', 'qunit');
 };
