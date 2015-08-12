@@ -303,14 +303,19 @@ class Actor extends Estudiante {
   }
 
   escalarProporcionalALimites(anchoLimite,altoLimite){
-  		this.escala = 1;
+      this.escala = 1;
+      var escalaAlto = altoLimite / this.alto;
+      var escalaAncho = anchoLimite / this.ancho;
+      this.escala = Math.min(escalaAncho,escalaAlto);
+  }
 
-        var escalaAlto = this.alto / altoLimite;
-        var escalaAncho = this.ancho / anchoLimite;
-
-        var escalaMayor = Math.max(escalaAncho,escalaAlto);
-
-        this.escala = 1.0 / escalaMayor;
+  escalarAAncho(anchoDeseado){
+      this.escala = 1;
+      this.escala = anchoDeseado / this.ancho;
+  }
+  escalarAAlto(altoDeseado){
+      this.escala = 1;
+      this.escala = altoDeseado / this.alto; 
   }
 
   get rotacion() {return -this.sprite.rotation}
