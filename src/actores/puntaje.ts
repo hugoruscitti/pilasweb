@@ -11,7 +11,7 @@ class Puntaje extends Texto {
 
   aumentar(aumento) {
     this.valor += aumento;
-    this.texto = this.valor.toString();
+    this.elString = this.valor.toString();
 
     //Conservar la escala y el radio de colisión
     //TODO: es necesario mejorar el actor Texto
