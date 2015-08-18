@@ -13778,7 +13778,7 @@ var Actor = (function (_super) {
     };
 
     Actor.prototype.decir = function (mensaje) {
-        var globo = new pilas.actores.Globo(this.izquierda + (this.ancho / 2), this.arriba, mensaje);
+        var globo = new pilas.actores.Globo(this, mensaje);
     };
 
     Actor.prototype.imitar = function (actor_o_figura) {
@@ -14106,7 +14106,9 @@ var Imagenes = (function () {
             'plano.png', 'alien.png', 'alien_marron.png', 'tuerca.png', 'nave.png',
             'piedra_chica.png', 'piedra_grande.png', 'piedra_media.png', 'ejes.png',
             'disparos.misil.png', 'rpg.maton.png', 'pasto.png',
-            'pasto_cuadriculado.png', 'globo.png', 'bloque.png',
+            'pasto_cuadriculado.png',
+            'globo.png', 'balloon.png', 'balloon-tip-right.png', 'balloon-tip-left.png',
+            'bloque.png',
             'manzana_chica.png', 'invisible.png', 'cofre.png', 'llave.png',
             'cesto.png', 'pelota.png', 'zanahoria_normal.png',
             'zanahoria_sonrie.png', 'boton.boton_normal.png',
@@ -17629,56 +17631,128 @@ var Maton = (function (_super) {
 /// <reference path="actor.ts"/>
 var Globo = (function (_super) {
     __extends(Globo, _super);
-    function Globo(x, y, mensaje) {
-        console.log(x, y, mensaje);
-        _super.call(this, "globo.png", 0, 0);
+    function Globo(actor, mensaje) {
+        console.log(mensaje);
+        _super.call(this, "balloon.png", 0, 0);
         this.mensaje = mensaje;
-        this.x = x;
-        this.y = y;
-        var mensaje = this.mensaje;
+        this.actor = actor;
 
-        this.actor_texto = new pilas.actores.Texto(x, y, mensaje);
-        this.actor_texto.z = -1000;
+        this.crearTexto();
+        this.actualizarMedidas();
+        this.ubicar();
 
-        pilas.mundo.agregar_tarea_una_vez(3, this.eliminar, {}, this);
+        pilas.mundo.agregar_tarea_una_vez(this.duracion(), this.eliminar, {}, this);
     }
+    Globo.prototype.duracion = function () {
+        return this.actor_texto.cantidadDeLineas() * 3;
+    };
+
     Globo.prototype.eliminar = function () {
         this.actor_texto.eliminar();
+        this.puntita.eliminar();
         _super.prototype.eliminar.call(this);
+    };
+
+    Globo.prototype.crearTexto = function () {
+        this.actor_texto = new pilas.actores.Texto(0, 0, this.mensaje);
+        this.actor_texto.z = this.z - 1;
+    };
+
+    Globo.prototype.actualizarMedidas = function () {
+        this.ancho = this.actor_texto.ancho + 10; //Agrego 5px a cada lado del texto
+        this.alto = Math.max(this.actor_texto.alto, 35); //Alto minimo
+    };
+
+    Globo.prototype.ubicar = function () {
+        this.ubicarEnY();
+        this.ubicarEnX();
+        this.actor_texto.reubicar(this.x, this.y);
+    };
+
+    Globo.prototype.ubicarEnY = function () {
+        this.y = this.actor.y + (this.actor.alto / 4); // Me ubico a 75% del alto
+        this.arriba = Math.min(this.arriba, pilas.arriba()); // Me aseguro de estar en pantalla
+        this.abajo = Math.max(this.abajo, pilas.abajo());
+    };
+
+    Globo.prototype.ubicarEnX = function () {
+        if (this.actor.derecha + this.ancho < pilas.derecha()) {
+            this.ubicarADerechaDelActor();
+        } else {
+            this.ubicarAIzquierdaDelActor();
+        }
+    };
+    Globo.prototype.ubicarADerechaDelActor = function () {
+        this.izquierda = this.actor.derecha;
+        this.puntita = new Actor("balloon-tip-left.png", 0, 0);
+        this.puntita.derecha = this.izquierda + 5;
+        this.puntita.abajo = this.abajo;
+        this.puntita.z = this.z;
+    };
+
+    Globo.prototype.ubicarAIzquierdaDelActor = function () {
+        this.derecha = this.actor.izquierda;
+        this.puntita = new Actor("balloon-tip-right.png", 0, 0);
+        this.puntita.abajo = this.abajo;
+        this.puntita.izquierda = this.derecha - 5;
+        this.puntita.z = this.z;
     };
     return Globo;
 })(Actor);
 /// <reference path="actor.ts"/>
 var Texto = (function (_super) {
     __extends(Texto, _super);
-    function Texto(x, y, texto, color) {
-        var imagen = "invisible.png";
-        _super.call(this, imagen, x, y);
-        this.texto = texto || "Sin texto";
-        this.color = color || "black";
+    function Texto(x, y, elString, color) {
+        if (typeof color === "undefined") { color = "black"; }
+        _super.call(this, "invisible.png", x, y);
+        this.elString = elString || "Sin texto";
+        this.color = color;
         this.crear_texto();
         this.transparencia = 100;
     }
     Texto.prototype.crear_texto = function () {
-        var s = new createjs.Text(this.texto, "12px Arial", this.color);
+        this.spriteCJS = new createjs.Text(this.elString, "12px Arial", this.color);
+        this.reubicar(this.x, this.y);
+        this.spriteCJS.textBaseline = "alphabetic";
+        this.spriteCJS.textAlign = "center";
+        pilas.escena_actual().stage.addChild(this.spriteCJS);
 
-        this.alto = s.heightscale;
-        var pos = pilas.escena_actual().obtener_posicion_pantalla(this.x, this.y);
-        s.x = pos.x;
-        s.y = pos.y;
-        s.textBaseline = "alphabetic";
-        s.textAlign = "right";
-        pilas.escena_actual().stage.addChild(s);
-        this.sprite_texto = s;
+        this.anchoMaximo(200);
     };
 
     Texto.prototype.eliminar_texto = function () {
-        pilas.escena_actual().stage.removeChild(this.sprite_texto);
+        pilas.escena_actual().stage.removeChild(this.spriteCJS);
     };
 
     Texto.prototype.eliminar = function () {
         this.eliminar_texto();
         _super.prototype.eliminar.call(this);
+    };
+
+    Texto.prototype.actualizarMedidas = function () {
+        this.alto = this.spriteCJS.getBounds().height;
+        this.ancho = this.spriteCJS.getBounds().width;
+    };
+
+    Texto.prototype.anchoMaximo = function (ancho) {
+        this.spriteCJS.lineWidth = ancho;
+        this.actualizarMedidas();
+    };
+
+    /*  altoMaximo(alto){ // ojo que no está probado
+    this.spriteCJS.lineHeight = alto;
+    this.actualizarMedidas();
+    }*/
+    Texto.prototype.reubicar = function (centro_x, centro_y) {
+        var pos = pilas.escena_actual().obtener_posicion_pantalla(centro_x, centro_y);
+        this.spriteCJS.x = pos.x;
+        this.spriteCJS.y = pos.y;
+        this.x = centro_x;
+        this.y = centro_y;
+    };
+
+    Texto.prototype.cantidadDeLineas = function () {
+        return this.alto / this.spriteCJS.getMeasuredLineHeight();
     };
     return Texto;
 })(Actor);
@@ -17998,7 +18072,7 @@ var Puntaje = (function (_super) {
     }
     Puntaje.prototype.aumentar = function (aumento) {
         this.valor += aumento;
-        this.texto = this.valor.toString();
+        this.elString = this.valor.toString();
 
         //Conservar la escala y el radio de colisión
         //TODO: es necesario mejorar el actor Texto
@@ -18720,3 +18794,62 @@ var Actores = (function () {
     }
     return Actores;
 })();
+/// <reference path="actor.ts"/>
+/// <reference path="texto.ts"/>
+var GloboAjustable = (function (_super) {
+    __extends(GloboAjustable, _super);
+    function GloboAjustable(x, y, mensaje) {
+        _super.call(this, "invisible.png", 0, 0);
+        this.mensaje = mensaje;
+        this.x = x;
+        this.y = y;
+        var mensaje = this.mensaje;
+
+        this.crearTexto();
+        this.crearGlobo();
+
+        pilas.mundo.agregar_tarea_una_vez(3, this.eliminar, {}, this);
+    }
+    GloboAjustable.prototype.eliminar = function () {
+        pilas.escena_actual().stage.removeChild(this.sprite_globo);
+        this.theText.eliminar();
+        _super.prototype.eliminar.call(this);
+    };
+
+    GloboAjustable.prototype.crearGlobo = function () {
+        var g = new createjs.Graphics();
+        g.setStrokeStyle(1);
+        g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
+        g.beginFill(createjs.Graphics.getRGB(200, 200, 200));
+
+        this.ancho = this.theText.ancho + 5;
+        this.alto = this.theText.alto + 5;
+
+        g.drawRoundRectComplex(0, 0, this.ancho, this.alto, -this.alto / 2, this.alto / 2, this.alto / 2, -this.alto / 2);
+
+        var s = new createjs.Shape(g);
+        var pos = pilas.escena_actual().obtener_posicion_pantalla(this.x, this.y);
+        s.x = pos.x;
+        s.y = pos.y;
+
+        pilas.escena_actual().stage.addChild(s);
+
+        this.reposicionar();
+    };
+
+    GloboAjustable.prototype.reposicionar = function () {
+        this.abajo = Math.max(this.abajo, pilas.abajo());
+        this.arriba = Math.min(this.arriba, pilas.arriba());
+        this.izquierda = Math.max(this.izquierda, pilas.izquierda());
+        this.derecha = Math.min(this.derecha, pilas.derecha());
+
+        this.theText.x = this.x;
+        this.theText.y = this.y;
+    };
+
+    GloboAjustable.prototype.crearTexto = function () {
+        this.theText = new Texto(this.x, this.y, this.mensaje, "black");
+        this.theText.z = -1000;
+    };
+    return GloboAjustable;
+})(Actor);
