@@ -17636,6 +17636,7 @@ var Globo = (function (_super) {
         _super.call(this, "balloon.png", 0, 0);
         this.mensaje = mensaje;
         this.actor = actor;
+        this.margen = 10;
 
         this.crearTexto();
         this.actualizarMedidas();
@@ -17659,8 +17660,8 @@ var Globo = (function (_super) {
     };
 
     Globo.prototype.actualizarMedidas = function () {
-        this.ancho = this.actor_texto.ancho + 10; //Agrego 5px a cada lado del texto
-        this.alto = Math.max(this.actor_texto.alto, 35); //Alto minimo
+        this.ancho = this.actor_texto.ancho + (this.margen * 2);
+        this.alto = Math.max(this.actor_texto.alto + (this.margen * 2), 35); //Alto minimo
     };
 
     Globo.prototype.ubicar = function () {
@@ -17670,7 +17671,7 @@ var Globo = (function (_super) {
     };
 
     Globo.prototype.ubicarEnY = function () {
-        this.y = this.actor.y + (this.actor.alto / 4); // Me ubico a 75% del alto
+        this.abajo = this.actor.y + (this.actor.alto / 4); // Me ubico a 75% del alto
         this.arriba = Math.min(this.arriba, pilas.arriba()); // Me aseguro de estar en pantalla
         this.abajo = Math.max(this.abajo, pilas.abajo());
     };
@@ -17685,7 +17686,7 @@ var Globo = (function (_super) {
     Globo.prototype.ubicarADerechaDelActor = function () {
         this.izquierda = this.actor.derecha;
         this.puntita = new Actor("balloon-tip-left.png", 0, 0);
-        this.puntita.derecha = this.izquierda + 5;
+        this.puntita.derecha = this.izquierda + this.margen;
         this.puntita.abajo = this.abajo;
         this.puntita.z = this.z;
     };
@@ -17694,7 +17695,7 @@ var Globo = (function (_super) {
         this.derecha = this.actor.izquierda;
         this.puntita = new Actor("balloon-tip-right.png", 0, 0);
         this.puntita.abajo = this.abajo;
-        this.puntita.izquierda = this.derecha - 5;
+        this.puntita.izquierda = this.derecha - this.margen;
         this.puntita.z = this.z;
     };
     return Globo;
@@ -17711,9 +17712,9 @@ var Texto = (function (_super) {
         this.transparencia = 100;
     }
     Texto.prototype.crear_texto = function () {
-        this.spriteCJS = new createjs.Text(this.elString, "12px Arial", this.color);
+        this.spriteCJS = new createjs.Text(this.elString, "14px sans-serif", this.color);
         this.reubicar(this.x, this.y);
-        this.spriteCJS.textBaseline = "alphabetic";
+        this.spriteCJS.textBaseline = "top";
         this.spriteCJS.textAlign = "center";
         pilas.escena_actual().stage.addChild(this.spriteCJS);
 
@@ -17744,7 +17745,7 @@ var Texto = (function (_super) {
     this.actualizarMedidas();
     }*/
     Texto.prototype.reubicar = function (centro_x, centro_y) {
-        var pos = pilas.escena_actual().obtener_posicion_pantalla(centro_x, centro_y);
+        var pos = pilas.escena_actual().obtener_posicion_pantalla(centro_x, centro_y + (this.alto / 2));
         this.spriteCJS.x = pos.x;
         this.spriteCJS.y = pos.y;
         this.x = centro_x;
@@ -18794,62 +18795,3 @@ var Actores = (function () {
     }
     return Actores;
 })();
-/// <reference path="actor.ts"/>
-/// <reference path="texto.ts"/>
-var GloboAjustable = (function (_super) {
-    __extends(GloboAjustable, _super);
-    function GloboAjustable(x, y, mensaje) {
-        _super.call(this, "invisible.png", 0, 0);
-        this.mensaje = mensaje;
-        this.x = x;
-        this.y = y;
-        var mensaje = this.mensaje;
-
-        this.crearTexto();
-        this.crearGlobo();
-
-        pilas.mundo.agregar_tarea_una_vez(3, this.eliminar, {}, this);
-    }
-    GloboAjustable.prototype.eliminar = function () {
-        pilas.escena_actual().stage.removeChild(this.sprite_globo);
-        this.theText.eliminar();
-        _super.prototype.eliminar.call(this);
-    };
-
-    GloboAjustable.prototype.crearGlobo = function () {
-        var g = new createjs.Graphics();
-        g.setStrokeStyle(1);
-        g.beginStroke(createjs.Graphics.getRGB(0, 0, 0));
-        g.beginFill(createjs.Graphics.getRGB(200, 200, 200));
-
-        this.ancho = this.theText.ancho + 5;
-        this.alto = this.theText.alto + 5;
-
-        g.drawRoundRectComplex(0, 0, this.ancho, this.alto, -this.alto / 2, this.alto / 2, this.alto / 2, -this.alto / 2);
-
-        var s = new createjs.Shape(g);
-        var pos = pilas.escena_actual().obtener_posicion_pantalla(this.x, this.y);
-        s.x = pos.x;
-        s.y = pos.y;
-
-        pilas.escena_actual().stage.addChild(s);
-
-        this.reposicionar();
-    };
-
-    GloboAjustable.prototype.reposicionar = function () {
-        this.abajo = Math.max(this.abajo, pilas.abajo());
-        this.arriba = Math.min(this.arriba, pilas.arriba());
-        this.izquierda = Math.max(this.izquierda, pilas.izquierda());
-        this.derecha = Math.min(this.derecha, pilas.derecha());
-
-        this.theText.x = this.x;
-        this.theText.y = this.y;
-    };
-
-    GloboAjustable.prototype.crearTexto = function () {
-        this.theText = new Texto(this.x, this.y, this.mensaje, "black");
-        this.theText.z = -1000;
-    };
-    return GloboAjustable;
-})(Actor);

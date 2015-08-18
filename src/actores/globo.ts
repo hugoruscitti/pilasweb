@@ -5,12 +5,14 @@ class Globo extends Actor {
   actor_texto;
   actor;
   puntita;
+  margen;
 
   constructor(actor, mensaje) {
     console.log(mensaje);
     super("balloon.png", 0, 0);
     this.mensaje = mensaje;
     this.actor = actor;
+    this.margen = 10;
 
     this.crearTexto();
     this.actualizarMedidas();
@@ -35,8 +37,8 @@ class Globo extends Actor {
   }
 
   actualizarMedidas(){
-    this.ancho = this.actor_texto.ancho + 10; //Agrego 5px a cada lado del texto
-    this.alto = Math.max(this.actor_texto.alto,35); //Alto minimo
+    this.ancho = this.actor_texto.ancho + (this.margen*2); 
+    this.alto = Math.max(this.actor_texto.alto + (this.margen*2),35); //Alto minimo
   }
 
   ubicar(){
@@ -46,7 +48,7 @@ class Globo extends Actor {
   }
 
   ubicarEnY(){
-    this.y = this.actor.y + (this.actor.alto / 4); // Me ubico a 75% del alto
+    this.abajo = this.actor.y + (this.actor.alto / 4); // Me ubico a 75% del alto
     this.arriba = Math.min(this.arriba, pilas.arriba()); // Me aseguro de estar en pantalla
     this.abajo = Math.max(this.abajo, pilas.abajo());
   }
@@ -61,7 +63,7 @@ class Globo extends Actor {
   ubicarADerechaDelActor(){
     this.izquierda = this.actor.derecha;
     this.puntita = new Actor("balloon-tip-left.png",0,0);
-    this.puntita.derecha = this.izquierda + 5;
+    this.puntita.derecha = this.izquierda + this.margen;
     this.puntita.abajo = this.abajo;
     this.puntita.z = this.z;
   }
@@ -70,7 +72,7 @@ class Globo extends Actor {
     this.derecha = this.actor.izquierda;
     this.puntita = new Actor("balloon-tip-right.png",0,0);
     this.puntita.abajo = this.abajo;
-    this.puntita.izquierda = this.derecha - 5;
+    this.puntita.izquierda = this.derecha - this.margen;
     this.puntita.z = this.z;
   }
 
