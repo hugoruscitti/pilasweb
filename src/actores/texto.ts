@@ -21,7 +21,7 @@ class Texto extends Actor {
     this.spriteCJS.textAlign = "center";
     pilas.escena_actual().stage.addChild(this.spriteCJS);
 
-    this.anchoMaximo(200);
+    this.anchoMaximo(150);
   } 
 
   eliminar_texto() {
@@ -58,5 +58,9 @@ class Texto extends Actor {
 
   cantidadDeLineas(){
     return this.alto / this.spriteCJS.getMeasuredLineHeight();
+  }
+
+  setString(elString){
+    this.elString = elString;
   }
 }

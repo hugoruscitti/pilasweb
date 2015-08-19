@@ -66,7 +66,7 @@ class Actor extends Estudiante {
     this.imagen = imagen || 'sin_imagen.png';
     atributos = atributos || {};
     this.vivo = true;
-    this.radio_de_colision = 10;
+    this.radio_de_colision = Math.min(this.ancho, this.alto);
     this.id = pilas.utils.obtener_uuid();
     this.x = x || 0;
     this.y = y || 0;

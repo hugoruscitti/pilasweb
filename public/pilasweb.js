@@ -13296,7 +13296,7 @@ var Actor = (function (_super) {
         this.imagen = imagen || 'sin_imagen.png';
         atributos = atributos || {};
         this.vivo = true;
-        this.radio_de_colision = 10;
+        this.radio_de_colision = Math.min(this.ancho, this.alto);
         this.id = pilas.utils.obtener_uuid();
         this.x = x || 0;
         this.y = y || 0;
@@ -17718,7 +17718,7 @@ var Texto = (function (_super) {
         this.spriteCJS.textAlign = "center";
         pilas.escena_actual().stage.addChild(this.spriteCJS);
 
-        this.anchoMaximo(200);
+        this.anchoMaximo(150);
     };
 
     Texto.prototype.eliminar_texto = function () {
@@ -17754,6 +17754,10 @@ var Texto = (function (_super) {
 
     Texto.prototype.cantidadDeLineas = function () {
         return this.alto / this.spriteCJS.getMeasuredLineHeight();
+    };
+
+    Texto.prototype.setString = function (elString) {
+        this.elString = elString;
     };
     return Texto;
 })(Actor);
@@ -18073,17 +18077,7 @@ var Puntaje = (function (_super) {
     }
     Puntaje.prototype.aumentar = function (aumento) {
         this.valor += aumento;
-        this.elString = this.valor.toString();
-
-        //Conservar la escala y el radio de colisión
-        //TODO: es necesario mejorar el actor Texto
-        var escala = this.escala;
-        var radio_de_colision = this.radio_de_colision;
-
-        this.eliminar_texto();
-        this.crear_texto();
-        this.escala = escala;
-        this.radio_de_colision = radio_de_colision;
+        this.setString(this.valor.toString());
     };
 
     Puntaje.prototype.obtener = function () {
