@@ -27,7 +27,6 @@ test_linux:
 	./dist/node-webkit-v0.7.3-linux-ia32/nw ide
 
 build:
-	grunt clear
 	grunt typescript
 	grunt generar_docs
 	grunt concat
