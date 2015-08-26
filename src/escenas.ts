@@ -25,8 +25,10 @@ class Base {
   control;
   actores;
   tareas;
+  pausada;
 
   constructor() {
+    this.desPausar();
     this.click_de_mouse = new Evento('click_de_mouse');             // ['boton', 'x', 'y']
     this.cuando_termina_click = new Evento('cuando_termina_click'); // ['boton', 'x', 'y']
     this.mueve_mouse = new Evento('mueve_mouse');                   // ['x', 'y', 'dx', 'dy']
@@ -49,7 +51,11 @@ class Base {
     throw "Tienes que re-definir el método iniciar";
   }
 
-  actualizar() {
+  actualizar(){
+    if (!this.pausada) this.doActualizar();
+  }
+
+  doActualizar() {
     this.fisica.actualizar();
     this.tareas.actualizar();
     
@@ -67,6 +73,14 @@ class Base {
 
     if (this.necesita_ordenar_actores())
       this.ordenar_actores_por_valor_z();
+  }
+
+  pausar(){
+    this.pausada = true;
+  }
+
+  desPausar(){
+    this.pausada = false;
   }
 
   necesita_ordenar_actores() {

@@ -14287,6 +14287,7 @@ var Animacion = (function (_super) {
     }
     Animacion.prototype.definir_animacion = function (nombre, cuadros, velocidad) {
         this.animaciones[nombre] = {
+            nombre: nombre,
             cuadros: cuadros,
             velocidad: velocidad
         };
@@ -14944,6 +14945,7 @@ var escena = (function () {
 
 var Base = (function () {
     function Base() {
+        this.desPausar();
         this.click_de_mouse = new Evento('click_de_mouse'); // ['boton', 'x', 'y']
         this.cuando_termina_click = new Evento('cuando_termina_click'); // ['boton', 'x', 'y']
         this.mueve_mouse = new Evento('mueve_mouse'); // ['x', 'y', 'dx', 'dy']
@@ -14966,6 +14968,11 @@ var Base = (function () {
     };
 
     Base.prototype.actualizar = function () {
+        if (!this.pausada)
+            this.doActualizar();
+    };
+
+    Base.prototype.doActualizar = function () {
         this.fisica.actualizar();
         this.tareas.actualizar();
 
@@ -14983,6 +14990,14 @@ var Base = (function () {
 
         if (this.necesita_ordenar_actores())
             this.ordenar_actores_por_valor_z();
+    };
+
+    Base.prototype.pausar = function () {
+        this.pausada = true;
+    };
+
+    Base.prototype.desPausar = function () {
+        this.pausada = false;
     };
 
     Base.prototype.necesita_ordenar_actores = function () {
