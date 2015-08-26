@@ -17153,31 +17153,39 @@ var Pilas = (function () {
         this.mundo.definir_modos(modos);
     };
 
-    Pilas.prototype.mostrar_posiciones = function () {
+    Pilas.prototype.mostrar = function (nombreDelModo) {
+        this.actualizar_modo(nombreDelModo, true);
+        return "Mostrando " + nombreDelModo;
+    };
+
+    Pilas.prototype.ocultar = function (nombreDelModo) {
+        this.actualizar_modo(nombreDelModo, false);
+        return "Ocultando " + nombreDelModo;
+    };
+
+    Pilas.prototype.actualizar_modo = function (nombreDelModo, bool) {
         var modos = this.mundo.obtener_modos();
-        modos.puntos_de_control = true;
+        modos[nombreDelModo] = bool;
         this.definir_modos(modos);
+    };
+
+    Pilas.prototype.mostrar_posiciones = function () {
+        this.mostrar("puntos_de_control");
         return "Mostrando posiciones";
     };
 
     Pilas.prototype.ocultar_posiciones = function () {
-        var modos = this.mundo.obtener_modos();
-        modos.puntos_de_control = false;
-        this.definir_modos(modos);
+        this.ocultar("puntos_de_control");
         return "Ocultando posiciones";
     };
 
     Pilas.prototype.mostrar_fisica = function () {
-        var modos = this.mundo.obtener_modos();
-        modos.fisica = true;
-        this.definir_modos(modos);
+        this.mostrar("fisica");
         return "Mostrando fisica";
     };
 
     Pilas.prototype.ocultar_fisica = function () {
-        var modos = this.mundo.obtener_modos();
-        modos.fisica = false;
-        this.definir_modos(modos);
+        this.ocultar("fisica");
         return "Ocultando fisica";
     };
 
