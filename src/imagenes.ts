@@ -172,6 +172,7 @@ class Animacion extends Grilla {
 
   definir_animacion(nombre, cuadros, velocidad) {
     this.animaciones[nombre] = {
+      nombre: nombre,
       cuadros: cuadros,
       velocidad: velocidad
     };

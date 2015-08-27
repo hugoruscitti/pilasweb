@@ -297,31 +297,39 @@ class Pilas {
     this.mundo.definir_modos(modos);
   }
 
-  mostrar_posiciones() {
+  mostrar(nombreDelModo){
+    this.actualizar_modo(nombreDelModo, true);
+    return "Mostrando " + nombreDelModo;
+  }
+
+  ocultar(nombreDelModo){
+    this.actualizar_modo(nombreDelModo, false);
+    return "Ocultando " + nombreDelModo;
+  }
+
+  actualizar_modo(nombreDelModo,bool){
     var modos = this.mundo.obtener_modos();
-    modos.puntos_de_control = true;
+    modos[nombreDelModo] = bool;
     this.definir_modos(modos);
+  }
+
+  mostrar_posiciones() {
+    this.mostrar("puntos_de_control");
     return "Mostrando posiciones";
   }
 
   ocultar_posiciones() {
-    var modos = this.mundo.obtener_modos();
-    modos.puntos_de_control = false;
-    this.definir_modos(modos);
+    this.ocultar("puntos_de_control");
     return "Ocultando posiciones";
   }
 
   mostrar_fisica() {
-    var modos = this.mundo.obtener_modos();
-    modos.fisica = true;
-    this.definir_modos(modos);
+    this.mostrar("fisica");
     return "Mostrando fisica";
   }
 
   ocultar_fisica() {
-    var modos = this.mundo.obtener_modos();
-    modos.fisica = false;
-    this.definir_modos(modos);
+    this.ocultar("fisica");
     return "Ocultando fisica";
   }
 
