@@ -14979,8 +14979,10 @@ var Base = (function () {
         var copiaActores = this.actores.slice();
 
         for (var i = 0; i < this.actores.length; i++) {
-            copiaActores[i].pre_actualizar();
-            copiaActores[i].actualizar();
+            if (copiaActores[i] !== undefined) {
+                copiaActores[i].pre_actualizar();
+                copiaActores[i].actualizar();
+            }
         }
 
         this.actualiza.emitir();
