@@ -285,8 +285,18 @@ class Pilas {
    * Se ejecuta automáticamente 60 veces por segundo, para mantener el juego en funcionamiento.
    */
   actualizar() {
-    this.mundo.actualizar()
-    this.rutinas.actualizar();
+    try {
+        this.mundo.actualizar()
+        this.rutinas.actualizar();
+    } catch(err) {
+        if (/The HTMLImageElement provided is in the 'broken' state/.test(err.message)) {
+            console.error(err);
+            console.error("Deteniendo la ejecución de pilas a causa de errores.");
+            createjs.Ticker.removeAllEventListeners('tick');
+        } else {
+            throw err;
+        }
+    }
   }
 
   interpolar(objeto, atributo, valor_o_valores, tiempo) {
