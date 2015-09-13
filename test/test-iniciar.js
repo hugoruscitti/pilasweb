@@ -12,7 +12,6 @@ test('Puede inicializar y crear actores', function(assert) {
       equal(bomba.x, 0, "La bomba está en la posición inicial");
       equal(bomba.y, 0, "La bomba está en la posición inicial");
 
-      equal(bomba.y, 2000, "La bomba está en la posición inicial");
       done();
   };
 
