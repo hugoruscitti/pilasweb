@@ -11,7 +11,7 @@ all:
 	@echo " $(V)install$(N)      Actualiza dependencias."
 	@echo " $(V)build$(N)        Compila el archivo pilasengine.js."
 	@echo " $(V)nodewekbit$(N)   Genera las versiones compiladas."
-	@echo " $(V)test$(N)         Ejecuta todos los tests con mocha."
+	@echo " $(V)test$(N)         Ejecuta todos los tests de qunit."
 	@echo " $(V)upload$(N)       Sube los archivos generados para publicar una release."
 	@echo " $(V)version$(N)      Informa el numero de version."
 	@echo ""
@@ -75,7 +75,7 @@ crear_entorno:
 	npm install
 
 test:
-	./node_modules/.bin/jasmine-node spec
+	grunt test --verbose
 
 utest:test
 

@@ -263,7 +263,7 @@ class Pilas {
    * Callback que se invoca una vez que pilas puede comenzar a funcionar.
    */
   onready() {
-    throw "pilas-engine ha iniciado, pero el metodo onready está vacío. Tienes que sobre-escribirlo...";
+    console.warn("pilas-engine ha iniciado, pero el metodo onready está vacío. Tienes que sobre-escribirlo...");
   }
 
   /**

@@ -17134,7 +17134,7 @@ var Pilas = (function () {
     * Callback que se invoca una vez que pilas puede comenzar a funcionar.
     */
     Pilas.prototype.onready = function () {
-        throw "pilas-engine ha iniciado, pero el metodo onready está vacío. Tienes que sobre-escribirlo...";
+        console.warn("pilas-engine ha iniciado, pero el metodo onready está vacío. Tienes que sobre-escribirlo...");
     };
 
     /**
