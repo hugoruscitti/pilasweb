@@ -17664,19 +17664,20 @@ var Maton = (function (_super) {
     return Maton;
 })(Actor);
 /// <reference path="actor.ts"/>
+/// <reference path="../pilas.ts"/>
 var Globo = (function (_super) {
     __extends(Globo, _super);
     function Globo(actor, mensaje) {
-        console.log(mensaje);
-        _super.call(this, "balloon.png", 0, 0);
         this.mensaje = mensaje;
         this.actor = actor;
         this.margen = 10;
+        this.nombreImagen = "balloon.png";
 
-        this.crearTexto();
+        this.crearTexto(0, 0, 9999); //Hardcodeo por necesidad de usar datos del texto
+        _super.call(this, this.nombreImagen, this.calcularX(), this.calcularY());
+        this.crearTexto(this.x, this.y, this.z - 1); //Creo el texto de posta
         this.actualizarMedidas();
-        this.ubicar();
-
+        this.ponerPuntita();
         pilas.mundo.agregar_tarea_una_vez(this.duracion(), this.eliminar, {}, this);
     }
     Globo.prototype.duracion = function () {
@@ -17689,9 +17690,11 @@ var Globo = (function (_super) {
         _super.prototype.eliminar.call(this);
     };
 
-    Globo.prototype.crearTexto = function () {
-        this.actor_texto = new pilas.actores.Texto(0, 0, this.mensaje);
-        this.actor_texto.z = this.z - 1;
+    Globo.prototype.crearTexto = function (x, y, z) {
+        if (this.actor_texto)
+            this.actor_texto.eliminar();
+        this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje);
+        this.actor_texto.z = z;
     };
 
     Globo.prototype.actualizarMedidas = function () {
@@ -17699,39 +17702,46 @@ var Globo = (function (_super) {
         this.alto = Math.max(this.actor_texto.alto + (this.margen * 2), 35); //Alto minimo
     };
 
-    Globo.prototype.ubicar = function () {
-        this.ubicarEnY();
-        this.ubicarEnX();
-        this.actor_texto.reubicar(this.x, this.y);
+    Globo.prototype.calcularY = function () {
+        var yIdeal = this.actor.y + (this.actor.alto / 4);
+        yIdeal = Math.min(yIdeal, pilas.arriba() - (this.actor_texto.alto / 2));
+        yIdeal = Math.max(yIdeal, pilas.abajo() + (this.actor_texto.alto / 2));
+
+        return yIdeal;
     };
 
-    Globo.prototype.ubicarEnY = function () {
-        this.abajo = this.actor.y + (this.actor.alto / 4); // Me ubico a 75% del alto
-        this.arriba = Math.min(this.arriba, pilas.arriba()); // Me aseguro de estar en pantalla
-        this.abajo = Math.max(this.abajo, pilas.abajo());
-    };
-
-    Globo.prototype.ubicarEnX = function () {
-        if (this.actor.derecha + this.ancho < pilas.derecha()) {
-            this.ubicarADerechaDelActor();
+    Globo.prototype.calcularX = function () {
+        var ancho = pilas.imagenes.cargar(this.nombreImagen).ancho;
+        if (this.actor.derecha + ancho < pilas.derecha()) {
+            return this.xADerechaDelActor();
         } else {
-            this.ubicarAIzquierdaDelActor();
+            return this.xAIzquierdaDelActor();
         }
     };
-    Globo.prototype.ubicarADerechaDelActor = function () {
-        this.izquierda = this.actor.derecha;
-        this.puntita = new Actor("balloon-tip-left.png", 0, 0);
-        this.puntita.derecha = this.izquierda + this.margen;
-        this.puntita.abajo = this.abajo;
+
+    Globo.prototype.xADerechaDelActor = function () {
+        return this.actor.derecha + (this.actor_texto.ancho / 2);
+    };
+
+    Globo.prototype.xAIzquierdaDelActor = function () {
+        return this.actor.izquierda - (this.actor_texto.ancho / 2);
+    };
+
+    Globo.prototype.ponerPuntita = function () {
+        if (this.actor.derecha + this.ancho < pilas.derecha()) {
+            this.ponerPuntitaAIzquierda();
+        } else {
+            this.ponerPuntitaADerecha();
+        }
         this.puntita.z = this.z;
     };
 
-    Globo.prototype.ubicarAIzquierdaDelActor = function () {
-        this.derecha = this.actor.izquierda;
-        this.puntita = new Actor("balloon-tip-right.png", 0, 0);
-        this.puntita.abajo = this.abajo;
-        this.puntita.izquierda = this.derecha - this.margen;
-        this.puntita.z = this.z;
+    Globo.prototype.ponerPuntitaAIzquierda = function () {
+        this.puntita = new Actor("balloon-tip-left.png", this.izquierda + this.margen - 30, this.abajo + 17); //TODO: tiene que haber mejor forma
+    };
+
+    Globo.prototype.ponerPuntitaADerecha = function () {
+        this.puntita = new Actor("balloon-tip-right.png", this.derecha - this.margen + 30, this.abajo + 17); //TODO: tiene que haber mejor forma
     };
     return Globo;
 })(Actor);
