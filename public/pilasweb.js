@@ -17667,17 +17667,20 @@ var Maton = (function (_super) {
 /// <reference path="../pilas.ts"/>
 var Globo = (function (_super) {
     __extends(Globo, _super);
-    function Globo(actor, mensaje) {
+    function Globo(actor, mensaje, anchoMaximo) {
+        if (typeof anchoMaximo === "undefined") { anchoMaximo = 150; }
         this.mensaje = mensaje;
         this.actor = actor;
         this.margen = 10;
+        this.anchoMaximo = anchoMaximo;
         this.nombreImagen = "balloon.png";
 
         this.crearTexto(0, 0, 9999); //Hardcodeo por necesidad de usar datos del texto
         _super.call(this, this.nombreImagen, this.calcularX(), this.calcularY());
-        this.crearTexto(this.x, this.y, this.z - 1); //Creo el texto de posta
+        this.crearTexto(this.x, this.y, this.z + 1); //Creo el texto de posta
         this.actualizarMedidas();
         this.ponerPuntita();
+
         pilas.mundo.agregar_tarea_una_vez(this.duracion(), this.eliminar, {}, this);
     }
     Globo.prototype.duracion = function () {
@@ -17693,7 +17696,7 @@ var Globo = (function (_super) {
     Globo.prototype.crearTexto = function (x, y, z) {
         if (this.actor_texto)
             this.actor_texto.eliminar();
-        this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje);
+        this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje, this.anchoMaximo);
         this.actor_texto.z = z;
     };
 
@@ -17711,8 +17714,7 @@ var Globo = (function (_super) {
     };
 
     Globo.prototype.calcularX = function () {
-        var ancho = pilas.imagenes.cargar(this.nombreImagen).ancho;
-        if (this.actor.derecha + ancho < pilas.derecha()) {
+        if (this.actor.derecha + this.anchoMaximo < pilas.derecha()) {
             return this.xADerechaDelActor();
         } else {
             return this.xAIzquierdaDelActor();
@@ -17733,7 +17735,7 @@ var Globo = (function (_super) {
         } else {
             this.ponerPuntitaADerecha();
         }
-        this.puntita.z = this.z;
+        this.puntita.z = this.z - 1;
     };
 
     Globo.prototype.ponerPuntitaAIzquierda = function () {
@@ -17748,22 +17750,23 @@ var Globo = (function (_super) {
 /// <reference path="actor.ts"/>
 var Texto = (function (_super) {
     __extends(Texto, _super);
-    function Texto(x, y, elString, color) {
+    function Texto(x, y, elString, anchoMaximo, color) {
+        if (typeof anchoMaximo === "undefined") { anchoMaximo = 200; }
         if (typeof color === "undefined") { color = "black"; }
         _super.call(this, "invisible.png", x, y);
         this.elString = elString || "Sin texto";
         this.color = color;
-        this.crear_texto();
+        this.crear_texto(anchoMaximo);
         this.transparencia = 100;
     }
-    Texto.prototype.crear_texto = function () {
+    Texto.prototype.crear_texto = function (anchoMaximo) {
         this.spriteCJS = new createjs.Text(this.elString, "14px sans-serif", this.color);
         this.reubicar(this.x, this.y);
         this.spriteCJS.textBaseline = "top";
         this.spriteCJS.textAlign = "center";
         pilas.escena_actual().stage.addChild(this.spriteCJS);
 
-        this.anchoMaximo(150);
+        this.setAnchoMaximo(anchoMaximo);
     };
 
     Texto.prototype.eliminar_texto = function () {
@@ -17780,7 +17783,7 @@ var Texto = (function (_super) {
         this.ancho = this.spriteCJS.getBounds().width;
     };
 
-    Texto.prototype.anchoMaximo = function (ancho) {
+    Texto.prototype.setAnchoMaximo = function (ancho) {
         this.spriteCJS.lineWidth = ancho;
         this.actualizarMedidas();
     };

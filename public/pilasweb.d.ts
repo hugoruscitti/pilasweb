@@ -1261,7 +1261,8 @@ declare class Globo extends Actor {
     public puntita: any;
     public margen: any;
     public nombreImagen: any;
-    constructor(actor: any, mensaje: any);
+    public anchoMaximo: any;
+    constructor(actor: any, mensaje: any, anchoMaximo?: number);
     public duracion(): number;
     public eliminar(): void;
     public crearTexto(x: any, y: any, z: any): void;
@@ -1278,12 +1279,12 @@ declare class Texto extends Actor {
     public spriteCJS: any;
     public elString: any;
     public color: any;
-    constructor(x: any, y: any, elString: any, color?: string);
-    public crear_texto(): void;
+    constructor(x: any, y: any, elString: any, anchoMaximo?: number, color?: string);
+    public crear_texto(anchoMaximo: any): void;
     public eliminar_texto(): void;
     public eliminar(): void;
     public actualizarMedidas(): void;
-    public anchoMaximo(ancho: any): void;
+    public setAnchoMaximo(ancho: any): void;
     public reubicar(centro_x: any, centro_y: any): void;
     public cantidadDeLineas(): number;
     public setString(elString: any): void;

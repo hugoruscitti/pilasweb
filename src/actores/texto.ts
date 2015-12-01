@@ -5,15 +5,15 @@ class Texto extends Actor {
   elString;
   color;
 
-  constructor(x, y, elString, color = "black") {
+  constructor(x, y, elString, anchoMaximo = 200, color = "black") {
     super("invisible.png", x, y);
     this.elString = elString || "Sin texto";
     this.color = color;
-    this.crear_texto();
+    this.crear_texto(anchoMaximo);
     this.transparencia = 100;
   }
 
-  crear_texto() {
+  crear_texto(anchoMaximo) {
 
     this.spriteCJS = new createjs.Text(this.elString, "14px sans-serif", this.color);
     this.reubicar(this.x, this.y);
@@ -21,7 +21,7 @@ class Texto extends Actor {
     this.spriteCJS.textAlign = "center";
     pilas.escena_actual().stage.addChild(this.spriteCJS);
 
-    this.anchoMaximo(150);
+    this.setAnchoMaximo(anchoMaximo);
   } 
 
   eliminar_texto() {
@@ -38,7 +38,7 @@ class Texto extends Actor {
     this.ancho = this.spriteCJS.getBounds().width;
   }
 
-  anchoMaximo(ancho){
+  setAnchoMaximo(ancho) {
     this.spriteCJS.lineWidth = ancho;
     this.actualizarMedidas();
   }

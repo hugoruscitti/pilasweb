@@ -8,18 +8,21 @@ class Globo extends Actor {
   puntita;
   margen;
   nombreImagen;
+  anchoMaximo;
 
-  constructor(actor, mensaje) {
+  constructor(actor, mensaje, anchoMaximo = 150) {
     this.mensaje = mensaje;
     this.actor = actor;
     this.margen = 10;
+    this.anchoMaximo = anchoMaximo;
     this.nombreImagen = "balloon.png";
 
     this.crearTexto(0,0,9999); //Hardcodeo por necesidad de usar datos del texto
     super(this.nombreImagen, this.calcularX(), this.calcularY());
-    this.crearTexto(this.x, this.y, this.z - 1); //Creo el texto de posta
+    this.crearTexto(this.x, this.y, this.z + 1); //Creo el texto de posta
     this.actualizarMedidas();
     this.ponerPuntita();
+
     pilas.mundo.agregar_tarea_una_vez(this.duracion(), this.eliminar, {}, this);
   }
 
@@ -35,7 +38,7 @@ class Globo extends Actor {
 
   crearTexto(x,y,z){
     if (this.actor_texto) this.actor_texto.eliminar();
-    this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje);
+    this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje, this.anchoMaximo);
     this.actor_texto.z = z;
   }
 
@@ -53,8 +56,7 @@ class Globo extends Actor {
   }
 
   calcularX() { //TODO: falta hacer que no se salga de pantalla
-    var ancho = pilas.imagenes.cargar(this.nombreImagen).ancho; // busco ancho en la imagen precargada
-    if (this.actor.derecha + ancho < pilas.derecha()) {
+    if (this.actor.derecha + this.anchoMaximo < pilas.derecha()) {
       return this.xADerechaDelActor();
     } else {
       return this.xAIzquierdaDelActor();
@@ -75,7 +77,7 @@ class Globo extends Actor {
     } else {
       this.ponerPuntitaADerecha();
     }
-    this.puntita.z = this.z;
+    this.puntita.z = this.z - 1;
   }
 
   ponerPuntitaAIzquierda(){
