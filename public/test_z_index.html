@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8>
+	<title>pilasweb testing</title>
+
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="css/custom.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="CodeMirror3/lib/codemirror.css">
+  <link rel="stylesheet" href="CodeMirror3/theme/monokai.css">
+  <link rel="stylesheet" href="css/inlet.css" type="text/css" media="screen"  title="no title" charset="utf-8">
+  <link rel="stylesheet" href="css/editor.css" type="text/css" media="screen"  title="no title" charset="utf-8">
+
+	<style>
+    canvas#canvas_id2 {
+      width: 420px;
+      height: 270px;
+			border: 1px solid #ccc;
+    }
+	</style>
+
+
+</head>
+
+<body>
+
+	<canvas id='canvas_id2'></canvas>
+
+	<p>
+		<button onclick="saludar()" class="btn btn-success">Saludar</button>
+		<button onclick="intercalar_z()" class="btn btn-warning">Intercalar Z</button>
+	</p>
+
+  <script src='pilasweb.js'></script>
+
+
+  <script>
+		var canvas_element = document.getElementById('canvas_id2');
+    var obj_pilas = pilasengine.iniciar({ancho: 420, alto: 270, canvas: canvas_element, data_path: 'data'});
+
+    obj_pilas.onready = function() {
+      var alien = new obj_pilas.actores.Alien(-150, -130);
+			var fondo = new obj_pilas.fondos.Tarde();
+
+			var mono1 = new pilas.actores.Mono();
+			var mono2 = new pilas.actores.Mono(100);
+			mono1.z = -100;
+
+			window.mono1 = mono1;
+			window.mono2 = mono2;
+			window.alien = alien;
+
+			fondo.y = 105;
+    }
+
+		function saludar() {
+			alien.decir("¡Hola!\n¿cómo estás?");
+		}
+
+		function intercalar_z() {
+			if (mono1.z === -100) {
+				mono1.z = 0;
+				mono2.z = -100;
+			} else {
+				mono1.z = -100;
+				mono2.z = 0;
+			}
+		}
+
+    obj_pilas.ejecutar();
+  </script>
+</body>
+</html>
