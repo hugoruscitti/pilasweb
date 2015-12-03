@@ -2,7 +2,7 @@
 /// <reference path="camara.ts" />
 /// <reference path="evento.ts" />
 /// <reference path="pilas.ts" />
-	
+
 class escena {
   Base;
   Normal;
@@ -58,7 +58,7 @@ class Base {
   doActualizar() {
     this.fisica.actualizar();
     this.tareas.actualizar();
-    
+
     var copiaActores = this.actores.slice();
 
     for (var i=0; i<this.actores.length; i++) {
@@ -73,10 +73,11 @@ class Base {
     this.actualiza.emitir();
     pilas.colisiones.verificar_colisiones();
 
-    this.stage.update();
-
-    if (this.necesita_ordenar_actores())
+    if (this.necesita_ordenar_actores()) {
       this.ordenar_actores_por_valor_z();
+    }
+
+    this.stage.update();
   }
 
   pausar(){
@@ -93,7 +94,7 @@ class Base {
     for (var i=0; i<this.stage.children.length; i++) {
 
       if (this.stage.children[i].z > ultimo_z) {
-        console.log("necesita actualizar!");
+        //console.log("necesita actualizar el orden Z!");
         return true;
       }
 
@@ -104,24 +105,26 @@ class Base {
 
 
   ordenar_actores_por_valor_z() {
+    var sortFunction = function(a, b, options) {
+      if (a.z < b.z) {
+        return 1;
+      }
 
-    var sortFunction = function(a, b) {
-      if (a.z < b.z) return 1;
-      if (a.z > b.z) return -1;
+      if (a.z > b.z) {
+        return -1;
+      }
+
       return 0;
-    }
+    };
 
     this.stage.sortChildren(sortFunction);
   }
 
   agregar_actor(actor) {
-    if (this.actores[1]) {
-      actor.z = this.actores[this.actores.length-1].z-1;
-    }
     this.actores.push(actor);
-
     this.stage.addChild(actor.sprite);
     this.stage.update();
+    this.ordenar_actores_por_valor_z();
   }
 
   eliminar_actor(actor) {

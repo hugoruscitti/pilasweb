@@ -8,7 +8,6 @@ class Globo extends Actor {
   margen;
 
   constructor(actor, mensaje) {
-    console.log(mensaje);
     super("balloon.png", 0, 0);
     this.mensaje = mensaje;
     this.actor = actor;
@@ -17,6 +16,7 @@ class Globo extends Actor {
     this.crearTexto();
     this.actualizarMedidas();
     this.ubicar();
+    this.z = -5000;
 
     pilas.mundo.agregar_tarea_una_vez(this.duracion(), this.eliminar, {}, this);
   }
@@ -37,7 +37,7 @@ class Globo extends Actor {
   }
 
   actualizarMedidas(){
-    this.ancho = this.actor_texto.ancho + (this.margen*2); 
+    this.ancho = this.actor_texto.ancho + (this.margen*2);
     this.alto = Math.max(this.actor_texto.alto + (this.margen*2),35); //Alto minimo
   }
 
