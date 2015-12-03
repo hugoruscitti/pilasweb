@@ -10,7 +10,8 @@ class Globo extends Actor {
   nombreImagen;
   anchoMaximo;
 
-  constructor(actor, mensaje, anchoMaximo = 150) {
+  constructor(actor, mensaje, anchoMaximo=150) {
+    super("balloon.png", 0, 0);
     this.mensaje = mensaje;
     this.actor = actor;
     this.margen = 10;
@@ -22,6 +23,7 @@ class Globo extends Actor {
     this.crearTexto(this.x, this.y, this.z + 1); //Creo el texto de posta
     this.actualizarMedidas();
     this.ponerPuntita();
+    this.z = -5000;
 
     pilas.mundo.agregar_tarea_una_vez(this.duracion(), this.eliminar, {}, this);
   }
@@ -43,7 +45,7 @@ class Globo extends Actor {
   }
 
   actualizarMedidas(){
-    this.ancho = this.actor_texto.ancho + (this.margen*2); 
+    this.ancho = this.actor_texto.ancho + (this.margen*2);
     this.alto = Math.max(this.actor_texto.alto + (this.margen*2),35); //Alto minimo
   }
 

@@ -14988,10 +14988,11 @@ var Base = (function () {
         this.actualiza.emitir();
         pilas.colisiones.verificar_colisiones();
 
-        this.stage.update();
-
-        if (this.necesita_ordenar_actores())
+        if (this.necesita_ordenar_actores()) {
             this.ordenar_actores_por_valor_z();
+        }
+
+        this.stage.update();
     };
 
     Base.prototype.pausar = function () {
@@ -15007,7 +15008,7 @@ var Base = (function () {
 
         for (var i = 0; i < this.stage.children.length; i++) {
             if (this.stage.children[i].z > ultimo_z) {
-                console.log("necesita actualizar!");
+                //console.log("necesita actualizar el orden Z!");
                 return true;
             }
 
@@ -15016,11 +15017,15 @@ var Base = (function () {
     };
 
     Base.prototype.ordenar_actores_por_valor_z = function () {
-        var sortFunction = function (a, b) {
-            if (a.z < b.z)
+        var sortFunction = function (a, b, options) {
+            if (a.z < b.z) {
                 return 1;
-            if (a.z > b.z)
+            }
+
+            if (a.z > b.z) {
                 return -1;
+            }
+
             return 0;
         };
 
@@ -15028,13 +15033,10 @@ var Base = (function () {
     };
 
     Base.prototype.agregar_actor = function (actor) {
-        if (this.actores[1]) {
-            actor.z = this.actores[this.actores.length - 1].z - 1;
-        }
         this.actores.push(actor);
-
         this.stage.addChild(actor.sprite);
         this.stage.update();
+        this.ordenar_actores_por_valor_z();
     };
 
     Base.prototype.eliminar_actor = function (actor) {
@@ -17669,6 +17671,7 @@ var Globo = (function (_super) {
     __extends(Globo, _super);
     function Globo(actor, mensaje, anchoMaximo) {
         if (typeof anchoMaximo === "undefined") { anchoMaximo = 150; }
+        _super.call(this, "balloon.png", 0, 0);
         this.mensaje = mensaje;
         this.actor = actor;
         this.margen = 10;
@@ -17680,6 +17683,7 @@ var Globo = (function (_super) {
         this.crearTexto(this.x, this.y, this.z + 1); //Creo el texto de posta
         this.actualizarMedidas();
         this.ponerPuntita();
+        this.z = -5000;
 
         pilas.mundo.agregar_tarea_una_vez(this.duracion(), this.eliminar, {}, this);
     }
