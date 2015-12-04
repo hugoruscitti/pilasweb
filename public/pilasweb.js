@@ -17765,12 +17765,11 @@ var Texto = (function (_super) {
     }
     Texto.prototype.crear_texto = function (anchoMaximo) {
         this.spriteCJS = new createjs.Text(this.elString, "14px sans-serif", this.color);
+        this.setAnchoMaximo(anchoMaximo);
         this.reubicar(this.x, this.y);
         this.spriteCJS.textBaseline = "top";
         this.spriteCJS.textAlign = "center";
         pilas.escena_actual().stage.addChild(this.spriteCJS);
-
-        this.setAnchoMaximo(anchoMaximo);
     };
 
     Texto.prototype.eliminar_texto = function () {

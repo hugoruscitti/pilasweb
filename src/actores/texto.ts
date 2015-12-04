@@ -16,12 +16,11 @@ class Texto extends Actor {
   crear_texto(anchoMaximo) {
 
     this.spriteCJS = new createjs.Text(this.elString, "14px sans-serif", this.color);
+    this.setAnchoMaximo(anchoMaximo);
     this.reubicar(this.x, this.y);
     this.spriteCJS.textBaseline = "top";
     this.spriteCJS.textAlign = "center";
     pilas.escena_actual().stage.addChild(this.spriteCJS);
-
-    this.setAnchoMaximo(anchoMaximo);
   } 
 
   eliminar_texto() {
@@ -49,7 +48,7 @@ class Texto extends Actor {
   }*/
 
   reubicar(centro_x, centro_y){ //TODO: esto es por no poder sobreescribir los setter y getter de x e y
-    var pos = pilas.escena_actual().obtener_posicion_pantalla(centro_x, centro_y + (this.alto/2));
+    var pos = pilas.escena_actual().obtener_posicion_pantalla(centro_x, centro_y + (this.alto/2)); // TODO: No tengo ni idea por qué es necesario esto.
     this.spriteCJS.x = pos.x;
     this.spriteCJS.y = pos.y;
     this.x = centro_x;
