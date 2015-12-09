@@ -17710,7 +17710,7 @@ var Globo = (function (_super) {
     };
 
     Globo.prototype.calcularY = function () {
-        var yIdeal = this.actor.y + (this.actor.alto / 4);
+        var yIdeal = this.actor.y + (this.actor.alto / 4) + (this.actor_texto.alto / 2);
         yIdeal = Math.min(yIdeal, pilas.arriba() - (this.actor_texto.alto / 2));
         yIdeal = Math.max(yIdeal, pilas.abajo() + (this.actor_texto.alto / 2));
 
@@ -17718,7 +17718,7 @@ var Globo = (function (_super) {
     };
 
     Globo.prototype.calcularX = function () {
-        if (this.actor.derecha + this.anchoMaximo < pilas.derecha()) {
+        if (this.voyAIzquierda()) {
             return this.xADerechaDelActor();
         } else {
             return this.xAIzquierdaDelActor();
@@ -17726,15 +17726,15 @@ var Globo = (function (_super) {
     };
 
     Globo.prototype.xADerechaDelActor = function () {
-        return this.actor.derecha + (this.actor_texto.ancho / 2);
+        return this.actor.derecha + this.dimPuntita().ancho + (this.actor_texto.ancho / 2);
     };
 
     Globo.prototype.xAIzquierdaDelActor = function () {
-        return this.actor.izquierda - (this.actor_texto.ancho / 2);
+        return this.actor.izquierda - this.dimPuntita().ancho - (this.actor_texto.ancho / 2);
     };
 
     Globo.prototype.ponerPuntita = function () {
-        if (this.actor.derecha + this.ancho < pilas.derecha()) {
+        if (this.voyAIzquierda()) {
             this.ponerPuntitaAIzquierda();
         } else {
             this.ponerPuntitaADerecha();
@@ -17743,11 +17743,19 @@ var Globo = (function (_super) {
     };
 
     Globo.prototype.ponerPuntitaAIzquierda = function () {
-        this.puntita = new Actor("balloon-tip-left.png", this.izquierda + this.margen - 30, this.abajo + 17); //TODO: tiene que haber mejor forma
+        this.puntita = new Actor("balloon-tip-left.png", this.izquierda + this.margen - (this.dimPuntita().ancho / 2), this.abajo + (this.dimPuntita().alto / 2));
     };
 
     Globo.prototype.ponerPuntitaADerecha = function () {
-        this.puntita = new Actor("balloon-tip-right.png", this.derecha - this.margen + 30, this.abajo + 17); //TODO: tiene que haber mejor forma
+        this.puntita = new Actor("balloon-tip-right.png", this.derecha - this.margen + (this.dimPuntita().ancho / 2), this.abajo + (this.dimPuntita().alto / 2));
+    };
+
+    Globo.prototype.dimPuntita = function () {
+        return { ancho: 60, alto: 34 };
+    };
+
+    Globo.prototype.voyAIzquierda = function () {
+        return this.actor.derecha + this.dimPuntita().ancho + this.anchoMaximo < pilas.derecha();
     };
     return Globo;
 })(Actor);

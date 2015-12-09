@@ -50,7 +50,7 @@ class Globo extends Actor {
   }
 
   calcularY(){
-    var yIdeal = this.actor.y + (this.actor.alto / 4); // Me ubico a 75% del alto
+    var yIdeal = this.actor.y + (this.actor.alto / 4) + (this.actor_texto.alto / 2); // Me ubico a 75% del alto
     yIdeal = Math.min(yIdeal, pilas.arriba() - (this.actor_texto.alto / 2));
     yIdeal = Math.max(yIdeal, pilas.abajo() + (this.actor_texto.alto / 2));
 
@@ -58,7 +58,7 @@ class Globo extends Actor {
   }
 
   calcularX() { //TODO: falta hacer que no se salga de pantalla
-    if (this.actor.derecha + this.anchoMaximo < pilas.derecha()) {
+    if (this.voyAIzquierda()) {
       return this.xADerechaDelActor();
     } else {
       return this.xAIzquierdaDelActor();
@@ -66,15 +66,15 @@ class Globo extends Actor {
   }
 
   xADerechaDelActor(){
-    return this.actor.derecha + (this.actor_texto.ancho / 2);
+    return this.actor.derecha + this.dimPuntita().ancho + (this.actor_texto.ancho / 2);
   }
 
   xAIzquierdaDelActor(){
-    return this.actor.izquierda - (this.actor_texto.ancho / 2);
+    return this.actor.izquierda - this.dimPuntita().ancho - (this.actor_texto.ancho / 2);
   }
 
   ponerPuntita(){
-    if (this.actor.derecha + this.ancho < pilas.derecha()) {
+    if (this.voyAIzquierda()) {
       this.ponerPuntitaAIzquierda();
     } else {
       this.ponerPuntitaADerecha();
@@ -84,14 +84,22 @@ class Globo extends Actor {
 
   ponerPuntitaAIzquierda(){
     this.puntita = new Actor("balloon-tip-left.png", 
-      this.izquierda + this.margen - 30,  //TODO: tiene que haber mejor forma
-      this.abajo + 17); //TODO: tiene que haber mejor forma
+    this.izquierda + this.margen - (this.dimPuntita().ancho / 2),
+    this.abajo + (this.dimPuntita().alto / 2));
   }
 
   ponerPuntitaADerecha(){
     this.puntita = new Actor("balloon-tip-right.png",
-      this.derecha - this.margen + 30,  //TODO: tiene que haber mejor forma
-      this.abajo + 17); //TODO: tiene que haber mejor forma
+      this.derecha - this.margen + (this.dimPuntita().ancho / 2),
+      this.abajo + (this.dimPuntita().alto / 2)); 
   }
+
+  dimPuntita(){
+    return { ancho: 60, alto: 34 }  //TODO: tiene que haber mejor forma
+  }
+
+  voyAIzquierda(){
+     return this.actor.derecha + this.dimPuntita().ancho + this.anchoMaximo < pilas.derecha();
+        }
 
 }

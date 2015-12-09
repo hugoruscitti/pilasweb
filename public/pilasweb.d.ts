@@ -1274,6 +1274,11 @@ declare class Globo extends Actor {
     public ponerPuntita(): void;
     public ponerPuntitaAIzquierda(): void;
     public ponerPuntitaADerecha(): void;
+    public dimPuntita(): {
+        ancho: number;
+        alto: number;
+    };
+    public voyAIzquierda(): boolean;
 }
 declare class Texto extends Actor {
     public spriteCJS: any;
