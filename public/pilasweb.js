@@ -13778,7 +13778,10 @@ var Actor = (function (_super) {
     };
 
     Actor.prototype.decir = function (mensaje) {
-        var globo = new pilas.actores.Globo(this, mensaje);
+        new pilas.actores.Globo(this, mensaje);
+    };
+    Actor.prototype.pensar = function (mensaje) {
+        new pilas.actores.GloboPensar(this, mensaje);
     };
 
     Actor.prototype.imitar = function (actor_o_figura) {
@@ -14108,6 +14111,7 @@ var Imagenes = (function () {
             'disparos.misil.png', 'rpg.maton.png', 'pasto.png',
             'pasto_cuadriculado.png',
             'globo.png', 'balloon.png', 'balloon-tip-right.png', 'balloon-tip-left.png',
+            'balloon-tip-think-right.png', 'balloon-tip-think-left.png',
             'bloque.png',
             'manzana_chica.png', 'invisible.png', 'cofre.png', 'llave.png',
             'cesto.png', 'pelota.png', 'zanahoria_normal.png',
@@ -17743,11 +17747,11 @@ var Globo = (function (_super) {
     };
 
     Globo.prototype.ponerPuntitaAIzquierda = function () {
-        this.puntita = new Actor("balloon-tip-left.png", this.izquierda + this.margen - (this.dimPuntita().ancho / 2), this.abajo + (this.dimPuntita().alto / 2));
+        this.puntita = new Actor(this.imagenPuntita().izquierda, this.izquierda + this.margen - (this.dimPuntita().ancho / 2), this.abajo + (this.dimPuntita().alto / 2));
     };
 
     Globo.prototype.ponerPuntitaADerecha = function () {
-        this.puntita = new Actor("balloon-tip-right.png", this.derecha - this.margen + (this.dimPuntita().ancho / 2), this.abajo + (this.dimPuntita().alto / 2));
+        this.puntita = new Actor(this.imagenPuntita().derecha, this.derecha - this.margen + (this.dimPuntita().ancho / 2), this.abajo + (this.dimPuntita().alto / 2));
     };
 
     Globo.prototype.dimPuntita = function () {
@@ -17757,8 +17761,27 @@ var Globo = (function (_super) {
     Globo.prototype.voyAIzquierda = function () {
         return this.actor.derecha + this.dimPuntita().ancho + this.anchoMaximo < pilas.derecha();
     };
+
+    Globo.prototype.imagenPuntita = function () {
+        return {
+            izquierda: "balloon-tip-left.png",
+            derecha: "balloon-tip-right.png" };
+    };
     return Globo;
 })(Actor);
+
+var GloboPensar = (function (_super) {
+    __extends(GloboPensar, _super);
+    function GloboPensar() {
+        _super.apply(this, arguments);
+    }
+    GloboPensar.prototype.imagenPuntita = function () {
+        return {
+            izquierda: "balloon-tip-think-left.png",
+            derecha: "balloon-tip-think-right.png" };
+    };
+    return GloboPensar;
+})(Globo);
 /// <reference path="actor.ts"/>
 var Texto = (function (_super) {
     __extends(Texto, _super);
@@ -18825,6 +18848,7 @@ var Actores = (function () {
         this.Eje = Eje;
         this.Maton = Maton;
         this.Globo = Globo;
+        this.GloboPensar = GloboPensar;
         this.Texto = Texto;
         this.Bloque = Bloque; // TODO: eliminar, es solo para implementar tutorial.
         this.Manzana = Manzana;

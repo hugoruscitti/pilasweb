@@ -49,6 +49,7 @@ class Actores {
   Eje;
   Maton;
   Globo;
+  GloboPensar;
   Texto;
   Bloque;
   Manzana;
@@ -83,6 +84,7 @@ class Actores {
     this.Eje = Eje;
     this.Maton = Maton;
     this.Globo = Globo;
+    this.GloboPensar = GloboPensar;
     this.Texto = Texto;
     this.Bloque = Bloque; // TODO: eliminar, es solo para implementar tutorial.
     this.Manzana = Manzana;

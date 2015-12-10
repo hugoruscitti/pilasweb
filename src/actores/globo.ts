@@ -83,13 +83,13 @@ class Globo extends Actor {
   }
 
   ponerPuntitaAIzquierda(){
-    this.puntita = new Actor("balloon-tip-left.png", 
+    this.puntita = new Actor(this.imagenPuntita().izquierda, 
     this.izquierda + this.margen - (this.dimPuntita().ancho / 2),
     this.abajo + (this.dimPuntita().alto / 2));
   }
 
   ponerPuntitaADerecha(){
-    this.puntita = new Actor("balloon-tip-right.png",
+    this.puntita = new Actor(this.imagenPuntita().derecha,
       this.derecha - this.margen + (this.dimPuntita().ancho / 2),
       this.abajo + (this.dimPuntita().alto / 2)); 
   }
@@ -100,6 +100,17 @@ class Globo extends Actor {
 
   voyAIzquierda(){
      return this.actor.derecha + this.dimPuntita().ancho + this.anchoMaximo < pilas.derecha();
-        }
+  }
 
+  imagenPuntita() {
+      return { izquierda: "balloon-tip-left.png", 
+               derecha: "balloon-tip-right.png" };
+  }
+}
+
+class GloboPensar extends Globo{
+  imagenPuntita(){
+    return { izquierda: "balloon-tip-think-left.png", 
+             derecha: "balloon-tip-think-right.png" };
+  }
 }
