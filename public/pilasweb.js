@@ -17754,10 +17754,6 @@ var Globo = (function (_super) {
         this.puntita = new Actor(this.imagenPuntita().derecha, this.derecha - this.margen + (this.dimPuntita().ancho / 2), this.abajo + (this.dimPuntita().alto / 2));
     };
 
-    Globo.prototype.dimPuntita = function () {
-        return { ancho: 60, alto: 34 };
-    };
-
     Globo.prototype.voyAIzquierda = function () {
         return this.actor.derecha + this.dimPuntita().ancho + this.anchoMaximo < pilas.derecha();
     };
@@ -17766,6 +17762,10 @@ var Globo = (function (_super) {
         return {
             izquierda: "balloon-tip-left.png",
             derecha: "balloon-tip-right.png" };
+    };
+
+    Globo.prototype.dimPuntita = function () {
+        return { ancho: 30, alto: 34 };
     };
     return Globo;
 })(Actor);

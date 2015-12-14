@@ -94,10 +94,6 @@ class Globo extends Actor {
       this.abajo + (this.dimPuntita().alto / 2)); 
   }
 
-  dimPuntita(){
-    return { ancho: 60, alto: 34 }  //TODO: tiene que haber mejor forma
-  }
-
   voyAIzquierda(){
      return this.actor.derecha + this.dimPuntita().ancho + this.anchoMaximo < pilas.derecha();
   }
@@ -105,6 +101,10 @@ class Globo extends Actor {
   imagenPuntita() {
       return { izquierda: "balloon-tip-left.png", 
                derecha: "balloon-tip-right.png" };
+  }
+
+  dimPuntita(){
+    return { ancho: 30, alto: 34 }  //TODO: tiene que haber mejor forma
   }
 }
 
