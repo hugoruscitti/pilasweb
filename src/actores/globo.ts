@@ -57,12 +57,17 @@ class Globo extends Actor {
     return yIdeal;
   }
 
-  calcularX() { //TODO: falta hacer que no se salga de pantalla
+  calcularX() {
+    var xIdeal;
     if (this.voyAIzquierda()) {
-      return this.xADerechaDelActor();
+      xIdeal = this.xADerechaDelActor();
     } else {
-      return this.xAIzquierdaDelActor();
+      xIdeal = this.xAIzquierdaDelActor();
     }
+    xIdeal = Math.min(xIdeal, pilas.derecha() - (this.actor_texto.ancho / 2));
+    xIdeal = Math.max(xIdeal, pilas.izquierda() + (this.actor_texto.ancho / 2));
+
+    return xIdeal;
   }
 
   xADerechaDelActor(){
