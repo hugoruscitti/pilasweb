@@ -13403,6 +13403,10 @@ var Actor = (function (_super) {
     });
 
 
+    Actor.prototype.setZ = function (z) {
+        this.z = z;
+    };
+
     Object.defineProperty(Actor.prototype, "espejado", {
         get: function () {
             return this._espejado;
@@ -13439,6 +13443,10 @@ var Actor = (function (_super) {
     });
 
 
+    Actor.prototype.setX = function (x) {
+        this.x = x;
+    };
+
     Object.defineProperty(Actor.prototype, "y", {
         get: function () {
             var pos = pilas.escena_actual().obtener_posicion_escenario(0, this.sprite.y);
@@ -13457,6 +13465,10 @@ var Actor = (function (_super) {
         configurable: true
     });
 
+
+    Actor.prototype.setY = function (y) {
+        this.y = y;
+    };
 
     Object.defineProperty(Actor.prototype, "centro", {
         get: function () {
@@ -15538,6 +15550,21 @@ var Imitar = (function (_super) {
     return Imitar;
 })(Habilidad);
 
+var ImitarPosicion = (function (_super) {
+    __extends(ImitarPosicion, _super);
+    function ImitarPosicion(receptor, argumentos) {
+        _super.call(this, receptor, argumentos);
+        this.objeto_a_imitar = this.argumentos.objeto_a_imitar;
+        this.delta_x = this.objeto_a_imitar.x - this.receptor.x;
+        this.delta_y = this.objeto_a_imitar.y - this.receptor.y;
+    }
+    ImitarPosicion.prototype.actualizar = function () {
+        this.receptor.setX(this.objeto_a_imitar.x - this.delta_x);
+        this.receptor.setY(this.objeto_a_imitar.y - this.delta_y);
+    };
+    return ImitarPosicion;
+})(Habilidad);
+
 /**
 * @class PuedeExplotar
 *
@@ -15855,6 +15882,7 @@ var Habilidades = (function () {
         this.RebotarComoPelota = RebotarComoPelota;
         this.RebotarComoCaja = RebotarComoCaja;
         this.Imitar = Imitar;
+        this.ImitarPosicion = ImitarPosicion;
     }
     return Habilidades;
 })();
@@ -17673,7 +17701,8 @@ var Maton = (function (_super) {
 /// <reference path="../pilas.ts"/>
 var Globo = (function (_super) {
     __extends(Globo, _super);
-    function Globo(actor, mensaje, anchoMaximo) {
+    function Globo(actor, mensaje, eliminarPrevio, anchoMaximo) {
+        if (typeof eliminarPrevio === "undefined") { eliminarPrevio = true; }
         if (typeof anchoMaximo === "undefined") { anchoMaximo = 150; }
         _super.call(this, "balloon.png", 0, 0);
         this.mensaje = mensaje;
@@ -17684,11 +17713,14 @@ var Globo = (function (_super) {
 
         this.crearTexto(0, 0, 9999); //Hardcodeo por necesidad de usar datos del texto
         _super.call(this, this.nombreImagen, this.calcularX(), this.calcularY());
+        this.z = -5000;
         this.crearTexto(this.x, this.y, this.z + 1); //Creo el texto de posta
         this.actualizarMedidas();
         this.ponerPuntita();
-        this.z = -5000;
 
+        // if (eliminarPrevio && this.actor.globoActual) this.actor.globoActual.eliminar();
+        // this.actor.globoActual = this;
+        this.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this.actor });
         pilas.mundo.agregar_tarea_una_vez(this.duracion(), this.eliminar, {}, this);
     }
     Globo.prototype.duracion = function () {
@@ -17706,6 +17738,7 @@ var Globo = (function (_super) {
             this.actor_texto.eliminar();
         this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje, this.anchoMaximo);
         this.actor_texto.z = z;
+        this.actor_texto.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
     };
 
     Globo.prototype.actualizarMedidas = function () {
@@ -17749,6 +17782,7 @@ var Globo = (function (_super) {
             this.ponerPuntitaADerecha();
         }
         this.puntita.z = this.z - 1;
+        this.puntita.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
     };
 
     Globo.prototype.ponerPuntitaAIzquierda = function () {
@@ -17802,7 +17836,8 @@ var Texto = (function (_super) {
     Texto.prototype.crear_texto = function (anchoMaximo) {
         this.spriteCJS = new createjs.Text(this.elString, "14px sans-serif", this.color);
         this.setAnchoMaximo(anchoMaximo);
-        this.reubicar(this.x, this.y);
+        this.setX(this.x);
+        this.setY(this.y);
         this.spriteCJS.textBaseline = "top";
         this.spriteCJS.textAlign = "center";
         pilas.escena_actual().stage.addChild(this.spriteCJS);
@@ -17827,16 +17862,14 @@ var Texto = (function (_super) {
         this.actualizarMedidas();
     };
 
-    /*  altoMaximo(alto){ // ojo que no está probado
-    this.spriteCJS.lineHeight = alto;
-    this.actualizarMedidas();
-    }*/
-    Texto.prototype.reubicar = function (centro_x, centro_y) {
-        var pos = pilas.escena_actual().obtener_posicion_pantalla(centro_x, centro_y + (this.alto / 2));
-        this.spriteCJS.x = pos.x;
-        this.spriteCJS.y = pos.y;
-        this.x = centro_x;
-        this.y = centro_y;
+    Texto.prototype.setX = function (x) {
+        _super.prototype.setX.call(this, x);
+        this.spriteCJS.x = pilas.escena_actual().obtener_posicion_pantalla(x, 0).x;
+    };
+
+    Texto.prototype.setY = function (y) {
+        _super.prototype.setY.call(this, y);
+        this.spriteCJS.y = pilas.escena_actual().obtener_posicion_pantalla(0, y + (this.alto / 2)).y;
     };
 
     Texto.prototype.cantidadDeLineas = function () {

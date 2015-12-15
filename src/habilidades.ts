@@ -55,6 +55,25 @@ class Imitar extends Habilidad {
 
 }
 
+class ImitarPosicion extends Habilidad {
+  objeto_a_imitar;
+  delta_x;
+  delta_y;
+
+  constructor(receptor, argumentos) {
+    super(receptor, argumentos);
+    this.objeto_a_imitar = this.argumentos.objeto_a_imitar;
+    this.delta_x = this.objeto_a_imitar.x - this.receptor.x;
+    this.delta_y = this.objeto_a_imitar.y - this.receptor.y;
+  }
+
+  actualizar() {
+    this.receptor.setX(this.objeto_a_imitar.x - this.delta_x);
+    this.receptor.setY(this.objeto_a_imitar.y - this.delta_y);
+  }
+
+}
+
 /**
  * @class PuedeExplotar
  *
@@ -387,6 +406,7 @@ class Habilidades {
   RebotarComoPelota;
   RebotarComoCaja;
   Imitar;
+  ImitarPosicion;
 
   constructor() {
     this.Arrastrable = Arrastrable;
@@ -400,5 +420,6 @@ class Habilidades {
     this.RebotarComoPelota = RebotarComoPelota;
     this.RebotarComoCaja = RebotarComoCaja;
     this.Imitar = Imitar;
+    this.ImitarPosicion = ImitarPosicion;
   }
 }

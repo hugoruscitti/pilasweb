@@ -17,7 +17,8 @@ class Texto extends Actor {
 
     this.spriteCJS = new createjs.Text(this.elString, "14px sans-serif", this.color);
     this.setAnchoMaximo(anchoMaximo);
-    this.reubicar(this.x, this.y);
+    this.setX(this.x);
+    this.setY(this.y);
     this.spriteCJS.textBaseline = "top";
     this.spriteCJS.textAlign = "center";
     pilas.escena_actual().stage.addChild(this.spriteCJS);
@@ -42,17 +43,14 @@ class Texto extends Actor {
     this.actualizarMedidas();
   }
 
-/*  altoMaximo(alto){ // ojo que no está probado
-    this.spriteCJS.lineHeight = alto;
-    this.actualizarMedidas();
-  }*/
+  setX(x){
+    super.setX(x);
+    this.spriteCJS.x = pilas.escena_actual().obtener_posicion_pantalla(x, 0).x;
+  }
 
-  reubicar(centro_x, centro_y){ //TODO: esto es por no poder sobreescribir los setter y getter de x e y
-    var pos = pilas.escena_actual().obtener_posicion_pantalla(centro_x, centro_y + (this.alto/2)); // TODO: No tengo ni idea por qué es necesario esto.
-    this.spriteCJS.x = pos.x;
-    this.spriteCJS.y = pos.y;
-    this.x = centro_x;
-    this.y = centro_y;
+  setY(y){
+    super.setY(y);
+    this.spriteCJS.y = pilas.escena_actual().obtener_posicion_pantalla(0, y + (this.alto / 2)).y;
   }
 
   cantidadDeLineas(){

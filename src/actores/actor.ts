@@ -173,6 +173,10 @@ class Actor extends Estudiante {
     this.evto_se_movio.emitir();
   }
 
+  setZ(z) {
+    this.z = z;
+  }
+
   get espejado() {
     return this._espejado;
   }
@@ -202,6 +206,10 @@ class Actor extends Estudiante {
     }
   }
 
+  setX(x){
+    this.x = x;
+  }
+
   get y() {
     var pos = pilas.escena_actual().obtener_posicion_escenario(0, this.sprite.y);
     return pos.y;
@@ -215,6 +223,10 @@ class Actor extends Estudiante {
       this.sprite.y = pos.y;
       this.evto_se_movio.emitir({});
     }
+  }
+
+  setY(y) {
+    this.y = y;
   }
 
   get centro() {

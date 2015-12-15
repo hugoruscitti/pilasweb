@@ -10,7 +10,7 @@ class Globo extends Actor {
   nombreImagen;
   anchoMaximo;
 
-  constructor(actor, mensaje, anchoMaximo=150) {
+  constructor(actor, mensaje, eliminarPrevio = true, anchoMaximo=150) {
     super("balloon.png", 0, 0);
     this.mensaje = mensaje;
     this.actor = actor;
@@ -18,13 +18,17 @@ class Globo extends Actor {
     this.anchoMaximo = anchoMaximo;
     this.nombreImagen = "balloon.png";
 
+
     this.crearTexto(0,0,9999); //Hardcodeo por necesidad de usar datos del texto
     super(this.nombreImagen, this.calcularX(), this.calcularY());
+    this.z = -5000;
     this.crearTexto(this.x, this.y, this.z + 1); //Creo el texto de posta
     this.actualizarMedidas();
     this.ponerPuntita();
-    this.z = -5000;
 
+   // if (eliminarPrevio && this.actor.globoActual) this.actor.globoActual.eliminar();
+   // this.actor.globoActual = this;
+    this.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this.actor });
     pilas.mundo.agregar_tarea_una_vez(this.duracion(), this.eliminar, {}, this);
   }
 
@@ -42,6 +46,7 @@ class Globo extends Actor {
     if (this.actor_texto) this.actor_texto.eliminar();
     this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje, this.anchoMaximo);
     this.actor_texto.z = z;
+    this.actor_texto.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
   }
 
   actualizarMedidas(){
@@ -85,6 +90,7 @@ class Globo extends Actor {
       this.ponerPuntitaADerecha();
     }
     this.puntita.z = this.z - 1;
+    this.puntita.agregar_habilidad(ImitarPosicion,{objeto_a_imitar: this});
   }
 
   ponerPuntitaAIzquierda(){
