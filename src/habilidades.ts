@@ -55,23 +55,45 @@ class Imitar extends Habilidad {
 
 }
 
-class ImitarPosicion extends Habilidad {
+class ImitarAtributosNumericos extends Habilidad {
+  objeto_a_imitar;
+  atributos;
+  setters;
+  deltas;
+
+  constructor(receptor, argumentos) {
+    super(receptor, argumentos);
+    this.objeto_a_imitar = this.argumentos.objeto_a_imitar;
+    this.atributos = this.argumentos.atributos;
+    this.setters = this.argumentos.setters || {};
+
+    this.deltas = {};
+    this.atributos.forEach(
+      function(atributo) {
+        this.deltas[atributo] = this.objeto_a_imitar[atributo] - this.receptor[atributo];
+      }.bind(this))
+  }
+
+  actualizar() {
+    this.atributos.forEach(
+      function(atributo) {
+        var nuevoValor = this.objeto_a_imitar[atributo] - this.deltas[atributo];
+        if (this.setters[atributo]) this.receptor[this.setters[atributo]](nuevoValor)
+        else this.receptor[atributo] = nuevoValor;
+      }.bind(this));
+  }
+}
+
+class ImitarPosicion extends ImitarAtributosNumericos {
   objeto_a_imitar;
   delta_x;
   delta_y;
 
   constructor(receptor, argumentos) {
+    argumentos.atributos = ['x', 'y'];
+    argumentos.setters = { 'x': 'setX', 'y': 'setY' };
     super(receptor, argumentos);
-    this.objeto_a_imitar = this.argumentos.objeto_a_imitar;
-    this.delta_x = this.objeto_a_imitar.x - this.receptor.x;
-    this.delta_y = this.objeto_a_imitar.y - this.receptor.y;
   }
-
-  actualizar() {
-    this.receptor.setX(this.objeto_a_imitar.x - this.delta_x);
-    this.receptor.setY(this.objeto_a_imitar.y - this.delta_y);
-  }
-
 }
 
 /**
@@ -407,6 +429,7 @@ class Habilidades {
   RebotarComoCaja;
   Imitar;
   ImitarPosicion;
+  ImitarAtributosNumericos;
 
   constructor() {
     this.Arrastrable = Arrastrable;
@@ -421,5 +444,6 @@ class Habilidades {
     this.RebotarComoCaja = RebotarComoCaja;
     this.Imitar = Imitar;
     this.ImitarPosicion = ImitarPosicion;
+    this.ImitarAtributosNumericos = ImitarAtributosNumericos;
   }
 }

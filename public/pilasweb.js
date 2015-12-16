@@ -15550,20 +15550,40 @@ var Imitar = (function (_super) {
     return Imitar;
 })(Habilidad);
 
+var ImitarAtributosNumericos = (function (_super) {
+    __extends(ImitarAtributosNumericos, _super);
+    function ImitarAtributosNumericos(receptor, argumentos) {
+        _super.call(this, receptor, argumentos);
+        this.objeto_a_imitar = this.argumentos.objeto_a_imitar;
+        this.atributos = this.argumentos.atributos;
+        this.setters = this.argumentos.setters || {};
+
+        this.deltas = {};
+        this.atributos.forEach(function (atributo) {
+            this.deltas[atributo] = this.objeto_a_imitar[atributo] - this.receptor[atributo];
+        }.bind(this));
+    }
+    ImitarAtributosNumericos.prototype.actualizar = function () {
+        this.atributos.forEach(function (atributo) {
+            var nuevoValor = this.objeto_a_imitar[atributo] - this.deltas[atributo];
+            if (this.setters[atributo])
+                this.receptor[this.setters[atributo]](nuevoValor);
+            else
+                this.receptor[atributo] = nuevoValor;
+        }.bind(this));
+    };
+    return ImitarAtributosNumericos;
+})(Habilidad);
+
 var ImitarPosicion = (function (_super) {
     __extends(ImitarPosicion, _super);
     function ImitarPosicion(receptor, argumentos) {
+        argumentos.atributos = ['x', 'y'];
+        argumentos.setters = { 'x': 'setX', 'y': 'setY' };
         _super.call(this, receptor, argumentos);
-        this.objeto_a_imitar = this.argumentos.objeto_a_imitar;
-        this.delta_x = this.objeto_a_imitar.x - this.receptor.x;
-        this.delta_y = this.objeto_a_imitar.y - this.receptor.y;
     }
-    ImitarPosicion.prototype.actualizar = function () {
-        this.receptor.setX(this.objeto_a_imitar.x - this.delta_x);
-        this.receptor.setY(this.objeto_a_imitar.y - this.delta_y);
-    };
     return ImitarPosicion;
-})(Habilidad);
+})(ImitarAtributosNumericos);
 
 /**
 * @class PuedeExplotar
@@ -15883,6 +15903,7 @@ var Habilidades = (function () {
         this.RebotarComoCaja = RebotarComoCaja;
         this.Imitar = Imitar;
         this.ImitarPosicion = ImitarPosicion;
+        this.ImitarAtributosNumericos = ImitarAtributosNumericos;
     }
     return Habilidades;
 })();
