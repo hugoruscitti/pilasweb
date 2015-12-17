@@ -28,6 +28,7 @@ module.exports = function(grunt) {
       },
       dist: {
         src: [
+            'public/libs/traits.js',
             'public/libs/PxLoader.js',
             'public/libs/PxLoaderImage.js',
             'public/libs/Box2dWeb-2.1.a.3.js',

@@ -16,6 +16,7 @@
 /// <reference path="rutinas.ts" />
 
 declare var pilas;
+declare var Trait;
 declare var window: Window;
 declare var pilasengine;
 declare var PxLoader;
