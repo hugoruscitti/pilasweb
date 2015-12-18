@@ -3,13 +3,13 @@
 // http://www.elclubdelprogramador.com/2013/08/30/javascript-patrones-en-javascript-mixin-pattern/
 
 
-var Trait = new {
+var Trait = {
 	toClass: function( claseDonante, claseReceptora ) {
-		this.copyFromTo(claseDonante.prototype, claseReceptora.prototype);
+		Trait.copyFromTo(claseDonante.prototype, claseReceptora.prototype, arguments);
 	},
 
 	toObject: function( claseDonante, objetoReceptor ){
-		this.copyFromTo(claseDonante.prototype, objetoReceptor);
+		Trait.copyFromTo(claseDonante.prototype, objetoReceptor, arguments);
 	},
 
 	copyFromTo: function(orig,dest,args){
@@ -26,7 +26,7 @@ var Trait = new {
 			}
 		}
 	},
-}();;/**
+};;/**
  * PixelLab Resource Loader
  * Loads resources while providing progress updates.
  */
