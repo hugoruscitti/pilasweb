@@ -59,5 +59,7 @@ class Texto extends Actor {
 
   setString(elString){
     this.elString = elString;
+    this.spriteCJS.text = elString;
+    this.actualizarMedidas();
   }
 }

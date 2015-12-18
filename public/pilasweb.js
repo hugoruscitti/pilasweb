@@ -17927,6 +17927,8 @@ var Texto = (function (_super) {
 
     Texto.prototype.setString = function (elString) {
         this.elString = elString;
+        this.spriteCJS.text = elString;
+        this.actualizarMedidas();
     };
     return Texto;
 })(Actor);
@@ -18242,7 +18244,7 @@ var Puntaje = (function (_super) {
     __extends(Puntaje, _super);
     function Puntaje(x, y, puntaje, color) {
         this.valor = puntaje || 0;
-        _super.call(this, x, y, this.valor.toString(), color);
+        _super.call(this, x, y, this.valor.toString(), 200, color);
     }
     Puntaje.prototype.aumentar = function (aumento) {
         this.valor += aumento;
