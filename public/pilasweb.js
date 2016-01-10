@@ -13202,12 +13202,7 @@ Dual licensed under the MIT and GPL licenses.
     };
 
     Estudiante.prototype.agregar_habilidad = function (clase_de_habilidad, argumentos) {
-        for (var i = 0; i < this.habilidades.length; i++) {
-            if (this.habilidades[i] instanceof clase_de_habilidad) {
-                this.habilidades.splice(i, 1);
-                break;
-            }
-        }
+        this.olvidar(clase_de_habilidad);
 
         if (argumentos == undefined) {
             var habilidad = new clase_de_habilidad(this);
@@ -13217,6 +13212,15 @@ Dual licensed under the MIT and GPL licenses.
 
         // TODO permitir que se puedan enviar habiliades ya instanciadas.
         this.habilidades.push(habilidad);
+    };
+
+    Estudiante.prototype.olvidar = function (clase_de_habilidad) {
+        for (var i = 0; i < this.habilidades.length; i++) {
+            if (this.habilidades[i] instanceof clase_de_habilidad) {
+                this.habilidades.splice(i, 1);
+                break;
+            }
+        }
     };
 
     Estudiante.prototype.actualizar_habilidades = function () {

@@ -14,12 +14,7 @@ class Estudiante {
   }
 
   public agregar_habilidad(clase_de_habilidad, argumentos) {
-    for (var i=0; i<this.habilidades.length;i++) {
-      if (this.habilidades[i] instanceof clase_de_habilidad){
-        this.habilidades.splice(i, 1)
-        break;
-      }
-    }
+    this.olvidar(clase_de_habilidad);
 
     if(argumentos==undefined) {
       var habilidad = new clase_de_habilidad(this);
@@ -30,6 +25,15 @@ class Estudiante {
 
     // TODO permitir que se puedan enviar habiliades ya instanciadas.
     this.habilidades.push(habilidad);
+  }
+
+  public olvidar(clase_de_habilidad){
+    for (var i = 0; i < this.habilidades.length; i++) {
+      if (this.habilidades[i] instanceof clase_de_habilidad) {
+        this.habilidades.splice(i, 1);
+        break;
+      }
+    }
   }
 
   actualizar_habilidades() {
