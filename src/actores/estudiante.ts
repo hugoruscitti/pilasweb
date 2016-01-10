@@ -13,27 +13,29 @@ class Estudiante {
     return "Enseñando una habilidad ...";
   }
 
-  public agregar_habilidad(clase_de_habilidad, argumentos) {
-    this.olvidar(clase_de_habilidad);
-
-    if(argumentos==undefined) {
-      var habilidad = new clase_de_habilidad(this);
-    }
-    else {
-      var habilidad = new clase_de_habilidad(this, argumentos);
-    }
-
-    // TODO permitir que se puedan enviar habiliades ya instanciadas.
-    this.habilidades.push(habilidad);
+  public agregar_habilidad(habilidad_o_clase, argumentos) {
+    this.olvidar(habilidad_o_clase);
+    this.habilidades.push(this.getHabilidad(habilidad_o_clase, argumentos));
   }
 
-  public olvidar(clase_de_habilidad){
+  public olvidar(habilidad_o_clase) {
     for (var i = 0; i < this.habilidades.length; i++) {
-      if (this.habilidades[i] instanceof clase_de_habilidad) {
-        this.habilidades.splice(i, 1);
-        break;
+      if (this.habilidades[i] == habilidad_o_clase || 
+        (this.isClass(habilidad_o_clase) && this.habilidades[i] instanceof habilidad_o_clase)) {
+          this.habilidades.splice(i, 1);
+          break;
       }
     }
+  }
+
+  getHabilidad(objetoOClase, argumentos){
+    if (!this.isClass(objetoOClase)) return objetoOClase;
+    if (!argumentos) return new objetoOClase(this);
+    return new objetoOClase(this, argumentos);
+  }
+
+  isClass(objeto){
+    return this.getClassName(objeto) == "" || this.getClassName(objeto) == "Function";
   }
 
   actualizar_habilidades() {
@@ -75,5 +77,11 @@ class Estudiante {
     else {
       this.comportamiento_actual = undefined;
     }
+  }
+
+  public getClassName(obj = this) {
+    var funcNameRegex = /function (.{1,})\(/;
+      var results = (funcNameRegex).exec(obj["constructor"].toString());
+      return (results && results.length > 1) ? results[1] : "";
   }
 }

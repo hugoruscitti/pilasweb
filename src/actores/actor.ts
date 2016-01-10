@@ -99,12 +99,6 @@ class Actor extends Estudiante {
     this.iniciar();
   }
 
-  public getClassName() {
-    var funcNameRegex = /function (.{1,})\(/;
-      var results  = (funcNameRegex).exec(this["constructor"].toString());
-      return (results && results.length > 1) ? results[1] : "";
-  }
-
   public iniciar() {
   }
 
