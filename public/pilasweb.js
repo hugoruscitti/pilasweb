@@ -17930,6 +17930,11 @@ var Texto = (function (_super) {
         this.spriteCJS.y = pilas.escena_actual().obtener_posicion_pantalla(0, y + (this.alto / 2)).y;
     };
 
+    Texto.prototype.setZ = function (z) {
+        _super.prototype.setZ.call(this, z);
+        this.spriteCJS.z = z;
+    };
+
     Texto.prototype.cantidadDeLineas = function () {
         return this.alto / this.spriteCJS.getMeasuredLineHeight();
     };

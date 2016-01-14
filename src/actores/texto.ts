@@ -53,6 +53,11 @@ class Texto extends Actor {
     this.spriteCJS.y = pilas.escena_actual().obtener_posicion_pantalla(0, y + (this.alto / 2)).y;
   }
 
+  setZ(z) {
+    super.setZ(z);
+    this.spriteCJS.z = z;
+  }  
+
   cantidadDeLineas(){
     return this.alto / this.spriteCJS.getMeasuredLineHeight();
   }
