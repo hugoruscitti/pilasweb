@@ -340,19 +340,37 @@ class Actor extends Estudiante {
   set transparencia(_t) {this.sprite.alpha = (_t - 100) / -100}
 
   get ancho() {
-    return this._imagen.ancho * this.escala_x;
+    return Math.abs(this._imagen.ancho * this.escala_x);
+  }
+
+  getAncho(){
+    return this.ancho;
   }
 
   set ancho(nuevo){
-      this.escala_x = nuevo / this._imagen.ancho;
+      var signo = this.escala_x / Math.abs(this.escala_x);
+      this.escala_x = nuevo / this._imagen.ancho * signo;
+  }
+
+  setAncho(a){
+    this.ancho = a;
   }
 
   get alto() {
-    return this._imagen.alto * this.escala_y;
+    return Math.abs(this._imagen.alto * this.escala_y);
+  }
+
+  getAlto(){
+    return this.alto;
   }
 
   set alto(nuevo){
-      this.escala_y = nuevo / this._imagen.alto;
+    var signo = this.escala_y / Math.abs(this.escala_y);
+      this.escala_y = nuevo / this._imagen.alto * signo;
+  }
+
+  setAlto(a){
+    this.alto = a;
   }
 
   set imagen(_i) {

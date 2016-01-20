@@ -13668,27 +13668,45 @@ var Actor = (function (_super) {
 
     Object.defineProperty(Actor.prototype, "ancho", {
         get: function () {
-            return this._imagen.ancho * this.escala_x;
+            return Math.abs(this._imagen.ancho * this.escala_x);
         },
         set: function (nuevo) {
-            this.escala_x = nuevo / this._imagen.ancho;
+            var signo = this.escala_x / Math.abs(this.escala_x);
+            this.escala_x = nuevo / this._imagen.ancho * signo;
         },
         enumerable: true,
         configurable: true
     });
 
+    Actor.prototype.getAncho = function () {
+        return this.ancho;
+    };
+
+
+    Actor.prototype.setAncho = function (a) {
+        this.ancho = a;
+    };
 
     Object.defineProperty(Actor.prototype, "alto", {
         get: function () {
-            return this._imagen.alto * this.escala_y;
+            return Math.abs(this._imagen.alto * this.escala_y);
         },
         set: function (nuevo) {
-            this.escala_y = nuevo / this._imagen.alto;
+            var signo = this.escala_y / Math.abs(this.escala_y);
+            this.escala_y = nuevo / this._imagen.alto * signo;
         },
         enumerable: true,
         configurable: true
     });
 
+    Actor.prototype.getAlto = function () {
+        return this.alto;
+    };
+
+
+    Actor.prototype.setAlto = function (a) {
+        this.alto = a;
+    };
 
     Object.defineProperty(Actor.prototype, "imagen", {
         set: function (_i) {
