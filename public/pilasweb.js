@@ -15605,26 +15605,52 @@ var Imitar = (function (_super) {
     return Imitar;
 })(Habilidad);
 
+var AtributoEntero = (function () {
+    function AtributoEntero(nombre, victima, imitador) {
+        this.nombre = nombre;
+        this.deltaOriginal = victima[nombre] - imitador[nombre];
+    }
+    AtributoEntero.prototype.nuevoValor = function (victima) {
+        return victima[this.nombre] - this.deltaOriginal;
+    };
+    return AtributoEntero;
+})();
+
+var AtributoPorcentual = (function () {
+    function AtributoPorcentual(nombre, victima, imitador) {
+        this.nombre = nombre;
+        this.valorOriginalVictima = victima[nombre];
+        this.valorOriginalImitador = imitador[nombre];
+    }
+    AtributoPorcentual.prototype.nuevoValor = function (victima) {
+        var porcentaje = victima[this.nombre] / this.valorOriginalVictima;
+        return porcentaje * this.valorOriginalVictima;
+    };
+    return AtributoPorcentual;
+})();
+
 var ImitarAtributosNumericos = (function (_super) {
     __extends(ImitarAtributosNumericos, _super);
     function ImitarAtributosNumericos(receptor, argumentos) {
+        var _this = this;
         _super.call(this, receptor, argumentos);
         this.objeto_a_imitar = this.argumentos.objeto_a_imitar;
-        this.atributos = this.argumentos.atributos;
-        this.setters = this.argumentos.setters || {};
 
-        this.deltas = {};
-        this.atributos.forEach(function (atributo) {
-            this.deltas[atributo] = this.objeto_a_imitar[atributo] - this.receptor[atributo];
-        }.bind(this));
+        this.atributos = this.argumentos.conVariacionEntera.map(function (nombre) {
+            return new AtributoEntero(nombre, _this.objeto_a_imitar, _this.receptor);
+        });
+        this.atributos = this.atributos.concat(this.argumentos.conVariacionPorcentual.map(function (nombre) {
+            return new AtributoPorcentual(nombre, _this.objeto_a_imitar, _this.receptor);
+        }));
+        this.setters = this.argumentos.setters || {};
     }
     ImitarAtributosNumericos.prototype.actualizar = function () {
         this.atributos.forEach(function (atributo) {
-            var nuevoValor = this.objeto_a_imitar[atributo] - this.deltas[atributo];
-            if (this.setters[atributo])
-                this.receptor[this.setters[atributo]](nuevoValor);
+            var nuevoValor = atributo.nuevoValor(this.objeto_a_imitar);
+            if (this.setters[atributo.nombre])
+                this.receptor[this.setters[atributo.nombre]](nuevoValor);
             else
-                this.receptor[atributo] = nuevoValor;
+                this.receptor[atributo.nombre] = nuevoValor;
         }.bind(this));
     };
     return ImitarAtributosNumericos;
@@ -15633,7 +15659,7 @@ var ImitarAtributosNumericos = (function (_super) {
 var ImitarPosicion = (function (_super) {
     __extends(ImitarPosicion, _super);
     function ImitarPosicion(receptor, argumentos) {
-        argumentos.atributos = ['x', 'y'];
+        argumentos.conVariacionEntera = ['x', 'y'];
         argumentos.setters = { 'x': 'setX', 'y': 'setY' };
         _super.call(this, receptor, argumentos);
     }

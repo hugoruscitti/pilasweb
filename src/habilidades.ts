@@ -55,31 +55,56 @@ class Imitar extends Habilidad {
 
 }
 
+class AtributoEntero {
+  nombre;
+  deltaOriginal;
+  constructor(nombre,victima,imitador){
+    this.nombre = nombre;
+    this.deltaOriginal = victima[nombre] - imitador[nombre];
+  }
+  nuevoValor(victima){
+    return victima[this.nombre] - this.deltaOriginal;
+  }
+}
+
+class AtributoPorcentual {
+  nombre;
+  valorOriginalVictima;
+  valorOriginalImitador;
+
+  constructor(nombre, victima, imitador) {
+    this.nombre = nombre;
+    this.valorOriginalVictima = victima[nombre];
+    this.valorOriginalImitador = imitador[nombre];
+  }
+  nuevoValor(victima) {
+    var porcentaje = victima[this.nombre] / this.valorOriginalVictima;
+    return porcentaje * this.valorOriginalVictima;
+  }
+}
+
 class ImitarAtributosNumericos extends Habilidad {
   objeto_a_imitar;
   atributos;
   setters;
-  deltas;
 
   constructor(receptor, argumentos) {
     super(receptor, argumentos);
     this.objeto_a_imitar = this.argumentos.objeto_a_imitar;
-    this.atributos = this.argumentos.atributos;
-    this.setters = this.argumentos.setters || {};
 
-    this.deltas = {};
-    this.atributos.forEach(
-      function(atributo) {
-        this.deltas[atributo] = this.objeto_a_imitar[atributo] - this.receptor[atributo];
-      }.bind(this))
+    this.atributos = this.argumentos.conVariacionEntera.map(
+      (nombre) => new AtributoEntero(nombre, this.objeto_a_imitar, this.receptor) );
+    this.atributos = this.atributos.concat(this.argumentos.conVariacionPorcentual.map(
+      (nombre) => new AtributoPorcentual(nombre, this.objeto_a_imitar, this.receptor)));
+    this.setters = this.argumentos.setters || {};
   }
 
   actualizar() {
     this.atributos.forEach(
       function(atributo) {
-        var nuevoValor = this.objeto_a_imitar[atributo] - this.deltas[atributo];
-        if (this.setters[atributo]) this.receptor[this.setters[atributo]](nuevoValor)
-        else this.receptor[atributo] = nuevoValor;
+        var nuevoValor = atributo.nuevoValor(this.objeto_a_imitar);
+        if (this.setters[atributo.nombre]) this.receptor[this.setters[atributo.nombre]](nuevoValor)
+        else this.receptor[atributo.nombre] = nuevoValor;
       }.bind(this));
   }
 }
@@ -90,7 +115,7 @@ class ImitarPosicion extends ImitarAtributosNumericos {
   delta_y;
 
   constructor(receptor, argumentos) {
-    argumentos.atributos = ['x', 'y'];
+    argumentos.conVariacionEntera = ['x', 'y'];
     argumentos.setters = { 'x': 'setX', 'y': 'setY' };
     super(receptor, argumentos);
   }
