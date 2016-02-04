@@ -15624,7 +15624,7 @@ var AtributoPorcentual = (function () {
     }
     AtributoPorcentual.prototype.nuevoValor = function (victima) {
         var porcentaje = victima[this.nombre] / this.valorOriginalVictima;
-        return porcentaje * this.valorOriginalVictima;
+        return porcentaje * this.valorOriginalImitador;
     };
     return AtributoPorcentual;
 })();
