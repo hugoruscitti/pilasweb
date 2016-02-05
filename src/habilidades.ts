@@ -91,6 +91,8 @@ class ImitarAtributosNumericos extends Habilidad {
   constructor(receptor, argumentos) {
     super(receptor, argumentos);
     this.objeto_a_imitar = this.argumentos.objeto_a_imitar;
+    this.argumentos.conVariacionEntera = this.argumentos.conVariacionEntera || [];
+    this.argumentos.conVariacionPorcentual = this.argumentos.conVariacionPorcentual || [];
 
     this.atributos = this.argumentos.conVariacionEntera.map(
       (nombre) => new AtributoEntero(nombre, this.objeto_a_imitar, this.receptor) );

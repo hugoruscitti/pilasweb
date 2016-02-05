@@ -15635,6 +15635,8 @@ var ImitarAtributosNumericos = (function (_super) {
         var _this = this;
         _super.call(this, receptor, argumentos);
         this.objeto_a_imitar = this.argumentos.objeto_a_imitar;
+        this.argumentos.conVariacionEntera = this.argumentos.conVariacionEntera || [];
+        this.argumentos.conVariacionPorcentual = this.argumentos.conVariacionPorcentual || [];
 
         this.atributos = this.argumentos.conVariacionEntera.map(function (nombre) {
             return new AtributoEntero(nombre, _this.objeto_a_imitar, _this.receptor);
