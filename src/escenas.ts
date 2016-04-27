@@ -129,7 +129,7 @@ class Base {
 
   eliminar_actor(actor) {
     var index = this.actores.indexOf(actor);
-    this.actores.splice(index, 1);
+    if(index !== -1) this.actores.splice(index, 1);
 
     this.stage.removeChild(actor.sprite);
     this.stage.update();
