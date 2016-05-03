@@ -13731,7 +13731,7 @@ var Actor = (function (_super) {
             return this.x - (this.centro_x * this.escala);
         },
         set: function (x) {
-            this.x = x + (this.centro_x * this.escala);
+            this.setX(x + (this.centro_x * this.escala));
         },
         enumerable: true,
         configurable: true
@@ -13753,7 +13753,7 @@ var Actor = (function (_super) {
             return this.y + (this.centro_y * this.escala_y);
         },
         set: function (y) {
-            this.y = y - (this.centro_y * this.escala_y);
+            this.setY(y - (this.centro_y * this.escala_y));
         },
         enumerable: true,
         configurable: true

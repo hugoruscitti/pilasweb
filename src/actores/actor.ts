@@ -321,7 +321,7 @@ class Actor extends Estudiante {
   }
   escalarAAlto(altoDeseado){
       this.escala = 1;
-      this.escala = altoDeseado / this.alto; 
+      this.escala = altoDeseado / this.alto;
   }
 
   get rotacion() {return -this.sprite.rotation}
@@ -392,7 +392,7 @@ class Actor extends Estudiante {
     return this.x - (this.centro_x * this.escala);
   }
   set izquierda(x) {
-    this.x = x + (this.centro_x * this.escala);
+    this.setX(x + (this.centro_x * this.escala));
   }
 
   get derecha() {
@@ -407,7 +407,7 @@ class Actor extends Estudiante {
   }
 
   set arriba(y) {
-    this.y = y - (this.centro_y * this.escala_y);
+    this.setY(y - (this.centro_y * this.escala_y));
   }
 
   get abajo() {
