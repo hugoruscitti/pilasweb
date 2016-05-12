@@ -189,6 +189,10 @@ class Actor extends Estudiante {
     return pos.x;
   }
 
+  getX(){
+    return this.x;
+  }
+
   set x(_x) {
 
     if (_x instanceof Array)
@@ -207,6 +211,10 @@ class Actor extends Estudiante {
   get y() {
     var pos = pilas.escena_actual().obtener_posicion_escenario(0, this.sprite.y);
     return pos.y;
+  }
+
+  getY(){
+    return this.y;
   }
 
   set y(_y) {

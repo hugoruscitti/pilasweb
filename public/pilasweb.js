@@ -13479,6 +13479,10 @@ var Actor = (function (_super) {
         configurable: true
     });
 
+    Actor.prototype.getX = function () {
+        return this.x;
+    };
+
 
     Actor.prototype.setX = function (x) {
         this.x = x;
@@ -13501,6 +13505,10 @@ var Actor = (function (_super) {
         enumerable: true,
         configurable: true
     });
+
+    Actor.prototype.getY = function () {
+        return this.y;
+    };
 
 
     Actor.prototype.setY = function (y) {
