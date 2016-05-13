@@ -13439,6 +13439,10 @@ var Actor = (function (_super) {
         configurable: true
     });
 
+    Actor.prototype.getZ = function () {
+        return this.z;
+    };
+
 
     Actor.prototype.setZ = function (z) {
         this.z = z;
@@ -17826,8 +17830,8 @@ var Globo = (function (_super) {
 
         this.crearTexto(0, 0, 9999); //Hardcodeo por necesidad de usar datos del texto
         _super.call(this, this.nombreImagen, this.calcularX(), this.calcularY());
-        this.z = -5000;
-        this.crearTexto(this.x, this.y, this.z - 1); //Creo el texto de posta
+        this.setZ(-5000);
+        this.crearTexto(this.x, this.y, this.getZ() - 1); //Creo el texto de posta
         this.actualizarMedidas();
         this.ponerPuntita();
         this.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this.actor });
@@ -17854,7 +17858,7 @@ var Globo = (function (_super) {
         if (this.actor_texto)
             this.actor_texto.eliminar();
         this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje, this.anchoMaximo);
-        this.actor_texto.z = z;
+        this.actor_texto.setZ(z);
         this.actor_texto.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
     };
 
@@ -17898,7 +17902,7 @@ var Globo = (function (_super) {
         } else {
             this.ponerPuntitaADerecha();
         }
-        this.puntita.z = this.z - 1;
+        this.puntita.setZ(this.getZ() - 1);
         this.puntita.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
     };
 

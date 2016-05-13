@@ -162,6 +162,10 @@ class Actor extends Estudiante {
     return this.sprite.z;
   }
 
+  getZ(){
+    return this.z;
+  }
+
   set z(_z) {
     this.sprite.z = _z;
     this.evto_se_movio.emitir();

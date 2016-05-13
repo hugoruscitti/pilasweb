@@ -21,8 +21,8 @@ class Globo extends Actor {
 
     this.crearTexto(0,0,9999); //Hardcodeo por necesidad de usar datos del texto
     super(this.nombreImagen, this.calcularX(), this.calcularY());
-    this.z = -5000;
-    this.crearTexto(this.x, this.y, this.z - 1); //Creo el texto de posta
+    this.setZ(-5000);
+    this.crearTexto(this.x, this.y, this.getZ() - 1); //Creo el texto de posta
     this.actualizarMedidas();
     this.ponerPuntita();
     this.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this.actor });
@@ -47,7 +47,7 @@ class Globo extends Actor {
   crearTexto(x,y,z){
     if (this.actor_texto) this.actor_texto.eliminar();
     this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje, this.anchoMaximo);
-    this.actor_texto.z = z;
+    this.actor_texto.setZ(z);
     this.actor_texto.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
   }
 
@@ -91,7 +91,7 @@ class Globo extends Actor {
     } else {
       this.ponerPuntitaADerecha();
     }
-    this.puntita.z = this.z - 1;
+    this.puntita.setZ(this.getZ() - 1);
     this.puntita.agregar_habilidad(ImitarPosicion,{objeto_a_imitar: this});
   }
 
