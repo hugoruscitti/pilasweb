@@ -17827,13 +17827,14 @@ var Globo = (function (_super) {
         this.crearTexto(0, 0, 9999); //Hardcodeo por necesidad de usar datos del texto
         _super.call(this, this.nombreImagen, this.calcularX(), this.calcularY());
         this.z = -5000;
-        this.crearTexto(this.x, this.y, this.z + 1); //Creo el texto de posta
+        this.crearTexto(this.x, this.y, this.z - 1); //Creo el texto de posta
         this.actualizarMedidas();
         this.ponerPuntita();
-
-        // if (eliminarPrevio && this.actor.globoActual) this.actor.globoActual.eliminar();
-        // this.actor.globoActual = this;
         this.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this.actor });
+
+        if (eliminarPrevio && this.actor.globoActual)
+            this.actor.globoActual.eliminar();
+        this.actor.globoActual = this;
         pilas.mundo.agregar_tarea_una_vez(this.duracion(), this.eliminar, {}, this);
     }
     Globo.prototype.duracion = function () {
@@ -17841,6 +17842,9 @@ var Globo = (function (_super) {
     };
 
     Globo.prototype.eliminar = function () {
+        if (!this.vivo)
+            return;
+
         this.actor_texto.eliminar();
         this.puntita.eliminar();
         _super.prototype.eliminar.call(this);

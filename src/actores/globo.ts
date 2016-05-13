@@ -22,13 +22,13 @@ class Globo extends Actor {
     this.crearTexto(0,0,9999); //Hardcodeo por necesidad de usar datos del texto
     super(this.nombreImagen, this.calcularX(), this.calcularY());
     this.z = -5000;
-    this.crearTexto(this.x, this.y, this.z + 1); //Creo el texto de posta
+    this.crearTexto(this.x, this.y, this.z - 1); //Creo el texto de posta
     this.actualizarMedidas();
     this.ponerPuntita();
-
-   // if (eliminarPrevio && this.actor.globoActual) this.actor.globoActual.eliminar();
-   // this.actor.globoActual = this;
     this.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this.actor });
+
+    if (eliminarPrevio && this.actor.globoActual) this.actor.globoActual.eliminar();
+    this.actor.globoActual = this;
     pilas.mundo.agregar_tarea_una_vez(this.duracion(), this.eliminar, {}, this);
   }
 
@@ -37,6 +37,8 @@ class Globo extends Actor {
   }
 
   eliminar() {
+    if(!this.vivo) return; //Ya me eliminaron
+
     this.actor_texto.eliminar();
     this.puntita.eliminar();
     super.eliminar();
@@ -94,7 +96,7 @@ class Globo extends Actor {
   }
 
   ponerPuntitaAIzquierda(){
-    this.puntita = new Actor(this.imagenPuntita().izquierda, 
+    this.puntita = new Actor(this.imagenPuntita().izquierda,
     this.izquierda + this.margen - (this.dimPuntita().ancho / 2),
     this.abajo + (this.dimPuntita().alto / 2));
   }
@@ -102,7 +104,7 @@ class Globo extends Actor {
   ponerPuntitaADerecha(){
     this.puntita = new Actor(this.imagenPuntita().derecha,
       this.derecha - this.margen + (this.dimPuntita().ancho / 2),
-      this.abajo + (this.dimPuntita().alto / 2)); 
+      this.abajo + (this.dimPuntita().alto / 2));
   }
 
   voyAIzquierda(){
@@ -110,7 +112,7 @@ class Globo extends Actor {
   }
 
   imagenPuntita() {
-      return { izquierda: "balloon-tip-left.png", 
+      return { izquierda: "balloon-tip-left.png",
                derecha: "balloon-tip-right.png" };
   }
 
@@ -121,7 +123,7 @@ class Globo extends Actor {
 
 class GloboPensar extends Globo{
   imagenPuntita(){
-    return { izquierda: "balloon-tip-think-left.png", 
+    return { izquierda: "balloon-tip-think-left.png",
              derecha: "balloon-tip-think-right.png" };
   }
 }
