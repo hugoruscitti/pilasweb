@@ -64,4 +64,52 @@ class Pizarra extends Actor {
   pintar(color) {
     this.rectangulo(this.x-320, this.y+240, this._ancho, this._alto, color, color,1);
   }
+
+/*=================== Desde aca para sacar info de lo dibujado ======================*/
+
+  puntosDeLineas(){
+    var instruccionesLineas = this.lienzo.graphics._instructions.filter(instruccion => instruccion.f.name === "lineTo");
+    return instruccionesLineas.map(instruccion => this.cambioCoordenadas(instruccion.params));
+  }
+
+  cambioCoordenadas(punto){
+    return pilas.escena_actual().obtener_posicion_escenario(Math.round(punto[0]),Math.round(punto[1]));
+  }
+
+  mismosPuntosQue(puntos){
+    var misPuntos = this.puntosSinRepetirDe(this.puntosDeLineas());
+    var punts = this.puntosSinRepetirDe(puntos);
+    return punts.length == misPuntos.length &&
+      misPuntos.every( p => this.estaPuntoEn(p,punts));
+  }
+
+  tieneIgualDibujoQue(otraPizarra){
+    return this.mismosPuntosQue(otraPizarra.puntosDeLineas());
+  }
+
+  puntosSinRepetirDe(puntos){
+    return this.sacarPuntosRepetidosDe(this.ordenarPuntosDe(puntos));
+  }
+
+  ordenarPuntosDe(puntos){
+    return puntos.sort( this.compararPuntos );
+  }
+
+  compararPuntos(p1,p2){
+    if(p1.x == p2.x) return p1.y - p2.y;
+    return p1.x - p2.x;
+  }
+
+  sacarPuntosRepetidosDe(puntos){
+    var sinReps = [];
+    puntos.forEach( pto => {
+      if( !this.estaPuntoEn(pto,sinReps) ) sinReps.push(pto)
+    });
+    return sinReps;
+  }
+
+  estaPuntoEn(pto,ptos){
+    return ptos.any( elemento => pto.x == elemento.x && pto.y == elemento.y);
+  }
+
 }

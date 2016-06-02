@@ -18551,6 +18551,64 @@ var Pizarra = (function (_super) {
     Pizarra.prototype.pintar = function (color) {
         this.rectangulo(this.x - 320, this.y + 240, this._ancho, this._alto, color, color, 1);
     };
+
+    /*=================== Desde aca para sacar info de lo dibujado ======================*/
+    Pizarra.prototype.puntosDeLineas = function () {
+        var _this = this;
+        var instruccionesLineas = this.lienzo.graphics._instructions.filter(function (instruccion) {
+            return instruccion.f.name === "lineTo";
+        });
+        return instruccionesLineas.map(function (instruccion) {
+            return _this.cambioCoordenadas(instruccion.params);
+        });
+    };
+
+    Pizarra.prototype.cambioCoordenadas = function (punto) {
+        return pilas.escena_actual().obtener_posicion_escenario(Math.round(punto[0]), Math.round(punto[1]));
+    };
+
+    Pizarra.prototype.mismosPuntosQue = function (puntos) {
+        var _this = this;
+        var misPuntos = this.puntosSinRepetirDe(this.puntosDeLineas());
+        var punts = this.puntosSinRepetirDe(puntos);
+        return punts.length == misPuntos.length && misPuntos.every(function (p) {
+            return _this.estaPuntoEn(p, punts);
+        });
+    };
+
+    Pizarra.prototype.tieneIgualDibujoQue = function (otraPizarra) {
+        return this.mismosPuntosQue(otraPizarra.puntosDeLineas());
+    };
+
+    Pizarra.prototype.puntosSinRepetirDe = function (puntos) {
+        return this.sacarPuntosRepetidosDe(this.ordenarPuntosDe(puntos));
+    };
+
+    Pizarra.prototype.ordenarPuntosDe = function (puntos) {
+        return puntos.sort(this.compararPuntos);
+    };
+
+    Pizarra.prototype.compararPuntos = function (p1, p2) {
+        if (p1.x == p2.x)
+            return p1.y - p2.y;
+        return p1.x - p2.x;
+    };
+
+    Pizarra.prototype.sacarPuntosRepetidosDe = function (puntos) {
+        var _this = this;
+        var sinReps = [];
+        puntos.forEach(function (pto) {
+            if (!_this.estaPuntoEn(pto, sinReps))
+                sinReps.push(pto);
+        });
+        return sinReps;
+    };
+
+    Pizarra.prototype.estaPuntoEn = function (pto, ptos) {
+        return ptos.any(function (elemento) {
+            return pto.x == elemento.x && pto.y == elemento.y;
+        });
+    };
     return Pizarra;
 })(Actor);
 var Pingu = (function (_super) {
