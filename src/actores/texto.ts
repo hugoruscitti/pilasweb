@@ -4,17 +4,18 @@ class Texto extends Actor {
   spriteCJS;
   elString;
   color;
+  margen;
 
   constructor(x, y, elString, argumentos:any = {}) {
     super(argumentos.imagenFondo || "invisible.png", x, y);
     this.elString = elString || "Sin texto";
     this.color = argumentos.color || "black";
+    this.margen = argumentos.margen || 0;
     this.crear_texto(argumentos.anchoMaximo || 200);
     if (!argumentos.imagenFondo) this.transparencia = 100;
   }
 
   crear_texto(anchoMaximo) {
-
     this.spriteCJS = new createjs.Text(this.elString, "14px sans-serif", this.color);
     this.setAnchoMaximo(anchoMaximo);
     this.setX(this.x);
@@ -34,23 +35,31 @@ class Texto extends Actor {
   }
 
   actualizarMedidas(){
-    this.alto = this.spriteCJS.getBounds().height;
-    this.ancho = this.spriteCJS.getBounds().width;
+    this.alto = this.spriteCJS.getBounds().height + (this.margen * 2);
+    this.ancho = this.spriteCJS.getBounds().width + (this.margen * 2);
   }
 
-  setAnchoMaximo(ancho) {
-    this.spriteCJS.lineWidth = ancho;
+  anchoString(){
+    return this.ancho - (this.margen * 2);
+  }
+
+  altoString(){
+    return this.alto - (this.margen * 2);
+  }
+
+  setAnchoMaximo(anchoMax) {
+    this.spriteCJS.lineWidth = anchoMax - (this.margen * 2);
     this.actualizarMedidas();
   }
 
   setX(x){
     super.setX(x);
-    this.spriteCJS.x = pilas.escena_actual().obtener_posicion_pantalla(x, 0).x;
+    this.spriteCJS.x = pilas.escena_actual().obtener_posicion_pantalla(x, this.y).x;
   }
 
   setY(y){
     super.setY(y);
-    this.spriteCJS.y = pilas.escena_actual().obtener_posicion_pantalla(0, y + (this.alto / 2)).y;
+    this.spriteCJS.y = pilas.escena_actual().obtener_posicion_pantalla(this.x, y + (this.altoString() / 2)).y;
   }
 
   setZ(z) {
@@ -59,7 +68,7 @@ class Texto extends Actor {
   }
 
   cantidadDeLineas(){
-    return this.alto / this.spriteCJS.getMeasuredLineHeight();
+    return this.altoString() / this.spriteCJS.getMeasuredLineHeight();
   }
 
   setString(elString){

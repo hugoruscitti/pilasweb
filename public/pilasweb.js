@@ -17950,6 +17950,7 @@ var Texto = (function (_super) {
         _super.call(this, argumentos.imagenFondo || "invisible.png", x, y);
         this.elString = elString || "Sin texto";
         this.color = argumentos.color || "black";
+        this.margen = argumentos.margen || 0;
         this.crear_texto(argumentos.anchoMaximo || 200);
         if (!argumentos.imagenFondo)
             this.transparencia = 100;
@@ -17974,23 +17975,31 @@ var Texto = (function (_super) {
     };
 
     Texto.prototype.actualizarMedidas = function () {
-        this.alto = this.spriteCJS.getBounds().height;
-        this.ancho = this.spriteCJS.getBounds().width;
+        this.alto = this.spriteCJS.getBounds().height + (this.margen * 2);
+        this.ancho = this.spriteCJS.getBounds().width + (this.margen * 2);
     };
 
-    Texto.prototype.setAnchoMaximo = function (ancho) {
-        this.spriteCJS.lineWidth = ancho;
+    Texto.prototype.anchoString = function () {
+        return this.ancho - (this.margen * 2);
+    };
+
+    Texto.prototype.altoString = function () {
+        return this.alto - (this.margen * 2);
+    };
+
+    Texto.prototype.setAnchoMaximo = function (anchoMax) {
+        this.spriteCJS.lineWidth = anchoMax - (this.margen * 2);
         this.actualizarMedidas();
     };
 
     Texto.prototype.setX = function (x) {
         _super.prototype.setX.call(this, x);
-        this.spriteCJS.x = pilas.escena_actual().obtener_posicion_pantalla(x, 0).x;
+        this.spriteCJS.x = pilas.escena_actual().obtener_posicion_pantalla(x, this.y).x;
     };
 
     Texto.prototype.setY = function (y) {
         _super.prototype.setY.call(this, y);
-        this.spriteCJS.y = pilas.escena_actual().obtener_posicion_pantalla(0, y + (this.alto / 2)).y;
+        this.spriteCJS.y = pilas.escena_actual().obtener_posicion_pantalla(this.x, y + (this.altoString() / 2)).y;
     };
 
     Texto.prototype.setZ = function (z) {
@@ -17999,7 +18008,7 @@ var Texto = (function (_super) {
     };
 
     Texto.prototype.cantidadDeLineas = function () {
-        return this.alto / this.spriteCJS.getMeasuredLineHeight();
+        return this.altoString() / this.spriteCJS.getMeasuredLineHeight();
     };
 
     Texto.prototype.setString = function (elString) {
@@ -18319,9 +18328,9 @@ var Boton = (function (_super) {
 /// <reference path="texto.ts"/>
 var Puntaje = (function (_super) {
     __extends(Puntaje, _super);
-    function Puntaje(x, y, puntaje, color) {
+    function Puntaje(x, y, puntaje, argumentos) {
         this.valor = puntaje || 0;
-        _super.call(this, x, y, this.valor.toString(), { anchoMaximo: 200, color: color });
+        _super.call(this, x, y, this.valor.toString(), argumentos);
     }
     Puntaje.prototype.aumentar = function (aumento) {
         this.valor += aumento;

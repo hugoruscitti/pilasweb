@@ -4,9 +4,9 @@
 class Puntaje extends Texto {
   valor;
 
-  constructor(x, y, puntaje, color) {
+  constructor(x, y, puntaje, argumentos) {
     this.valor = puntaje || 0;
-    super(x, y, this.valor.toString(), {anchoMaximo:200, color:color});
+    super(x, y, this.valor.toString(), argumentos);
   }
 
   aumentar(aumento) {
