@@ -5,12 +5,12 @@ class Texto extends Actor {
   elString;
   color;
 
-  constructor(x, y, elString, anchoMaximo = 200, color = "black") {
-    super("invisible.png", x, y);
+  constructor(x, y, elString, argumentos:any = {}) {
+    super(argumentos.imagenFondo || "invisible.png", x, y);
     this.elString = elString || "Sin texto";
-    this.color = color;
-    this.crear_texto(anchoMaximo);
-    this.transparencia = 100;
+    this.color = argumentos.color || "black";
+    this.crear_texto(argumentos.anchoMaximo || 200);
+    if (!argumentos.imagenFondo) this.transparencia = 100;
   }
 
   crear_texto(anchoMaximo) {
@@ -22,7 +22,7 @@ class Texto extends Actor {
     this.spriteCJS.textBaseline = "top";
     this.spriteCJS.textAlign = "center";
     pilas.escena_actual().stage.addChild(this.spriteCJS);
-  } 
+  }
 
   eliminar_texto() {
     pilas.escena_actual().stage.removeChild(this.spriteCJS);
@@ -56,7 +56,7 @@ class Texto extends Actor {
   setZ(z) {
     super.setZ(z);
     this.spriteCJS.z = z;
-  }  
+  }
 
   cantidadDeLineas(){
     return this.alto / this.spriteCJS.getMeasuredLineHeight();

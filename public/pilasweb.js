@@ -17857,7 +17857,7 @@ var Globo = (function (_super) {
     Globo.prototype.crearTexto = function (x, y, z) {
         if (this.actor_texto)
             this.actor_texto.eliminar();
-        this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje, this.anchoMaximo);
+        this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje, { anchoMaximo: this.anchoMaximo });
         this.actor_texto.setZ(z);
         this.actor_texto.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
     };
@@ -17945,14 +17945,14 @@ var GloboPensar = (function (_super) {
 /// <reference path="actor.ts"/>
 var Texto = (function (_super) {
     __extends(Texto, _super);
-    function Texto(x, y, elString, anchoMaximo, color) {
-        if (typeof anchoMaximo === "undefined") { anchoMaximo = 200; }
-        if (typeof color === "undefined") { color = "black"; }
-        _super.call(this, "invisible.png", x, y);
+    function Texto(x, y, elString, argumentos) {
+        if (typeof argumentos === "undefined") { argumentos = {}; }
+        _super.call(this, argumentos.imagenFondo || "invisible.png", x, y);
         this.elString = elString || "Sin texto";
-        this.color = color;
-        this.crear_texto(anchoMaximo);
-        this.transparencia = 100;
+        this.color = argumentos.color || "black";
+        this.crear_texto(argumentos.anchoMaximo || 200);
+        if (!argumentos.imagenFondo)
+            this.transparencia = 100;
     }
     Texto.prototype.crear_texto = function (anchoMaximo) {
         this.spriteCJS = new createjs.Text(this.elString, "14px sans-serif", this.color);
@@ -18321,7 +18321,7 @@ var Puntaje = (function (_super) {
     __extends(Puntaje, _super);
     function Puntaje(x, y, puntaje, color) {
         this.valor = puntaje || 0;
-        _super.call(this, x, y, this.valor.toString(), 200, color);
+        _super.call(this, x, y, this.valor.toString(), { anchoMaximo: 200, color: color });
     }
     Puntaje.prototype.aumentar = function (aumento) {
         this.valor += aumento;

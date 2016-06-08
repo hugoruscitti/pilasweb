@@ -1337,7 +1337,7 @@ declare class Texto extends Actor {
     public spriteCJS: any;
     public elString: any;
     public color: any;
-    constructor(x: any, y: any, elString: any, anchoMaximo?: number, color?: string);
+    constructor(x: any, y: any, elString: any, argumentos?: any);
     public crear_texto(anchoMaximo: any): void;
     public eliminar_texto(): void;
     public eliminar(): void;

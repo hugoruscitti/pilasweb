@@ -46,7 +46,7 @@ class Globo extends Actor {
 
   crearTexto(x,y,z){
     if (this.actor_texto) this.actor_texto.eliminar();
-    this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje, this.anchoMaximo);
+    this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje, {anchoMaximo: this.anchoMaximo});
     this.actor_texto.setZ(z);
     this.actor_texto.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
   }
