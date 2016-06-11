@@ -16549,6 +16549,32 @@ var LlamadaProcedimiento = (function (_super) {
 })(Comportamiento);
 
 /**
+* @class LlamadaProcPrimitivo
+*
+* Representa una llamada a una primitiva.
+*
+* Existe para que se evalúen los parámetros de la primitiva
+* recién al momento de ejecución y no antes.
+* Es decorator de un comportamiento.
+*/
+var LlamadaProcPrimitivo = (function (_super) {
+    __extends(LlamadaProcPrimitivo, _super);
+    function LlamadaProcPrimitivo() {
+        _super.apply(this, arguments);
+    }
+    LlamadaProcPrimitivo.prototype.iniciar = function (receptor) {
+        _super.prototype.iniciar.call(this, receptor);
+        this.comportamientoInstanciado = new this.argumentos.comportamiento(this.argumentos.argumentos());
+        this.comportamientoInstanciado.iniciar(receptor);
+    };
+
+    LlamadaProcPrimitivo.prototype.actualizar = function () {
+        return this.comportamientoInstanciado.actualizar();
+    };
+    return LlamadaProcPrimitivo;
+})(Comportamiento);
+
+/**
 * @class Expresion
 *
 * Representa la evaluacion de una expresion
@@ -16666,6 +16692,10 @@ var ConstructorDePrograma = (function () {
     ConstructorDePrograma.prototype.llamada_proc = function (n, proc_args) {
         var procs = this.procedimientos;
         this.hacer(LlamadaProcedimiento, { nombre: n, procedimientos: procs, argumentos: proc_args });
+    };
+
+    ConstructorDePrograma.prototype.llamada_proc_primitivo = function (comportamiento, argsSinEvaluar) {
+        this.hacer(LlamadaProcPrimitivo, { comportamiento: comportamiento, argumentos: argsSinEvaluar });
     };
 
     ConstructorDePrograma.prototype.def_func = function (n) {

@@ -534,6 +534,30 @@ class LlamadaProcedimiento extends Comportamiento {
 }
 
 /**
+ * @class LlamadaProcPrimitivo
+ *
+ * Representa una llamada a una primitiva.
+ *
+ * Existe para que se evalúen los parámetros de la primitiva
+ * recién al momento de ejecución y no antes.
+ * Es decorator de un comportamiento.
+ */
+class LlamadaProcPrimitivo extends Comportamiento {
+  comportamientoInstanciado;
+
+  iniciar(receptor) {
+    super.iniciar(receptor);
+    this.comportamientoInstanciado =
+      new this.argumentos.comportamiento(this.argumentos.argumentos());
+    this.comportamientoInstanciado.iniciar(receptor);
+  }
+
+  actualizar() {
+    return this.comportamientoInstanciado.actualizar();
+  }
+}
+
+/**
  * @class Expresion
  *
  * Representa la evaluacion de una expresion
@@ -656,6 +680,10 @@ class ConstructorDePrograma {
   llamada_proc(n, proc_args) {
     var procs = this.procedimientos;
     this.hacer(LlamadaProcedimiento, { nombre: n, procedimientos: procs, argumentos: proc_args });
+  }
+
+  llamada_proc_primitivo(comportamiento, argsSinEvaluar) {
+    this.hacer(LlamadaProcPrimitivo, { comportamiento: comportamiento, argumentos: argsSinEvaluar });
   }
 
   def_func(n) {
