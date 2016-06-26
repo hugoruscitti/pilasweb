@@ -17441,40 +17441,6 @@ var Pilas = (function () {
         return actores;
     };
 
-    Pilas.prototype.obtener_actores_ordenados_por_z = function () {
-        var actores = {};
-
-        var sortFunction = function (a, b) {
-            if (a.z < b.z) {
-                return 1;
-            }
-
-            if (a.z > b.z) {
-                return -1;
-            }
-
-            return 0;
-        };
-
-        var lista = this.escena_actual().actores.concat().sort(sortFunction);
-
-        return lista.map(function (actor) {
-            return { actor: actor, z: actor.z, sprite: actor.sprite };
-        });
-    };
-
-    Pilas.prototype.ordenar_mejorado = function () {
-        var lista = this.obtener_actores_ordenados_por_z();
-        var stage = this.escena_actual().stage;
-
-        for (var i = 0; i < lista.length; i++) {
-            stage.setChildIndex(lista[i].sprite, i);
-            //debugger;
-        }
-
-        return lista;
-    };
-
     Pilas.prototype.izquierda = function () {
         return 0 - this.opciones.ancho / 2;
     };

@@ -1231,8 +1231,6 @@ declare class Pilas {
     */
     public obtener_actores_en(x: any, y: any, con_etiqueta?: any): any[];
     public obtener_actores_con_etiqueta(etiqueta: any): any[];
-    public obtener_actores_ordenados_por_z(): any;
-    public ordenar_mejorado(): any;
     public izquierda(): number;
     public derecha(): number;
     public arriba(): number;
