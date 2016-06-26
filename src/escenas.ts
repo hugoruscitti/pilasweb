@@ -73,9 +73,7 @@ class Base {
     this.actualiza.emitir();
     pilas.colisiones.verificar_colisiones();
 
-    if (this.necesita_ordenar_actores()) {
-      this.ordenar_actores_por_valor_z();
-    }
+    this.ordenar_actores_por_valor_z();
 
     this.stage.update();
   }
@@ -88,24 +86,9 @@ class Base {
     this.pausada = false;
   }
 
-  necesita_ordenar_actores() {
-    var ultimo_z =  300000000;
-
-    for (var i=0; i<this.stage.children.length; i++) {
-
-      if (this.stage.children[i].z > ultimo_z) {
-        //console.log("necesita actualizar el orden Z!");
-        return true;
-      }
-
-      ultimo_z = this.stage.children[i].z;
-    }
-
-  }
-
-
   ordenar_actores_por_valor_z() {
-    var sortFunction = function(a, b, options) {
+    var actores = {};
+    var funcion_ordenar = function(a, b) {
       if (a.z < b.z) {
         return 1;
       }
@@ -117,7 +100,15 @@ class Base {
       return 0;
     };
 
-    this.stage.sortChildren(sortFunction);
+    var lista = this.actores.concat().sort(funcion_ordenar);
+
+    var lista = lista.map(function(actor) {
+        return {actor: actor, z: actor.z, sprite: actor.sprite};
+    });
+
+    for (var i=0; i<lista.length; i++) {
+      this.stage.setChildIndex(lista[i].sprite, i);
+    }
   }
 
   agregar_actor(actor) {

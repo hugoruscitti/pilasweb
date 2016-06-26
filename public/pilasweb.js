@@ -15071,9 +15071,7 @@ var Base = (function () {
         this.actualiza.emitir();
         pilas.colisiones.verificar_colisiones();
 
-        if (this.necesita_ordenar_actores()) {
-            this.ordenar_actores_por_valor_z();
-        }
+        this.ordenar_actores_por_valor_z();
 
         this.stage.update();
     };
@@ -15086,21 +15084,9 @@ var Base = (function () {
         this.pausada = false;
     };
 
-    Base.prototype.necesita_ordenar_actores = function () {
-        var ultimo_z = 300000000;
-
-        for (var i = 0; i < this.stage.children.length; i++) {
-            if (this.stage.children[i].z > ultimo_z) {
-                //console.log("necesita actualizar el orden Z!");
-                return true;
-            }
-
-            ultimo_z = this.stage.children[i].z;
-        }
-    };
-
     Base.prototype.ordenar_actores_por_valor_z = function () {
-        var sortFunction = function (a, b, options) {
+        var actores = {};
+        var funcion_ordenar = function (a, b) {
             if (a.z < b.z) {
                 return 1;
             }
@@ -15112,7 +15098,15 @@ var Base = (function () {
             return 0;
         };
 
-        this.stage.sortChildren(sortFunction);
+        var lista = this.actores.concat().sort(funcion_ordenar);
+
+        var lista = lista.map(function (actor) {
+            return { actor: actor, z: actor.z, sprite: actor.sprite };
+        });
+
+        for (var i = 0; i < lista.length; i++) {
+            this.stage.setChildIndex(lista[i].sprite, i);
+        }
     };
 
     Base.prototype.agregar_actor = function (actor) {
@@ -17445,6 +17439,40 @@ var Pilas = (function () {
         }
 
         return actores;
+    };
+
+    Pilas.prototype.obtener_actores_ordenados_por_z = function () {
+        var actores = {};
+
+        var sortFunction = function (a, b) {
+            if (a.z < b.z) {
+                return 1;
+            }
+
+            if (a.z > b.z) {
+                return -1;
+            }
+
+            return 0;
+        };
+
+        var lista = this.escena_actual().actores.concat().sort(sortFunction);
+
+        return lista.map(function (actor) {
+            return { actor: actor, z: actor.z, sprite: actor.sprite };
+        });
+    };
+
+    Pilas.prototype.ordenar_mejorado = function () {
+        var lista = this.obtener_actores_ordenados_por_z();
+        var stage = this.escena_actual().stage;
+
+        for (var i = 0; i < lista.length; i++) {
+            stage.setChildIndex(lista[i].sprite, i);
+            //debugger;
+        }
+
+        return lista;
     };
 
     Pilas.prototype.izquierda = function () {
