@@ -16726,7 +16726,11 @@ var ConstructorDePrograma = (function () {
         };
 
         actor.pop_parametros = function () {
-            this.scope_parametros_actual = this.scope_parametros.pop();
+            // pierdo el contexto actual (no me interesa, ya termino el procedimiento)
+            this.scope_parametros.pop();
+
+            // vuelvo al contexto anterior (que es el ultimo de la lista)
+            this.scope_parametros_actual = this.scope_parametros[this.scope_parametros.length - 1];
         };
 
         actor.parametro = function (n) {
