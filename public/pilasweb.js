@@ -13859,6 +13859,7 @@ var Actor = (function (_super) {
     Actor.prototype.decir = function (mensaje) {
         new pilas.actores.Globo(this, mensaje);
     };
+
     Actor.prototype.pensar = function (mensaje) {
         new pilas.actores.GloboPensar(this, mensaje);
     };
@@ -15051,8 +15052,9 @@ var Base = (function () {
     };
 
     Base.prototype.actualizar = function () {
-        if (!this.pausada)
+        if (!this.pausada) {
             this.doActualizar();
+        }
     };
 
     Base.prototype.doActualizar = function () {
@@ -15072,7 +15074,6 @@ var Base = (function () {
         pilas.colisiones.verificar_colisiones();
 
         this.ordenar_actores_por_valor_z();
-
         this.stage.update();
     };
 
@@ -15101,19 +15102,23 @@ var Base = (function () {
         var lista = this.actores.concat().sort(funcion_ordenar);
 
         var lista = lista.map(function (actor) {
-            return { actor: actor, z: actor.z, sprite: actor.sprite };
+            return { actor: actor, z: actor.z, texto: actor.spriteCJS, sprite: actor.sprite };
         });
 
         for (var i = 0; i < lista.length; i++) {
-            this.stage.setChildIndex(lista[i].sprite, i);
+            if (lista[i].texto) {
+                this.stage.setChildIndex(lista[i].texto, i);
+            } else {
+                this.stage.setChildIndex(lista[i].sprite, i);
+            }
         }
     };
 
     Base.prototype.agregar_actor = function (actor) {
         this.actores.push(actor);
         this.stage.addChild(actor.sprite);
-        this.stage.update();
         this.ordenar_actores_por_valor_z();
+        this.stage.update();
     };
 
     Base.prototype.eliminar_actor = function (actor) {

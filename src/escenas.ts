@@ -52,7 +52,9 @@ class Base {
   }
 
   actualizar(){
-    if (!this.pausada) this.doActualizar();
+    if (!this.pausada) {
+      this.doActualizar();
+    }
   }
 
   doActualizar() {
@@ -74,7 +76,6 @@ class Base {
     pilas.colisiones.verificar_colisiones();
 
     this.ordenar_actores_por_valor_z();
-
     this.stage.update();
   }
 
@@ -103,19 +104,26 @@ class Base {
     var lista = this.actores.concat().sort(funcion_ordenar);
 
     var lista = lista.map(function(actor) {
-        return {actor: actor, z: actor.z, sprite: actor.sprite};
+        return {actor: actor, z: actor.z, texto: actor.spriteCJS, sprite: actor.sprite};
     });
 
+
     for (var i=0; i<lista.length; i++) {
-      this.stage.setChildIndex(lista[i].sprite, i);
+
+      if (lista[i].texto) {
+        this.stage.setChildIndex(lista[i].texto, i);
+      } else {
+        this.stage.setChildIndex(lista[i].sprite, i);
+      }
+
     }
   }
 
   agregar_actor(actor) {
     this.actores.push(actor);
     this.stage.addChild(actor.sprite);
-    this.stage.update();
     this.ordenar_actores_por_valor_z();
+    this.stage.update();
   }
 
   eliminar_actor(actor) {
