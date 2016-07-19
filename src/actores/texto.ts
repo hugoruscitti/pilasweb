@@ -64,7 +64,7 @@ class Texto extends Actor {
 
   setZ(z) {
     super.setZ(z);
-    this.spriteCJS.z = z;
+    this.spriteCJS.z = z - 1;
   }
 
   cantidadDeLineas(){

@@ -13859,7 +13859,6 @@ var Actor = (function (_super) {
     Actor.prototype.decir = function (mensaje) {
         new pilas.actores.Globo(this, mensaje);
     };
-
     Actor.prototype.pensar = function (mensaje) {
         new pilas.actores.GloboPensar(this, mensaje);
     };
@@ -15086,32 +15085,9 @@ var Base = (function () {
     };
 
     Base.prototype.ordenar_actores_por_valor_z = function () {
-        var actores = {};
-        var funcion_ordenar = function (a, b) {
-            if (a.z < b.z) {
-                return 1;
-            }
-
-            if (a.z > b.z) {
-                return -1;
-            }
-
-            return 0;
-        };
-
-        var lista = this.actores.concat().sort(funcion_ordenar);
-
-        var lista = lista.map(function (actor) {
-            return { actor: actor, z: actor.z, texto: actor.spriteCJS, sprite: actor.sprite };
+        this.stage.sortChildren(function (a, b) {
+            return b.z - a.z;
         });
-
-        for (var i = 0; i < lista.length; i++) {
-            if (lista[i].texto) {
-                this.stage.setChildIndex(lista[i].texto, i);
-            } else {
-                this.stage.setChildIndex(lista[i].sprite, i);
-            }
-        }
     };
 
     Base.prototype.agregar_actor = function (actor) {
@@ -18037,7 +18013,7 @@ var Texto = (function (_super) {
 
     Texto.prototype.setZ = function (z) {
         _super.prototype.setZ.call(this, z);
-        this.spriteCJS.z = z;
+        this.spriteCJS.z = z - 1;
     };
 
     Texto.prototype.cantidadDeLineas = function () {

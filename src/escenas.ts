@@ -88,35 +88,7 @@ class Base {
   }
 
   ordenar_actores_por_valor_z() {
-    var actores = {};
-    var funcion_ordenar = function(a, b) {
-      if (a.z < b.z) {
-        return 1;
-      }
-
-      if (a.z > b.z) {
-        return -1;
-      }
-
-      return 0;
-    };
-
-    var lista = this.actores.concat().sort(funcion_ordenar);
-
-    var lista = lista.map(function(actor) {
-        return {actor: actor, z: actor.z, texto: actor.spriteCJS, sprite: actor.sprite};
-    });
-
-
-    for (var i=0; i<lista.length; i++) {
-
-      if (lista[i].texto) {
-        this.stage.setChildIndex(lista[i].texto, i);
-      } else {
-        this.stage.setChildIndex(lista[i].sprite, i);
-      }
-
-    }
+    this.stage.sortChildren((a,b) => b.z - a.z);
   }
 
   agregar_actor(actor) {
