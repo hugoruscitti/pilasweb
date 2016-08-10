@@ -109,7 +109,7 @@ class Pizarra extends Actor {
   }
 
   estaPuntoEn(pto,ptos){
-    return ptos.any( elemento => pto.x == elemento.x && pto.y == elemento.y);
+    return ptos.some( elemento => pto.x == elemento.x && pto.y == elemento.y);
   }
 
 }
