@@ -16,6 +16,8 @@
     "bower_components",
     "debian",
     "docs",
+    "src/**",
+    "public/**",
     "imagenes",
     "ide/**",
     "test",
