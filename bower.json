@@ -2,7 +2,6 @@
   "name": "pilasweb",
   "description": "Versión de pilas-engine para navegadores usando HTML5",
   "main": "public/pilasweb.js",
-  "version": "0.1.1",
   "authors": [
     "Hugo Ruscitti <hugoruscitti@gmail.com>"
   ],
@@ -12,17 +11,7 @@
   ],
   "homepage": "https://github.com/hugoruscitti/pilasweb",
   "ignore": [
-    "Gruntfile.js",
-    "Makefile",
-    "debian",
-    "docs",
-    "ide",
-    "imagenes",
-    "node_modules",
-    "package.json",
-    "pilasweb.js",
-    "public",
-    "src",
-    "test"
+    "*", 
+    "!dist/*"
   ]
 }
