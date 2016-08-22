@@ -1,0 +1,24 @@
+{
+  "name": "pilasweb",
+  "description": "Versión de pilas-engine para navegadores usando HTML5",
+  "main": "public/pilasweb.js",
+  "authors": [
+    "Hugo Ruscitti <hugoruscitti@gmail.com>"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "game"
+  ],
+  "homepage": "https://github.com/hugoruscitti/pilasweb",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "debian",
+    "docs",
+    "imagenes",
+    "ide",
+    "test",
+    "tests"
+  ]
+}

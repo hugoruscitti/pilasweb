@@ -5,7 +5,7 @@ VERSION=`git describe --abbrev=0 --tags`
 
 all:
 	@echo ""
-	@echo "Comandos disponibles:"
+	@echo "Comandos disponibles - versión $(VERSION):"
 	@echo ""
 	@echo "   $(V)iniciar$(N)      Instala todas las dependencias."
 	@echo ""
