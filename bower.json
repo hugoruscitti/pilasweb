@@ -12,16 +12,6 @@
   ],
   "homepage": "https://github.com/hugoruscitti/pilasweb",
   "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "debian",
-    "docs",
-    "src/**",
-    "public/**",
-    "imagenes",
-    "ide/**",
-    "test",
-    "tests"
+    "./!(public/pilasweb.js)"
   ]
 }
