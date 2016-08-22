@@ -12,7 +12,17 @@
   ],
   "homepage": "https://github.com/hugoruscitti/pilasweb",
   "ignore": [
-    "**/*",
-    "!pilasweb.js"
+    "Gruntfile.js",
+    "Makefile",
+    "debian",
+    "docs",
+    "ide",
+    "imagenes",
+    "node_modules",
+    "package.json",
+    "pilasweb.js",
+    "public",
+    "src",
+    "test"
   ]
 }

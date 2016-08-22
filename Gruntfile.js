@@ -41,7 +41,7 @@ module.exports = function(grunt) {
             'public/libs/rsvp-latest.js',
             'public/pilasweb.js',
         ],
-        dest: 'pilasweb.js',
+        dest: 'dist/pilasweb.js',
       },
     },
     typescript: {
@@ -61,8 +61,8 @@ module.exports = function(grunt) {
       },
     copy: {
       main: {
-        src: 'public/**',
-        dest: 'ide/',
+        src: 'public/pilasweb.d.ts',
+        dest: 'dist',
       },
       documentacion_html: {
         src: 'docs/build/html/**',
