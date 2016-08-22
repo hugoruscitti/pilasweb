@@ -12,6 +12,7 @@
   ],
   "homepage": "https://github.com/hugoruscitti/pilasweb",
   "ignore": [
-    "./!(pilasweb.js)"
+    "**/*",
+    "!(pilasweb.js)"
   ]
 }
