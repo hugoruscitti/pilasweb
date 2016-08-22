@@ -17,7 +17,7 @@
     "debian",
     "docs",
     "imagenes",
-    "ide",
+    "ide/**",
     "test",
     "tests"
   ]
