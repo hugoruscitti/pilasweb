@@ -28,10 +28,11 @@ module.exports = function(grunt) {
       },
       dist: {
         src: [
-            'public/libs/traits.js',
+            'public/libs/copyright.js',
             'public/libs/PxLoader.js',
             'public/libs/PxLoaderImage.js',
             'public/libs/Box2dWeb-2.1.a.3.js',
+            'public/libs/traits.js',
             'public/libs/preloadjs-0.4.1.min.js',
             'public/libs/soundjs-0.5.2.min.js',
             'public/libs/easeljs-0.7.1.min.js',

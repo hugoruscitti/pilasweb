@@ -2,3 +2,5 @@ language: node_js
 node_js:
   - "iojs"
 script: grunt test --verbose
+install:
+  - "make iniciar"

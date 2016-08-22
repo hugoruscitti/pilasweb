@@ -5,26 +5,27 @@ VERSION=`git describe --abbrev=0 --tags`
 
 all:
 	@echo ""
-	@echo " $(V)test_linux$(N)   Prueba la aplicacion usando nodewebkit en linux."
-	@echo " $(V)test_mac$(N)     Prueba la aplicacion usando nodewebkit en mac osx."
-	@echo " $(V)watch$(N)        Observa los archivos y compila pilas si es necesario."
-	@echo " $(V)install$(N)      Actualiza dependencias."
-	@echo " $(V)build$(N)        Compila el archivo pilasengine.js."
-	@echo " $(V)nodewekbit$(N)   Genera las versiones compiladas."
-	@echo " $(V)test$(N)         Ejecuta todos los tests de qunit."
-	@echo " $(V)upload$(N)       Sube los archivos generados para publicar una release."
-	@echo " $(V)version$(N)      Informa el numero de version."
+	@echo "Comandos disponibles:"
 	@echo ""
-	@echo "   nota: para activar el modo live-reload tendrías que"
-	@echo "   ejecutar los comandos $(V)watch$(N), $(V)t($N)."
+	@echo "   $(V)iniciar$(N)      Instala todas las dependencias."
+	@echo ""
+	@echo "   $(V)watch$(N)        Observa los archivos y compila pilas si es necesario."
+	@echo "   $(V)install$(N)      Actualiza dependencias."
+	@echo "   $(V)build$(N)        Compila el archivo pilasengine.js."
+	@echo "   $(V)nodewekbit$(N)   Genera las versiones compiladas."
+	@echo "   $(V)test$(N)         Ejecuta todos los tests de qunit."
+	@echo "   $(V)upload$(N)       Sube los archivos generados para publicar una release."
+	@echo "   $(V)version$(N)      Informa el numero de version."
+	@echo ""
+	@echo "     nota: para activar el modo live-reload tendrías que"
+	@echo "           ejecutar los comandos $(V)watch$(N), $(V)t($N)."
 	@echo ""
 
+iniciar:
+	npm install
 
 version:
 	@echo $(VERSION)
-
-test_linux:
-	./dist/node-webkit-v0.7.3-linux-ia32/nw ide
 
 build:
 	grunt typescript
@@ -36,7 +37,7 @@ nodewebkit: build
 	@echo "Borrando archivos de releases anteriores."
 	rm -f -r webkitbuilds/releases/
 	grunt nodewebkit
-	
+
 upload: nodewebkit
 	@mkdir -p dist
 	@echo "Limpiando el directorio dist/"
@@ -63,10 +64,6 @@ upload: nodewebkit
 	@echo "   http://dev-losersjuegos.com.ar/pilas-engine/pilas-engine_$(VERSION)_linux32.zip"
 	@echo "   http://dev-losersjuegos.com.ar/pilas-engine/pilas-engine_$(VERSION)_linux64.zip"
 	@echo " "
-
-test_mac:
-	@echo "Cuidado - se está usando la version de nodewebkit del sistema."
-	open -a /Applications/node-webkit.app ide
 
 watch:
 	grunt watch

@@ -1,32 +1,11 @@
-// Autor: Alfredo Sanzo
-// sobre idea de Oscar García : 
-// http://www.elclubdelprogramador.com/2013/08/30/javascript-patrones-en-javascript-mixin-pattern/
-
-
-var Trait = {
-	toClass: function( claseDonante, claseReceptora ) {
-		Trait.copyFromTo(claseDonante.prototype, claseReceptora.prototype, arguments);
-	},
-
-	toObject: function( claseDonante, objetoReceptor ){
-		Trait.copyFromTo(claseDonante.prototype, objetoReceptor, arguments);
-	},
-
-	copyFromTo: function(orig,dest,args){
-		if ( args[2] ) { // solo extendemos los metodos que pasamos por parametros
-			for ( var i = 2, len = args.length; i < len; i++ ) {
-				dest[args[i]] = orig[args[i]];
-			}
-		}
-		else {	// extendemos todos los metodos
-			for ( var nombreMetodo in orig ) {
-				if ( !dest[nombreMetodo] ) { // comprobamos que ya no existiese un metodo llamado igual
-					dest[nombreMetodo] = orig[nombreMetodo];
-				}
-			}
-		}
-	},
-};;/**
+/* Copyright (C) 2012-2016 Hugo Ruscitti - All Rights Reserved
+ * You may use, distribute and modify this code under the
+ * terms of the ISC license.
+ *
+ * You should have received a copy of the ISC license with
+ * this file. If not, please visit www.pilas-engine.com.ar
+ */
+;/**
  * PixelLab Resource Loader
  * Loads resources while providing progress updates.
  */
@@ -11369,7 +11348,35 @@ Box2D.postDefs = [];
 })(); //post-definitions
 var i;
 for (i = 0; i < Box2D.postDefs.length; ++i) Box2D.postDefs[i]();
-delete Box2D.postDefs;;/*!
+delete Box2D.postDefs;;// Autor: Alfredo Sanzo
+// sobre idea de Oscar García : 
+// http://www.elclubdelprogramador.com/2013/08/30/javascript-patrones-en-javascript-mixin-pattern/
+
+
+var Trait = {
+	toClass: function( claseDonante, claseReceptora ) {
+		Trait.copyFromTo(claseDonante.prototype, claseReceptora.prototype, arguments);
+	},
+
+	toObject: function( claseDonante, objetoReceptor ){
+		Trait.copyFromTo(claseDonante.prototype, objetoReceptor, arguments);
+	},
+
+	copyFromTo: function(orig,dest,args){
+		if ( args[2] ) { // solo extendemos los metodos que pasamos por parametros
+			for ( var i = 2, len = args.length; i < len; i++ ) {
+				dest[args[i]] = orig[args[i]];
+			}
+		}
+		else {	// extendemos todos los metodos
+			for ( var nombreMetodo in orig ) {
+				if ( !dest[nombreMetodo] ) { // comprobamos que ya no existiese un metodo llamado igual
+					dest[nombreMetodo] = orig[nombreMetodo];
+				}
+			}
+		}
+	},
+};;/*!
 * @license PreloadJS
 * Visit http://createjs.com/ for documentation, updates and examples.
 *
@@ -18623,7 +18630,7 @@ var Pizarra = (function (_super) {
     };
 
     Pizarra.prototype.estaPuntoEn = function (pto, ptos) {
-        return ptos.any(function (elemento) {
+        return ptos.some(function (elemento) {
             return pto.x == elemento.x && pto.y == elemento.y;
         });
     };
