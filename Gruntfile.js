@@ -41,7 +41,7 @@ module.exports = function(grunt) {
             'public/libs/rsvp-latest.js',
             'public/pilasweb.js',
         ],
-        dest: 'public/pilasweb.js',
+        dest: 'pilasweb.js',
       },
     },
     typescript: {
@@ -94,7 +94,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('generar_docs', "create documentation files", function() {
     shell.exec('git submodule update --init');
-    shell.exec('cd docs; make actualizar_docs_pilasweb');
   });
 
   grunt.registerTask('make_docs', "create documentation files", function() {
