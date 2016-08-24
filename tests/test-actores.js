@@ -5,7 +5,7 @@ test('El texto pilas y el texto createJS tienen igual posicion', function(assert
   expect(4);
 
   pilas = new Pilas();
-  pilas.iniciar({ancho: 320, alto: 240, data_path: '../public/data'});
+  pilas.iniciar({ancho: 320, alto: 240, data_path: '../dist/data'});
 
 
   pilas.onready = function() {
@@ -31,8 +31,7 @@ test('El globo y su texto tienen misma posición', function(assert) {
   expect(4);
 
   pilas = new Pilas();
-  pilas.iniciar({ancho: 320, alto: 240, data_path: '../public/data'});
-
+  pilas.iniciar({ancho: 320, alto: 240, data_path: '../dist/data'});
 
   pilas.onready = function() {
       var bomba = new pilas.actores.Bomba(34,43);

@@ -20,7 +20,7 @@ module.exports = function(grunt) {
                 ]
             },
     qunit: {
-      files: ['test/index.html']
+      files: ['tests/index.html']
     },
     concat: {
       options: {

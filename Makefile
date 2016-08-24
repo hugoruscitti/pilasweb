@@ -72,7 +72,7 @@ crear_entorno:
 	npm install
 
 test:
-	grunt test --verbose
+	grunt test 
 
 utest:test
 
@@ -87,4 +87,4 @@ web:
 	@echo ""
 	@echo ""
 
-.PHONY: test
+.PHONY: test tests
