@@ -7,11 +7,16 @@ all:
 	@echo ""
 	@echo "Comandos disponibles - versión $(VERSION):"
 	@echo ""
-	@echo "   $(V)iniciar$(N)      Instala todas las dependencias."
+	@echo "   $(V)iniciar$(N)         Instala todas las dependencias."
 	@echo ""
-	@echo "   $(V)build$(N)        Compila el archivo pilasengine.js."
-	@echo "   $(V)watch$(N)        Observa los archivos fuente y compila pilas si es necesario."
-	@echo "   $(V)test$(N)         Ejecuta todos los tests de qunit."
+	@echo "   $(V)build$(N)           Compila el archivo pilasengine.js."
+	@echo "   $(V)watch$(N)           Observa los archivos fuente y compila pilas si es necesario."
+	@echo "   $(V)test$(N)            Ejecuta todos los tests de qunit."
+	@echo ""
+	@echo "   $(V)version_patch$(N)   Incrementa, sube y publica en bower una versión patch."
+	@echo "   $(V)version_minor$(N)   Incrementa, sube y publica en bower una versión minor."
+	@echo "   $(V)version_major$(N)   Incrementa, sube y publica en bower una versión major."
+	@echo ""
 	@echo ""
 
 iniciar:
@@ -28,6 +33,22 @@ watch:
 
 test:
 	grunt test 
+
+version_patch:
+	npm version patch
+	make sync
+
+version_minor:
+	npm version minor
+	make sync
+
+version_major:
+	npm version major
+	make sync
+
+sync:
+	git push origin master --tags
+	bower info pilasweb
 
 web:
 	cd ../ghpages__pilasweb; git pull origin gh-pages
