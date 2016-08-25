@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8>
+</head>
+
+<body>
+
+	<canvas id='canvas'></canvas>
+
+  <script src='../dist/pilasweb.js'></script>
+
+  <script>
+		var canvas_element = document.getElementById('canvas');
+    window['canvas'] = canvas_element;
+    pilas = new Pilas();
+    pilas.iniciar({ancho: 320, alto: 240, canvas: canvas_element, data_path: '../dist/data'});
+
+    pilas.onready = function() {
+      var fondo = new pilas.fondos.Tarde();
+
+      var aceituna = new pilas.actores.Aceituna(10, 100);
+      aceituna.aprender(pilas.habilidades.RebotarComoPelota);
+
+      window['figura'] = aceituna.figura;
+
+      var caja = new pilas.actores.Caja();
+      caja.aprender(pilas.habilidades.RebotarComoCaja);
+
+      var pelota = new pilas.actores.Pelota();
+      window.pelota = pelota;
+      pelota.aprender( pilas.habilidades.Arrastrable );
+
+      var cesto = new pilas.actores.Cesto();
+
+      pilas.definir_modos({
+        fisica: false,
+        puntos_de_control: false,
+        posiciones: true
+      });
+    }
+
+    pilas.ejecutar();
+
+  </script>
+</body>
+</html>

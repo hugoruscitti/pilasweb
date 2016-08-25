@@ -3,50 +3,13 @@
 <head>
 	<meta charset=utf-8>
 	<title>pilasweb testing</title>
-
-  <link href="css/bootstrap.css" rel="stylesheet">
-  <link href="css/custom.css" rel="stylesheet">
-
-  <link rel="stylesheet" href="CodeMirror3/lib/codemirror.css">
-  <link rel="stylesheet" href="CodeMirror3/theme/monokai.css">
-  <link rel="stylesheet" href="css/inlet.css" type="text/css" media="screen"  title="no title" charset="utf-8">
-  <link rel="stylesheet" href="css/editor.css" type="text/css" media="screen"  title="no title" charset="utf-8">
-
-
-
 </head>
 
 <body>
 
+  <canvas id='canvas_id2'></canvas>
 
-    <div class='container'>
-
-      <style type="text/css" media="all">
-
-        canvas#canvas_id2 {
-          width: 420px;
-          height: 480px;
-        }
-
-	#tareas {
-		position: absolute;
-		right: 0;
-		top:0;
-		bottom:0;
-		width: 400px;
-		margin: 10px;
-	}
-
-      </style>
-
-              <canvas id='canvas_id2'></canvas>
-	<pre id='tareas'>
-	</pre>
-
-    </div>
-
-
-  <script src='pilasweb.js'></script>
+  <script src='../dist/pilasweb.js'></script>
 
 
   <script>
@@ -78,48 +41,11 @@
 
 
 
-    var obj_pilas = pilasengine.iniciar({ancho: 420, alto: 480, canvas: canvas_element, data_path: 'data'});
-
-    var pilas = obj_pilas;
-
-    pilas.observar_tareas('tareas', 100);
+    var obj_pilas = pilasengine.iniciar({ancho: 420, alto: 480, canvas: canvas_element, data_path: '../dist/data'});
 
     obj_pilas.onready = function() {
       var fondo = new pilas.fondos.Laberinto1();
-      var alien = new obj_pilas.actores.AlienMarron(-175, -180);
-
-			function init() {
-				console.log("inicio!", this);
-				this.contador = 0;
-			}
-
-			function update() {
-				alien.x += 0.3;
-				this.contador += 1;
-
-				if (this.contador > 200) {
-					return true;
-				}
-			}
-
-			pilas.rutinas.agregar("mover a la derecha", alien, init, update);
-
-
-			/*
-			tarea = alien.hacer();
-
-			tarea.
-				then(alien.caminar_derecha).
-				then(alien.caminar_arriba).
-				then(function() {
-					if (alien.x > 100)
-						tarea.then()
-
-				})
-
-			*/
-
-
+      var alien = new obj_pilas.actores.Alien(-175, -180);
 
       alien.cuando_busca_recoger = function() {
         var actores = pilas.obtener_actores_en(alien.x, alien.y + 20, 'Tuerca')

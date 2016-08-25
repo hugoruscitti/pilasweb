@@ -3,24 +3,6 @@
 <head>
 	<meta charset=utf-8>
 	<title>pilasweb testing</title>
-
-  <link href="css/bootstrap.css" rel="stylesheet">
-  <link href="css/custom.css" rel="stylesheet">
-
-  <link rel="stylesheet" href="CodeMirror3/lib/codemirror.css">
-  <link rel="stylesheet" href="CodeMirror3/theme/monokai.css">
-  <link rel="stylesheet" href="css/inlet.css" type="text/css" media="screen"  title="no title" charset="utf-8">
-  <link rel="stylesheet" href="css/editor.css" type="text/css" media="screen"  title="no title" charset="utf-8">
-
-	<style>
-    canvas#canvas_id2 {
-      width: 420px;
-      height: 270px;
-			border: 1px solid #ccc;
-    }
-	</style>
-
-
 </head>
 
 <body>
@@ -32,12 +14,12 @@
 		<button onclick="intercalar_z()" class="btn btn-warning">Intercalar Z</button>
 	</p>
 
-  <script src='pilasweb.js'></script>
+  <script src='../dist/pilasweb.js'></script>
 
 
   <script>
 		var canvas_element = document.getElementById('canvas_id2');
-    var obj_pilas = pilasengine.iniciar({ancho: 420, alto: 270, canvas: canvas_element, data_path: 'data'});
+    var obj_pilas = pilasengine.iniciar({ancho: 420, alto: 270, canvas: canvas_element, data_path: '../dist/data'});
 
     obj_pilas.onready = function() {
       var alien = new obj_pilas.actores.Alien(-150, -130);
