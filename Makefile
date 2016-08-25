@@ -1,17 +1,18 @@
 N=\x1b[0m
 V=\x1b[32;01m
-#VERSION=`git name-rev --name-only --tags HEAD | sed 's/\^.*//'`
+A=\x1b[33;01m
 VERSION=`git describe --abbrev=0 --tags`
 
 all:
 	@echo ""
-	@echo "Comandos disponibles - versión $(VERSION):"
+	@echo "$(A)Comandos disponibles - $(V)pilasweb$(N) $(A)$(VERSION):$(N)"
 	@echo ""
 	@echo "   $(V)iniciar$(N)         Instala todas las dependencias."
 	@echo ""
 	@echo "   $(V)build$(N)           Compila el archivo pilasengine.js."
-	@echo "   $(V)watch$(N)           Observa los archivos fuente y compila pilas si es necesario."
+	@echo "   $(V)build_live$(N)      Observa los archivos y compila solo si es necesario."
 	@echo "   $(V)test$(N)            Ejecuta todos los tests de qunit."
+	@echo "   $(V)test_live$(N)       Similar a build_live pero agrega ejecución de tests."
 	@echo ""
 	@echo "   $(V)version_patch$(N)   Incrementa, sube y publica en bower una versión patch."
 	@echo "   $(V)version_minor$(N)   Incrementa, sube y publica en bower una versión minor."
@@ -28,11 +29,14 @@ build:
 	grunt concat
 	grunt copy
 
-watch:
-	grunt watch
+build_live:
+	grunt watch:scripts
 
 test:
-	grunt test 
+	grunt test
+
+test_live:
+	grunt watch:test
 
 version_patch:
 	npm version patch
@@ -61,4 +65,4 @@ web:
 	@echo ""
 	@echo ""
 
-.PHONY: test tests
+.PHONY: tests
