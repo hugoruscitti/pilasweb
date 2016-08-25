@@ -9,22 +9,13 @@ all:
 	@echo ""
 	@echo "   $(V)iniciar$(N)      Instala todas las dependencias."
 	@echo ""
-	@echo "   $(V)watch$(N)        Observa los archivos y compila pilas si es necesario."
 	@echo "   $(V)build$(N)        Compila el archivo pilasengine.js."
-	@echo "   $(V)nodewekbit$(N)   Genera las versiones compiladas."
+	@echo "   $(V)watch$(N)        Observa los archivos fuente y compila pilas si es necesario."
 	@echo "   $(V)test$(N)         Ejecuta todos los tests de qunit."
-	@echo "   $(V)upload$(N)       Sube los archivos generados para publicar una release."
-	@echo "   $(V)version$(N)      Informa el numero de version."
-	@echo ""
-	@echo "     nota: para activar el modo live-reload tendrías que"
-	@echo "           ejecutar los comandos $(V)watch$(N), $(V)t($N)."
 	@echo ""
 
 iniciar:
 	npm install
-
-version:
-	@echo $(VERSION)
 
 build:
 	grunt typescript
@@ -32,48 +23,11 @@ build:
 	grunt concat
 	grunt copy
 
-nodewebkit: build
-	@echo "Borrando archivos de releases anteriores."
-	rm -f -r webkitbuilds/releases/
-	grunt nodewebkit
-
-upload: nodewebkit
-	@mkdir -p dist
-	@echo "Limpiando el directorio dist/"
-	@rm -f dist/*
-	@echo "Empaquetando para windows..."
-	zip -r dist/pilas-engine_$(VERSION)_windows.zip webkitbuilds/releases/pilas-engine/win/pilas-engine
-	@echo ""
-	@echo "Empaquetando para linux (32 bits)..."
-	zip -r dist/pilas-engine_$(VERSION)_linux32.zip webkitbuilds/releases/pilas-engine/linux32/pilas-engine
-	@echo ""
-	@echo "Empaquetando para linux (64 bits)..."
-	zip -r dist/pilas-engine_$(VERSION)_linux64.zip webkitbuilds/releases/pilas-engine/linux64/pilas-engine
-	@echo ""
-	@echo "Empaquetando para mac ..."
-	zip -r dist/pilas-engine_$(VERSION)_mac.zip webkitbuilds/releases/pilas-engine/mac
-	@echo ""
-	scp dist/* digitalocean:~/dev-losersjuegos.com.ar/descargas/pilas-engine
-	@echo " "
-	@echo " "
-	@echo "Pilas se podrá descargar desde estas URLs:"
-	@echo " "
-	@echo "   http://dev-losersjuegos.com.ar/pilas-engine/pilas-engine_$(VERSION)_mac.zip"
-	@echo "   http://dev-losersjuegos.com.ar/pilas-engine/pilas-engine_$(VERSION)_windows.zip"
-	@echo "   http://dev-losersjuegos.com.ar/pilas-engine/pilas-engine_$(VERSION)_linux32.zip"
-	@echo "   http://dev-losersjuegos.com.ar/pilas-engine/pilas-engine_$(VERSION)_linux64.zip"
-	@echo " "
-
 watch:
 	grunt watch
 
-crear_entorno:
-	npm install
-
 test:
 	grunt test 
-
-utest:test
 
 web:
 	cd ../ghpages__pilasweb; git pull origin gh-pages
