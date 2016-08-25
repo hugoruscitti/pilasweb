@@ -53,6 +53,7 @@ version_major:
 sync:
 	git push origin master --tags
 	bower info pilasweb
+	@echo "$(V)Listo, se publicó la versión $(VERSION) de pilasweb $(N)"
 
 web:
 	cd ../ghpages__pilasweb; git pull origin gh-pages
