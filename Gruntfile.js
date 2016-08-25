@@ -23,7 +23,7 @@ module.exports = function(grunt) {
             'vendor/tweenjs-0.5.1.min.js',
             'vendor/uuid.js',
             'vendor/rsvp-latest.js',
-            'public/pilasweb.js',
+            'tmp/pilasweb.js',
         ],
         dest: 'dist/pilasweb.js',
       },
@@ -31,7 +31,7 @@ module.exports = function(grunt) {
     typescript: {
       base: {
         src: ['src/**/*.ts'],
-        dest: 'public/pilasweb.js',
+        dest: 'tmp/pilasweb.js',
         options: {
           module: 'commonjs',
           target: 'es5',
@@ -44,7 +44,7 @@ module.exports = function(grunt) {
       },
     copy: {
       main: {
-        src: 'public/pilasweb.d.ts',
+        src: 'tmp/pilasweb.d.ts',
         dest: 'dist/pilasweb.d.ts',
       },
       documentacion_html: {
