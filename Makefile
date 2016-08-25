@@ -10,7 +10,6 @@ all:
 	@echo "   $(V)iniciar$(N)      Instala todas las dependencias."
 	@echo ""
 	@echo "   $(V)watch$(N)        Observa los archivos y compila pilas si es necesario."
-	@echo "   $(V)install$(N)      Actualiza dependencias."
 	@echo "   $(V)build$(N)        Compila el archivo pilasengine.js."
 	@echo "   $(V)nodewekbit$(N)   Genera las versiones compiladas."
 	@echo "   $(V)test$(N)         Ejecuta todos los tests de qunit."
