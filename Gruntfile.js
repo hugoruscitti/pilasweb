@@ -3,22 +3,6 @@ var shell = require('shelljs');
 module.exports = function(grunt) {
 
   grunt.initConfig({
-    nodewebkit: {
-                  options: {
-                            //version: '0.8.3',
-                            version: '0.7.5',
-                            build_dir: './webkitbuilds',
-                            mac: true,
-                            win: true,
-                            linux32: true,
-                            linux64: true
-                },
-                src: [
-                  './ide/**/*',
-                  './src/**/*',
-                  './node_modules/**/*',
-                ]
-            },
     qunit: {
       files: ['tests/index.html']
     },
@@ -51,7 +35,6 @@ module.exports = function(grunt) {
         options: {
           module: 'commonjs',
           target: 'es5',
-          basePath: 'src',
           sourceMap: false,
           fullSourceMapPath: false,
           declaration: true,
@@ -62,7 +45,7 @@ module.exports = function(grunt) {
     copy: {
       main: {
         src: 'public/pilasweb.d.ts',
-        dest: 'dist',
+        dest: 'dist/pilasweb.d.ts',
       },
       documentacion_html: {
         src: 'docs/build/html/**',
@@ -84,10 +67,6 @@ module.exports = function(grunt) {
   grunt.registerTask('test', ['test']);
   grunt.registerTask('clear', ['clear']);
 
-  grunt.registerTask('tags', "create ctags files", function() {
-    shell.exec('ctags src/*');
-  });
-
   grunt.registerTask('clear', "limpia la pantalla", function() {
     shell.exec('clear');
   });
@@ -102,7 +81,6 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-node-webkit-builder');
   grunt.loadNpmTasks('grunt-contrib-qunit');
 
   grunt.registerTask('docs', ['typescript', 'concat', 'make_docs']);
