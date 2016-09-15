@@ -8,6 +8,15 @@ class Fondo extends Actor {
     this.z = 1000;
   }
 
+  activar_el_modo_edicion() {
+  }
+
+  desactivar_el_modo_edicion() {
+  }
+
+  esFondo() {
+    return true;
+  }
 }
 
 
@@ -98,5 +107,9 @@ class Fondos {
     this.PastoCuadriculado = PastoCuadriculado;
     this.Tarde = Tarde;
     this.Laberinto1 = Laberinto1;
+  }
+
+  crear_fondo_desde_serializacion(datos) {
+    return new this[datos.clase]();
   }
 }

@@ -19,7 +19,7 @@ test('Puede serializar escena y restaurar estado', function(assert) {
     assert.equal(2, ids && ids.length, "En la escena tiene que haber dos objetos serializados.");
 
     // también podría obtener la lista de actores.
-    var actores = pilas.obtener_actores();
+    var actores = pilas.obtener_actores_en_la_escena();
     assert.equal(2, ids && actores.length, "Y obtener actores también lista dos objetos.");
 
     // se puede obtener actores por id

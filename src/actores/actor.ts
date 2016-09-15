@@ -527,4 +527,61 @@ class Actor extends Estudiante {
   tiene_etiqueta(etiqueta) {
     return this.etiquetas.indexOf(etiqueta) > -1;
   }
+
+
+  activar_el_modo_edicion() {
+    var transparencia_anterior = null;
+
+    this.sprite.on("mousedown", (evento) => {
+      this.sprite.shadow = new createjs.Shadow("rgba(0,0,0,0.5)", 5, 5, 2);
+    });
+
+    this.sprite.on("pressmove", (evento) => {
+      var pos = pilas.escena_actual().obtener_posicion_escenario(evento.stageX, evento.stageY);
+      this.x = pos.x;
+      this.y = pos.y;
+      this.transparencia = transparencia_anterior;
+      this.sprite.cursor = "-webkit-grabbing";
+    });
+
+    this.sprite.on("pressup", (evento) => {
+      this.sprite.shadow = null;
+      this.sprite.cursor = null;
+    });
+
+    this.sprite.on("mouseover", (evento) => {
+      transparencia_anterior = this.transparencia;
+      this.transparencia = 30;
+      this.sprite.cursor = "-webkit-grab";
+    });
+
+    this.sprite.on("mouseout", (evento) => {
+      this.sprite.shadow = null;
+      this.transparencia = transparencia_anterior;
+      this.sprite.cursor = null;
+    });
+
+  }
+
+  desactivar_el_modo_edicion() {
+    this.sprite.mouseEnabled = false;
+  }
+
+  esFondo() {
+    return false;
+  }
+
+  serializar() {
+    var atributos = {
+      x: this.x,
+      y: this.y,
+      rotacion: this.rotacion,
+      esFondo: this.esFondo(),
+      escala: this.escala,
+      clase: this.getClassName(),
+    };
+
+    return atributos;
+  }
+
 }

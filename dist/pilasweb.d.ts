@@ -131,6 +131,17 @@ declare class Actor extends Estudiante {
     colisiona_con(otro_actor: any): any;
     esta_fuera_de_la_pantalla(): boolean;
     tiene_etiqueta(etiqueta: any): boolean;
+    activar_el_modo_edicion(): void;
+    desactivar_el_modo_edicion(): void;
+    esFondo(): boolean;
+    serializar(): {
+        x: any;
+        y: any;
+        rotacion: any;
+        esFondo: boolean;
+        escala: any;
+        clase: string;
+    };
 }
 declare var Math: Math;
 declare class Utils {
@@ -172,6 +183,9 @@ declare class Grupo extends HGrupo {
 }
 declare class Fondo extends Actor {
     constructor(imagen: any, x: any, y: any);
+    activar_el_modo_edicion(): void;
+    desactivar_el_modo_edicion(): void;
+    esFondo(): boolean;
 }
 declare class Tarde extends Fondo {
     constructor();
@@ -201,6 +215,7 @@ declare class Fondos {
     Tarde: any;
     Laberinto1: any;
     constructor();
+    crear_fondo_desde_serializacion(datos: any): any;
 }
 declare class Imagenes {
     nombresImagenes: string[];
@@ -1118,6 +1133,7 @@ declare class Pilas {
     sonidos: any;
     escena: any;
     eventos: any;
+    _modo_edicion: any;
     ready: any;
     /**
      * @method iniciar
@@ -1231,10 +1247,20 @@ declare class Pilas {
      */
     obtener_actores_en(x: any, y: any, con_etiqueta?: any): any[];
     obtener_actores_con_etiqueta(etiqueta: any): any[];
+    /**
+     * Retorna una lista con todos los actores en la escena actual.
+     */
+    obtener_actores_en_la_escena(): any;
     izquierda(): number;
     derecha(): number;
     arriba(): number;
     abajo(): number;
+    definir_modo_edicion(estado: any): void;
+    obtener_ids(): any;
+    obtener_actor_por_id(id: any): any;
+    obtener_escena_serializada(): any;
+    definir_escena_serializada(escena_serializada: any): void;
+    _crear_actor_desde_serializacion(datos: any): any;
 }
 declare class Aceituna extends Actor {
     cuadro_normal: any;
@@ -1644,4 +1670,5 @@ declare class Actores {
     Tuerca: any;
     Sombra: any;
     constructor(pilas: any);
+    crear_actor_desde_serializacion(datos: any): any;
 }

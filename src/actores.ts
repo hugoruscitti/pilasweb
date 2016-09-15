@@ -106,4 +106,10 @@ class Actores {
     this.Tuerca = Tuerca;
     this.Sombra = Sombra;
   }
+
+  crear_actor_desde_serializacion(datos) {
+    var actor = new this[datos.clase](datos.x, datos.y);
+    actor.escala = datos.escala;
+    return actor;
+  }
 }

@@ -63,6 +63,7 @@ class Pilas {
   sonidos;          // acceso al módulo.
   escena;          // acceso al módulo.
   eventos;          // acceso al módulo.
+  _modo_edicion;
 
   ready;
 
@@ -106,6 +107,7 @@ class Pilas {
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
 
     this.eventos = new ProxyEventos();
+    this._modo_edicion = false;
 
     // Deshabilita el interpolado de pixels.
     var ctx = this.canvas.getContext('2d');
@@ -124,7 +126,6 @@ class Pilas {
 		// usuario como hace ahora...
 
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
-		var fondo = new pilas.fondos.Plano();
 	}
 
   /**
@@ -392,23 +393,98 @@ class Pilas {
 
     return actores;
   }
-    
+
+  /**
+   * Retorna una lista con todos los actores en la escena actual.
+   */
+  obtener_actores_en_la_escena() {
+    return this.escena_actual().actores.slice();
+  }
+
   izquierda(){
       return 0 - this.opciones.ancho/2;
   }
-    
+
   derecha(){
       return this.opciones.ancho/2;
   }
-    
+
   arriba(){
       return this.opciones.alto/2;
   }
-    
+
   abajo(){
       return 0 - this.opciones.alto/2;
   }
 
+  definir_modo_edicion(estado) {
+
+    if (estado === this._modo_edicion) {
+      return;
+    }
+
+    this._modo_edicion = estado;
+    var stage = this.escena_actual().stage;
+
+    if (estado) {
+      stage.enableMouseOver(20); // el argumento son las interacciones por segundo.
+
+      this.obtener_actores_en_la_escena().forEach(function (actor) {
+        actor.activar_el_modo_edicion();
+      });
+
+    } else {
+      stage.enableMouseOver(0); // el argumento son las interacciones por segundo.
+
+      this.obtener_actores_en_la_escena().forEach(function (actor) {
+        actor.desactivar_el_modo_edicion();
+      });
+    }
+
+  }
+
+  obtener_ids() {
+    return this.obtener_actores_en_la_escena().map((actor) => {
+      return actor.id;
+    });
+  }
+
+  obtener_actor_por_id(id) {
+    var filtrados = this.obtener_actores_en_la_escena().filter((actor) => {
+      return (actor.id == id);
+    });
+
+    if (filtrados.length == 1) {
+      return filtrados[0];
+    } else {
+      return null;
+    }
+  }
+
+  obtener_escena_serializada() {
+    return this.obtener_actores_en_la_escena().map((actor) => {
+      return actor.serializar();
+    })
+  }
+
+  definir_escena_serializada(escena_serializada) {
+    this.reiniciar();
+    escena_serializada.forEach((actor_serializado) => {
+      this._crear_actor_desde_serializacion(actor_serializado);
+    });
+  }
+
+  _crear_actor_desde_serializacion(datos) {
+    if (datos.esFondo) {
+      var fondoNuevo = pilas.fondos.crear_fondo_desde_serializacion(datos);
+      pilas.escena_actual().fondo.eliminar();
+      pilas.escena_actual().fondo = fondoNuevo;
+      return fondoNuevo;
+    } else {
+      return pilas.actores.crear_actor_desde_serializacion(datos);
+    }
+
+  }
 }
 
 pilas = new Pilas();

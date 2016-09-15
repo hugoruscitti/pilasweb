@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8>
+	<link rel="stylesheet" href="styles/main.css" media="screen" title="no title">
+</head>
+
+<body>
+
+<canvas id='canvas'></canvas>
+
+<p>Usá el mouse para arrastrar y soltar los actores a una
+posición nueva.</p>
+
+<p>Es muy importante que ejecutes este ejemplo con un webserver, desde
+el protocolo file:// no va a funcionar.</p>
+
+  <script src='dist/pilasweb.js'></script>
+
+  <script>
+	pilas = new Pilas();
+	pilas.iniciar({ancho: 640, alto: 240, data_path: '../dist/data'});
+	pilas.reiniciar();
+
+	pilas.onready = function() {
+		var tarde = new pilas.fondos.Tarde();
+
+		var aceituna = new pilas.actores.Aceituna(100, 0);
+		var alien = new pilas.actores.Alien(-100, 0);
+		var bomba = new pilas.actores.Bomba(-200, -50);
+
+		pilas.definir_modo_edicion(true);
+	}
+
+	pilas.ejecutar();
+  </script>
+
+</body>
+</html>
