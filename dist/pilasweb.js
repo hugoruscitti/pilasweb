@@ -13799,7 +13799,7 @@ var Actor = (function (_super) {
     };
     Actor.prototype.activar_el_modo_edicion = function () {
         var _this = this;
-        var transparencia_anterior = null;
+        this.sprite.mouseEnabled = true;
         this.sprite.on("mousedown", function (evento) {
             _this.sprite.shadow = new createjs.Shadow("rgba(0,0,0,0.5)", 5, 5, 2);
         });
@@ -13807,7 +13807,6 @@ var Actor = (function (_super) {
             var pos = pilas.escena_actual().obtener_posicion_escenario(evento.stageX, evento.stageY);
             _this.x = pos.x;
             _this.y = pos.y;
-            _this.transparencia = transparencia_anterior;
             _this.sprite.cursor = "-webkit-grabbing";
         });
         this.sprite.on("pressup", function (evento) {
@@ -13815,13 +13814,10 @@ var Actor = (function (_super) {
             _this.sprite.cursor = null;
         });
         this.sprite.on("mouseover", function (evento) {
-            transparencia_anterior = _this.transparencia;
-            _this.transparencia = 30;
             _this.sprite.cursor = "-webkit-grab";
         });
         this.sprite.on("mouseout", function (evento) {
             _this.sprite.shadow = null;
-            _this.transparencia = transparencia_anterior;
             _this.sprite.cursor = null;
         });
     };

@@ -530,7 +530,7 @@ class Actor extends Estudiante {
 
 
   activar_el_modo_edicion() {
-    var transparencia_anterior = null;
+    this.sprite.mouseEnabled = true;
 
     this.sprite.on("mousedown", (evento) => {
       this.sprite.shadow = new createjs.Shadow("rgba(0,0,0,0.5)", 5, 5, 2);
@@ -540,7 +540,6 @@ class Actor extends Estudiante {
       var pos = pilas.escena_actual().obtener_posicion_escenario(evento.stageX, evento.stageY);
       this.x = pos.x;
       this.y = pos.y;
-      this.transparencia = transparencia_anterior;
       this.sprite.cursor = "-webkit-grabbing";
     });
 
@@ -550,14 +549,11 @@ class Actor extends Estudiante {
     });
 
     this.sprite.on("mouseover", (evento) => {
-      transparencia_anterior = this.transparencia;
-      this.transparencia = 30;
       this.sprite.cursor = "-webkit-grab";
     });
 
     this.sprite.on("mouseout", (evento) => {
       this.sprite.shadow = null;
-      this.transparencia = transparencia_anterior;
       this.sprite.cursor = null;
     });
 
