@@ -26,6 +26,7 @@ class Base {
   actores;
   tareas;
   pausada;
+  _modo_edicion;
 
   constructor() {
     this.desPausar();
@@ -36,6 +37,7 @@ class Base {
     this.suelta_tecla = new Evento('suelta_tecla');                 // ['codigo', 'texto']
     this.actualiza = new Evento('actualiza');                       // []
     this.stage = new createjs.Stage(pilas.canvas);
+    this._modo_edicion = false;
 
     this.stage.snapToPixel = true;
 
@@ -96,6 +98,7 @@ class Base {
     this.stage.addChild(actor.sprite);
     this.ordenar_actores_por_valor_z();
     this.stage.update();
+    this.actualizar_modo_edicion_cuando_agrega_actor(actor);
   }
 
   eliminar_actor(actor) {
@@ -113,6 +116,47 @@ class Base {
   obtener_posicion_escenario(x, y) {
     return this.camara.obtener_posicion_escenario(x, y);
   }
+
+  definir_modo_edicion(estado) {
+    if (estado === this._modo_edicion) {
+      return;
+    }
+
+    this._modo_edicion = estado;
+    var stage = this.stage;
+
+    if (estado) {
+      stage.enableMouseOver(20); // el argumento son las interacciones por segundo.
+
+      this.obtener_actores().forEach(function (actor) {
+        actor.activar_el_modo_edicion();
+      });
+
+    } else {
+      stage.enableMouseOver(0); // el argumento son las interacciones por segundo.
+
+      this.obtener_actores().forEach(function (actor) {
+        actor.desactivar_el_modo_edicion();
+      });
+    }
+  }
+
+  obtener_actores() {
+    return this.actores.slice();
+  }
+
+  /*
+   * Se invoca automáticamente cuando se agrega un nuevo actor
+   * a la escena.
+   */
+  actualizar_modo_edicion_cuando_agrega_actor(actor) {
+    // Solo si el modo de edicion está activado, hace que el
+    // actor nuevo se puede desplazar también.
+    if (this._modo_edicion) {
+      actor.activar_el_modo_edicion();
+    }
+  }
+
 }
 
 /**

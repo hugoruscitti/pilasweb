@@ -14844,6 +14844,7 @@ var Base = (function () {
         this.suelta_tecla = new Evento('suelta_tecla'); // ['codigo', 'texto']
         this.actualiza = new Evento('actualiza'); // []
         this.stage = new createjs.Stage(pilas.canvas);
+        this._modo_edicion = false;
         this.stage.snapToPixel = true;
         this.camara = new Camara(this.stage);
         this.fisica = new Fisica(this.camara);
@@ -14888,6 +14889,7 @@ var Base = (function () {
         this.stage.addChild(actor.sprite);
         this.ordenar_actores_por_valor_z();
         this.stage.update();
+        this.actualizar_modo_edicion_cuando_agrega_actor(actor);
     };
     Base.prototype.eliminar_actor = function (actor) {
         var index = this.actores.indexOf(actor);
@@ -14901,6 +14903,39 @@ var Base = (function () {
     };
     Base.prototype.obtener_posicion_escenario = function (x, y) {
         return this.camara.obtener_posicion_escenario(x, y);
+    };
+    Base.prototype.definir_modo_edicion = function (estado) {
+        if (estado === this._modo_edicion) {
+            return;
+        }
+        this._modo_edicion = estado;
+        var stage = this.stage;
+        if (estado) {
+            stage.enableMouseOver(20); // el argumento son las interacciones por segundo.
+            this.obtener_actores().forEach(function (actor) {
+                actor.activar_el_modo_edicion();
+            });
+        }
+        else {
+            stage.enableMouseOver(0); // el argumento son las interacciones por segundo.
+            this.obtener_actores().forEach(function (actor) {
+                actor.desactivar_el_modo_edicion();
+            });
+        }
+    };
+    Base.prototype.obtener_actores = function () {
+        return this.actores.slice();
+    };
+    /*
+     * Se invoca automáticamente cuando se agrega un nuevo actor
+     * a la escena.
+     */
+    Base.prototype.actualizar_modo_edicion_cuando_agrega_actor = function (actor) {
+        // Solo si el modo de edicion está activado, hace que el
+        // actor nuevo se puede desplazar también.
+        if (this._modo_edicion) {
+            actor.activar_el_modo_edicion();
+        }
     };
     return Base;
 })();
@@ -16700,7 +16735,6 @@ var Pilas = (function () {
         this.rutinas = new Rutinas();
         this.mundo.gestor_escenas.cambiar_escena(new Normal());
         this.eventos = new ProxyEventos();
-        this._modo_edicion = false;
         // Deshabilita el interpolado de pixels.
         var ctx = this.canvas.getContext('2d');
         ctx.imageSmoothingEnabled = false;
@@ -16966,23 +17000,7 @@ var Pilas = (function () {
         return 0 - this.opciones.alto / 2;
     };
     Pilas.prototype.definir_modo_edicion = function (estado) {
-        if (estado === this._modo_edicion) {
-            return;
-        }
-        this._modo_edicion = estado;
-        var stage = this.escena_actual().stage;
-        if (estado) {
-            stage.enableMouseOver(20); // el argumento son las interacciones por segundo.
-            this.obtener_actores_en_la_escena().forEach(function (actor) {
-                actor.activar_el_modo_edicion();
-            });
-        }
-        else {
-            stage.enableMouseOver(0); // el argumento son las interacciones por segundo.
-            this.obtener_actores_en_la_escena().forEach(function (actor) {
-                actor.desactivar_el_modo_edicion();
-            });
-        }
+        return this.escena_actual().definir_modo_edicion(estado);
     };
     Pilas.prototype.obtener_ids = function () {
         return this.obtener_actores_en_la_escena().map(function (actor) {

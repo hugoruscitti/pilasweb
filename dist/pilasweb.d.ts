@@ -468,6 +468,7 @@ declare class Base {
     actores: any;
     tareas: any;
     pausada: any;
+    _modo_edicion: any;
     constructor();
     iniciar(): void;
     actualizar(): void;
@@ -479,6 +480,9 @@ declare class Base {
     eliminar_actor(actor: any): void;
     obtener_posicion_pantalla(x: any, y: any): any;
     obtener_posicion_escenario(x: any, y: any): any;
+    definir_modo_edicion(estado: any): void;
+    obtener_actores(): any;
+    actualizar_modo_edicion_cuando_agrega_actor(actor: any): void;
 }
 /**
  * @class Normal
@@ -1133,7 +1137,6 @@ declare class Pilas {
     sonidos: any;
     escena: any;
     eventos: any;
-    _modo_edicion: any;
     ready: any;
     /**
      * @method iniciar
@@ -1255,7 +1258,7 @@ declare class Pilas {
     derecha(): number;
     arriba(): number;
     abajo(): number;
-    definir_modo_edicion(estado: any): void;
+    definir_modo_edicion(estado: any): any;
     obtener_ids(): any;
     obtener_actor_por_id(id: any): any;
     obtener_escena_serializada(): any;

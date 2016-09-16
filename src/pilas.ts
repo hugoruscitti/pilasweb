@@ -63,7 +63,6 @@ class Pilas {
   sonidos;          // acceso al módulo.
   escena;          // acceso al módulo.
   eventos;          // acceso al módulo.
-  _modo_edicion;
 
   ready;
 
@@ -107,7 +106,6 @@ class Pilas {
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
 
     this.eventos = new ProxyEventos();
-    this._modo_edicion = false;
 
     // Deshabilita el interpolado de pixels.
     var ctx = this.canvas.getContext('2d');
@@ -418,29 +416,7 @@ class Pilas {
   }
 
   definir_modo_edicion(estado) {
-
-    if (estado === this._modo_edicion) {
-      return;
-    }
-
-    this._modo_edicion = estado;
-    var stage = this.escena_actual().stage;
-
-    if (estado) {
-      stage.enableMouseOver(20); // el argumento son las interacciones por segundo.
-
-      this.obtener_actores_en_la_escena().forEach(function (actor) {
-        actor.activar_el_modo_edicion();
-      });
-
-    } else {
-      stage.enableMouseOver(0); // el argumento son las interacciones por segundo.
-
-      this.obtener_actores_en_la_escena().forEach(function (actor) {
-        actor.desactivar_el_modo_edicion();
-      });
-    }
-
+    return this.escena_actual().definir_modo_edicion(estado);
   }
 
   obtener_ids() {
