@@ -100,6 +100,7 @@ class Fondos {
   PastoCuadriculado;
   Tarde;
   Laberinto1;
+  Fondo;
 
   constructor() {
     this.Plano = Plano;
@@ -107,6 +108,7 @@ class Fondos {
     this.PastoCuadriculado = PastoCuadriculado;
     this.Tarde = Tarde;
     this.Laberinto1 = Laberinto1;
+    this.Fondo = Fondo;
   }
 
   crear_fondo_desde_serializacion(datos) {
