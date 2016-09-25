@@ -131,6 +131,7 @@ declare class Actor extends Estudiante {
     colisiona_con(otro_actor: any): any;
     esta_fuera_de_la_pantalla(): boolean;
     tiene_etiqueta(etiqueta: any): boolean;
+    notificar_evento_comienza_a_mover_un_actor(actor: any): void;
     activar_el_modo_edicion(): void;
     desactivar_el_modo_edicion(): void;
     esFondo(): boolean;
@@ -214,6 +215,7 @@ declare class Fondos {
     PastoCuadriculado: any;
     Tarde: any;
     Laberinto1: any;
+    Fondo: any;
     constructor();
     crear_fondo_desde_serializacion(datos: any): any;
 }

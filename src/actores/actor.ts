@@ -528,12 +528,23 @@ class Actor extends Estudiante {
     return this.etiquetas.indexOf(etiqueta) > -1;
   }
 
+  notificar_evento_comienza_a_mover_un_actor(actor) {
+    if (parent) {
+      let mensaje = {
+        tipo: "comienzaAMoverUnActor",
+        actorID: actor.id
+      };
+
+      parent.postMessage(mensaje, window.location.origin);
+    }
+  }
 
   activar_el_modo_edicion() {
     this.sprite.mouseEnabled = true;
 
     this.sprite.on("mousedown", (evento) => {
       this.sprite.shadow = new createjs.Shadow("rgba(0,0,0,0.5)", 5, 5, 2);
+      this.notificar_evento_comienza_a_mover_un_actor(this);
     });
 
     this.sprite.on("pressmove", (evento) => {

@@ -13797,11 +13797,21 @@ var Actor = (function (_super) {
     Actor.prototype.tiene_etiqueta = function (etiqueta) {
         return this.etiquetas.indexOf(etiqueta) > -1;
     };
+    Actor.prototype.notificar_evento_comienza_a_mover_un_actor = function (actor) {
+        if (parent) {
+            var mensaje = {
+                tipo: "comienzaAMoverUnActor",
+                actorID: actor.id
+            };
+            parent.postMessage(mensaje, window.location.origin);
+        }
+    };
     Actor.prototype.activar_el_modo_edicion = function () {
         var _this = this;
         this.sprite.mouseEnabled = true;
         this.sprite.on("mousedown", function (evento) {
             _this.sprite.shadow = new createjs.Shadow("rgba(0,0,0,0.5)", 5, 5, 2);
+            _this.notificar_evento_comienza_a_mover_un_actor(_this);
         });
         this.sprite.on("pressmove", function (evento) {
             var pos = pilas.escena_actual().obtener_posicion_escenario(evento.stageX, evento.stageY);
@@ -14088,6 +14098,7 @@ var Fondos = (function () {
         this.PastoCuadriculado = PastoCuadriculado;
         this.Tarde = Tarde;
         this.Laberinto1 = Laberinto1;
+        this.Fondo = Fondo;
     }
     Fondos.prototype.crear_fondo_desde_serializacion = function (datos) {
         return new this[datos.clase]();
