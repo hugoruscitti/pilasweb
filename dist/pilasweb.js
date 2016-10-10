@@ -13806,6 +13806,15 @@ var Actor = (function (_super) {
             parent.postMessage(mensaje, window.location.origin);
         }
     };
+    Actor.prototype.notificar_evento_termino_de_mover_un_actor = function (actor) {
+        if (parent) {
+            var mensaje = {
+                tipo: "terminaDeMoverUnActor",
+                actorID: actor.id
+            };
+            parent.postMessage(mensaje, window.location.origin);
+        }
+    };
     Actor.prototype.activar_el_modo_edicion = function () {
         var _this = this;
         this.sprite.mouseEnabled = true;
@@ -13822,6 +13831,7 @@ var Actor = (function (_super) {
         this.sprite.on("pressup", function (evento) {
             _this.sprite.shadow = null;
             _this.sprite.cursor = null;
+            _this.notificar_evento_termino_de_mover_un_actor(_this);
         });
         this.sprite.on("mouseover", function (evento) {
             _this.sprite.cursor = "-webkit-grab";

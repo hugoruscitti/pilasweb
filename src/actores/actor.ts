@@ -539,6 +539,17 @@ class Actor extends Estudiante {
     }
   }
 
+  notificar_evento_termino_de_mover_un_actor(actor) {
+    if (parent) {
+      let mensaje = {
+        tipo: "terminaDeMoverUnActor",
+        actorID: actor.id
+      };
+
+      parent.postMessage(mensaje, window.location.origin);
+    }
+  }
+
   activar_el_modo_edicion() {
     this.sprite.mouseEnabled = true;
 
@@ -557,6 +568,7 @@ class Actor extends Estudiante {
     this.sprite.on("pressup", (evento) => {
       this.sprite.shadow = null;
       this.sprite.cursor = null;
+      this.notificar_evento_termino_de_mover_un_actor(this);
     });
 
     this.sprite.on("mouseover", (evento) => {
