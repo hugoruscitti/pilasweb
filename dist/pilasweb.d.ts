@@ -145,7 +145,6 @@ declare class Actor extends Estudiante {
         clase: string;
     };
 }
-declare var Math: Math;
 declare class Utils {
     convertir_a_grados(angulo_en_radianes: any): number;
     convertir_a_radianes(angulo_en_grados: any): number;
