@@ -1,5 +1,3 @@
-declare var Math:Math;
-
 class Utils {
   
   convertir_a_grados(angulo_en_radianes) {
