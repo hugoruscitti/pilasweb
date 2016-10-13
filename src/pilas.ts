@@ -153,6 +153,7 @@ class Pilas {
     this.opciones.canvas_id = this.opciones.canvas_id || 'canvas';
     this.opciones.canvas = this.opciones.canvas || null;
     this.opciones.imagenesExtra = this.opciones.imagenesExtra || [];
+    this.opciones.detener_ante_error = this.opciones.detener_ante_error || false;
   }
 
 
@@ -291,12 +292,21 @@ class Pilas {
     } catch(err) {
         if (/The HTMLImageElement provided is in the 'broken' state/.test(err.message)) {
             console.error(err);
-            console.error("Deteniendo la ejecución de pilas a causa de errores.");
-            createjs.Ticker.removeAllEventListeners('tick');
+            this._forzar_detencion_del_ciclo_actualizar();
         } else {
+
+            if (this.opciones.detener_ante_error) {
+              this._forzar_detencion_del_ciclo_actualizar();
+            }
+
             throw err;
         }
     }
+  }
+
+  _forzar_detencion_del_ciclo_actualizar() {
+    console.error("Deteniendo la ejecución de pilas a causa de un error muy grave.");
+    createjs.Ticker.removeAllEventListeners('tick');
   }
 
   interpolar(objeto, atributo, valor_o_valores, tiempo) {

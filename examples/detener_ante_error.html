@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8>
+</head>
+
+<body>
+  <br>
+  <br>
+
+<canvas id='canvas'></canvas>
+
+  <script src='../dist/pilasweb.js'></script>
+
+  <script>
+	pilas = new Pilas();
+	pilas.iniciar({ancho: 320, alto: 240, data_path: '../dist/data', detener_ante_error: true});
+
+	pilas.onready = function() {
+	  var fondo = new pilas.fondos.Plano();
+
+	  window.nave = new pilas.actores.Nave();
+
+		window.nave.actualizar = function() {
+			errorForzado();
+		};
+
+	}
+
+	pilas.ejecutar();
+  </script>
+
+</body>
+</html>

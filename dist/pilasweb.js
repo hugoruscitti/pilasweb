@@ -16811,6 +16811,7 @@ var Pilas = (function () {
         this.opciones.canvas_id = this.opciones.canvas_id || 'canvas';
         this.opciones.canvas = this.opciones.canvas || null;
         this.opciones.imagenesExtra = this.opciones.imagenesExtra || [];
+        this.opciones.detener_ante_error = this.opciones.detener_ante_error || false;
     };
     /**
      * @method definir_tamano_del_canvas
@@ -16930,13 +16931,19 @@ var Pilas = (function () {
         catch (err) {
             if (/The HTMLImageElement provided is in the 'broken' state/.test(err.message)) {
                 console.error(err);
-                console.error("Deteniendo la ejecución de pilas a causa de errores.");
-                createjs.Ticker.removeAllEventListeners('tick');
+                this._forzar_detencion_del_ciclo_actualizar();
             }
             else {
+                if (this.opciones.detener_ante_error) {
+                    this._forzar_detencion_del_ciclo_actualizar();
+                }
                 throw err;
             }
         }
+    };
+    Pilas.prototype._forzar_detencion_del_ciclo_actualizar = function () {
+        console.error("Deteniendo la ejecución de pilas a causa de un error muy grave.");
+        createjs.Ticker.removeAllEventListeners('tick');
     };
     Pilas.prototype.interpolar = function (objeto, atributo, valor_o_valores, tiempo) {
         return this.interpolaciones.interpolar(objeto, atributo, valor_o_valores, tiempo);

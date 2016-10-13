@@ -1224,6 +1224,7 @@ declare class Pilas {
      * Se ejecuta automáticamente 60 veces por segundo, para mantener el juego en funcionamiento.
      */
     actualizar(): void;
+    _forzar_detencion_del_ciclo_actualizar(): void;
     interpolar(objeto: any, atributo: any, valor_o_valores: any, tiempo: any): any;
     definir_modos(modos: any): void;
     mostrar(nombreDelModo: any): string;
