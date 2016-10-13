@@ -16912,11 +16912,18 @@ var Pilas = (function () {
      * Pone en funcionamiento el bucle principal.
      */
     Pilas.prototype.ejecutar = function () {
+        if (this._bucle_de_temporizador_activado) {
+            console.warn("El temporizador del bucle principal ya se activó anteriormente.");
+            return;
+        }
+        this._bucle_de_temporizador_activado = true;
         var self = this;
         // TODO: Limpiar los listeners con un mensaje y
         //       no accediendo directamente a la propiedad.
         createjs.Ticker.setFPS(60);
-        var my_tick = function (event) { self.actualizar(); };
+        var my_tick = function (event) {
+            self.actualizar();
+        };
         createjs.Ticker.addEventListener('tick', my_tick);
     };
     /**
@@ -16942,6 +16949,7 @@ var Pilas = (function () {
         }
     };
     Pilas.prototype._forzar_detencion_del_ciclo_actualizar = function () {
+        this._bucle_de_temporizador_activado = false;
         console.error("Deteniendo la ejecución de pilas a causa de un error muy grave.");
         createjs.Ticker.removeAllEventListeners('tick');
     };

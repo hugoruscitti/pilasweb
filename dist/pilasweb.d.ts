@@ -1139,6 +1139,7 @@ declare class Pilas {
     sonidos: any;
     escena: any;
     eventos: any;
+    _bucle_de_temporizador_activado: any;
     ready: any;
     /**
      * @method iniciar

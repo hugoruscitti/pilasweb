@@ -64,6 +64,9 @@ class Pilas {
   escena;          // acceso al módulo.
   eventos;          // acceso al módulo.
 
+  _bucle_de_temporizador_activado;      // indica si se llamó a ejecutar y el ticker está en ejecución.
+
+
   ready;
 
   /**
@@ -272,12 +275,22 @@ class Pilas {
    * Pone en funcionamiento el bucle principal.
    */
   ejecutar() {
+    if (this._bucle_de_temporizador_activado) {
+      console.warn("El temporizador del bucle principal ya se activó anteriormente.");
+      return
+    }
+
+    this._bucle_de_temporizador_activado = true;
     var self = this;
 
     // TODO: Limpiar los listeners con un mensaje y
     //       no accediendo directamente a la propiedad.
     createjs.Ticker.setFPS(60);
-    var my_tick = function(event) {self.actualizar()};
+
+    var my_tick = function(event) {
+      self.actualizar()
+    };
+
     createjs.Ticker.addEventListener('tick', my_tick);
   }
 
@@ -305,6 +318,7 @@ class Pilas {
   }
 
   _forzar_detencion_del_ciclo_actualizar() {
+    this._bucle_de_temporizador_activado = false;
     console.error("Deteniendo la ejecución de pilas a causa de un error muy grave.");
     createjs.Ticker.removeAllEventListeners('tick');
   }
@@ -455,6 +469,7 @@ class Pilas {
 
   definir_escena_serializada(escena_serializada) {
     this.reiniciar();
+
     escena_serializada.forEach((actor_serializado) => {
       this._crear_actor_desde_serializacion(actor_serializado);
     });
