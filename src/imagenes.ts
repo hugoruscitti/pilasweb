@@ -69,19 +69,26 @@ class Imagenes {
   }
 
   cargar(nombre) {
-    if (nombre in this.recursos)
-      return new Imagen(this.recursos[nombre]);
-    else
-      throw "No se puede encontrar la imagen: '" + nombre + "' ¿ha sido pre-cargada en el archivo imagenes.ts?";
+    return new Imagen(this.obtener_recurso(nombre));
   }
 
   cargar_grilla(nombre, columnas=1, filas=1) {
-    return new Grilla(this.recursos[nombre], columnas, filas);
+    return new Grilla(this.obtener_recurso(nombre), columnas, filas);
   }
 
   cargar_animacion(nombre, columnas=1, filas=1) {
-    return new Animacion(this.recursos[nombre], columnas, filas);
+    return new Animacion(this.obtener_recurso(nombre), columnas, filas);
   }
+
+  obtener_recurso(nombre) {
+    if (nombre in this.recursos) {
+      return this.recursos[nombre];
+    } else {
+      throw "No se puede encontrar la imagen: '" + nombre + "' ¿ha sido pre-cargada en el archivo imagenes.ts?";
+    }
+  }
+
+
 }
 
 class Imagen {

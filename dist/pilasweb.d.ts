@@ -231,6 +231,7 @@ declare class Imagenes {
     cargar(nombre: any): Imagen;
     cargar_grilla(nombre: any, columnas?: number, filas?: number): Grilla;
     cargar_animacion(nombre: any, columnas?: number, filas?: number): Animacion;
+    obtener_recurso(nombre: any): any;
 }
 declare class Imagen {
     ruta: any;

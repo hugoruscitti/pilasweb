@@ -14172,20 +14172,25 @@ var Imagenes = (function () {
         this.imagenes_solicitadas += 1;
     };
     Imagenes.prototype.cargar = function (nombre) {
-        if (nombre in this.recursos)
-            return new Imagen(this.recursos[nombre]);
-        else
-            throw "No se puede encontrar la imagen: '" + nombre + "' ¿ha sido pre-cargada en el archivo imagenes.ts?";
+        return new Imagen(this.obtener_recurso(nombre));
     };
     Imagenes.prototype.cargar_grilla = function (nombre, columnas, filas) {
         if (columnas === void 0) { columnas = 1; }
         if (filas === void 0) { filas = 1; }
-        return new Grilla(this.recursos[nombre], columnas, filas);
+        return new Grilla(this.obtener_recurso(nombre), columnas, filas);
     };
     Imagenes.prototype.cargar_animacion = function (nombre, columnas, filas) {
         if (columnas === void 0) { columnas = 1; }
         if (filas === void 0) { filas = 1; }
-        return new Animacion(this.recursos[nombre], columnas, filas);
+        return new Animacion(this.obtener_recurso(nombre), columnas, filas);
+    };
+    Imagenes.prototype.obtener_recurso = function (nombre) {
+        if (nombre in this.recursos) {
+            return this.recursos[nombre];
+        }
+        else {
+            throw "No se puede encontrar la imagen: '" + nombre + "' ¿ha sido pre-cargada en el archivo imagenes.ts?";
+        }
     };
     return Imagenes;
 })();
