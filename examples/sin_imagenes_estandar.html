@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8>
+</head>
+
+<body>
+  <br>
+  <br>
+
+<canvas id='canvas'></canvas>
+
+  <script src='../dist/pilasweb.js'></script>
+
+  <script>
+  	pilas = new Pilas();
+  	pilas.iniciar({ancho: 320, alto: 240,
+      data_path: 'dist/data',
+      imagenesExtra: ['bloque.png'],
+      cargar_imagenes_estandar: false
+    });
+
+  	pilas.onready = function() {
+  	  var actor = new pilas.actores.Actor();
+      actor.imagen = "bloque.png";
+
+  	  pilas.definir_modos({puntos_de_control: true})
+  	}
+
+  	pilas.ejecutar();
+  </script>
+
+</body>
+</html>

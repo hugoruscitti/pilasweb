@@ -1155,7 +1155,7 @@ declare class Pilas {
      * Parámetros:
      *
      * - data_path: La ruta hacia la carpeta donde están las imágenes de los actores. (Por defecto 'data/')
-     *
+     * - cargar_imagenes_estandar: Indica si debe cargar las imágenes por omisión, como aceituna.png por ejemplo. Habilitada por omisión.
      */
     iniciar(opciones: any): void;
     observar_tareas(elemento_id: any, intervalo: any): void;

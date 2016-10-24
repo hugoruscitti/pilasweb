@@ -14146,7 +14146,12 @@ var Imagenes = (function () {
         this.data_path = opciones.data_path;
         this.loader = new PxLoader();
         this.imagenes_solicitadas = 0;
-        this.nombresImagenes = this.nombresImagenes.concat(opciones.imagenesExtra);
+        if (opciones.cargar_imagenes_estandar) {
+            this.nombresImagenes = this.nombresImagenes.concat(opciones.imagenesExtra);
+        }
+        else {
+            this.nombresImagenes = ['invisible.png', 'sin_imagen.png', 'plano.png'].concat(opciones.imagenesExtra);
+        }
         this.cargar_recursos();
         //loader.addProgressListener(function (e) {
         //    this.actualizar_progreso(e);
@@ -16751,7 +16756,7 @@ var Pilas = (function () {
      * Parámetros:
      *
      * - data_path: La ruta hacia la carpeta donde están las imágenes de los actores. (Por defecto 'data/')
-     *
+     * - cargar_imagenes_estandar: Indica si debe cargar las imágenes por omisión, como aceituna.png por ejemplo. Habilitada por omisión.
      */
     Pilas.prototype.iniciar = function (opciones) {
         this.inicializar_opciones(opciones);
@@ -16815,6 +16820,9 @@ var Pilas = (function () {
         this.opciones.data_path = this.opciones.data_path || 'data';
         this.opciones.canvas_id = this.opciones.canvas_id || 'canvas';
         this.opciones.canvas = this.opciones.canvas || null;
+        if (this.opciones.cargar_imagenes_estandar === undefined) {
+            this.opciones.cargar_imagenes_estandar = true;
+        }
         this.opciones.imagenesExtra = this.opciones.imagenesExtra || [];
         this.opciones.detener_ante_error = this.opciones.detener_ante_error || false;
     };

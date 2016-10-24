@@ -82,7 +82,7 @@ class Pilas {
    * Parámetros:
    *
    * - data_path: La ruta hacia la carpeta donde están las imágenes de los actores. (Por defecto 'data/')
-   *
+   * - cargar_imagenes_estandar: Indica si debe cargar las imágenes por omisión, como aceituna.png por ejemplo. Habilitada por omisión.
    */
   iniciar(opciones) {
     this.inicializar_opciones(opciones);
@@ -155,6 +155,11 @@ class Pilas {
     this.opciones.data_path = this.opciones.data_path || 'data';
     this.opciones.canvas_id = this.opciones.canvas_id || 'canvas';
     this.opciones.canvas = this.opciones.canvas || null;
+
+    if (this.opciones.cargar_imagenes_estandar === undefined) {
+      this.opciones.cargar_imagenes_estandar = true;
+    }
+    
     this.opciones.imagenesExtra = this.opciones.imagenesExtra || [];
     this.opciones.detener_ante_error = this.opciones.detener_ante_error || false;
   }

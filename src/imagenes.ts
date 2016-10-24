@@ -37,7 +37,12 @@ class Imagenes {
     this.loader = new PxLoader();
     this.imagenes_solicitadas = 0;
 
-    this.nombresImagenes = this.nombresImagenes.concat(opciones.imagenesExtra);
+    if (opciones.cargar_imagenes_estandar) {
+      this.nombresImagenes = this.nombresImagenes.concat(opciones.imagenesExtra);
+    } else {
+      this.nombresImagenes = ['invisible.png', 'sin_imagen.png', 'plano.png'].concat(opciones.imagenesExtra);
+    }
+
     this.cargar_recursos();
 
     //loader.addProgressListener(function (e) {
