@@ -13858,6 +13858,13 @@ var Actor = (function (_super) {
         };
         return atributos;
     };
+    Actor.prototype.conectar_al_mensaje = function (identificador_del_mensaje, funcion_de_respuesta) {
+        pilas.mensajes.conectar_al_mensaje(this.id, identificador_del_mensaje, funcion_de_respuesta);
+    };
+    Actor.prototype.emitir_mensaje = function (identificador_del_mensaje, datos) {
+        if (datos === void 0) { datos = {}; }
+        pilas.mensajes.emitir(this.id, identificador_del_mensaje, datos);
+    };
     return Actor;
 })(Estudiante);
 var Utils = (function () {
@@ -16707,6 +16714,64 @@ var Rutinas = (function () {
     };
     return Rutinas;
 })();
+var Mensajes = (function () {
+    function Mensajes(pilas) {
+        this.manejadores_conectados = [];
+        this.pilas = pilas;
+    }
+    /**
+     * Permite conectar un actor y una función como respuesta a un mensaje
+     * particular.
+     *
+     * La función quedará conectada todo el tiempo mientras el actor viva.
+     */
+    Mensajes.prototype.conectar_al_mensaje = function (actor_id, identificador_del_mensaje, funcion_de_respuesta) {
+        var id = this.manejadores_conectados.length;
+        console.log("Conectando mensaje " + identificador_del_mensaje + " al actor " + actor_id);
+        this.manejadores_conectados.push({
+            id: id,
+            actor_id: actor_id,
+            identificador_del_mensaje: identificador_del_mensaje,
+            funcion_de_respuesta: funcion_de_respuesta,
+            eliminar: false,
+        });
+    };
+    /**
+     * Emite un mensaje junto a un grupo de datos. Este mensaje lanzará la
+     * ejecución de todas las funciones conectadas de los actores vivos.
+     */
+    Mensajes.prototype.emitir = function (actor_id, identificador_del_mensaje, datos) {
+        var _this = this;
+        var cantidad_de_manejadores = this.manejadores_conectados.length;
+        console.log("El actor id " + actor_id + " emite el mensaje " + identificador_del_mensaje + " con los datos " + datos + ".");
+        if (this._el_actor_sigue_vivo(actor_id)) {
+            console.log("Se emitirá el mensaje a todos los manejadores conectados.");
+        }
+        else {
+            console.log("Se descartará el mensaje, porque el actor emisor ya no está vivo.");
+            return;
+        }
+        console.log("Hay " + cantidad_de_manejadores + " manejadores de mensajes conectados.");
+        this.manejadores_conectados.forEach(function (manejador) {
+            if (manejador['identificador_del_mensaje'] === identificador_del_mensaje) {
+                if (_this._el_actor_sigue_vivo(manejador.actor_id)) {
+                    manejador['funcion_de_respuesta'].call(_this, datos);
+                }
+                else {
+                    console.log("Se eliminará un manejador porque su actor ya no está vivo...");
+                    manejador.eliminar = true;
+                }
+            }
+        });
+        this.manejadores_conectados = this.manejadores_conectados.filter(function (m) {
+            return (!m.eliminar);
+        });
+    };
+    Mensajes.prototype._el_actor_sigue_vivo = function (actor_id) {
+        return (pilas.obtener_actor_por_id(actor_id) !== null);
+    };
+    return Mensajes;
+})();
 /// <reference path="actores.ts" />
 /// <reference path="utils.ts" />
 /// <reference path="grupo.ts" />
@@ -16723,6 +16788,7 @@ var Rutinas = (function () {
 /// <reference path="sonidos.ts" />
 /// <reference path="evento.ts" />
 /// <reference path="rutinas.ts" />
+/// <reference path="mensajes.ts" />
 /**
  * @class Pilas
  * @singleton
@@ -16778,6 +16844,7 @@ var Pilas = (function () {
         this.escena = new escena();
         this.tareas = new tareas();
         this.rutinas = new Rutinas();
+        this.mensajes = new Mensajes(this);
         this.mundo.gestor_escenas.cambiar_escena(new Normal());
         this.eventos = new ProxyEventos();
         // Deshabilita el interpolado de pixels.

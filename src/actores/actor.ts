@@ -603,4 +603,12 @@ class Actor extends Estudiante {
     return atributos;
   }
 
+  conectar_al_mensaje(identificador_del_mensaje, funcion_de_respuesta) {
+    pilas.mensajes.conectar_al_mensaje(this.id, identificador_del_mensaje, funcion_de_respuesta);
+  }
+
+  emitir_mensaje(identificador_del_mensaje, datos = {}) {
+    pilas.mensajes.emitir(this.id, identificador_del_mensaje, datos);
+  }
+
 }

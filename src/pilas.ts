@@ -14,6 +14,7 @@
 /// <reference path="sonidos.ts" />
 /// <reference path="evento.ts" />
 /// <reference path="rutinas.ts" />
+/// <reference path="mensajes.ts" />
 
 declare var pilas;
 declare var Trait;
@@ -63,6 +64,7 @@ class Pilas {
   sonidos;          // acceso al módulo.
   escena;          // acceso al módulo.
   eventos;          // acceso al módulo.
+  mensajes;
 
   _bucle_de_temporizador_activado;      // indica si se llamó a ejecutar y el ticker está en ejecución.
 
@@ -105,6 +107,7 @@ class Pilas {
     this.escena = new escena();
     this.tareas = new tareas();
     this.rutinas = new Rutinas();
+    this.mensajes = new Mensajes(this);
 
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
 
@@ -159,7 +162,7 @@ class Pilas {
     if (this.opciones.cargar_imagenes_estandar === undefined) {
       this.opciones.cargar_imagenes_estandar = true;
     }
-    
+
     this.opciones.imagenesExtra = this.opciones.imagenesExtra || [];
     this.opciones.detener_ante_error = this.opciones.detener_ante_error || false;
   }

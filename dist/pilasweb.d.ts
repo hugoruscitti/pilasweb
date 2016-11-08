@@ -144,6 +144,8 @@ declare class Actor extends Estudiante {
         escala: any;
         clase: string;
     };
+    conectar_al_mensaje(identificador_del_mensaje: any, funcion_de_respuesta: any): void;
+    emitir_mensaje(identificador_del_mensaje: any, datos?: {}): void;
 }
 declare class Utils {
     convertir_a_grados(angulo_en_radianes: any): number;
@@ -1098,6 +1100,24 @@ declare class Rutinas {
     agregar(nombre: any, actor: any, init: any, update: any): void;
     actualizar(): void;
 }
+declare class Mensajes {
+    pilas: Pilas;
+    manejadores_conectados: Array<any>;
+    constructor(pilas: Pilas);
+    /**
+     * Permite conectar un actor y una función como respuesta a un mensaje
+     * particular.
+     *
+     * La función quedará conectada todo el tiempo mientras el actor viva.
+     */
+    conectar_al_mensaje(actor_id: any, identificador_del_mensaje: any, funcion_de_respuesta: any): void;
+    /**
+     * Emite un mensaje junto a un grupo de datos. Este mensaje lanzará la
+     * ejecución de todas las funciones conectadas de los actores vivos.
+     */
+    emitir(actor_id: any, identificador_del_mensaje: any, datos: any): void;
+    _el_actor_sigue_vivo(actor_id: any): boolean;
+}
 declare var pilas: any;
 declare var Trait: any;
 declare var window: Window;
@@ -1140,6 +1160,7 @@ declare class Pilas {
     sonidos: any;
     escena: any;
     eventos: any;
+    mensajes: any;
     _bucle_de_temporizador_activado: any;
     ready: any;
     /**

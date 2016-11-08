@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset=utf-8>
+	<title>pilasweb testing</title>
+</head>
+
+<body>
+
+	<canvas id='canvas_id2'></canvas>
+
+  <p>Por cierto, la aceituna se puede mover con el mouse.</p>
+
+  <p>
+	   <button class='btn btn-warning' id='mensaje'>Emitir mensaje desde aceituna a mono</button>
+  </p>
+
+  <script src='../dist/pilasweb.js'></script>
+
+  <script>
+		var canvas_element = document.getElementById('canvas_id2');
+    window['canvas'] = canvas_element;
+
+    var pilas = pilasengine.iniciar({ancho: 420, alto: 240, canvas: canvas_element, data_path: '../dist/data'});
+
+    pilas.onready = function() {
+			var fondo = new pilas.fondos.Tarde();
+			var aceituna = new pilas.actores.Aceituna();
+
+      aceituna.aprender(pilas.habilidades.Arrastrable)
+
+      var mono = new pilas.actores.Mono();
+
+      aceituna.x = -100;
+      mono.x = 180;
+
+      mono.conectar_al_mensaje('hola', function(datos) {
+        mono.decir("han emitido el mensaje hola!");
+        console.log("Ha llegado el mensaje 'hola' con los datos: ", datos);
+      });
+
+      window.aceituna = aceituna;
+      window.mono = mono;
+
+			configurar_botones(aceituna, mono);
+    }
+
+		function configurar_botones(aceituna, mono) {
+			var boton_mensaje = document.getElementById('mensaje');
+
+			boton_mensaje.onclick = function() {
+        aceituna.emitir_mensaje('hola', {valor_extra: 22});
+			};
+
+		}
+
+    pilas.ejecutar();
+
+  </script>
+</body>
+</html>
