@@ -146,6 +146,7 @@ declare class Actor extends Estudiante {
     };
     conectar_al_mensaje(identificador_del_mensaje: any, funcion_de_respuesta: any): void;
     emitir_mensaje(identificador_del_mensaje: any, datos?: {}): void;
+    desconectar_mensajes(): void;
 }
 declare class Utils {
     convertir_a_grados(angulo_en_radianes: any): number;
@@ -1117,6 +1118,10 @@ declare class Mensajes {
      */
     emitir(actor_id: any, identificador_del_mensaje: any, datos: any): void;
     _el_actor_sigue_vivo(actor_id: any): boolean;
+    /**
+     * Desconecta a un actor de todos los mensajes.
+     */
+    desconectar_mensajes(actor_id: any): void;
 }
 declare var pilas: any;
 declare var Trait: any;

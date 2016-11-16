@@ -611,4 +611,8 @@ class Actor extends Estudiante {
     pilas.mensajes.emitir(this.id, identificador_del_mensaje, datos);
   }
 
+  desconectar_mensajes() {
+    pilas.mensajes.desconectar_mensajes(this.id);
+  }
+
 }

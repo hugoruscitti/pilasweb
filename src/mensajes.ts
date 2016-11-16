@@ -65,4 +65,14 @@ class Mensajes {
   _el_actor_sigue_vivo(actor_id) {
     return (pilas.obtener_actor_por_id(actor_id) !== null);
   }
+
+  /**
+   * Desconecta a un actor de todos los mensajes.
+   */
+  desconectar_mensajes(actor_id) {
+    this.manejadores_conectados = this.manejadores_conectados.filter(function(m) {
+      return m.actor_id !== actor_id;
+    });
+  }
+
 }

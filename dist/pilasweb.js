@@ -13865,6 +13865,9 @@ var Actor = (function (_super) {
         if (datos === void 0) { datos = {}; }
         pilas.mensajes.emitir(this.id, identificador_del_mensaje, datos);
     };
+    Actor.prototype.desconectar_mensajes = function () {
+        pilas.mensajes.desconectar_mensajes(this.id);
+    };
     return Actor;
 })(Estudiante);
 var Utils = (function () {
@@ -16769,6 +16772,14 @@ var Mensajes = (function () {
     };
     Mensajes.prototype._el_actor_sigue_vivo = function (actor_id) {
         return (pilas.obtener_actor_por_id(actor_id) !== null);
+    };
+    /**
+     * Desconecta a un actor de todos los mensajes.
+     */
+    Mensajes.prototype.desconectar_mensajes = function (actor_id) {
+        this.manejadores_conectados = this.manejadores_conectados.filter(function (m) {
+            return m.actor_id !== actor_id;
+        });
     };
     return Mensajes;
 })();
