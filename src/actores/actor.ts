@@ -553,15 +553,28 @@ class Actor extends Estudiante {
   activar_el_modo_edicion() {
     this.sprite.mouseEnabled = true;
 
+    /* Posición inicial del mouse cuando se comienza a arrastrar */
+    let x_posicion_anterior;
+    let y_posicion_anterior;
+
     this.sprite.on("mousedown", (evento) => {
+      var pos = pilas.escena_actual().obtener_posicion_escenario(evento.stageX, evento.stageY);
+      x_posicion_anterior = pos.x;
+      y_posicion_anterior = pos.y;
+
       this.sprite.shadow = new createjs.Shadow("rgba(0,0,0,0.5)", 5, 5, 2);
       this.notificar_evento_comienza_a_mover_un_actor(this);
+      this.traer_al_frente();
     });
 
     this.sprite.on("pressmove", (evento) => {
       var pos = pilas.escena_actual().obtener_posicion_escenario(evento.stageX, evento.stageY);
-      this.x = pos.x;
-      this.y = pos.y;
+      this.x += pos.x - x_posicion_anterior;
+      this.y += pos.y - y_posicion_anterior;
+
+      x_posicion_anterior = pos.x;
+      y_posicion_anterior = pos.y;
+
       this.sprite.cursor = "-webkit-grabbing";
     });
 
@@ -594,6 +607,7 @@ class Actor extends Estudiante {
     var atributos = {
       x: this.x,
       y: this.y,
+      z: this.z,
       rotacion: this.rotacion,
       esFondo: this.esFondo(),
       escala: this.escala,
@@ -613,6 +627,14 @@ class Actor extends Estudiante {
 
   desconectar_mensajes() {
     pilas.mensajes.desconectar_mensajes(this.id);
+  }
+
+  traer_al_frente() {
+    let actor = pilas.obtener_actor_mas_cercano_a_la_camara();
+
+    if (actor !== this) {
+      this.z = actor.z - 1;
+    }
   }
 
 }

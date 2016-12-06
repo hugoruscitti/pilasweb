@@ -109,6 +109,11 @@ class Actores {
 
   crear_actor_desde_serializacion(datos) {
     var actor = new this[datos.clase](datos.x, datos.y);
+
+    if (datos.z) {
+      actor.z = datos.z;
+    }
+
     actor.escala = datos.escala;
     return actor;
   }

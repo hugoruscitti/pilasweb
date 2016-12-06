@@ -47,6 +47,17 @@ test('Puede serializar escena y restaurar estado', function(assert) {
     assert.equal(2, ids && ids.length, "Luego de restaurar la escena, vuelven a haber 2 actores.");
 
 
+    var actor = new pilas.actores.Aceituna();
+    actor.z = 1000;
+
+    var actor_mas_cercano = pilas.obtener_actor_mas_cercano_a_la_camara();
+    assert.notEqual(actor.id, actor_mas_cercano.id, "el actor con z=1000 no es el mas cercano.");
+
+    actor.z = -500;
+    var actor_mas_cercano = pilas.obtener_actor_mas_cercano_a_la_camara();
+    assert.equal(actor.id, actor_mas_cercano.id, "el actor con z=1000 no es el mas cercano.");
+
+
     done();
   };
 

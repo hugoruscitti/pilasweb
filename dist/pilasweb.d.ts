@@ -139,6 +139,7 @@ declare class Actor extends Estudiante {
     serializar(): {
         x: any;
         y: any;
+        z: any;
         rotacion: any;
         esFondo: boolean;
         escala: any;
@@ -147,6 +148,7 @@ declare class Actor extends Estudiante {
     conectar_al_mensaje(identificador_del_mensaje: any, funcion_de_respuesta: any): void;
     emitir_mensaje(identificador_del_mensaje: any, datos?: {}): void;
     desconectar_mensajes(): void;
+    traer_al_frente(): void;
 }
 declare class Utils {
     convertir_a_grados(angulo_en_radianes: any): number;
@@ -1290,6 +1292,7 @@ declare class Pilas {
     arriba(): number;
     abajo(): number;
     definir_modo_edicion(estado: any): any;
+    obtener_actor_mas_cercano_a_la_camara(): any;
     obtener_ids(): any;
     obtener_actor_por_id(id: any): any;
     obtener_escena_serializada(): any;

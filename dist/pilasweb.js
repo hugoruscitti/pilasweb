@@ -13818,14 +13818,23 @@ var Actor = (function (_super) {
     Actor.prototype.activar_el_modo_edicion = function () {
         var _this = this;
         this.sprite.mouseEnabled = true;
+        /* Posición inicial del mouse cuando se comienza a arrastrar */
+        var x_posicion_anterior;
+        var y_posicion_anterior;
         this.sprite.on("mousedown", function (evento) {
+            var pos = pilas.escena_actual().obtener_posicion_escenario(evento.stageX, evento.stageY);
+            x_posicion_anterior = pos.x;
+            y_posicion_anterior = pos.y;
             _this.sprite.shadow = new createjs.Shadow("rgba(0,0,0,0.5)", 5, 5, 2);
             _this.notificar_evento_comienza_a_mover_un_actor(_this);
+            _this.traer_al_frente();
         });
         this.sprite.on("pressmove", function (evento) {
             var pos = pilas.escena_actual().obtener_posicion_escenario(evento.stageX, evento.stageY);
-            _this.x = pos.x;
-            _this.y = pos.y;
+            _this.x += pos.x - x_posicion_anterior;
+            _this.y += pos.y - y_posicion_anterior;
+            x_posicion_anterior = pos.x;
+            y_posicion_anterior = pos.y;
             _this.sprite.cursor = "-webkit-grabbing";
         });
         this.sprite.on("pressup", function (evento) {
@@ -13851,6 +13860,7 @@ var Actor = (function (_super) {
         var atributos = {
             x: this.x,
             y: this.y,
+            z: this.z,
             rotacion: this.rotacion,
             esFondo: this.esFondo(),
             escala: this.escala,
@@ -13867,6 +13877,12 @@ var Actor = (function (_super) {
     };
     Actor.prototype.desconectar_mensajes = function () {
         pilas.mensajes.desconectar_mensajes(this.id);
+    };
+    Actor.prototype.traer_al_frente = function () {
+        var actor = pilas.obtener_actor_mas_cercano_a_la_camara();
+        if (actor !== this) {
+            this.z = actor.z - 1;
+        }
     };
     return Actor;
 })(Estudiante);
@@ -17143,6 +17159,19 @@ var Pilas = (function () {
     Pilas.prototype.definir_modo_edicion = function (estado) {
         return this.escena_actual().definir_modo_edicion(estado);
     };
+    Pilas.prototype.obtener_actor_mas_cercano_a_la_camara = function () {
+        var actores = pilas.escena_actual().obtener_actores();
+        var actor_mas_cercano = null;
+        actores.forEach(function (actor) {
+            if (!actor_mas_cercano) {
+                actor_mas_cercano = actor;
+            }
+            if (actor.z < actor_mas_cercano.z) {
+                actor_mas_cercano = actor;
+            }
+        });
+        return actor_mas_cercano;
+    };
     Pilas.prototype.obtener_ids = function () {
         return this.obtener_actores_en_la_escena().map(function (actor) {
             return actor.id;
@@ -18629,6 +18658,9 @@ var Actores = (function () {
     }
     Actores.prototype.crear_actor_desde_serializacion = function (datos) {
         var actor = new this[datos.clase](datos.x, datos.y);
+        if (datos.z) {
+            actor.z = datos.z;
+        }
         actor.escala = datos.escala;
         return actor;
     };

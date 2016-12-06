@@ -451,6 +451,25 @@ class Pilas {
     return this.escena_actual().definir_modo_edicion(estado);
   }
 
+  obtener_actor_mas_cercano_a_la_camara() {
+    let actores = pilas.escena_actual().obtener_actores();
+    let actor_mas_cercano = null;
+
+    actores.forEach((actor) => {
+
+      if (!actor_mas_cercano) {
+        actor_mas_cercano = actor;
+      }
+
+      if (actor.z < actor_mas_cercano.z) {
+        actor_mas_cercano = actor;
+      }
+
+    });
+
+    return actor_mas_cercano;
+  }
+
   obtener_ids() {
     return this.obtener_actores_en_la_escena().map((actor) => {
       return actor.id;
