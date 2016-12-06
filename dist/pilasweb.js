@@ -18658,7 +18658,7 @@ var Actores = (function () {
     }
     Actores.prototype.crear_actor_desde_serializacion = function (datos) {
         var actor = new this[datos.clase](datos.x, datos.y);
-        if (datos.z) {
+        if (datos.z !== undefined) {
             actor.z = datos.z;
         }
         actor.escala = datos.escala;
