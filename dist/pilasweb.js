@@ -14945,7 +14945,6 @@ var Base = (function () {
         this.actores.push(actor);
         this.stage.addChild(actor.sprite);
         this.ordenar_actores_por_valor_z();
-        this.stage.update();
         this.actualizar_modo_edicion_cuando_agrega_actor(actor);
         if (parent) {
             var mensaje = {
