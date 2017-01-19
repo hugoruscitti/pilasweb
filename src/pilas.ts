@@ -299,7 +299,13 @@ class Pilas {
     createjs.Ticker.setFPS(60);
 
     var my_tick = function(event) {
-      self.actualizar()
+      try {
+        self.actualizar()
+      } catch (e) {
+        console.warn("Se detuvo pilas-engine a causa de una excepción.");
+        self.escena_actual().pausar();
+        throw e;
+      }
     };
 
     createjs.Ticker.addEventListener('tick', my_tick);

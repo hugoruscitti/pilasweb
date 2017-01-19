@@ -11,15 +11,24 @@ class Texto extends Actor {
     this.elString = elString || "Sin texto";
     this.color = argumentos.color || "black";
     this.margen = argumentos.margen || 0;
-    this.crear_texto(argumentos.anchoMaximo || 200);
-    if (!argumentos.imagenFondo) this.transparencia = 100;
+    this.crear_texto(argumentos.anchoMaximo || 200, argumentos.z);
+
+    if (!argumentos.imagenFondo) {
+      this.transparencia = 100;
+    }
   }
 
-  crear_texto(anchoMaximo) {
+  crear_texto(anchoMaximo, z) {
     this.spriteCJS = new createjs.Text(this.elString, "14px sans-serif", this.color);
     this.setAnchoMaximo(anchoMaximo);
     this.setX(this.x);
     this.setY(this.y);
+
+    if (z) {
+      this.z = z;
+      this.setZ(z);
+    }
+
     this.spriteCJS.textBaseline = "top";
     this.spriteCJS.textAlign = "center";
     pilas.escena_actual().stage.addChild(this.spriteCJS);

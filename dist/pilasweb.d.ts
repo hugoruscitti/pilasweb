@@ -477,6 +477,7 @@ declare class Base {
     tareas: any;
     pausada: any;
     _modo_edicion: any;
+    pausa_diferida_en_curso: any;
     constructor();
     iniciar(): void;
     actualizar(): void;
@@ -1417,7 +1418,7 @@ declare class Texto extends Actor {
     color: any;
     margen: any;
     constructor(x: any, y: any, elString: any, argumentos?: any);
-    crear_texto(anchoMaximo: any): void;
+    crear_texto(anchoMaximo: any, z: any): void;
     eliminar_texto(): void;
     eliminar(): void;
     actualizarMedidas(): void;

@@ -27,6 +27,7 @@ class Base {
   tareas;
   pausada;
   _modo_edicion;
+  pausa_diferida_en_curso;
 
   constructor() {
     this.desPausar();
@@ -38,6 +39,7 @@ class Base {
     this.actualiza = new Evento('actualiza');                       // []
     this.stage = new createjs.Stage(pilas.canvas);
     this._modo_edicion = false;
+    this.pausa_diferida_en_curso = false;
 
     this.stage.snapToPixel = true;
 
@@ -55,7 +57,12 @@ class Base {
 
   actualizar(){
     if (!this.pausada) {
-      this.doActualizar();
+
+      if (this.pausa_diferida_en_curso) {
+        console.log("pausa en curso ...");
+      } else {
+        this.doActualizar();
+      }
     }
   }
 
@@ -82,13 +89,17 @@ class Base {
   }
 
   pausar(){
+    console.log("Pausando escena desde pilasweb...");
     this.pausada = true;
   }
 
   pausarDiferido() {
-    setTimeout(() => {
+    if (this.pausa_diferida_en_curso === false) {
+      this.pausa_diferida_en_curso = true;
       this.pausar();
-    }, 1000);
+    } else {
+      console.log("Evitando multiples pausas...");
+    }
   }
 
   desPausar(){

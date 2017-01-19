@@ -85,7 +85,12 @@ class Actor extends Estudiante {
     if (atributos['centro_x'])
       this.centro_y = atributos['centro_y'];
 
-    this.z = 0;
+    if (atributos['z']) {
+      this.z = atributos['z'];
+    } else {
+      this.z = 0;
+    }
+
     pilas.escena_actual().agregar_actor(this);
 
     //eventos

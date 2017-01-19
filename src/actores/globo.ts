@@ -19,10 +19,9 @@ class Globo extends Actor {
     this.nombreImagen = "balloon.png";
 
 
-    this.crearTexto(0,0,9999); //Hardcodeo por necesidad de usar datos del texto
-    super(this.nombreImagen, this.calcularX(), this.calcularY());
-    this.setZ(-5000);
-    this.crearTexto(this.x, this.y, this.getZ() - 1); //Creo el texto de posta
+    this.crearTexto(0, 0, 9999); //Hardcodeo por necesidad de usar datos del texto
+    super(this.nombreImagen, this.calcularX(), this.calcularY(), {z: -5000});
+    this.crearTexto(this.x, this.y, -5001);
     this.actualizarMedidas();
     this.ponerPuntita();
     this.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this.actor });
@@ -32,12 +31,14 @@ class Globo extends Actor {
     pilas.mundo.agregar_tarea_una_vez(this.duracion(), this.eliminar, {}, this);
   }
 
-  duracion(){
-    return this.actor_texto.cantidadDeLineas()*3;
+  duracion() {
+    return this.actor_texto.cantidadDeLineas() * 3;
   }
 
   eliminar() {
-    if(!this.vivo) return; //Ya me eliminaron
+    if (!this.vivo) {
+      return;
+    }
 
     this.actor_texto.eliminar();
     this.puntita.eliminar();
@@ -45,9 +46,11 @@ class Globo extends Actor {
   }
 
   crearTexto(x,y,z){
-    if (this.actor_texto) this.actor_texto.eliminar();
-    this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje, {anchoMaximo: this.anchoMaximo});
-    this.actor_texto.setZ(z);
+    if (this.actor_texto) {
+      this.actor_texto.eliminar();
+    }
+
+    this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje, {z: z, anchoMaximo: this.anchoMaximo});
     this.actor_texto.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
   }
 
@@ -93,19 +96,22 @@ class Globo extends Actor {
     }
 
     this.puntita.agregar_habilidad(ImitarPosicion,{objeto_a_imitar: this});
-    this.puntita.setZ(this.getZ() - 1);
   }
 
-  ponerPuntitaAIzquierda(){
-    this.puntita = new Actor(this.imagenPuntita().izquierda,
-    this.izquierda + this.margen - (this.dimPuntita().ancho / 2),
-    this.abajo + (this.dimPuntita().alto / 2));
+  ponerPuntitaAIzquierda() {
+    let imagen = this.imagenPuntita().izquierda;
+    let x = this.izquierda + this.margen - (this.dimPuntita().ancho / 2);
+    let y = this.abajo + (this.dimPuntita().alto / 2);
+
+    this.puntita = new Actor(imagen, x, y, {z: -5001});
   }
 
   ponerPuntitaADerecha(){
-    this.puntita = new Actor(this.imagenPuntita().derecha,
-      this.derecha - this.margen + (this.dimPuntita().ancho / 2),
-      this.abajo + (this.dimPuntita().alto / 2));
+    let imagen = this.imagenPuntita().derecha;
+    let x = this.derecha - this.margen + (this.dimPuntita().ancho / 2);
+    let y = this.abajo + (this.dimPuntita().alto / 2);
+
+    this.puntita = new Actor(imagen, x, y, {z: -5001});
   }
 
   voyAIzquierda(){

@@ -13350,7 +13350,12 @@ var Actor = (function (_super) {
             this.centro_x = atributos['centro_x'];
         if (atributos['centro_x'])
             this.centro_y = atributos['centro_y'];
-        this.z = 0;
+        if (atributos['z']) {
+            this.z = atributos['z'];
+        }
+        else {
+            this.z = 0;
+        }
         pilas.escena_actual().agregar_actor(this);
         //eventos
         pilas.escena_actual().click_de_mouse.conectar(this);
@@ -14902,6 +14907,7 @@ var Base = (function () {
         this.actualiza = new Evento('actualiza'); // []
         this.stage = new createjs.Stage(pilas.canvas);
         this._modo_edicion = false;
+        this.pausa_diferida_en_curso = false;
         this.stage.snapToPixel = true;
         this.camara = new Camara(this.stage);
         this.fisica = new Fisica(this.camara);
@@ -14914,7 +14920,12 @@ var Base = (function () {
     };
     Base.prototype.actualizar = function () {
         if (!this.pausada) {
-            this.doActualizar();
+            if (this.pausa_diferida_en_curso) {
+                console.log("pausa en curso ...");
+            }
+            else {
+                this.doActualizar();
+            }
         }
     };
     Base.prototype.doActualizar = function () {
@@ -14933,13 +14944,17 @@ var Base = (function () {
         this.stage.update();
     };
     Base.prototype.pausar = function () {
+        console.log("Pausando escena desde pilasweb...");
         this.pausada = true;
     };
     Base.prototype.pausarDiferido = function () {
-        var _this = this;
-        setTimeout(function () {
-            _this.pausar();
-        }, 1000);
+        if (this.pausa_diferida_en_curso === false) {
+            this.pausa_diferida_en_curso = true;
+            this.pausar();
+        }
+        else {
+            console.log("Evitando multiples pausas...");
+        }
     };
     Base.prototype.desPausar = function () {
         this.pausada = false;
@@ -17037,7 +17052,14 @@ var Pilas = (function () {
         //       no accediendo directamente a la propiedad.
         createjs.Ticker.setFPS(60);
         var my_tick = function (event) {
-            self.actualizar();
+            try {
+                self.actualizar();
+            }
+            catch (e) {
+                console.warn("Se detuvo pilas-engine a causa de una excepción.");
+                self.escena_actual().pausar();
+                throw e;
+            }
         };
         createjs.Ticker.addEventListener('tick', my_tick);
     };
@@ -17565,9 +17587,8 @@ var Globo = (function (_super) {
         this.anchoMaximo = anchoMaximo;
         this.nombreImagen = "balloon.png";
         this.crearTexto(0, 0, 9999); //Hardcodeo por necesidad de usar datos del texto
-        _super.call(this, this.nombreImagen, this.calcularX(), this.calcularY());
-        this.setZ(-5000);
-        this.crearTexto(this.x, this.y, this.getZ() - 1); //Creo el texto de posta
+        _super.call(this, this.nombreImagen, this.calcularX(), this.calcularY(), { z: -5000 });
+        this.crearTexto(this.x, this.y, -5001);
         this.actualizarMedidas();
         this.ponerPuntita();
         this.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this.actor });
@@ -17580,17 +17601,18 @@ var Globo = (function (_super) {
         return this.actor_texto.cantidadDeLineas() * 3;
     };
     Globo.prototype.eliminar = function () {
-        if (!this.vivo)
-            return; //Ya me eliminaron
+        if (!this.vivo) {
+            return;
+        }
         this.actor_texto.eliminar();
         this.puntita.eliminar();
         _super.prototype.eliminar.call(this);
     };
     Globo.prototype.crearTexto = function (x, y, z) {
-        if (this.actor_texto)
+        if (this.actor_texto) {
             this.actor_texto.eliminar();
-        this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje, { anchoMaximo: this.anchoMaximo });
-        this.actor_texto.setZ(z);
+        }
+        this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje, { z: z, anchoMaximo: this.anchoMaximo });
         this.actor_texto.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
     };
     Globo.prototype.actualizarMedidas = function () {
@@ -17629,13 +17651,18 @@ var Globo = (function (_super) {
             this.ponerPuntitaADerecha();
         }
         this.puntita.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
-        this.puntita.setZ(this.getZ() - 1);
     };
     Globo.prototype.ponerPuntitaAIzquierda = function () {
-        this.puntita = new Actor(this.imagenPuntita().izquierda, this.izquierda + this.margen - (this.dimPuntita().ancho / 2), this.abajo + (this.dimPuntita().alto / 2));
+        var imagen = this.imagenPuntita().izquierda;
+        var x = this.izquierda + this.margen - (this.dimPuntita().ancho / 2);
+        var y = this.abajo + (this.dimPuntita().alto / 2);
+        this.puntita = new Actor(imagen, x, y, { z: -5001 });
     };
     Globo.prototype.ponerPuntitaADerecha = function () {
-        this.puntita = new Actor(this.imagenPuntita().derecha, this.derecha - this.margen + (this.dimPuntita().ancho / 2), this.abajo + (this.dimPuntita().alto / 2));
+        var imagen = this.imagenPuntita().derecha;
+        var x = this.derecha - this.margen + (this.dimPuntita().ancho / 2);
+        var y = this.abajo + (this.dimPuntita().alto / 2);
+        this.puntita = new Actor(imagen, x, y, { z: -5001 });
     };
     Globo.prototype.voyAIzquierda = function () {
         return this.actor.derecha + this.dimPuntita().ancho + this.anchoMaximo < pilas.derecha();
@@ -17669,15 +17696,20 @@ var Texto = (function (_super) {
         this.elString = elString || "Sin texto";
         this.color = argumentos.color || "black";
         this.margen = argumentos.margen || 0;
-        this.crear_texto(argumentos.anchoMaximo || 200);
-        if (!argumentos.imagenFondo)
+        this.crear_texto(argumentos.anchoMaximo || 200, argumentos.z);
+        if (!argumentos.imagenFondo) {
             this.transparencia = 100;
+        }
     }
-    Texto.prototype.crear_texto = function (anchoMaximo) {
+    Texto.prototype.crear_texto = function (anchoMaximo, z) {
         this.spriteCJS = new createjs.Text(this.elString, "14px sans-serif", this.color);
         this.setAnchoMaximo(anchoMaximo);
         this.setX(this.x);
         this.setY(this.y);
+        if (z) {
+            this.z = z;
+            this.setZ(z);
+        }
         this.spriteCJS.textBaseline = "top";
         this.spriteCJS.textAlign = "center";
         pilas.escena_actual().stage.addChild(this.spriteCJS);
