@@ -482,6 +482,7 @@ declare class Base {
     actualizar(): void;
     doActualizar(): void;
     pausar(): void;
+    pausarDiferido(): void;
     desPausar(): void;
     ordenar_actores_por_valor_z(): void;
     agregar_actor(actor: any): void;

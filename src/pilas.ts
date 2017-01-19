@@ -158,6 +158,7 @@ class Pilas {
     this.opciones.data_path = this.opciones.data_path || 'data';
     this.opciones.canvas_id = this.opciones.canvas_id || 'canvas';
     this.opciones.canvas = this.opciones.canvas || null;
+    this.opciones.silenciar_advertencia_de_multiples_ejecutar = this.opciones.silenciar_advertencia_de_multiples_ejecutar || false;
 
     if (this.opciones.cargar_imagenes_estandar === undefined) {
       this.opciones.cargar_imagenes_estandar = true;
@@ -284,7 +285,9 @@ class Pilas {
    */
   ejecutar() {
     if (this._bucle_de_temporizador_activado) {
-      console.warn("El temporizador del bucle principal ya se activó anteriormente.");
+      if (!this.opciones.silenciar_advertencia_de_multiples_ejecutar) {
+        console.warn("El temporizador del bucle principal ya se activó anteriormente.");
+      }
       return
     }
 

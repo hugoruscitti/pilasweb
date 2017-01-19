@@ -14935,6 +14935,12 @@ var Base = (function () {
     Base.prototype.pausar = function () {
         this.pausada = true;
     };
+    Base.prototype.pausarDiferido = function () {
+        var _this = this;
+        setTimeout(function () {
+            _this.pausar();
+        }, 1000);
+    };
     Base.prototype.desPausar = function () {
         this.pausada = false;
     };
@@ -16913,6 +16919,7 @@ var Pilas = (function () {
         this.opciones.data_path = this.opciones.data_path || 'data';
         this.opciones.canvas_id = this.opciones.canvas_id || 'canvas';
         this.opciones.canvas = this.opciones.canvas || null;
+        this.opciones.silenciar_advertencia_de_multiples_ejecutar = this.opciones.silenciar_advertencia_de_multiples_ejecutar || false;
         if (this.opciones.cargar_imagenes_estandar === undefined) {
             this.opciones.cargar_imagenes_estandar = true;
         }
@@ -17019,7 +17026,9 @@ var Pilas = (function () {
      */
     Pilas.prototype.ejecutar = function () {
         if (this._bucle_de_temporizador_activado) {
-            console.warn("El temporizador del bucle principal ya se activó anteriormente.");
+            if (!this.opciones.silenciar_advertencia_de_multiples_ejecutar) {
+                console.warn("El temporizador del bucle principal ya se activó anteriormente.");
+            }
             return;
         }
         this._bucle_de_temporizador_activado = true;
@@ -17619,8 +17628,8 @@ var Globo = (function (_super) {
         else {
             this.ponerPuntitaADerecha();
         }
-        this.puntita.setZ(this.getZ() - 1);
         this.puntita.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
+        this.puntita.setZ(this.getZ() - 1);
     };
     Globo.prototype.ponerPuntitaAIzquierda = function () {
         this.puntita = new Actor(this.imagenPuntita().izquierda, this.izquierda + this.margen - (this.dimPuntita().ancho / 2), this.abajo + (this.dimPuntita().alto / 2));

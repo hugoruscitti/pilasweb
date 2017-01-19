@@ -85,6 +85,12 @@ class Base {
     this.pausada = true;
   }
 
+  pausarDiferido() {
+    setTimeout(() => {
+      this.pausar();
+    }, 1000);
+  }
+
   desPausar(){
     this.pausada = false;
   }

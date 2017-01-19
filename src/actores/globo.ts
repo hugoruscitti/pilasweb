@@ -91,8 +91,9 @@ class Globo extends Actor {
     } else {
       this.ponerPuntitaADerecha();
     }
-    this.puntita.setZ(this.getZ() - 1);
+
     this.puntita.agregar_habilidad(ImitarPosicion,{objeto_a_imitar: this});
+    this.puntita.setZ(this.getZ() - 1);
   }
 
   ponerPuntitaAIzquierda(){
