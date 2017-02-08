@@ -477,13 +477,11 @@ declare class Base {
     tareas: any;
     pausada: any;
     _modo_edicion: any;
-    pausa_diferida_en_curso: any;
     constructor();
     iniciar(): void;
     actualizar(): void;
     doActualizar(): void;
     pausar(): void;
-    pausarDiferido(): void;
     desPausar(): void;
     ordenar_actores_por_valor_z(): void;
     agregar_actor(actor: any): void;

@@ -14327,6 +14327,10 @@ var Animacion = (function (_super) {
         };
     };
     Animacion.prototype.cargar_animacion = function (nombre) {
+        if (!this.animaciones[nombre]) {
+            throw new Error("No está definida la animación: '" + nombre + "'");
+        }
+        ;
         if (this.animacion_en_curso !== this.animaciones[nombre]) {
             this._ticks_acumulados = 0;
             this.animacion_en_curso = this.animaciones[nombre];
@@ -14907,7 +14911,6 @@ var Base = (function () {
         this.actualiza = new Evento('actualiza'); // []
         this.stage = new createjs.Stage(pilas.canvas);
         this._modo_edicion = false;
-        this.pausa_diferida_en_curso = false;
         this.stage.snapToPixel = true;
         this.camara = new Camara(this.stage);
         this.fisica = new Fisica(this.camara);
@@ -14920,12 +14923,7 @@ var Base = (function () {
     };
     Base.prototype.actualizar = function () {
         if (!this.pausada) {
-            if (this.pausa_diferida_en_curso) {
-                console.log("pausa en curso ...");
-            }
-            else {
-                this.doActualizar();
-            }
+            this.doActualizar();
         }
     };
     Base.prototype.doActualizar = function () {
@@ -14946,15 +14944,6 @@ var Base = (function () {
     Base.prototype.pausar = function () {
         console.log("Pausando escena desde pilasweb...");
         this.pausada = true;
-    };
-    Base.prototype.pausarDiferido = function () {
-        if (this.pausa_diferida_en_curso === false) {
-            this.pausa_diferida_en_curso = true;
-            this.pausar();
-        }
-        else {
-            console.log("Evitando multiples pausas...");
-        }
     };
     Base.prototype.desPausar = function () {
         this.pausada = false;

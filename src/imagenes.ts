@@ -192,6 +192,9 @@ class Animacion extends Grilla {
   }
 
   cargar_animacion(nombre) {
+    if(!this.animaciones[nombre]){
+      throw new Error("No está definida la animación: '" + nombre + "'");
+    };
     if (this.animacion_en_curso !== this.animaciones[nombre]) {
       this._ticks_acumulados = 0;
       this.animacion_en_curso = this.animaciones[nombre];
