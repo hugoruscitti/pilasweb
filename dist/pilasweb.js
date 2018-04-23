@@ -13343,7 +13343,7 @@ var Actor = (function (_super) {
         this.espejado = false;
         this.centro = ['centro', 'centro'];
         this.etiquetas = [];
-        this.etiquetas.push(this.getClassName());
+        this.agregarEtiqueta(this.getClassName());
         if (atributos['rotacion'])
             this.rotacion = atributos['rotacion'];
         if (atributos['centro_x'])
@@ -13798,6 +13798,9 @@ var Actor = (function (_super) {
         var area_visible = pilas.escena_actual().camara.obtener_area_visible();
         return this.derecha < area_visible.izquierda || this.izquierda > area_visible.derecha ||
             this.abajo > area_visible.arriba || this.arriba < area_visible.abajo;
+    };
+    Actor.prototype.agregarEtiqueta = function (etiqueta) {
+        this.etiquetas.push(etiqueta);
     };
     Actor.prototype.tiene_etiqueta = function (etiqueta) {
         return this.etiquetas.indexOf(etiqueta) > -1;
