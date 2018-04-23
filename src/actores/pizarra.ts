@@ -67,128 +67,49 @@ class Pizarra extends Actor {
 
 /*=================== Desde aca para sacar info de lo dibujado ======================*/
 
-  tieneIgualDibujoQue(otraPizarra){
-    return this.dibujo().equals(otraPizarra.dibujo());
-  }
-
-  dibujo(){
-    var instAnterior;
-    const dibujo:DibujoConSegmentos = new DibujoConSegmentos();
-    this.lienzo.graphics._instructions.array.forEach(instActual => {
-      if(instAnterior.f.name === "moveTo" && instActual.f.name === "lineTo") dibujo.agregar(this.nuevoSegmento(instAnterior,instActual));
-      instAnterior = instActual
-    });
-    return 
-  }
-
-  nuevoSegmento(inst1,inst2){
-    const puntoA = this.cambioCoordenadas(inst1.params);
-    const puntoB = this.cambioCoordenadas(inst2.params);
-    return new Segmento(new Extremo(puntoA.x,puntoA.y),new Extremo(puntoB.x,puntoB.y))
+  puntosDeLineas(){
+    var instruccionesLineas = this.lienzo.graphics._instructions.filter(instruccion => instruccion.f.name === "lineTo");
+    return instruccionesLineas.map(instruccion => this.cambioCoordenadas(instruccion.params));
   }
 
   cambioCoordenadas(punto){
     return pilas.escena_actual().obtener_posicion_escenario(Math.round(punto[0]),Math.round(punto[1]));
-  }  
-}
-
-class DibujoConSegmentos {
-  // Están ordenados
-  segmentos:Array<Segmento> = [];
-
-  agregar(segmento:Segmento){
-    const solapado:Segmento = this.segmentos.find(seg => seg.seSolapaCon(segmento));
-    if(!solapado) this.agregarOrdenado(segmento);
-    else {
-      this.segmentos.splice(this.segmentos.indexOf(solapado),1);
-      this.agregar(segmento.combinarCon(solapado));
-    }
   }
 
-  agregarOrdenado(segmento:Segmento){
-    var indiceAInsertar = this.segmentos.length;
-    this.segmentos.find((seg,i) => {
-      indiceAInsertar = i;
-      return seg.esMenorQue(segmento)});
-    this.segmentos.splice(indiceAInsertar,0,segmento);
+  mismosPuntosQue(puntos){
+    var misPuntos = this.puntosSinRepetirDe(this.puntosDeLineas());
+    var punts = this.puntosSinRepetirDe(puntos);
+    return punts.length == misPuntos.length &&
+      misPuntos.every( p => this.estaPuntoEn(p,punts));
   }
 
-  equals(dibujo:DibujoConSegmentos){
-    return this.segmentos.every((seg,i) => dibujo.segmentos[i].equals(seg)) && 
-      this.segmentos.length === dibujo.segmentos.length;
-  }
-}
-
-class Segmento {
-  // El inicio siempre es "menor" que el fin (facilita cuentas)
-  inicio : Extremo;
-  fin : Extremo;
-  
-  constructor(inicio:Extremo, fin:Extremo){
-    this.inicio = inicio.min(fin);
-    this.fin = inicio.max(fin);
+  tieneIgualDibujoQue(otraPizarra){
+    return this.mismosPuntosQue(otraPizarra.puntosDeLineas());
   }
 
-  seSolapaCon(otro):boolean{
-    // Se solapan cuando tienen la misma dirección, y además se tocan en algún punto.
-    return this.versor().equals(otro.versor()) && 
-      (this.inicio.contieneA(otro.inicio,this.fin) || this.inicio.contieneA(otro.fin,this.fin));
+  puntosSinRepetirDe(puntos){
+    return this.sacarPuntosRepetidosDe(this.ordenarPuntosDe(puntos));
   }
 
-  combinarCon(otro):Segmento{
-    if(!this.seSolapaCon(otro)) throw "No se puede combinar algo que no solape";
-    return new Segmento(this.inicio.min(otro.inicio), this.fin.max(otro.fin));
+  ordenarPuntosDe(puntos){
+    return puntos.sort( this.compararPuntos );
   }
 
-  versor():Extremo{
-    return this.fin.restar(this.inicio).normalizado();
+  compararPuntos(p1,p2){
+    if(p1.x == p2.x) return p1.y - p2.y;
+    return p1.x - p2.x;
   }
 
-  esMenorQue(otroSeg){
-    return this.inicio.esMenorQue(otroSeg.inicio) || (this.inicio.equals(otroSeg.inicio) && this.fin.esMenorQue(otroSeg.fin));
+  sacarPuntosRepetidosDe(puntos){
+    var sinReps = [];
+    puntos.forEach( pto => {
+      if( !this.estaPuntoEn(pto,sinReps) ) sinReps.push(pto)
+    });
+    return sinReps;
   }
 
-  equals(otroSeg){
-    return this.inicio.equals(otroSeg.inicio) && this.fin.equals(otroSeg.fin);
-  }
-}
-
-class Extremo {
-  x:number;
-  y:number;
-
-  constructor(x:number, y:number){
-    this.x = x;
-    this.y = y;
+  estaPuntoEn(pto,ptos){
+    return ptos.some( elemento => pto.x == elemento.x && pto.y == elemento.y);
   }
 
-  esMenorQue(otro:Extremo):boolean{
-    return this.x < otro.x || (this.x === otro.x && this.y <= otro.y);
-  }
-
-  min(otro):Extremo{
-    return this.esMenorQue(otro) ? this : otro;
-  }
-
-  max(otro):Extremo{
-    return this.esMenorQue(otro) ? otro : this;
-  }
-
-  restar(otro){
-    return new Extremo(this.x - otro.x, this.y - otro.y);
-  }
-
-  contieneA(medio,fin){
-    return new Segmento(this,medio).versor().equals(new Segmento(this,fin).versor()) &&
-      this.x <= medio.x && medio.x <= fin.x;
-  }
-
-  normalizado(){
-    var norm = Math.sqrt(Math.pow(this.x,2) + Math.pow(this.y,2));
-		return new Extremo(this.x/norm, this.y/norm);
-  }
-
-  equals(otro){
-    return this.x === otro.x && this.y === this.y;
-  }
 }
