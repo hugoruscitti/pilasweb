@@ -74,7 +74,7 @@ class Actor extends Estudiante {
     this.centro = ['centro', 'centro'];
 
     this.etiquetas = [];
-    this.etiquetas.push(this.getClassName());
+    this.agregarEtiqueta(this.getClassName());
 
     if (atributos['rotacion'])
       this.rotacion = atributos['rotacion'];
@@ -527,6 +527,10 @@ class Actor extends Estudiante {
     var area_visible = pilas.escena_actual().camara.obtener_area_visible();
     return this.derecha < area_visible.izquierda || this.izquierda > area_visible.derecha ||
       this.abajo > area_visible.arriba || this.arriba < area_visible.abajo;
+  }
+  
+  agregarEtiqueta(etiqueta): void {
+    this.etiquetas.push(etiqueta);
   }
 
   tiene_etiqueta(etiqueta) {
