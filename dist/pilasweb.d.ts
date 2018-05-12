@@ -1383,7 +1383,11 @@ declare class Globo extends Actor {
     margen: any;
     nombreImagen: any;
     anchoMaximo: any;
-    constructor(actor: any, mensaje: any, eliminarPrevio?: boolean, anchoMaximo?: number);
+    constructor(actor: any, mensaje: any, argumentos?: {
+        eliminarPrevio?: boolean;
+        autoEliminar?: boolean;
+        anchoMaximo?: number;
+    });
     duracion(): number;
     eliminar(): void;
     crearTexto(x: any, y: any, z: any): void;
