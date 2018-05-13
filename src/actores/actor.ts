@@ -406,10 +406,10 @@ class Actor extends Estudiante {
            las propiedades: izquierda, derecha, arriba, abajo.
   */
   get izquierda() {
-    return this.x - (this.centro_x * this.escala);
+    return this.x - (this.centro_x * Math.abs(this.escala));
   }
   set izquierda(x) {
-    this.setX(x + (this.centro_x * this.escala));
+    this.setX(x + (this.centro_x * Math.abs(this.escala)));
   }
 
   get derecha() {
