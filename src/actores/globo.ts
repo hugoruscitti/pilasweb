@@ -10,14 +10,16 @@ class Globo extends Actor {
   nombreImagen;
   anchoMaximo;
 
-  constructor(actor, mensaje, eliminarPrevio = true, anchoMaximo=150) {
+  constructor(actor, mensaje, argumentos:{eliminarPrevio?: boolean, autoEliminar?: boolean, anchoMaximo?: number}={}) {
     super("balloon.png", 0, 0);
     this.mensaje = mensaje;
     this.actor = actor;
     this.margen = 10;
-    this.anchoMaximo = anchoMaximo;
+    this.anchoMaximo = argumentos.anchoMaximo || 150;
     this.nombreImagen = "balloon.png";
 
+    argumentos.eliminarPrevio = argumentos.eliminarPrevio !== false; // por defecto true.
+    argumentos.autoEliminar = argumentos.autoEliminar !== false; // por defecto true.
 
     this.crearTexto(0, 0, 9999); //Hardcodeo por necesidad de usar datos del texto
     super(this.nombreImagen, this.calcularX(), this.calcularY(), {z: -5000});
@@ -26,9 +28,12 @@ class Globo extends Actor {
     this.ponerPuntita();
     this.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this.actor });
 
-    if (eliminarPrevio && this.actor.globoActual) this.actor.globoActual.eliminar();
+    if (argumentos.eliminarPrevio && this.actor.globoActual) this.actor.globoActual.eliminar();
     this.actor.globoActual = this;
-    pilas.mundo.agregar_tarea_una_vez(this.duracion(), this.eliminar, {}, this);
+
+    if(argumentos.autoEliminar) {
+      pilas.mundo.agregar_tarea_una_vez(this.duracion(), this.eliminar, {}, this);
+    }
   }
 
   duracion() {

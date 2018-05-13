@@ -17569,25 +17569,28 @@ var Maton = (function (_super) {
 /// <reference path="../pilas.ts"/>
 var Globo = (function (_super) {
     __extends(Globo, _super);
-    function Globo(actor, mensaje, eliminarPrevio, anchoMaximo) {
-        if (eliminarPrevio === void 0) { eliminarPrevio = true; }
-        if (anchoMaximo === void 0) { anchoMaximo = 150; }
+    function Globo(actor, mensaje, argumentos) {
+        if (argumentos === void 0) { argumentos = {}; }
         _super.call(this, "balloon.png", 0, 0);
         this.mensaje = mensaje;
         this.actor = actor;
         this.margen = 10;
-        this.anchoMaximo = anchoMaximo;
+        this.anchoMaximo = argumentos.anchoMaximo || 150;
         this.nombreImagen = "balloon.png";
+        argumentos.eliminarPrevio = argumentos.eliminarPrevio !== false; // por defecto true.
+        argumentos.autoEliminar = argumentos.autoEliminar !== false; // por defecto true.
         this.crearTexto(0, 0, 9999); //Hardcodeo por necesidad de usar datos del texto
         _super.call(this, this.nombreImagen, this.calcularX(), this.calcularY(), { z: -5000 });
         this.crearTexto(this.x, this.y, -5001);
         this.actualizarMedidas();
         this.ponerPuntita();
         this.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this.actor });
-        if (eliminarPrevio && this.actor.globoActual)
+        if (argumentos.eliminarPrevio && this.actor.globoActual)
             this.actor.globoActual.eliminar();
         this.actor.globoActual = this;
-        pilas.mundo.agregar_tarea_una_vez(this.duracion(), this.eliminar, {}, this);
+        if (argumentos.autoEliminar) {
+            pilas.mundo.agregar_tarea_una_vez(this.duracion(), this.eliminar, {}, this);
+        }
     }
     Globo.prototype.duracion = function () {
         return this.actor_texto.cantidadDeLineas() * 3;
