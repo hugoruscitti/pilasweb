@@ -17628,19 +17628,14 @@ var Globo = (function (_super) {
         else {
             xIdeal = this.xAIzquierdaDelActor();
         }
-        console.log("Posición escogida:", xIdeal);
         xIdeal = Math.min(xIdeal, pilas.derecha() - (this.actor_texto.ancho / 2));
         xIdeal = Math.max(xIdeal, pilas.izquierda() + (this.actor_texto.ancho / 2));
         return xIdeal;
     };
     Globo.prototype.xADerechaDelActor = function () {
-        console.log("El globo va a la derecha");
-        console.log("Izquierda:", this.actor.izquierda, "Derecha:", this.actor.derecha);
         return this.actor.derecha + this.dimPuntita().ancho + (this.actor_texto.ancho / 2);
     };
     Globo.prototype.xAIzquierdaDelActor = function () {
-        console.log("El globo va a la izquierda");
-        console.log("Izquierda:", this.actor.izquierda, "Derecha:", this.actor.derecha);
         return this.actor.izquierda - this.dimPuntita().ancho - (this.actor_texto.ancho / 2);
     };
     Globo.prototype.ponerPuntita = function () {
