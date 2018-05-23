@@ -19,6 +19,16 @@ class Pizarra extends Actor {
 
   }
 
+  setX(x){
+    super.setX(x);
+    this.lienzo.set({x: pilas.escena_actual().obtener_posicion_pantalla(x,0).x});
+  }
+
+  setY(y){
+    super.setY(y);
+    this.lienzo.set({y: pilas.escena_actual().obtener_posicion_pantalla(0,y).y});
+  }
+
   dibujar_punto(x, y, color=pilas.colores.negro) {
     var pos = pilas.escena_actual().obtener_posicion_pantalla(x,y);
 
@@ -55,6 +65,20 @@ class Pizarra extends Actor {
     for (var i=1; i<puntos.length; i++) {
       this.linea(puntos[i-1][0], puntos[i-1][1], puntos[i][0], puntos[i][1], color=color, grosor=grosor);
     }
+  }
+
+  circulo(x, y, radio, color=pilas.colores.negro, grosor=1) {
+    var pos = pilas.escena_actual().obtener_posicion_pantalla(x,y);
+    this.lienzo.graphics.setStrokeStyle(grosor)
+    this.lienzo.graphics.beginStroke(color)
+    this.lienzo.graphics.drawCircle(pos.x, pos.y,radio).endStroke();
+  }
+
+  arco(x, y, radio, anguloInicial, anguloFinal, color=pilas.colores.negro, grosor=1) {
+    var pos = pilas.escena_actual().obtener_posicion_pantalla(x,y);
+    this.lienzo.graphics.setStrokeStyle(grosor)
+    this.lienzo.graphics.beginStroke(color)
+    this.lienzo.graphics.arc(pos.x, pos.y,radio,anguloInicial, anguloFinal).endStroke();
   }
 
   limpiar() {

@@ -18187,6 +18187,14 @@ var Pizarra = (function (_super) {
         this.container.addChild(this.lienzo);
         pilas.escena_actual().stage.addChild(this.container);
     }
+    Pizarra.prototype.setX = function (x) {
+        _super.prototype.setX.call(this, x);
+        this.lienzo.set({ x: pilas.escena_actual().obtener_posicion_pantalla(x, 0).x });
+    };
+    Pizarra.prototype.setY = function (y) {
+        _super.prototype.setY.call(this, y);
+        this.lienzo.set({ y: pilas.escena_actual().obtener_posicion_pantalla(0, y).y });
+    };
     Pizarra.prototype.dibujar_punto = function (x, y, color) {
         if (color === void 0) { color = pilas.colores.negro; }
         var pos = pilas.escena_actual().obtener_posicion_pantalla(x, y);
@@ -18224,6 +18232,22 @@ var Pizarra = (function (_super) {
         for (var i = 1; i < puntos.length; i++) {
             this.linea(puntos[i - 1][0], puntos[i - 1][1], puntos[i][0], puntos[i][1], color = color, grosor = grosor);
         }
+    };
+    Pizarra.prototype.circulo = function (x, y, radio, color, grosor) {
+        if (color === void 0) { color = pilas.colores.negro; }
+        if (grosor === void 0) { grosor = 1; }
+        var pos = pilas.escena_actual().obtener_posicion_pantalla(x, y);
+        this.lienzo.graphics.setStrokeStyle(grosor);
+        this.lienzo.graphics.beginStroke(color);
+        this.lienzo.graphics.drawCircle(pos.x, pos.y, radio).endStroke();
+    };
+    Pizarra.prototype.arco = function (x, y, radio, anguloInicial, anguloFinal, color, grosor) {
+        if (color === void 0) { color = pilas.colores.negro; }
+        if (grosor === void 0) { grosor = 1; }
+        var pos = pilas.escena_actual().obtener_posicion_pantalla(x, y);
+        this.lienzo.graphics.setStrokeStyle(grosor);
+        this.lienzo.graphics.beginStroke(color);
+        this.lienzo.graphics.arc(pos.x, pos.y, radio, anguloInicial, anguloFinal).endStroke();
     };
     Pizarra.prototype.limpiar = function () {
         this.lienzo.graphics.clear();
