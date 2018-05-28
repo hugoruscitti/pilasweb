@@ -18186,14 +18186,16 @@ var Pizarra = (function (_super) {
         this.lienzo = new createjs.Shape(this.x, this.y); // TODO: Permitir que acepte ancho y alto de la pizarra
         this.container.addChild(this.lienzo);
         pilas.escena_actual().stage.addChild(this.container);
+        this.setX(x);
+        this.setY(y);
     }
     Pizarra.prototype.setX = function (x) {
         _super.prototype.setX.call(this, x);
-        this.lienzo.set({ x: pilas.escena_actual().obtener_posicion_pantalla(x, 0).x });
+        this.lienzo.set({ x: x });
     };
     Pizarra.prototype.setY = function (y) {
         _super.prototype.setY.call(this, y);
-        this.lienzo.set({ y: pilas.escena_actual().obtener_posicion_pantalla(0, y).y });
+        this.lienzo.set({ y: y });
     };
     Pizarra.prototype.dibujar_punto = function (x, y, color) {
         if (color === void 0) { color = pilas.colores.negro; }

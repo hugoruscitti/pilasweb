@@ -17,16 +17,18 @@ class Pizarra extends Actor {
     this.container.addChild(this.lienzo);
     pilas.escena_actual().stage.addChild(this.container)
 
+    this.setX(x);
+    this.setY(y);
   }
 
   setX(x){
     super.setX(x);
-    this.lienzo.set({x: pilas.escena_actual().obtener_posicion_pantalla(x,0).x});
+    this.lienzo.set({x: x});
   }
 
   setY(y){
     super.setY(y);
-    this.lienzo.set({y: pilas.escena_actual().obtener_posicion_pantalla(0,y).y});
+    this.lienzo.set({y: y});
   }
 
   dibujar_punto(x, y, color=pilas.colores.negro) {
