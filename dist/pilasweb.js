@@ -18258,23 +18258,19 @@ var Pizarra = (function (_super) {
         this.rectangulo(this.x - 320, this.y + 240, this._ancho, this._alto, color, color, 1);
     };
     /*=================== Desde aca para sacar info de lo dibujado ======================*/
-    Pizarra.prototype.puntosDeLineas = function () {
-        var _this = this;
-        var instruccionesLineas = this.lienzo.graphics._instructions.filter(function (instruccion) { return instruccion.f.name === "lineTo"; });
-        return instruccionesLineas.map(function (instruccion) { return _this.cambioCoordenadas(instruccion.params); });
+    Pizarra.prototype.segmentosDeDibujoLineal = function () {
+        var instruccionesInicio = this.lienzo.graphics._instructions.filter(function (instruccion) { return instruccion.f.name === "moveTo"; });
+        var instruccionesFin = this.lienzo.graphics._instructions.filter(function (instruccion) { return instruccion.f.name === "lineTo"; });
+        var segmentos = [];
+        for (var i = 0; i < instruccionesInicio.length; i++) {
+            var inicio = this.cambioCoordenadas(instruccionesInicio[i].params);
+            var fin = this.cambioCoordenadas(instruccionesFin[i].params);
+            segmentos.push({ inicio: inicio, fin: fin });
+        }
+        return segmentos;
     };
     Pizarra.prototype.cambioCoordenadas = function (punto) {
         return pilas.escena_actual().obtener_posicion_escenario(Math.round(punto[0]), Math.round(punto[1]));
-    };
-    Pizarra.prototype.mismosPuntosQue = function (puntos) {
-        var _this = this;
-        var misPuntos = this.puntosSinRepetirDe(this.puntosDeLineas());
-        var punts = this.puntosSinRepetirDe(puntos);
-        return punts.length == misPuntos.length &&
-            misPuntos.every(function (p) { return _this.estaPuntoEn(p, punts); });
-    };
-    Pizarra.prototype.tieneIgualDibujoQue = function (otraPizarra) {
-        return this.mismosPuntosQue(otraPizarra.puntosDeLineas());
     };
     Pizarra.prototype.puntosSinRepetirDe = function (puntos) {
         return this.sacarPuntosRepetidosDe(this.ordenarPuntosDe(puntos));

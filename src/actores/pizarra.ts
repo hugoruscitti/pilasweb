@@ -1,3 +1,8 @@
+type punto = { x: number, y: number };
+type segmento = { inicio: punto, fin: punto };
+
+
+
 class Pizarra extends Actor {
   container;
   lienzo;
@@ -93,24 +98,20 @@ class Pizarra extends Actor {
 
 /*=================== Desde aca para sacar info de lo dibujado ======================*/
 
-  puntosDeLineas(){
-    var instruccionesLineas = this.lienzo.graphics._instructions.filter(instruccion => instruccion.f.name === "lineTo");
-    return instruccionesLineas.map(instruccion => this.cambioCoordenadas(instruccion.params));
+  segmentosDeDibujoLineal() : segmento[] {
+    var instruccionesInicio = this.lienzo.graphics._instructions.filter(instruccion => instruccion.f.name === "moveTo");
+    var instruccionesFin = this.lienzo.graphics._instructions.filter(instruccion => instruccion.f.name === "lineTo");
+    var segmentos: segmento[] = [];
+    for (let i = 0; i < instruccionesInicio.length; i++) {
+      let inicio: punto = this.cambioCoordenadas(instruccionesInicio[i].params);
+      let fin: punto = this.cambioCoordenadas(instruccionesFin[i].params);
+      segmentos.push({inicio: inicio, fin: fin});
+    }
+    return segmentos;
   }
 
   cambioCoordenadas(punto){
     return pilas.escena_actual().obtener_posicion_escenario(Math.round(punto[0]),Math.round(punto[1]));
-  }
-
-  mismosPuntosQue(puntos){
-    var misPuntos = this.puntosSinRepetirDe(this.puntosDeLineas());
-    var punts = this.puntosSinRepetirDe(puntos);
-    return punts.length == misPuntos.length &&
-      misPuntos.every( p => this.estaPuntoEn(p,punts));
-  }
-
-  tieneIgualDibujoQue(otraPizarra){
-    return this.mismosPuntosQue(otraPizarra.puntosDeLineas());
   }
 
   puntosSinRepetirDe(puntos){
