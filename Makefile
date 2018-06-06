@@ -24,19 +24,19 @@ iniciar:
 	npm install
 
 build:
-	grunt typescript
-	grunt generar_docs
-	grunt concat
-	grunt copy
+	node_modules/grunt-cli/bin/grunt typescript
+	node_modules/grunt-cli/bin/grunt generar_docs
+	node_modules/grunt-cli/bin/grunt concat
+	node_modules/grunt-cli/bin/grunt copy
 
 build_live:
-	grunt watch:scripts
+	node_modules/grunt-cli/bin/grunt watch:scripts
 
 test:
-	grunt test
+	node_modules/grunt-cli/bin/grunt test
 
 test_live:
-	grunt watch:test
+	node_modules/grunt-cli/bin/grunt watch:test
 
 version_patch:
 	npm version patch
