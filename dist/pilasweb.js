@@ -18197,12 +18197,15 @@ var Pizarra = (function (_super) {
         _super.prototype.setY.call(this, y);
         this.lienzo.set({ y: y });
     };
-    Pizarra.prototype.dibujar_punto = function (x, y, color) {
+    Pizarra.prototype.dibujar_punto = function (x, y, color, grosor) {
         if (color === void 0) { color = pilas.colores.negro; }
         var pos = pilas.escena_actual().obtener_posicion_pantalla(x, y);
+        if (grosor) {
+            this.lienzo.graphics.setStrokeStyle(grosor);
+        }
         this.lienzo.graphics.beginStroke(color);
         this.lienzo.graphics.beginFill(color);
-        this.lienzo.graphics.drawCircle(pos.x, pos.y, 3).endStroke();
+        this.lienzo.graphics.drawCircle(pos.x, pos.y, 3).endFill().endStroke();
     };
     Pizarra.prototype.linea = function (x, y, x2, y2, color, grosor) {
         if (color === void 0) { color = pilas.colores.negro; }
@@ -18271,29 +18274,6 @@ var Pizarra = (function (_super) {
     };
     Pizarra.prototype.cambioCoordenadas = function (punto) {
         return pilas.escena_actual().obtener_posicion_escenario(Math.round(punto[0]), Math.round(punto[1]));
-    };
-    Pizarra.prototype.puntosSinRepetirDe = function (puntos) {
-        return this.sacarPuntosRepetidosDe(this.ordenarPuntosDe(puntos));
-    };
-    Pizarra.prototype.ordenarPuntosDe = function (puntos) {
-        return puntos.sort(this.compararPuntos);
-    };
-    Pizarra.prototype.compararPuntos = function (p1, p2) {
-        if (p1.x == p2.x)
-            return p1.y - p2.y;
-        return p1.x - p2.x;
-    };
-    Pizarra.prototype.sacarPuntosRepetidosDe = function (puntos) {
-        var _this = this;
-        var sinReps = [];
-        puntos.forEach(function (pto) {
-            if (!_this.estaPuntoEn(pto, sinReps))
-                sinReps.push(pto);
-        });
-        return sinReps;
-    };
-    Pizarra.prototype.estaPuntoEn = function (pto, ptos) {
-        return ptos.some(function (elemento) { return pto.x == elemento.x && pto.y == elemento.y; });
     };
     return Pizarra;
 })(Actor);
