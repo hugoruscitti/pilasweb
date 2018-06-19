@@ -59,4 +59,8 @@ class colores {
 		this.gris_transparente = createjs.Graphics.getRGB(128, 128, 128, 0.5)
 	}
 
+	rgb(r: number, g: number, b: number, a?: number) {
+		return createjs.Graphics.getRGB(r, g, b, a);
+	}
+
 }

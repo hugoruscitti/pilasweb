@@ -16585,6 +16585,9 @@ var colores = (function () {
         this.azul_transparente = createjs.Graphics.getRGB(0, 0, 255, 0.5);
         this.gris_transparente = createjs.Graphics.getRGB(128, 128, 128, 0.5);
     }
+    colores.prototype.rgb = function (r, g, b, a) {
+        return createjs.Graphics.getRGB(r, g, b, a);
+    };
     return colores;
 })();
 var tareas = (function () {
