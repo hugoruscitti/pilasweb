@@ -65,6 +65,7 @@ class Pilas {
   escena;          // acceso al módulo.
   eventos;          // acceso al módulo.
   mensajes;
+  fps = 60;
 
   _bucle_de_temporizador_activado;      // indica si se llamó a ejecutar y el ticker está en ejecución.
 
@@ -293,11 +294,11 @@ class Pilas {
 
     this._bucle_de_temporizador_activado = true;
     var self = this;
-
+    
+    this.aplicarFPS();
+    
     // TODO: Limpiar los listeners con un mensaje y
     //       no accediendo directamente a la propiedad.
-    createjs.Ticker.setFPS(60);
-
     var my_tick = function(event) {
       try {
         self.actualizar()
@@ -522,6 +523,34 @@ class Pilas {
     }
 
   }
+
+  /**
+   * Modifica la velocidad de las animaciones y la simulación.
+   * Por omisión pilas utiliza un temporizador a 60 FPS.
+   *
+   * @method setFPS
+   * @public
+   *
+   */
+  setFPS(fps){
+    this.fps = fps;
+    this.aplicarFPS();
+  }
+  
+  private aplicarFPS(fps = this.fps) {
+    createjs.Ticker.setFPS(fps);
+  }
+  
+  ponerVelocidadMaxima() {
+    this.aplicarFPS(300);
+    this.escena_actual().acelerarLaVelocidadDeLasAnimaciones();
+  }
+
+  ponerVelocidadNormal() {
+    this.aplicarFPS();
+    this.escena_actual().restaurarLaVelocidadDeLasAnimaciones();
+  }
+
 }
 
 pilas = new Pilas();

@@ -646,4 +646,12 @@ class Actor extends Estudiante {
     }
   }
 
+  acelerarLaVelocidadDeLasAnimaciones() {
+    this._imagen.acelerarLaVelocidad();
+  }
+
+  restaurarLaVelocidadDeLasAnimaciones() {
+    this._imagen.restaurarLaVelocidad();
+  }
+
 }
