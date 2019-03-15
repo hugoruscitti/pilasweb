@@ -1127,6 +1127,72 @@ declare class Mensajes {
      */
     desconectar_mensajes(actor_id: any): void;
 }
+declare class Texto extends Actor {
+    spriteCJS: any;
+    elString: any;
+    color: any;
+    margen: any;
+    constructor(x: any, y: any, elString: any, argumentos?: any);
+    crear_texto(anchoMaximo: any, z: any): void;
+    eliminar_texto(): void;
+    eliminar(): void;
+    actualizarMedidas(): void;
+    anchoString(): number;
+    altoString(): number;
+    setAnchoMaximo(anchoMax: any): void;
+    setX(x: any): void;
+    setY(y: any): void;
+    setZ(z: any): void;
+    cantidadDeLineas(): number;
+    setString(elString: any): void;
+    getString(): any;
+}
+/**
+ * Representa el modo de lectura que utilizara pilas Web.
+ *
+ * Este contiene una serie de transformaciones que se aplicaran
+ * en diferentes aspectos visuales segun las necesidades del estudiante.
+ *
+ */
+declare abstract class ModoDeLectura {
+    protected transformacionesDeTexto: TransformacionDeTexto[];
+    /**
+     * Aplica todas las transformaciones a un texto dado.
+     *
+     * @param texto el texto a transformar.
+     */
+    adaptarTexto(texto: Texto): void;
+}
+/**
+ * Representa el modo de lectura normal de pilas web.
+ */
+declare class LecturaNormal extends ModoDeLectura {
+}
+/**
+ * Representa el modo de lectura simple de pilas web,
+ * en este modo, todo texto se mostrara capitalizado.
+ * Es de gran utilidad para cuando se trabaja con niños o
+ * con personas con visibilidad reducida.
+ */
+declare class LecturaSimple extends ModoDeLectura {
+    constructor();
+}
+/**
+ * Representa una transformacion aplicable a cualquier texto.
+ */
+declare abstract class TransformacionDeTexto {
+    /**
+     * Aplica la transformacion a un texto dado.
+     * @param texto el texto a transformar.
+     */
+    abstract aplicarA(texto: Texto): void;
+}
+/**
+ * Representa la transformacion que capitaliza texto.
+ */
+declare class Capitalizar extends TransformacionDeTexto {
+    aplicarA(texto: Texto): void;
+}
 declare var pilas: any;
 declare var Trait: any;
 declare var window: Window;
@@ -1170,6 +1236,7 @@ declare class Pilas {
     escena: any;
     eventos: any;
     mensajes: any;
+    private _modoDeLectura;
     _bucle_de_temporizador_activado: any;
     ready: any;
     /**
@@ -1188,6 +1255,10 @@ declare class Pilas {
      * - cargar_imagenes_estandar: Indica si debe cargar las imágenes por omisión, como aceituna.png por ejemplo. Habilitada por omisión.
      */
     iniciar(opciones: any): void;
+    modoDeLectura(): ModoDeLectura;
+    private cambiarModoDeLectura(modo);
+    cambiarAModoDeLecturaNormal(): void;
+    cambiarAModoDeLecturaSimple(): void;
     observar_tareas(elemento_id: any, intervalo: any): void;
     reiniciar(): void;
     /**
@@ -1415,25 +1486,6 @@ declare class GloboPensar extends Globo {
         izquierda: string;
         derecha: string;
     };
-}
-declare class Texto extends Actor {
-    spriteCJS: any;
-    elString: any;
-    color: any;
-    margen: any;
-    constructor(x: any, y: any, elString: any, argumentos?: any);
-    crear_texto(anchoMaximo: any, z: any): void;
-    eliminar_texto(): void;
-    eliminar(): void;
-    actualizarMedidas(): void;
-    anchoString(): number;
-    altoString(): number;
-    setAnchoMaximo(anchoMax: any): void;
-    setX(x: any): void;
-    setY(y: any): void;
-    setZ(z: any): void;
-    cantidadDeLineas(): number;
-    setString(elString: any): void;
 }
 declare class Bloque extends Actor {
     constructor(x: any, y: any, nombre_imagen: any);

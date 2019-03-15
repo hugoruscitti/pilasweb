@@ -85,4 +85,8 @@ class Texto extends Actor {
     this.spriteCJS.text = elString;
     this.actualizarMedidas();
   }
+
+  getString() {
+    return this.elString;
+  }
 }

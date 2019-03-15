@@ -16814,6 +16814,147 @@ var Mensajes = (function () {
     };
     return Mensajes;
 })();
+/// <reference path="actor.ts"/>
+var Texto = (function (_super) {
+    __extends(Texto, _super);
+    function Texto(x, y, elString, argumentos) {
+        if (argumentos === void 0) { argumentos = {}; }
+        _super.call(this, argumentos.imagenFondo || "invisible.png", x, y);
+        this.elString = elString || "Sin texto";
+        this.color = argumentos.color || "black";
+        this.margen = argumentos.margen || 0;
+        this.crear_texto(argumentos.anchoMaximo || 200, argumentos.z);
+        if (!argumentos.imagenFondo) {
+            this.transparencia = 100;
+        }
+    }
+    Texto.prototype.crear_texto = function (anchoMaximo, z) {
+        this.spriteCJS = new createjs.Text(this.elString, "14px sans-serif", this.color);
+        this.setAnchoMaximo(anchoMaximo);
+        this.setX(this.x);
+        this.setY(this.y);
+        if (z) {
+            this.z = z;
+            this.setZ(z);
+        }
+        this.spriteCJS.textBaseline = "top";
+        this.spriteCJS.textAlign = "center";
+        pilas.escena_actual().stage.addChild(this.spriteCJS);
+    };
+    Texto.prototype.eliminar_texto = function () {
+        pilas.escena_actual().stage.removeChild(this.spriteCJS);
+    };
+    Texto.prototype.eliminar = function () {
+        this.eliminar_texto();
+        _super.prototype.eliminar.call(this);
+    };
+    Texto.prototype.actualizarMedidas = function () {
+        this.alto = this.spriteCJS.getBounds().height + (this.margen * 2);
+        this.ancho = this.spriteCJS.getBounds().width + (this.margen * 2);
+    };
+    Texto.prototype.anchoString = function () {
+        return this.ancho - (this.margen * 2);
+    };
+    Texto.prototype.altoString = function () {
+        return this.alto - (this.margen * 2);
+    };
+    Texto.prototype.setAnchoMaximo = function (anchoMax) {
+        this.spriteCJS.lineWidth = anchoMax - (this.margen * 2);
+        this.actualizarMedidas();
+    };
+    Texto.prototype.setX = function (x) {
+        _super.prototype.setX.call(this, x);
+        this.spriteCJS.x = pilas.escena_actual().obtener_posicion_pantalla(x, this.y).x;
+    };
+    Texto.prototype.setY = function (y) {
+        _super.prototype.setY.call(this, y);
+        this.spriteCJS.y = pilas.escena_actual().obtener_posicion_pantalla(this.x, y + (this.altoString() / 2)).y;
+    };
+    Texto.prototype.setZ = function (z) {
+        _super.prototype.setZ.call(this, z);
+        this.spriteCJS.z = z - 1;
+    };
+    Texto.prototype.cantidadDeLineas = function () {
+        return this.altoString() / this.spriteCJS.getMeasuredLineHeight();
+    };
+    Texto.prototype.setString = function (elString) {
+        this.elString = elString;
+        this.spriteCJS.text = elString;
+        this.actualizarMedidas();
+    };
+    Texto.prototype.getString = function () {
+        return this.elString;
+    };
+    return Texto;
+})(Actor);
+/// <reference path="pilas.ts" />
+/// <reference path="actores/texto.ts" />
+/**
+ * Representa el modo de lectura que utilizara pilas Web.
+ *
+ * Este contiene una serie de transformaciones que se aplicaran
+ * en diferentes aspectos visuales segun las necesidades del estudiante.
+ *
+ */
+var ModoDeLectura = (function () {
+    function ModoDeLectura() {
+        this.transformacionesDeTexto = [];
+    }
+    /**
+     * Aplica todas las transformaciones a un texto dado.
+     *
+     * @param texto el texto a transformar.
+     */
+    ModoDeLectura.prototype.adaptarTexto = function (texto) {
+        this.transformacionesDeTexto.forEach(function (transformacion) { return transformacion.aplicarA(texto); });
+    };
+    return ModoDeLectura;
+})();
+/**
+ * Representa el modo de lectura normal de pilas web.
+ */
+var LecturaNormal = (function (_super) {
+    __extends(LecturaNormal, _super);
+    function LecturaNormal() {
+        _super.apply(this, arguments);
+    }
+    return LecturaNormal;
+})(ModoDeLectura);
+/**
+ * Representa el modo de lectura simple de pilas web,
+ * en este modo, todo texto se mostrara capitalizado.
+ * Es de gran utilidad para cuando se trabaja con niños o
+ * con personas con visibilidad reducida.
+ */
+var LecturaSimple = (function (_super) {
+    __extends(LecturaSimple, _super);
+    function LecturaSimple() {
+        _super.call(this);
+        this.transformacionesDeTexto.push(new Capitalizar());
+    }
+    return LecturaSimple;
+})(ModoDeLectura);
+/**
+ * Representa una transformacion aplicable a cualquier texto.
+ */
+var TransformacionDeTexto = (function () {
+    function TransformacionDeTexto() {
+    }
+    return TransformacionDeTexto;
+})();
+/**
+ * Representa la transformacion que capitaliza texto.
+ */
+var Capitalizar = (function (_super) {
+    __extends(Capitalizar, _super);
+    function Capitalizar() {
+        _super.apply(this, arguments);
+    }
+    Capitalizar.prototype.aplicarA = function (texto) {
+        texto.setString(texto.getString().toUpperCase());
+    };
+    return Capitalizar;
+})(TransformacionDeTexto);
 /// <reference path="actores.ts" />
 /// <reference path="utils.ts" />
 /// <reference path="grupo.ts" />
@@ -16831,6 +16972,7 @@ var Mensajes = (function () {
 /// <reference path="evento.ts" />
 /// <reference path="rutinas.ts" />
 /// <reference path="mensajes.ts" />
+/// <reference path="modo_de_lectura.ts" />
 /**
  * @class Pilas
  * @singleton
@@ -16887,12 +17029,25 @@ var Pilas = (function () {
         this.tareas = new tareas();
         this.rutinas = new Rutinas();
         this.mensajes = new Mensajes(this);
+        this._modoDeLectura = new LecturaNormal();
         this.mundo.gestor_escenas.cambiar_escena(new Normal());
         this.eventos = new ProxyEventos();
         // Deshabilita el interpolado de pixels.
         var ctx = this.canvas.getContext('2d');
         ctx.imageSmoothingEnabled = false;
         this.ready = false;
+    };
+    Pilas.prototype.modoDeLectura = function () {
+        return this._modoDeLectura;
+    };
+    Pilas.prototype.cambiarModoDeLectura = function (modo) {
+        this._modoDeLectura = modo;
+    };
+    Pilas.prototype.cambiarAModoDeLecturaNormal = function () {
+        this.cambiarModoDeLectura(new LecturaNormal());
+    };
+    Pilas.prototype.cambiarAModoDeLecturaSimple = function () {
+        this.cambiarModoDeLectura(new LecturaSimple());
     };
     Pilas.prototype.observar_tareas = function (elemento_id, intervalo) {
         this.rutinas.observar_tareas(elemento_id, intervalo);
@@ -17610,8 +17765,9 @@ var Globo = (function (_super) {
         if (this.actor_texto) {
             this.actor_texto.eliminar();
         }
-        this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje, { z: z, anchoMaximo: this.anchoMaximo });
+        this.actor_texto = new Texto(x, y, this.mensaje, { z: z, anchoMaximo: this.anchoMaximo });
         this.actor_texto.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
+        pilas.modoDeLectura().adaptarTexto(this.actor_texto);
     };
     Globo.prototype.actualizarMedidas = function () {
         this.ancho = this.actor_texto.ancho + (this.margen * 2);
@@ -17685,76 +17841,6 @@ var GloboPensar = (function (_super) {
     };
     return GloboPensar;
 })(Globo);
-/// <reference path="actor.ts"/>
-var Texto = (function (_super) {
-    __extends(Texto, _super);
-    function Texto(x, y, elString, argumentos) {
-        if (argumentos === void 0) { argumentos = {}; }
-        _super.call(this, argumentos.imagenFondo || "invisible.png", x, y);
-        this.elString = elString || "Sin texto";
-        this.color = argumentos.color || "black";
-        this.margen = argumentos.margen || 0;
-        this.crear_texto(argumentos.anchoMaximo || 200, argumentos.z);
-        if (!argumentos.imagenFondo) {
-            this.transparencia = 100;
-        }
-    }
-    Texto.prototype.crear_texto = function (anchoMaximo, z) {
-        this.spriteCJS = new createjs.Text(this.elString, "14px sans-serif", this.color);
-        this.setAnchoMaximo(anchoMaximo);
-        this.setX(this.x);
-        this.setY(this.y);
-        if (z) {
-            this.z = z;
-            this.setZ(z);
-        }
-        this.spriteCJS.textBaseline = "top";
-        this.spriteCJS.textAlign = "center";
-        pilas.escena_actual().stage.addChild(this.spriteCJS);
-    };
-    Texto.prototype.eliminar_texto = function () {
-        pilas.escena_actual().stage.removeChild(this.spriteCJS);
-    };
-    Texto.prototype.eliminar = function () {
-        this.eliminar_texto();
-        _super.prototype.eliminar.call(this);
-    };
-    Texto.prototype.actualizarMedidas = function () {
-        this.alto = this.spriteCJS.getBounds().height + (this.margen * 2);
-        this.ancho = this.spriteCJS.getBounds().width + (this.margen * 2);
-    };
-    Texto.prototype.anchoString = function () {
-        return this.ancho - (this.margen * 2);
-    };
-    Texto.prototype.altoString = function () {
-        return this.alto - (this.margen * 2);
-    };
-    Texto.prototype.setAnchoMaximo = function (anchoMax) {
-        this.spriteCJS.lineWidth = anchoMax - (this.margen * 2);
-        this.actualizarMedidas();
-    };
-    Texto.prototype.setX = function (x) {
-        _super.prototype.setX.call(this, x);
-        this.spriteCJS.x = pilas.escena_actual().obtener_posicion_pantalla(x, this.y).x;
-    };
-    Texto.prototype.setY = function (y) {
-        _super.prototype.setY.call(this, y);
-        this.spriteCJS.y = pilas.escena_actual().obtener_posicion_pantalla(this.x, y + (this.altoString() / 2)).y;
-    };
-    Texto.prototype.setZ = function (z) {
-        _super.prototype.setZ.call(this, z);
-        this.spriteCJS.z = z - 1;
-    };
-    Texto.prototype.cantidadDeLineas = function () {
-        return this.altoString() / this.spriteCJS.getMeasuredLineHeight();
-    };
-    Texto.prototype.setString = function (elString) {
-        this.elString = elString;
-        this.spriteCJS.text = elString;
-        this.actualizarMedidas();
-    };
-    return Texto;
-})(Actor);
 /// <reference path="actor.ts"/>
 var Bloque = (function (_super) {
     __extends(Bloque, _super);
