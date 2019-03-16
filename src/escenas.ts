@@ -175,6 +175,14 @@ class Base {
     }
   }
 
+  acelerarLaVelocidadDeLasAnimaciones() {
+    this.actores.forEach(actor => actor.acelerarLaVelocidadDeLasAnimaciones());
+  }
+
+  restaurarLaVelocidadDeLasAnimaciones() {
+    this.actores.forEach(actor => actor.restaurarLaVelocidadDeLasAnimaciones());
+  }
+
 }
 
 /**

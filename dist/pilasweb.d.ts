@@ -150,6 +150,8 @@ declare class Actor extends Estudiante {
     emitir_mensaje(identificador_del_mensaje: any, datos?: {}): void;
     desconectar_mensajes(): void;
     traer_al_frente(): void;
+    acelerarLaVelocidadDeLasAnimaciones(): void;
+    restaurarLaVelocidadDeLasAnimaciones(): void;
 }
 declare class Utils {
     convertir_a_grados(angulo_en_radianes: any): number;
@@ -247,6 +249,8 @@ declare class Imagen {
     avanzar(velocidad?: number): boolean;
     ancho: any;
     alto: any;
+    acelerarLaVelocidad(): void;
+    restaurarLaVelocidad(): void;
 }
 declare class Grilla extends Imagen {
     columnas: any;
@@ -266,7 +270,10 @@ declare class Animacion extends Grilla {
     animacion_en_curso: any;
     cuadro_en_la_animacion: any;
     _ticks_acumulados: any;
+    _velocidadOriginalDeLasAnimaciones: any;
     constructor(imagen: any, columnas?: number, filas?: number);
+    acelerarLaVelocidad(): void;
+    restaurarLaVelocidad(): void;
     definir_animacion(nombre: any, cuadros: any, velocidad: any): void;
     cargar_animacion(nombre: any): void;
     avanzar(velocidad?: number): boolean;
@@ -492,6 +499,8 @@ declare class Base {
     definir_modo_edicion(estado: any): void;
     obtener_actores(): any;
     actualizar_modo_edicion_cuando_agrega_actor(actor: any): void;
+    acelerarLaVelocidadDeLasAnimaciones(): void;
+    restaurarLaVelocidadDeLasAnimaciones(): void;
 }
 /**
  * @class Normal
@@ -1170,6 +1179,7 @@ declare class Pilas {
     escena: any;
     eventos: any;
     mensajes: any;
+    fps: number;
     _bucle_de_temporizador_activado: any;
     ready: any;
     /**
@@ -1300,6 +1310,18 @@ declare class Pilas {
     obtener_escena_serializada(): any;
     definir_escena_serializada(escena_serializada: any): void;
     _crear_actor_desde_serializacion(datos: any): any;
+    /**
+     * Modifica la velocidad de las animaciones y la simulación.
+     * Por omisión pilas utiliza un temporizador a 60 FPS.
+     *
+     * @method setFPS
+     * @public
+     *
+     */
+    setFPS(fps: any): void;
+    private aplicarFPS(fps?);
+    ponerVelocidadMaxima(): void;
+    ponerVelocidadNormal(): void;
 }
 declare class Aceituna extends Actor {
     cuadro_normal: any;

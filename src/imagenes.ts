@@ -115,6 +115,14 @@ class Imagen {
 
   get ancho() {return this.imagen.width}
   get alto() {return this.imagen.height}
+
+  acelerarLaVelocidad() {
+
+  }
+
+  restaurarLaVelocidad() {
+
+  }
 }
 
 class Grilla extends Imagen {
@@ -174,6 +182,8 @@ class Animacion extends Grilla {
   animacion_en_curso;
   cuadro_en_la_animacion;
   _ticks_acumulados;
+  _velocidadOriginalDeLasAnimaciones;
+
 
   constructor(imagen, columnas=1, filas=1) {
     super(imagen, columnas, filas);
@@ -181,6 +191,23 @@ class Animacion extends Grilla {
     this.animacion_en_curso = null
     this.cuadro_en_la_animacion = 0
     this._ticks_acumulados = 0;
+  }
+
+  acelerarLaVelocidad() {
+    this._velocidadOriginalDeLasAnimaciones = {};
+
+    for (var nombre in this.animaciones) {
+      this._velocidadOriginalDeLasAnimaciones[nombre] = this.animaciones[nombre].velocidad;
+      this.animaciones[nombre].velocidad = 60;
+    }
+  }
+
+  restaurarLaVelocidad() {
+    if (this._velocidadOriginalDeLasAnimaciones) {
+      for (var nombre in this.animaciones) {
+        this.animaciones[nombre].velocidad = this._velocidadOriginalDeLasAnimaciones[nombre];
+      }
+    }
   }
 
   definir_animacion(nombre, cuadros, velocidad) {
