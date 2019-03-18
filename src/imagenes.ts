@@ -1,31 +1,43 @@
 class Imagenes {
-    nombresImagenes = [
-        'aceituna.png', 'aceituna_grita.png', 'aceituna_risa.png',
-        'aceituna_burla.png',
+  nombresImagenes = [
+      'aceituna.png', 'aceituna_grita.png', 'aceituna_risa.png',
+      'aceituna_burla.png',
 
-        'banana.png', 'bomba.png', 'caja.png', 'explosion.png',
-        'sin_imagen.png',
-        'plano.png', 'alien.png', 'alien_marron.png', 'tuerca.png', 'nave.png',
-        'piedra_chica.png', 'piedra_grande.png', 'piedra_media.png', 'ejes.png',
-        'disparos.misil.png', 'rpg.maton.png', 'pasto.png',
-        'pasto_cuadriculado.png',
-        'globo.png', 'balloon.png', 'balloon-tip-right.png', 'balloon-tip-left.png',
-        'balloon-tip-think-right.png', 'balloon-tip-think-left.png',
-        'bloque.png',
-        'manzana_chica.png', 'invisible.png', 'cofre.png', 'llave.png',
-        'cesto.png', 'pelota.png', 'zanahoria_normal.png',
-        'zanahoria_sonrie.png', 'boton.boton_normal.png',
-        'boton.boton_over.png', 'boton.boton_press.png',
-        'fondos.tarde.jpg', 'fondos.laberinto1.png',
-        'monkey_normal.png', 'monkey_smile.png', 'monkey_shout.png',
-        'tortuga.png',
-        'pingu.png', 'sombra.png',
+      'banana.png', 'bomba.png', 'caja.png', 'explosion.png',
+      'sin_imagen.png',
+      'plano.png', 'alien.png', 'alien_marron.png', 'tuerca.png', 'nave.png',
+      'piedra_chica.png', 'piedra_grande.png', 'piedra_media.png', 'ejes.png',
+      'disparos.misil.png', 'rpg.maton.png', 'pasto.png',
+      'pasto_cuadriculado.png',
+      'globo.png', 'balloon.png', 'balloon-tip-right.png', 'balloon-tip-left.png',
+      'balloon-tip-think-right.png', 'balloon-tip-think-left.png',
+      'bloque.png',
+      'manzana_chica.png', 'invisible.png', 'cofre.png', 'llave.png',
+      'cesto.png', 'pelota.png', 'zanahoria_normal.png',
+      'zanahoria_sonrie.png', 'boton.boton_normal.png',
+      'boton.boton_over.png', 'boton.boton_press.png',
+      'fondos.tarde.jpg', 'fondos.laberinto1.png',
+      'monkey_normal.png', 'monkey_smile.png', 'monkey_shout.png',
+      'tortuga.png',
+      'pingu.png', 'sombra.png',
 
-        'cooperativista.alerta.png', 'cooperativista.camina.png',
-        'cooperativista.camina_sujeta.png', 'cooperativista.ok.png',
-        'cooperativista.parado.png', 'cooperativista.parado_sujeta.png',
-        'cooperativista.trabajando.png',
-    ];
+      'cooperativista.alerta.png', 'cooperativista.camina.png',
+      'cooperativista.camina_sujeta.png', 'cooperativista.ok.png',
+      'cooperativista.parado.png', 'cooperativista.parado_sujeta.png',
+      'cooperativista.trabajando.png',
+  ];
+
+  imagenesDefault = [
+    'invisible.png',
+    'sin_imagen.png',
+    'plano.png',
+    'balloon-tip-left.png',
+    'balloon-tip-right.png',
+    'balloon-tip-think-left.png',
+    'balloon-tip-think-right.png',
+    'balloon.png',
+  ];
+  
   data_path: string;
   recursos;
   imagenes_solicitadas;
@@ -40,7 +52,7 @@ class Imagenes {
     if (opciones.cargar_imagenes_estandar) {
       this.nombresImagenes = this.nombresImagenes.concat(opciones.imagenesExtra);
     } else {
-      this.nombresImagenes = ['invisible.png', 'sin_imagen.png', 'plano.png'].concat(opciones.imagenesExtra);
+      this.nombresImagenes = this.imagenesDefault.concat(opciones.imagenesExtra);
     }
 
     this.cargar_recursos();
