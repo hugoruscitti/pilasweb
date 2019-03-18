@@ -1148,50 +1148,33 @@ declare class Texto extends Actor {
     getString(): any;
 }
 /**
- * Representa el modo de lectura que utilizara pilas Web.
+ * Representa el modo de lectura que utilizara Pilas Web.
  *
- * Este contiene una serie de transformaciones que se aplicaran
- * en diferentes aspectos visuales segun las necesidades del estudiante.
- *
+ * Este adaptara el contenido visual de pilas dependiendo
+ * de las necesidades de cada alumno.
  */
 declare abstract class ModoDeLectura {
-    protected transformacionesDeTexto: TransformacionDeTexto[];
     /**
-     * Aplica todas las transformaciones a un texto dado.
+     * Aplica todas las adaptaciones pertinentes a un texto dado.
      *
-     * @param texto el texto a transformar.
+     * @param texto el texto a adaptar.
      */
+    abstract adaptarTexto(texto: Texto): void;
+}
+/**
+ * Representa el modo de lectura normal de Pilas Web.
+ */
+declare class LecturaNormal extends ModoDeLectura {
     adaptarTexto(texto: Texto): void;
 }
 /**
- * Representa el modo de lectura normal de pilas web.
- */
-declare class LecturaNormal extends ModoDeLectura {
-}
-/**
- * Representa el modo de lectura simple de pilas web,
+ * Representa el modo de lectura simple de Pilas Web,
  * en este modo, todo texto se mostrara capitalizado.
  * Es de gran utilidad para cuando se trabaja con niños o
  * con personas con visibilidad reducida.
  */
 declare class LecturaSimple extends ModoDeLectura {
-    constructor();
-}
-/**
- * Representa una transformacion aplicable a cualquier texto.
- */
-declare abstract class TransformacionDeTexto {
-    /**
-     * Aplica la transformacion a un texto dado.
-     * @param texto el texto a transformar.
-     */
-    abstract aplicarA(texto: Texto): void;
-}
-/**
- * Representa la transformacion que capitaliza texto.
- */
-declare class Capitalizar extends TransformacionDeTexto {
-    aplicarA(texto: Texto): void;
+    adaptarTexto(texto: Texto): void;
 }
 declare var pilas: any;
 declare var Trait: any;

@@ -16890,38 +16890,30 @@ var Texto = (function (_super) {
 /// <reference path="pilas.ts" />
 /// <reference path="actores/texto.ts" />
 /**
- * Representa el modo de lectura que utilizara pilas Web.
+ * Representa el modo de lectura que utilizara Pilas Web.
  *
- * Este contiene una serie de transformaciones que se aplicaran
- * en diferentes aspectos visuales segun las necesidades del estudiante.
- *
+ * Este adaptara el contenido visual de pilas dependiendo
+ * de las necesidades de cada alumno.
  */
 var ModoDeLectura = (function () {
     function ModoDeLectura() {
-        this.transformacionesDeTexto = [];
     }
-    /**
-     * Aplica todas las transformaciones a un texto dado.
-     *
-     * @param texto el texto a transformar.
-     */
-    ModoDeLectura.prototype.adaptarTexto = function (texto) {
-        this.transformacionesDeTexto.forEach(function (transformacion) { return transformacion.aplicarA(texto); });
-    };
     return ModoDeLectura;
 })();
 /**
- * Representa el modo de lectura normal de pilas web.
+ * Representa el modo de lectura normal de Pilas Web.
  */
 var LecturaNormal = (function (_super) {
     __extends(LecturaNormal, _super);
     function LecturaNormal() {
         _super.apply(this, arguments);
     }
+    LecturaNormal.prototype.adaptarTexto = function (texto) {
+    };
     return LecturaNormal;
 })(ModoDeLectura);
 /**
- * Representa el modo de lectura simple de pilas web,
+ * Representa el modo de lectura simple de Pilas Web,
  * en este modo, todo texto se mostrara capitalizado.
  * Es de gran utilidad para cuando se trabaja con niños o
  * con personas con visibilidad reducida.
@@ -16929,32 +16921,13 @@ var LecturaNormal = (function (_super) {
 var LecturaSimple = (function (_super) {
     __extends(LecturaSimple, _super);
     function LecturaSimple() {
-        _super.call(this);
-        this.transformacionesDeTexto.push(new Capitalizar());
-    }
-    return LecturaSimple;
-})(ModoDeLectura);
-/**
- * Representa una transformacion aplicable a cualquier texto.
- */
-var TransformacionDeTexto = (function () {
-    function TransformacionDeTexto() {
-    }
-    return TransformacionDeTexto;
-})();
-/**
- * Representa la transformacion que capitaliza texto.
- */
-var Capitalizar = (function (_super) {
-    __extends(Capitalizar, _super);
-    function Capitalizar() {
         _super.apply(this, arguments);
     }
-    Capitalizar.prototype.aplicarA = function (texto) {
+    LecturaSimple.prototype.adaptarTexto = function (texto) {
         texto.setString(texto.getString().toUpperCase());
     };
-    return Capitalizar;
-})(TransformacionDeTexto);
+    return LecturaSimple;
+})(ModoDeLectura);
 /// <reference path="actores.ts" />
 /// <reference path="utils.ts" />
 /// <reference path="grupo.ts" />
