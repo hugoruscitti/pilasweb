@@ -11,7 +11,7 @@ class Puntaje extends Texto {
 
   aumentar(aumento) {
     this.valor += aumento;
-    this.setString(this.valor.toString());
+    this.setMensaje(this.valor.toString());
   }
 
   obtener() {
