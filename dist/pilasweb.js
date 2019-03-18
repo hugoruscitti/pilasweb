@@ -16845,13 +16845,14 @@ var Mensajes = (function () {
     return Mensajes;
 })();
 /// <reference path="actor.ts"/>
+/// <reference path="../modo_de_lectura.ts"/>
 /// <reference path="../pilas.ts"/>
 var Texto = (function (_super) {
     __extends(Texto, _super);
-    function Texto(x, y, elString, argumentos) {
+    function Texto(x, y, mensaje, argumentos) {
         if (argumentos === void 0) { argumentos = {}; }
         _super.call(this, argumentos.imagenFondo || "invisible.png", x, y);
-        this.elString = elString || "Sin texto";
+        this.mensaje = mensaje || "Sin texto";
         this.color = argumentos.color || "black";
         this.margen = argumentos.margen || 0;
         this.crear_texto(argumentos.anchoMaximo || 200, argumentos.z);
@@ -16860,7 +16861,7 @@ var Texto = (function (_super) {
         }
     }
     Texto.prototype.crear_texto = function (anchoMaximo, z) {
-        this.spriteCJS = new createjs.Text(this.elString, "14px sans-serif", this.color);
+        this.spriteCJS = new createjs.Text(Texto.adaptarMensaje(this.mensaje), "14px sans-serif", this.color);
         this.setAnchoMaximo(anchoMaximo);
         this.setX(this.x);
         this.setY(this.y);
@@ -16908,13 +16909,22 @@ var Texto = (function (_super) {
     Texto.prototype.cantidadDeLineas = function () {
         return this.altoString() / this.spriteCJS.getMeasuredLineHeight();
     };
-    Texto.prototype.setString = function (elString) {
-        this.elString = elString;
-        this.spriteCJS.text = elString;
+    Texto.prototype.setMensaje = function (mensaje) {
+        this.mensaje = Texto.adaptarMensaje(mensaje);
+        this.spriteCJS.text = mensaje;
         this.actualizarMedidas();
     };
-    Texto.prototype.getString = function () {
-        return this.elString;
+    Texto.prototype.getMensaje = function () {
+        return this.mensaje;
+    };
+    Texto.cambiarAModoDeLecturaNormal = function () {
+        Texto.modoDeLectura = new LecturaNormal();
+    };
+    Texto.cambiarAModoDeLecturaSimple = function () {
+        Texto.modoDeLectura = new LecturaSimple();
+    };
+    Texto.adaptarMensaje = function (mensaje) {
+        return Texto.modoDeLectura.adaptarMensaje(mensaje);
     };
     return Texto;
 })(Actor);
@@ -16939,7 +16949,8 @@ var LecturaNormal = (function (_super) {
     function LecturaNormal() {
         _super.apply(this, arguments);
     }
-    LecturaNormal.prototype.adaptarTexto = function (texto) {
+    LecturaNormal.prototype.adaptarMensaje = function (mensaje) {
+        return mensaje;
     };
     return LecturaNormal;
 })(ModoDeLectura);
@@ -16954,8 +16965,8 @@ var LecturaSimple = (function (_super) {
     function LecturaSimple() {
         _super.apply(this, arguments);
     }
-    LecturaSimple.prototype.adaptarTexto = function (texto) {
-        texto.setString(texto.getString().toUpperCase());
+    LecturaSimple.prototype.adaptarMensaje = function (mensaje) {
+        return mensaje.toUpperCase();
     };
     return LecturaSimple;
 })(ModoDeLectura);
@@ -17034,25 +17045,19 @@ var Pilas = (function () {
         this.tareas = new tareas();
         this.rutinas = new Rutinas();
         this.mensajes = new Mensajes(this);
-        this._modoDeLectura = new LecturaNormal();
         this.mundo.gestor_escenas.cambiar_escena(new Normal());
+        this.cambiarAModoDeLecturaNormal();
         this.eventos = new ProxyEventos();
         // Deshabilita el interpolado de pixels.
         var ctx = this.canvas.getContext('2d');
         ctx.imageSmoothingEnabled = false;
         this.ready = false;
     };
-    Pilas.prototype.modoDeLectura = function () {
-        return this._modoDeLectura;
-    };
-    Pilas.prototype.cambiarModoDeLectura = function (modo) {
-        this._modoDeLectura = modo;
-    };
     Pilas.prototype.cambiarAModoDeLecturaNormal = function () {
-        this.cambiarModoDeLectura(new LecturaNormal());
+        Texto.cambiarAModoDeLecturaNormal();
     };
     Pilas.prototype.cambiarAModoDeLecturaSimple = function () {
-        this.cambiarModoDeLectura(new LecturaSimple());
+        Texto.cambiarAModoDeLecturaSimple();
     };
     Pilas.prototype.observar_tareas = function (elemento_id, intervalo) {
         this.rutinas.observar_tareas(elemento_id, intervalo);
@@ -17795,7 +17800,6 @@ var Globo = (function (_super) {
             this.actor_texto.eliminar();
         }
         this.actor_texto = new Texto(x, y, this.mensaje, { z: z, anchoMaximo: this.anchoMaximo });
-        pilas.modoDeLectura().adaptarTexto(this.actor_texto);
         this.actor_texto.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
     };
     Globo.prototype.actualizarMedidas = function () {
@@ -18157,7 +18161,7 @@ var Puntaje = (function (_super) {
     }
     Puntaje.prototype.aumentar = function (aumento) {
         this.valor += aumento;
-        this.setString(this.valor.toString());
+        this.setMensaje(this.valor.toString());
     };
     Puntaje.prototype.obtener = function () {
         return this.valor;

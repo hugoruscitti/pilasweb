@@ -67,7 +67,6 @@ class Pilas {
   eventos;          // acceso al módulo.
   mensajes;
   private fps = 60;
-  private _modoDeLectura: ModoDeLectura;
 
   _bucle_de_temporizador_activado;      // indica si se llamó a ejecutar y el ticker está en ejecución.
 
@@ -111,9 +110,9 @@ class Pilas {
     this.tareas = new tareas();
     this.rutinas = new Rutinas();
     this.mensajes = new Mensajes(this);
-    this._modoDeLectura = new LecturaNormal();
 
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
+    this.cambiarAModoDeLecturaNormal();
 
     this.eventos = new ProxyEventos();
 
@@ -124,20 +123,12 @@ class Pilas {
     this.ready  = false;
   }
 
-  public modoDeLectura(): ModoDeLectura {
-    return this._modoDeLectura;
-  }
-
-  private cambiarModoDeLectura(modo: ModoDeLectura): void {
-    this._modoDeLectura = modo;
-  }
-
   public cambiarAModoDeLecturaNormal(): void {
-    this.cambiarModoDeLectura(new LecturaNormal());
+    Texto.cambiarAModoDeLecturaNormal();
   }
 
   public cambiarAModoDeLecturaSimple(): void {
-    this.cambiarModoDeLectura(new LecturaSimple());
+    Texto.cambiarAModoDeLecturaSimple();
   }
 
   observar_tareas(elemento_id, intervalo) {

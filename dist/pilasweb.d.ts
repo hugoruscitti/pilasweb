@@ -1137,11 +1137,12 @@ declare class Mensajes {
     desconectar_mensajes(actor_id: any): void;
 }
 declare class Texto extends Actor {
+    private static modoDeLectura;
     spriteCJS: any;
-    elString: any;
+    mensaje: any;
     color: any;
     margen: any;
-    constructor(x: any, y: any, elString: any, argumentos?: any);
+    constructor(x: any, y: any, mensaje: any, argumentos?: any);
     crear_texto(anchoMaximo: any, z: any): void;
     eliminar_texto(): void;
     eliminar(): void;
@@ -1153,8 +1154,11 @@ declare class Texto extends Actor {
     setY(y: any): void;
     setZ(z: any): void;
     cantidadDeLineas(): number;
-    setString(elString: any): void;
-    getString(): any;
+    setMensaje(mensaje: String): void;
+    getMensaje(): String;
+    static cambiarAModoDeLecturaNormal(): void;
+    static cambiarAModoDeLecturaSimple(): void;
+    private static adaptarMensaje(mensaje);
 }
 /**
  * Representa el modo de lectura que utilizara Pilas Web.
@@ -1164,17 +1168,17 @@ declare class Texto extends Actor {
  */
 declare abstract class ModoDeLectura {
     /**
-     * Aplica todas las adaptaciones pertinentes a un texto dado.
+     * Aplica todas las adaptaciones pertinentes a un mensaje dado.
      *
-     * @param texto el texto a adaptar.
+     * @param mensaje el mensaje a adaptar.
      */
-    abstract adaptarTexto(texto: Texto): void;
+    abstract adaptarMensaje(mensaje: String): String;
 }
 /**
  * Representa el modo de lectura normal de Pilas Web.
  */
 declare class LecturaNormal extends ModoDeLectura {
-    adaptarTexto(texto: Texto): void;
+    adaptarMensaje(mensaje: String): String;
 }
 /**
  * Representa el modo de lectura simple de Pilas Web,
@@ -1183,7 +1187,7 @@ declare class LecturaNormal extends ModoDeLectura {
  * con personas con visibilidad reducida.
  */
 declare class LecturaSimple extends ModoDeLectura {
-    adaptarTexto(texto: Texto): void;
+    adaptarMensaje(mensaje: String): String;
 }
 declare var pilas: any;
 declare var Trait: any;
@@ -1229,7 +1233,6 @@ declare class Pilas {
     eventos: any;
     mensajes: any;
     private fps;
-    private _modoDeLectura;
     _bucle_de_temporizador_activado: any;
     ready: any;
     /**
@@ -1248,8 +1251,6 @@ declare class Pilas {
      * - cargar_imagenes_estandar: Indica si debe cargar las imágenes por omisión, como aceituna.png por ejemplo. Habilitada por omisión.
      */
     iniciar(opciones: any): void;
-    modoDeLectura(): ModoDeLectura;
-    private cambiarModoDeLectura(modo);
     cambiarAModoDeLecturaNormal(): void;
     cambiarAModoDeLecturaSimple(): void;
     observar_tareas(elemento_id: any, intervalo: any): void;
