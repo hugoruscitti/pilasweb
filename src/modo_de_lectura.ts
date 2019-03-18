@@ -10,11 +10,11 @@
 abstract class ModoDeLectura {
 
     /**
-     * Aplica todas las adaptaciones pertinentes a un texto dado.
+     * Aplica todas las adaptaciones pertinentes a un mensaje dado.
      * 
-     * @param texto el texto a adaptar.
+     * @param mensaje el mensaje a adaptar.
      */
-    public abstract adaptarTexto(texto: Texto): void
+    public abstract adaptarMensaje(mensaje: String): String
 
 }
 
@@ -23,8 +23,8 @@ abstract class ModoDeLectura {
  */
 class LecturaNormal extends ModoDeLectura {
 
-    public adaptarTexto(texto: Texto): void {
-
+    public adaptarMensaje(mensaje: String): String {
+        return mensaje
     }
 
 }
@@ -37,8 +37,8 @@ class LecturaNormal extends ModoDeLectura {
  */
 class LecturaSimple extends ModoDeLectura {
 
-    public adaptarTexto(texto: Texto): void {
-        texto.setString(texto.getString().toUpperCase());
+    public adaptarMensaje(mensaje: String): String {
+        return mensaje.toUpperCase()
     }
 
 }
