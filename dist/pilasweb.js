@@ -16815,6 +16815,7 @@ var Mensajes = (function () {
     return Mensajes;
 })();
 /// <reference path="actor.ts"/>
+/// <reference path="../pilas.ts"/>
 var Texto = (function (_super) {
     __extends(Texto, _super);
     function Texto(x, y, elString, argumentos) {
@@ -17739,8 +17740,8 @@ var Globo = (function (_super) {
             this.actor_texto.eliminar();
         }
         this.actor_texto = new Texto(x, y, this.mensaje, { z: z, anchoMaximo: this.anchoMaximo });
-        this.actor_texto.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
         pilas.modoDeLectura().adaptarTexto(this.actor_texto);
+        this.actor_texto.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
     };
     Globo.prototype.actualizarMedidas = function () {
         this.ancho = this.actor_texto.ancho + (this.margen * 2);
