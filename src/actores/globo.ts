@@ -56,7 +56,6 @@ class Globo extends Actor {
     }
 
     this.actor_texto = new Texto(x, y, this.mensaje, { z: z, anchoMaximo: this.anchoMaximo });
-    pilas.modoDeLectura().adaptarTexto(this.actor_texto);
     this.actor_texto.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
   }
 
