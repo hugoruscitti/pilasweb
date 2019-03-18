@@ -13892,6 +13892,12 @@ var Actor = (function (_super) {
             this.z = actor.z - 1;
         }
     };
+    Actor.prototype.acelerarLaVelocidadDeLasAnimaciones = function () {
+        this._imagen.acelerarLaVelocidad();
+    };
+    Actor.prototype.restaurarLaVelocidadDeLasAnimaciones = function () {
+        this._imagen.restaurarLaVelocidad();
+    };
     return Actor;
 })(Estudiante);
 var Utils = (function () {
@@ -14255,6 +14261,10 @@ var Imagen = (function () {
         enumerable: true,
         configurable: true
     });
+    Imagen.prototype.acelerarLaVelocidad = function () {
+    };
+    Imagen.prototype.restaurarLaVelocidad = function () {
+    };
     return Imagen;
 })();
 var Grilla = (function (_super) {
@@ -14322,6 +14332,20 @@ var Animacion = (function (_super) {
         this.cuadro_en_la_animacion = 0;
         this._ticks_acumulados = 0;
     }
+    Animacion.prototype.acelerarLaVelocidad = function () {
+        this._velocidadOriginalDeLasAnimaciones = {};
+        for (var nombre in this.animaciones) {
+            this._velocidadOriginalDeLasAnimaciones[nombre] = this.animaciones[nombre].velocidad;
+            this.animaciones[nombre].velocidad = 60;
+        }
+    };
+    Animacion.prototype.restaurarLaVelocidad = function () {
+        if (this._velocidadOriginalDeLasAnimaciones) {
+            for (var nombre in this.animaciones) {
+                this.animaciones[nombre].velocidad = this._velocidadOriginalDeLasAnimaciones[nombre];
+            }
+        }
+    };
     Animacion.prototype.definir_animacion = function (nombre, cuadros, velocidad) {
         this.animaciones[nombre] = {
             nombre: nombre,
@@ -15019,6 +15043,12 @@ var Base = (function () {
         if (this._modo_edicion) {
             actor.activar_el_modo_edicion();
         }
+    };
+    Base.prototype.acelerarLaVelocidadDeLasAnimaciones = function () {
+        this.actores.forEach(function (actor) { return actor.acelerarLaVelocidadDeLasAnimaciones(); });
+    };
+    Base.prototype.restaurarLaVelocidadDeLasAnimaciones = function () {
+        this.actores.forEach(function (actor) { return actor.restaurarLaVelocidadDeLasAnimaciones(); });
     };
     return Base;
 })();
@@ -16966,6 +16996,7 @@ var LecturaSimple = (function (_super) {
  */
 var Pilas = (function () {
     function Pilas() {
+        this.fps = 60;
     }
     /**
      * @method iniciar
@@ -17172,9 +17203,9 @@ var Pilas = (function () {
         }
         this._bucle_de_temporizador_activado = true;
         var self = this;
+        this.aplicarFPS();
         // TODO: Limpiar los listeners con un mensaje y
         //       no accediendo directamente a la propiedad.
-        createjs.Ticker.setFPS(60);
         var my_tick = function (event) {
             try {
                 self.actualizar();
@@ -17364,6 +17395,30 @@ var Pilas = (function () {
         else {
             return pilas.actores.crear_actor_desde_serializacion(datos);
         }
+    };
+    /**
+     * Modifica la velocidad de las animaciones y la simulación.
+     * Por omisión pilas utiliza un temporizador a 60 FPS.
+     *
+     * @method setFPS
+     * @public
+     *
+     */
+    Pilas.prototype.setFPS = function (fps) {
+        this.fps = fps;
+        this.aplicarFPS();
+    };
+    Pilas.prototype.aplicarFPS = function (fps) {
+        if (fps === void 0) { fps = this.fps; }
+        createjs.Ticker.setFPS(fps);
+    };
+    Pilas.prototype.ponerVelocidadMaxima = function () {
+        this.aplicarFPS(300);
+        this.escena_actual().acelerarLaVelocidadDeLasAnimaciones();
+    };
+    Pilas.prototype.ponerVelocidadNormal = function () {
+        this.aplicarFPS();
+        this.escena_actual().restaurarLaVelocidadDeLasAnimaciones();
     };
     return Pilas;
 })();
