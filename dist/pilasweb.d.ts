@@ -1136,6 +1136,60 @@ declare class Mensajes {
      */
     desconectar_mensajes(actor_id: any): void;
 }
+declare class Texto extends Actor {
+    private static modoDeLectura;
+    spriteCJS: any;
+    _mensaje: any;
+    color: any;
+    margen: any;
+    constructor(x: any, y: any, mensaje: any, argumentos?: any);
+    mensaje: String;
+    crear_texto(anchoMaximo: any, z?: any): void;
+    eliminar_texto(): void;
+    eliminar(): void;
+    actualizarMedidas(): void;
+    anchoString(): number;
+    altoString(): number;
+    setAnchoMaximo(anchoMax: any): void;
+    setX(x: any): void;
+    setY(y: any): void;
+    setZ(z: any): void;
+    cantidadDeLineas(): number;
+    setMensaje(mensaje: String): void;
+    getMensaje(): String;
+    static cambiarAModoDeLecturaNormal(): void;
+    static cambiarAModoDeLecturaSimple(): void;
+    private static adaptarMensaje(mensaje);
+}
+/**
+ * Representa el modo de lectura que utilizara Pilas Web.
+ *
+ * Este adaptara el contenido visual de pilas dependiendo
+ * de las necesidades de cada alumno.
+ */
+declare abstract class ModoDeLectura {
+    /**
+     * Aplica todas las adaptaciones pertinentes a un mensaje dado.
+     *
+     * @param mensaje el mensaje a adaptar.
+     */
+    abstract adaptarMensaje(mensaje: String): String;
+}
+/**
+ * Representa el modo de lectura normal de Pilas Web.
+ */
+declare class LecturaNormal extends ModoDeLectura {
+    adaptarMensaje(mensaje: String): String;
+}
+/**
+ * Representa el modo de lectura simple de Pilas Web,
+ * en este modo, todo texto se mostrara capitalizado.
+ * Es de gran utilidad para cuando se trabaja con niños o
+ * con personas con visibilidad reducida.
+ */
+declare class LecturaSimple extends ModoDeLectura {
+    adaptarMensaje(mensaje: String): String;
+}
 declare var pilas: any;
 declare var Trait: any;
 declare var window: Window;
@@ -1179,7 +1233,7 @@ declare class Pilas {
     escena: any;
     eventos: any;
     mensajes: any;
-    fps: number;
+    private fps;
     _bucle_de_temporizador_activado: any;
     ready: any;
     /**
@@ -1198,6 +1252,8 @@ declare class Pilas {
      * - cargar_imagenes_estandar: Indica si debe cargar las imágenes por omisión, como aceituna.png por ejemplo. Habilitada por omisión.
      */
     iniciar(opciones: any): void;
+    cambiarAModoDeLecturaNormal(): void;
+    cambiarAModoDeLecturaSimple(): void;
     observar_tareas(elemento_id: any, intervalo: any): void;
     reiniciar(): void;
     /**
@@ -1437,25 +1493,6 @@ declare class GloboPensar extends Globo {
         izquierda: string;
         derecha: string;
     };
-}
-declare class Texto extends Actor {
-    spriteCJS: any;
-    elString: any;
-    color: any;
-    margen: any;
-    constructor(x: any, y: any, elString: any, argumentos?: any);
-    crear_texto(anchoMaximo: any, z: any): void;
-    eliminar_texto(): void;
-    eliminar(): void;
-    actualizarMedidas(): void;
-    anchoString(): number;
-    altoString(): number;
-    setAnchoMaximo(anchoMax: any): void;
-    setX(x: any): void;
-    setY(y: any): void;
-    setZ(z: any): void;
-    cantidadDeLineas(): number;
-    setString(elString: any): void;
 }
 declare class Bloque extends Actor {
     constructor(x: any, y: any, nombre_imagen: any);

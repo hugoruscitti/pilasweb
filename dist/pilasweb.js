@@ -16844,6 +16844,139 @@ var Mensajes = (function () {
     };
     return Mensajes;
 })();
+/// <reference path="actor.ts"/>
+/// <reference path="../modo_de_lectura.ts"/>
+/// <reference path="../pilas.ts"/>
+var Texto = (function (_super) {
+    __extends(Texto, _super);
+    function Texto(x, y, mensaje, argumentos) {
+        if (argumentos === void 0) { argumentos = {}; }
+        _super.call(this, argumentos.imagenFondo || "invisible.png", x, y);
+        this._mensaje = mensaje || "Sin texto";
+        this.color = argumentos.color || "black";
+        this.margen = argumentos.margen || 0;
+        this.crear_texto(argumentos.anchoMaximo || 200, argumentos.z);
+        if (!argumentos.imagenFondo) {
+            this.transparencia = 100;
+        }
+    }
+    Object.defineProperty(Texto.prototype, "mensaje", {
+        get: function () {
+            return Texto.adaptarMensaje(this._mensaje);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Texto.prototype.crear_texto = function (anchoMaximo, z) {
+        this.spriteCJS = new createjs.Text(this.mensaje, "14px sans-serif", this.color);
+        this.setAnchoMaximo(anchoMaximo);
+        this.setX(this.x);
+        this.setY(this.y);
+        if (z) {
+            this.z = z;
+            this.setZ(z);
+        }
+        this.spriteCJS.textBaseline = "top";
+        this.spriteCJS.textAlign = "center";
+        pilas.escena_actual().stage.addChild(this.spriteCJS);
+    };
+    Texto.prototype.eliminar_texto = function () {
+        pilas.escena_actual().stage.removeChild(this.spriteCJS);
+    };
+    Texto.prototype.eliminar = function () {
+        this.eliminar_texto();
+        _super.prototype.eliminar.call(this);
+    };
+    Texto.prototype.actualizarMedidas = function () {
+        this.alto = this.spriteCJS.getBounds().height + (this.margen * 2);
+        this.ancho = this.spriteCJS.getBounds().width + (this.margen * 2);
+    };
+    Texto.prototype.anchoString = function () {
+        return this.ancho - (this.margen * 2);
+    };
+    Texto.prototype.altoString = function () {
+        return this.alto - (this.margen * 2);
+    };
+    Texto.prototype.setAnchoMaximo = function (anchoMax) {
+        this.spriteCJS.lineWidth = anchoMax - (this.margen * 2);
+        this.actualizarMedidas();
+    };
+    Texto.prototype.setX = function (x) {
+        _super.prototype.setX.call(this, x);
+        this.spriteCJS.x = pilas.escena_actual().obtener_posicion_pantalla(x, this.y).x;
+    };
+    Texto.prototype.setY = function (y) {
+        _super.prototype.setY.call(this, y);
+        this.spriteCJS.y = pilas.escena_actual().obtener_posicion_pantalla(this.x, y + (this.altoString() / 2)).y;
+    };
+    Texto.prototype.setZ = function (z) {
+        _super.prototype.setZ.call(this, z);
+        this.spriteCJS.z = z - 1;
+    };
+    Texto.prototype.cantidadDeLineas = function () {
+        return this.altoString() / this.spriteCJS.getMeasuredLineHeight();
+    };
+    Texto.prototype.setMensaje = function (mensaje) {
+        this._mensaje = mensaje;
+        this.spriteCJS.text = this.mensaje;
+        this.actualizarMedidas();
+    };
+    Texto.prototype.getMensaje = function () {
+        return this.mensaje;
+    };
+    Texto.cambiarAModoDeLecturaNormal = function () {
+        Texto.modoDeLectura = new LecturaNormal();
+    };
+    Texto.cambiarAModoDeLecturaSimple = function () {
+        Texto.modoDeLectura = new LecturaSimple();
+    };
+    Texto.adaptarMensaje = function (mensaje) {
+        return Texto.modoDeLectura.adaptarMensaje(mensaje);
+    };
+    return Texto;
+})(Actor);
+/// <reference path="pilas.ts" />
+/// <reference path="actores/texto.ts" />
+/**
+ * Representa el modo de lectura que utilizara Pilas Web.
+ *
+ * Este adaptara el contenido visual de pilas dependiendo
+ * de las necesidades de cada alumno.
+ */
+var ModoDeLectura = (function () {
+    function ModoDeLectura() {
+    }
+    return ModoDeLectura;
+})();
+/**
+ * Representa el modo de lectura normal de Pilas Web.
+ */
+var LecturaNormal = (function (_super) {
+    __extends(LecturaNormal, _super);
+    function LecturaNormal() {
+        _super.apply(this, arguments);
+    }
+    LecturaNormal.prototype.adaptarMensaje = function (mensaje) {
+        return mensaje;
+    };
+    return LecturaNormal;
+})(ModoDeLectura);
+/**
+ * Representa el modo de lectura simple de Pilas Web,
+ * en este modo, todo texto se mostrara capitalizado.
+ * Es de gran utilidad para cuando se trabaja con niños o
+ * con personas con visibilidad reducida.
+ */
+var LecturaSimple = (function (_super) {
+    __extends(LecturaSimple, _super);
+    function LecturaSimple() {
+        _super.apply(this, arguments);
+    }
+    LecturaSimple.prototype.adaptarMensaje = function (mensaje) {
+        return mensaje.toUpperCase();
+    };
+    return LecturaSimple;
+})(ModoDeLectura);
 /// <reference path="actores.ts" />
 /// <reference path="utils.ts" />
 /// <reference path="grupo.ts" />
@@ -16861,6 +16994,7 @@ var Mensajes = (function () {
 /// <reference path="evento.ts" />
 /// <reference path="rutinas.ts" />
 /// <reference path="mensajes.ts" />
+/// <reference path="modo_de_lectura.ts" />
 /**
  * @class Pilas
  * @singleton
@@ -16919,11 +17053,18 @@ var Pilas = (function () {
         this.rutinas = new Rutinas();
         this.mensajes = new Mensajes(this);
         this.mundo.gestor_escenas.cambiar_escena(new Normal());
+        this.cambiarAModoDeLecturaNormal();
         this.eventos = new ProxyEventos();
         // Deshabilita el interpolado de pixels.
         var ctx = this.canvas.getContext('2d');
         ctx.imageSmoothingEnabled = false;
         this.ready = false;
+    };
+    Pilas.prototype.cambiarAModoDeLecturaNormal = function () {
+        Texto.cambiarAModoDeLecturaNormal();
+    };
+    Pilas.prototype.cambiarAModoDeLecturaSimple = function () {
+        Texto.cambiarAModoDeLecturaSimple();
     };
     Pilas.prototype.observar_tareas = function (elemento_id, intervalo) {
         this.rutinas.observar_tareas(elemento_id, intervalo);
@@ -17665,7 +17806,7 @@ var Globo = (function (_super) {
         if (this.actor_texto) {
             this.actor_texto.eliminar();
         }
-        this.actor_texto = new pilas.actores.Texto(x, y, this.mensaje, { z: z, anchoMaximo: this.anchoMaximo });
+        this.actor_texto = new Texto(x, y, this.mensaje, { z: z, anchoMaximo: this.anchoMaximo });
         this.actor_texto.agregar_habilidad(ImitarPosicion, { objeto_a_imitar: this });
     };
     Globo.prototype.actualizarMedidas = function () {
@@ -17740,76 +17881,6 @@ var GloboPensar = (function (_super) {
     };
     return GloboPensar;
 })(Globo);
-/// <reference path="actor.ts"/>
-var Texto = (function (_super) {
-    __extends(Texto, _super);
-    function Texto(x, y, elString, argumentos) {
-        if (argumentos === void 0) { argumentos = {}; }
-        _super.call(this, argumentos.imagenFondo || "invisible.png", x, y);
-        this.elString = elString || "Sin texto";
-        this.color = argumentos.color || "black";
-        this.margen = argumentos.margen || 0;
-        this.crear_texto(argumentos.anchoMaximo || 200, argumentos.z);
-        if (!argumentos.imagenFondo) {
-            this.transparencia = 100;
-        }
-    }
-    Texto.prototype.crear_texto = function (anchoMaximo, z) {
-        this.spriteCJS = new createjs.Text(this.elString, "14px sans-serif", this.color);
-        this.setAnchoMaximo(anchoMaximo);
-        this.setX(this.x);
-        this.setY(this.y);
-        if (z) {
-            this.z = z;
-            this.setZ(z);
-        }
-        this.spriteCJS.textBaseline = "top";
-        this.spriteCJS.textAlign = "center";
-        pilas.escena_actual().stage.addChild(this.spriteCJS);
-    };
-    Texto.prototype.eliminar_texto = function () {
-        pilas.escena_actual().stage.removeChild(this.spriteCJS);
-    };
-    Texto.prototype.eliminar = function () {
-        this.eliminar_texto();
-        _super.prototype.eliminar.call(this);
-    };
-    Texto.prototype.actualizarMedidas = function () {
-        this.alto = this.spriteCJS.getBounds().height + (this.margen * 2);
-        this.ancho = this.spriteCJS.getBounds().width + (this.margen * 2);
-    };
-    Texto.prototype.anchoString = function () {
-        return this.ancho - (this.margen * 2);
-    };
-    Texto.prototype.altoString = function () {
-        return this.alto - (this.margen * 2);
-    };
-    Texto.prototype.setAnchoMaximo = function (anchoMax) {
-        this.spriteCJS.lineWidth = anchoMax - (this.margen * 2);
-        this.actualizarMedidas();
-    };
-    Texto.prototype.setX = function (x) {
-        _super.prototype.setX.call(this, x);
-        this.spriteCJS.x = pilas.escena_actual().obtener_posicion_pantalla(x, this.y).x;
-    };
-    Texto.prototype.setY = function (y) {
-        _super.prototype.setY.call(this, y);
-        this.spriteCJS.y = pilas.escena_actual().obtener_posicion_pantalla(this.x, y + (this.altoString() / 2)).y;
-    };
-    Texto.prototype.setZ = function (z) {
-        _super.prototype.setZ.call(this, z);
-        this.spriteCJS.z = z - 1;
-    };
-    Texto.prototype.cantidadDeLineas = function () {
-        return this.altoString() / this.spriteCJS.getMeasuredLineHeight();
-    };
-    Texto.prototype.setString = function (elString) {
-        this.elString = elString;
-        this.spriteCJS.text = elString;
-        this.actualizarMedidas();
-    };
-    return Texto;
-})(Actor);
 /// <reference path="actor.ts"/>
 var Bloque = (function (_super) {
     __extends(Bloque, _super);
@@ -18097,7 +18168,7 @@ var Puntaje = (function (_super) {
     }
     Puntaje.prototype.aumentar = function (aumento) {
         this.valor += aumento;
-        this.setString(this.valor.toString());
+        this.setMensaje(this.valor.toString());
     };
     Puntaje.prototype.obtener = function () {
         return this.valor;

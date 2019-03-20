@@ -15,6 +15,7 @@
 /// <reference path="evento.ts" />
 /// <reference path="rutinas.ts" />
 /// <reference path="mensajes.ts" />
+/// <reference path="modo_de_lectura.ts" />
 
 declare var pilas;
 declare var Trait;
@@ -65,7 +66,7 @@ class Pilas {
   escena;          // acceso al módulo.
   eventos;          // acceso al módulo.
   mensajes;
-  fps = 60;
+  private fps = 60;
 
   _bucle_de_temporizador_activado;      // indica si se llamó a ejecutar y el ticker está en ejecución.
 
@@ -111,6 +112,7 @@ class Pilas {
     this.mensajes = new Mensajes(this);
 
     this.mundo.gestor_escenas.cambiar_escena(new Normal());
+    this.cambiarAModoDeLecturaNormal();
 
     this.eventos = new ProxyEventos();
 
@@ -119,6 +121,14 @@ class Pilas {
     ctx.imageSmoothingEnabled = false;
 
     this.ready  = false;
+  }
+
+  public cambiarAModoDeLecturaNormal(): void {
+    Texto.cambiarAModoDeLecturaNormal();
+  }
+
+  public cambiarAModoDeLecturaSimple(): void {
+    Texto.cambiarAModoDeLecturaSimple();
   }
 
   observar_tareas(elemento_id, intervalo) {
