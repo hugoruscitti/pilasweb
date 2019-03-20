@@ -16852,7 +16852,7 @@ var Texto = (function (_super) {
     function Texto(x, y, mensaje, argumentos) {
         if (argumentos === void 0) { argumentos = {}; }
         _super.call(this, argumentos.imagenFondo || "invisible.png", x, y);
-        this.mensaje = mensaje || "Sin texto";
+        this._mensaje = mensaje || "Sin texto";
         this.color = argumentos.color || "black";
         this.margen = argumentos.margen || 0;
         this.crear_texto(argumentos.anchoMaximo || 200, argumentos.z);
@@ -16860,8 +16860,15 @@ var Texto = (function (_super) {
             this.transparencia = 100;
         }
     }
+    Object.defineProperty(Texto.prototype, "mensaje", {
+        get: function () {
+            return Texto.adaptarMensaje(this._mensaje);
+        },
+        enumerable: true,
+        configurable: true
+    });
     Texto.prototype.crear_texto = function (anchoMaximo, z) {
-        this.spriteCJS = new createjs.Text(Texto.adaptarMensaje(this.mensaje), "14px sans-serif", this.color);
+        this.spriteCJS = new createjs.Text(this.mensaje, "14px sans-serif", this.color);
         this.setAnchoMaximo(anchoMaximo);
         this.setX(this.x);
         this.setY(this.y);
@@ -16910,8 +16917,8 @@ var Texto = (function (_super) {
         return this.altoString() / this.spriteCJS.getMeasuredLineHeight();
     };
     Texto.prototype.setMensaje = function (mensaje) {
-        this.mensaje = Texto.adaptarMensaje(mensaje);
-        this.spriteCJS.text = mensaje;
+        this._mensaje = mensaje;
+        this.spriteCJS.text = this.mensaje;
         this.actualizarMedidas();
     };
     Texto.prototype.getMensaje = function () {

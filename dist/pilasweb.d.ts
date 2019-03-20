@@ -1139,11 +1139,12 @@ declare class Mensajes {
 declare class Texto extends Actor {
     private static modoDeLectura;
     spriteCJS: any;
-    mensaje: any;
+    _mensaje: any;
     color: any;
     margen: any;
     constructor(x: any, y: any, mensaje: any, argumentos?: any);
-    crear_texto(anchoMaximo: any, z: any): void;
+    mensaje: String;
+    crear_texto(anchoMaximo: any, z?: any): void;
     eliminar_texto(): void;
     eliminar(): void;
     actualizarMedidas(): void;

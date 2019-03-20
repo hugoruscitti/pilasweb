@@ -5,13 +5,13 @@
 class Texto extends Actor {
   private static modoDeLectura: ModoDeLectura;
   spriteCJS;
-  mensaje;
+  _mensaje;
   color;
   margen;
 
   constructor(x, y, mensaje, argumentos: any = {}) {
     super(argumentos.imagenFondo || "invisible.png", x, y);
-    this.mensaje = mensaje || "Sin texto";
+    this._mensaje = mensaje || "Sin texto";
     this.color = argumentos.color || "black";
     this.margen = argumentos.margen || 0;
     this.crear_texto(argumentos.anchoMaximo || 200, argumentos.z);
@@ -21,8 +21,12 @@ class Texto extends Actor {
     }
   }
 
-  crear_texto(anchoMaximo, z) {
-    this.spriteCJS = new createjs.Text(Texto.adaptarMensaje(this.mensaje), "14px sans-serif", this.color);
+  get mensaje() {
+    return Texto.adaptarMensaje(this._mensaje)
+  }
+
+  crear_texto(anchoMaximo, z?) {
+    this.spriteCJS = new createjs.Text(this.mensaje, "14px sans-serif", this.color);
     this.setAnchoMaximo(anchoMaximo);
     this.setX(this.x);
     this.setY(this.y);
@@ -84,8 +88,8 @@ class Texto extends Actor {
   }
 
   setMensaje(mensaje: String): void {
-    this.mensaje = Texto.adaptarMensaje(mensaje);
-    this.spriteCJS.text = mensaje;
+    this._mensaje = mensaje;
+    this.spriteCJS.text = this.mensaje;
     this.actualizarMedidas();
   }
 
