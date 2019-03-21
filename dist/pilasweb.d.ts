@@ -229,6 +229,7 @@ declare class Fondos {
 }
 declare class Imagenes {
     nombresImagenes: string[];
+    imagenesDefault: string[];
     data_path: string;
     recursos: any;
     imagenes_solicitadas: any;

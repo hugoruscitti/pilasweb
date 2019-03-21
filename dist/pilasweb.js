@@ -14182,6 +14182,16 @@ var Imagenes = (function () {
             'cooperativista.parado.png', 'cooperativista.parado_sujeta.png',
             'cooperativista.trabajando.png',
         ];
+        this.imagenesDefault = [
+            'invisible.png',
+            'sin_imagen.png',
+            'plano.png',
+            'balloon-tip-left.png',
+            'balloon-tip-right.png',
+            'balloon-tip-think-left.png',
+            'balloon-tip-think-right.png',
+            'balloon.png',
+        ];
         this.recursos = {};
         this.data_path = opciones.data_path;
         this.loader = new PxLoader();
@@ -14190,7 +14200,7 @@ var Imagenes = (function () {
             this.nombresImagenes = this.nombresImagenes.concat(opciones.imagenesExtra);
         }
         else {
-            this.nombresImagenes = ['invisible.png', 'sin_imagen.png', 'plano.png'].concat(opciones.imagenesExtra);
+            this.nombresImagenes = this.imagenesDefault.concat(opciones.imagenesExtra);
         }
         this.cargar_recursos();
         //loader.addProgressListener(function (e) {
