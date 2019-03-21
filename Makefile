@@ -38,17 +38,20 @@ test:
 test_live:
 	node_modules/grunt-cli/bin/grunt watch:test
 
-version_patch:
+version_patch: publicar_compilados
 	npm version patch
 	make sync
 
-version_minor:
+version_minor: publicar_compilados
 	npm version minor
 	make sync
 
-version_major:
+version_major: publicar_compilados
 	npm version major
 	make sync
+
+publicar_compilados: build
+	git commit -am "Actualizando compilados para distribuir"
 
 sync:
 	git push origin master --tags
